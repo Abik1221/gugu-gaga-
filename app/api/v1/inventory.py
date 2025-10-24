@@ -11,6 +11,7 @@ from app.deps.tenant import require_tenant, enforce_user_tenant, enforce_subscri
 from app.core.roles import Role
 from app.db.deps import get_db
 from app.models.medicine import InventoryItem, Medicine
+from app.models.sales import SaleItem
 from app.deps.ratelimit import rate_limit_user
 
 router = APIRouter(prefix="/inventory", tags=["inventory"])
@@ -258,6 +259,28 @@ def list_items(
                 "lot_number": r.lot_number,
                 "sell_price": r.sell_price,
             }
+
+
+@router.delete("/items/{item_id}")
+def delete_item(
+    item_id: int,
+    tenant_id: str = Depends(require_tenant),
+    _role=Depends(require_role(Role.admin, Role.pharmacy_owner)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _rl=Depends(rate_limit_user("inventory_mutation_user")),
+):
+    item = db.query(InventoryItem).filter(InventoryItem.id == item_id, InventoryItem.tenant_id == tenant_id).first()
+    if not item:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+    # Safety: if there are sale items tied to this medicine and this lot still has quantity, deletion may hide stock history.
+    # Conservative policy: allow delete for mistaken lot entries only when quantity == 0.
+    if item.quantity and item.quantity > 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot delete lot with remaining quantity; set quantity to 0 first")
+    # Optional stronger safety: block if medicine appears in any sale lines and item was created before those sales (omitted for now for speed)
+    db.delete(item)
+    db.commit()
+    return {"status": "deleted"}
             for r in rows
         ],
     }
