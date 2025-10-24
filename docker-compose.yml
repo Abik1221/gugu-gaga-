@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: zemen
+      POSTGRES_PASSWORD: zemen
+      POSTGRES_DB: zemen_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    depends_on:
+      - db
+      - redis
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      APP_NAME: Zemen Pharma
+      DATABASE_URL: postgresql+psycopg://zemen:zemen@db:5432/zemen_db
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: super-secret-change-me
+      CORS_ORIGINS: http://localhost:3000
+      RATE_LIMIT_GENERAL_PER_MINUTE: "120"
+      RATE_LIMIT_GEMINI_PER_MINUTE: "30"
+    ports:
+      - "8000:8000"
+    command: ["/app/entrypoint.sh"]
+
+volumes:
+  db_data:
