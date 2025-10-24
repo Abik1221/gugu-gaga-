@@ -13,7 +13,9 @@ from app.services.notifications.in_app import create_notification
 from app.services.notifications.email import send_email
 from app.deps.ratelimit import rate_limit_user
 from app.services.billing.subscriptions import verify_payment_and_unblock
-from app.models.affiliate import CommissionPayout
+from app.models.affiliate import CommissionPayout, AffiliateProfile, AffiliateReferral
+from app.models.subscription import Subscription
+from app.models.pharmacy import Pharmacy
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -204,3 +206,91 @@ def mark_affiliate_payout_paid(
     if user and user.email:
         send_email(user.email, "Payout processed", f"Your affiliate payout for {payout.month} has been marked as paid.")
     return {"id": payout.id, "status": payout.status}
+
+
+@router.get("/pharmacies")
+def list_pharmacies_admin(
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    q: str | None = None,
+    page: int = 1,
+    page_size: int = 20,
+):
+    page = max(1, page)
+    page_size = max(1, min(100, page_size))
+    query = db.query(Pharmacy)
+    if q:
+        like = f"%{q}%"
+        query = query.filter(Pharmacy.name.ilike(like))
+    total = query.count()
+    rows = query.order_by(Pharmacy.id.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    result = []
+    for ph in rows:
+        owner = db.query(User).filter(User.tenant_id == ph.tenant_id, User.role == Role.pharmacy_owner.value).first()
+        kyc = db.query(KYCApplication).filter(KYCApplication.tenant_id == ph.tenant_id).order_by(KYCApplication.id.desc()).first()
+        sub = db.query(Subscription).filter(Subscription.tenant_id == ph.tenant_id).first()
+        result.append(
+            {
+                "id": ph.id,
+                "tenant_id": ph.tenant_id,
+                "name": ph.name,
+                "address": getattr(ph, "address", None),
+                "owner_email": owner.email if owner else None,
+                "owner_phone": owner.phone if owner else None,
+                "owner_approved": owner.is_approved if owner else None,
+                "kyc_status": kyc.status if kyc else None,
+                "subscription": {
+                    "blocked": bool(sub.blocked) if sub else None,
+                    "next_due_date": sub.next_due_date.isoformat() if sub and sub.next_due_date else None,
+                },
+                "created_at": ph.created_at.isoformat() if ph.created_at else None,
+            }
+        )
+    return {"page": page, "page_size": page_size, "total": total, "items": result}
+
+
+@router.get("/affiliates")
+def list_affiliates_admin(
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    q: str | None = None,
+    page: int = 1,
+    page_size: int = 20,
+):
+    page = max(1, page)
+    page_size = max(1, min(100, page_size))
+    query = db.query(User).filter(User.role == Role.affiliate.value)
+    if q:
+        like = f"%{q}%"
+        query = query.filter(User.email.ilike(like))
+    total = query.count()
+    users = query.order_by(User.id.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    items = []
+    for u in users:
+        prof = db.query(AffiliateProfile).filter(AffiliateProfile.user_id == u.id).first()
+        refs = db.query(AffiliateReferral).filter(AffiliateReferral.affiliate_user_id == u.id).count()
+        pending_total = (
+            db.query(func.coalesce(func.sum(CommissionPayout.amount), 0.0))
+            .filter(CommissionPayout.affiliate_user_id == u.id, CommissionPayout.status == "pending")
+            .scalar()
+            or 0.0
+        )
+        paid_total = (
+            db.query(func.coalesce(func.sum(CommissionPayout.amount), 0.0))
+            .filter(CommissionPayout.affiliate_user_id == u.id, CommissionPayout.status == "paid")
+            .scalar()
+            or 0.0
+        )
+        items.append(
+            {
+                "user_id": u.id,
+                "email": u.email,
+                "full_name": prof.full_name if prof else None,
+                "bank_name": prof.bank_name if prof else None,
+                "bank_account_name": prof.bank_account_name if prof else None,
+                "bank_account_number": prof.bank_account_number if prof else None,
+                "referrals": refs,
+                "payouts": {"pending_total": float(pending_total), "paid_total": float(paid_total)},
+            }
+        )
+    return {"page": page, "page_size": page_size, "total": total, "items": items}

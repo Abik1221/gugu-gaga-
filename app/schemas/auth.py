@@ -16,6 +16,7 @@ class UserCreate(BaseModel):
     national_id_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded national ID document")
     pharmacy_license_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded pharmacy license document")
     kyc_notes: Optional[str] = Field(default=None, description="Additional notes for KYC reviewer")
+    affiliate_token: Optional[str] = Field(default=None, description="Referral link token if pharmacy arrived via affiliate link")
     # Affiliate details
     affiliate_full_name: Optional[str] = Field(default=None, description="Affiliate full legal name for payouts")
     bank_name: Optional[str] = Field(default=None, description="Affiliate bank name")
@@ -33,12 +34,32 @@ class UserCreate(BaseModel):
     @field_validator("role")
     @classmethod
     def validate_role(cls, v: Optional[str]) -> Optional[str]:
-        if v is None:
-            return v
-        allowed = {r.value for r in Role}
-        if v not in allowed:
+        if v and v not in {Role.admin.value, Role.customer.value, Role.affiliate.value, Role.pharmacy_owner.value, Role.cashier.value}:
             raise ValueError("Invalid role")
         return v
+
+
+class PharmacyRegister(BaseModel):
+    pharmacy_name: str = Field(..., description="Registered pharmacy name")
+    address: Optional[str] = Field(default=None, description="Pharmacy address")
+    owner_email: EmailStr
+    owner_phone: Optional[str] = Field(default=None, description="Owner phone number")
+    owner_password: str
+    id_number: str = Field(..., description="Owner national/company ID number")
+    pharmacy_license_number: str = Field(..., description="Official pharmacy license number")
+    national_id_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded national ID document")
+    pharmacy_license_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded pharmacy license document")
+    kyc_notes: Optional[str] = Field(default=None, description="Additional notes for KYC reviewer")
+
+
+class AffiliateRegister(BaseModel):
+    email: EmailStr
+    password: str
+    affiliate_full_name: Optional[str] = Field(default=None, description="Affiliate full legal name for payouts")
+    bank_name: Optional[str] = Field(default=None, description="Affiliate bank name")
+    bank_account_name: Optional[str] = Field(default=None, description="Affiliate bank account holder name")
+    bank_account_number: Optional[str] = Field(default=None, description="Affiliate bank account number")
+    iban: Optional[str] = Field(default=None, description="Affiliate IBAN (if applicable)")
 
 
 class UserLogin(BaseModel):
