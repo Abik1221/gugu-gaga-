@@ -13,6 +13,7 @@ from app.services.notifications.in_app import create_notification
 from app.services.notifications.email import send_email
 from app.deps.ratelimit import rate_limit_user
 from app.services.billing.subscriptions import verify_payment_and_unblock
+from app.models.affiliate import CommissionPayout
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -159,3 +160,47 @@ def reject_pharmacy(
         if owner.email:
             send_email(owner.email, "Pharmacy Rejected", "Your pharmacy application has been rejected.")
     return {"tenant_id": tenant_id, "application_id": application_id, "status": "rejected"}
+
+
+# Affiliate payouts (no tenant context)
+@router.get("/affiliate/payouts")
+def list_affiliate_payouts(
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    status_filter: str | None = None,
+):
+    q = db.query(CommissionPayout)
+    if status_filter:
+        q = q.filter(CommissionPayout.status == status_filter)
+    rows = q.order_by(CommissionPayout.id.desc()).all()
+    return [
+        {
+            "id": r.id,
+            "affiliate_user_id": r.affiliate_user_id,
+            "tenant_id": r.tenant_id,
+            "month": r.month,
+            "percent": r.percent,
+            "amount": r.amount,
+            "status": r.status,
+        }
+        for r in rows
+    ]
+
+
+@router.post("/affiliate/payouts/{payout_id}/mark-paid")
+def mark_affiliate_payout_paid(
+    payout_id: int,
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+):
+    payout = db.query(CommissionPayout).filter(CommissionPayout.id == payout_id).first()
+    if not payout:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payout not found")
+    payout.status = "paid"
+    db.add(payout)
+    db.commit()
+    # Notify affiliate via email if possible
+    user = db.query(User).filter(User.id == payout.affiliate_user_id).first()
+    if user and user.email:
+        send_email(user.email, "Payout processed", f"Your affiliate payout for {payout.month} has been marked as paid.")
+    return {"id": payout.id, "status": payout.status}

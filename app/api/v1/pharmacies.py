@@ -7,6 +7,7 @@ from app.deps.auth import require_role, get_current_user
 from app.deps.tenant import require_tenant, enforce_user_tenant, enforce_subscription_active
 from app.models.pharmacy import Pharmacy
 from app.models.user_tenant import UserTenant
+from app.schemas.pharmacy_cms import PharmaciesListResponse, PharmacyOut
 
 router = APIRouter(prefix="/pharmacies", tags=["pharmacy_cms"])
 
@@ -35,7 +36,7 @@ def create_pharmacy(
     return {"id": ph.id, "tenant_id": ph.tenant_id, "name": ph.name, "address": getattr(ph, "address", None)}
 
 
-@router.get("")
+@router.get("", response_model=PharmaciesListResponse)
 def list_pharmacies(
     user=Depends(require_role(Role.admin, Role.pharmacy_owner)),
     db: Session = Depends(get_db),
@@ -65,7 +66,7 @@ def list_pharmacies(
     }
 
 
-@router.get("/{pharmacy_id}")
+@router.get("/{pharmacy_id}", response_model=PharmacyOut)
 def get_pharmacy(
     pharmacy_id: int,
     db: Session = Depends(get_db),

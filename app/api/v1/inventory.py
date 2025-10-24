@@ -13,6 +13,7 @@ from app.db.deps import get_db
 from app.models.medicine import InventoryItem, Medicine
 from app.models.sales import SaleItem
 from app.deps.ratelimit import rate_limit_user
+from app.schemas.inventory import IdResponse, StatusResponse, InventoryBulkResult, InventoryListResponse
 
 router = APIRouter(prefix="/inventory", tags=["inventory"])
 
@@ -23,7 +24,7 @@ def _to_units(packs_count: int | None, singles_count: int | None, pack_size: int
     return p * max(1, pack_size) + s
 
 
-@router.post("/items")
+@router.post("/items", response_model=IdResponse)
 def upsert_item(
     medicine_id: int,
     branch: str | None = None,
@@ -93,7 +94,7 @@ def upsert_item(
     return {"id": item.id}
 
 
-@router.post("/bulk")
+@router.post("/bulk", response_model=InventoryBulkResult)
 def bulk_upsert_inventory(
     items: list[dict] | None = None,
     csv_text: str | None = None,
@@ -207,7 +208,7 @@ def inventory_template():
     )
 
 
-@router.get("/items")
+@router.get("/items", response_model=InventoryListResponse)
 def list_items(
     tenant_id: str = Depends(require_tenant),
     _role=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
@@ -263,7 +264,7 @@ def list_items(
     }
 
 
-@router.delete("/items/{item_id}")
+@router.delete("/items/{item_id}", response_model=StatusResponse)
 def delete_item(
     item_id: int,
     tenant_id: str = Depends(require_tenant),
@@ -285,7 +286,7 @@ def delete_item(
     return {"status": "deleted"}
 
 
-@router.patch("/items/{item_id}")
+@router.patch("/items/{item_id}", response_model=IdResponse)
 def update_item(
     item_id: int,
     tenant_id: str = Depends(require_tenant),

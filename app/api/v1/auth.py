@@ -10,6 +10,7 @@ from app.db.deps import get_db
 from app.deps.tenant import get_optional_tenant_id
 from app.models.user import User
 from app.models.affiliate import AffiliateProfile, AffiliateReferral
+from app.models.kyc import KYCApplication
 from app.models.user_tenant import UserTenant
 from app.services.verification import issue_code, verify_code
 from app.services.notifications.email import send_email
@@ -30,6 +31,10 @@ def register(payload: UserCreate, db: Session = Depends(get_db), tenant_id: Opti
     # Require tenant for pharmacy_owner/cashier registrations
     if role_value in {Role.pharmacy_owner.value, Role.cashier.value} and not tenant_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="tenant_id is required for this role")
+    # Require KYC fields when registering pharmacy owners
+    if role_value == Role.pharmacy_owner.value:
+        if not (payload.id_number and payload.pharmacy_license_number):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id_number and pharmacy_license_number are required for pharmacy registration")
     user = User(
         email=payload.email,
         phone=payload.phone,
@@ -37,7 +42,7 @@ def register(payload: UserCreate, db: Session = Depends(get_db), tenant_id: Opti
         tenant_id=tenant_id,
         password_hash=hash_password(payload.password),
         is_active=True,
-        is_approved=(role_value in {Role.customer.value, Role.affiliate.value}),
+        is_approved=(role_value in {Role.customer.value}),
     )
     db.add(user)
     db.commit()
@@ -46,6 +51,38 @@ def register(payload: UserCreate, db: Session = Depends(get_db), tenant_id: Opti
     if tenant_id and role_value in {Role.pharmacy_owner.value, Role.cashier.value}:
         link = UserTenant(user_id=user.id, tenant_id=tenant_id, role_override=None)
         db.add(link)
+        db.commit()
+    # If pharmacy owner, create a KYC application immediately using provided fields and mark pending approval
+    if role_value == Role.pharmacy_owner.value:
+        docs_path = payload.pharmacy_license_document_path or payload.national_id_document_path
+        notes = payload.kyc_notes
+        app = KYCApplication(
+            tenant_id=tenant_id,
+            applicant_user_id=user.id,
+            id_number=payload.id_number,
+            pharmacy_license_number=payload.pharmacy_license_number,
+            documents_path=docs_path,
+            notes=notes,
+            status="pending",
+        )
+        db.add(app)
+        # Ensure owner is not auto-approved until admin reviews
+        user.is_approved = False
+        db.add(user)
+        db.commit()
+    # If affiliate, create/update affiliate profile with bank details
+    if role_value == Role.affiliate.value:
+        code = f"AFF{user.id:06d}"
+        profile = AffiliateProfile(
+            user_id=user.id,
+            code=code,
+            full_name=payload.affiliate_full_name,
+            bank_name=payload.bank_name,
+            bank_account_name=payload.bank_account_name,
+            bank_account_number=payload.bank_account_number,
+            iban=payload.iban,
+        )
+        db.add(profile)
         db.commit()
     # Send verification code for registration (email-based)
     code = issue_code(db, email=user.email, purpose="register")
@@ -77,6 +114,9 @@ def login(
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+    # Enforce OTP-only login for affiliates
+    if user.role == Role.affiliate.value:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Affiliates must use OTP login flow: /auth/login/request-code then /auth/login/verify")
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
     if user.role != Role.admin.value:

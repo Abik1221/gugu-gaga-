@@ -15,7 +15,6 @@ def set_current_tenant(tenant_id: Optional[str]) -> None:
 def get_current_tenant_id() -> Optional[str]:
     return _current_tenant.get()
 
-
 class TenantContextMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, header_name: str = "X-Tenant-ID", query_param: str = "tenant_id"):
         super().__init__(app)
@@ -23,9 +22,29 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         self.query_param = query_param
 
     async def dispatch(self, request: Request, call_next):
-        tenant_id = request.headers.get(self.header_name)
+        # Try multiple common header aliases to reduce 400s from missing tenant id during Swagger testing
+        header_candidates = [
+            self.header_name,
+            "X-Tenant",
+            "Tenant-Id",
+            "Tenant-ID",
+            "X-TenantID",
+            "X-Tenant-Id",
+        ]
+        tenant_id = None
+        for h in header_candidates:
+            val = request.headers.get(h)
+            if val:
+                tenant_id = val
+                break
         if not tenant_id:
-            tenant_id = request.query_params.get(self.query_param)
+            # Try multiple query param aliases
+            query_candidates = [self.query_param, "tenant", "tenantId", "tenantID"]
+            for q in query_candidates:
+                val = request.query_params.get(q)
+                if val:
+                    tenant_id = val
+                    break
         set_current_tenant(tenant_id)
         try:
             response = await call_next(request)

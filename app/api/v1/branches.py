@@ -8,6 +8,8 @@ from app.deps.auth import require_role, get_current_user
 from app.deps.tenant import require_tenant, enforce_user_tenant, enforce_subscription_active
 from app.models.branch import Branch
 from app.models.pharmacy import Pharmacy
+from app.schemas.branches import BranchOut, BranchListResponse
+from app.schemas.inventory import StatusResponse
 
 router = APIRouter(prefix="/branches", tags=["pharmacy_cms"])
 
@@ -27,7 +29,7 @@ def _validate_branch_inputs(name: str | None, address: str | None, phone: str | 
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid phone format")
 
 
-@router.post("")
+@router.post("", response_model=BranchOut)
 def create_branch(
     pharmacy_id: int,
     name: str,
@@ -50,7 +52,7 @@ def create_branch(
     return {"id": br.id, "pharmacy_id": br.pharmacy_id, "tenant_id": br.tenant_id, "name": br.name, "address": br.address, "phone": br.phone}
 
 
-@router.get("")
+@router.get("", response_model=BranchListResponse)
 def list_branches(
     tenant_id: str = Depends(require_tenant),
     _role=Depends(require_role(Role.admin, Role.pharmacy_owner)),
@@ -83,7 +85,7 @@ def list_branches(
     }
 
 
-@router.get("/{branch_id}")
+@router.get("/{branch_id}", response_model=BranchOut)
 def get_branch(
     branch_id: int,
     tenant_id: str = Depends(require_tenant),
@@ -98,7 +100,7 @@ def get_branch(
     return {"id": br.id, "pharmacy_id": br.pharmacy_id, "tenant_id": br.tenant_id, "name": br.name, "address": br.address, "phone": br.phone}
 
 
-@router.patch("/{branch_id}")
+@router.patch("/{branch_id}", response_model=BranchOut)
 def update_branch(
     branch_id: int,
     name: str | None = None,
@@ -131,7 +133,7 @@ def update_branch(
     return {"id": br.id, "pharmacy_id": br.pharmacy_id, "tenant_id": br.tenant_id, "name": br.name, "address": br.address, "phone": br.phone}
 
 
-@router.delete("/{branch_id}")
+@router.delete("/{branch_id}", response_model=StatusResponse)
 def delete_branch(
     branch_id: int,
     tenant_id: str = Depends(require_tenant),

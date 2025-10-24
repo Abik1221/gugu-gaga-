@@ -7,11 +7,17 @@ from app.db.deps import get_db
 from app.deps.auth import require_role
 from app.deps.tenant import require_tenant, enforce_user_tenant, enforce_subscription_active
 from app.models.medicine import Medicine
+from app.schemas.medicines import (
+    MedicineCreated,
+    MedicinesListResponse,
+    BulkMedicinesResult,
+    DeletedResponse,
+)
 
 router = APIRouter(prefix="/medicines", tags=["inventory"])
 
 
-@router.post("")
+@router.post("", response_model=MedicineCreated)
 def create_medicine(
     name: str,
     sku: str | None = None,
@@ -48,7 +54,7 @@ def create_medicine(
     return {"id": med.id, "name": med.name, "sku": med.sku}
 
 
-@router.post("/bulk")
+@router.post("/bulk", response_model=BulkMedicinesResult)
 def bulk_create_medicines(
     items: list[dict] | None = None,
     csv_text: str | None = None,
@@ -107,7 +113,7 @@ def medicines_template():
     )
 
 
-@router.get("")
+@router.get("", response_model=MedicinesListResponse)
 def list_medicines(
     tenant_id: str = Depends(require_tenant),
     _role=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
@@ -143,7 +149,7 @@ def list_medicines(
     }
 
 
-@router.patch("/{medicine_id}")
+@router.patch("/{medicine_id}", response_model=MedicineCreated)
 def update_medicine(
     medicine_id: int,
     tenant_id: str = Depends(require_tenant),
@@ -179,7 +185,7 @@ def update_medicine(
     return {"id": med.id, "name": med.name, "sku": med.sku}
 
 
-@router.delete("/{medicine_id}")
+@router.delete("/{medicine_id}", response_model=DeletedResponse)
 def delete_medicine(
     medicine_id: int,
     tenant_id: str = Depends(require_tenant),
