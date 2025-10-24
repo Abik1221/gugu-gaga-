@@ -21,8 +21,96 @@ router = APIRouter(prefix="/sales", tags=["sales"])
 def list_transactions(
     tenant_id: str = Depends(require_tenant),
     _=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    db: Session = Depends(get_db),
+    q: str | None = None,
+    from_date: str | None = None,
+    to_date: str | None = None,
+    branch: str | None = None,
+    page: int = 1,
+    page_size: int = 20,
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
 ):
-    return {"tenant_id": tenant_id, "transactions": []}
+    from datetime import datetime as _dt
+
+    page = max(1, page)
+    page_size = max(1, min(100, page_size))
+    sale_q = db.query(Sale).filter(Sale.tenant_id == tenant_id)
+    if branch:
+        sale_q = sale_q.filter(Sale.branch == branch)
+    if from_date:
+        try:
+            dt = _dt.fromisoformat(from_date)
+            sale_q = sale_q.filter(Sale.created_at >= dt)
+        except Exception:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid from_date")
+    if to_date:
+        try:
+            dt = _dt.fromisoformat(to_date)
+            sale_q = sale_q.filter(Sale.created_at <= dt)
+        except Exception:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid to_date")
+
+    # Filter by medicine name/sku if q provided by joining SaleItem->Medicine
+    if q:
+        like = f"%{q}%"
+        sale_ids = (
+            db.query(SaleItem.sale_id)
+            .join(Medicine, Medicine.id == SaleItem.medicine_id)
+            .filter((Medicine.name.ilike(like)) | (Medicine.sku.ilike(like)))
+            .distinct()
+            .all()
+        )
+        sale_ids = [sid[0] for sid in sale_ids]
+        if not sale_ids:
+            return {"page": page, "page_size": page_size, "total": 0, "items": []}
+        sale_q = sale_q.filter(Sale.id.in_(sale_ids))
+
+    total = sale_q.count()
+    sales = (
+        sale_q.order_by(Sale.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+        .all()
+    )
+    if not sales:
+        return {"page": page, "page_size": page_size, "total": total, "items": []}
+    sale_ids_page = [s.id for s in sales]
+    items = (
+        db.query(SaleItem, Medicine)
+        .join(Medicine, Medicine.id == SaleItem.medicine_id)
+        .filter(SaleItem.sale_id.in_(sale_ids_page))
+        .all()
+    )
+    lines_by_sale: dict[int, list[dict]] = {}
+    for si, med in items:
+        lines_by_sale.setdefault(si.sale_id, []).append(
+            {
+                "medicine_id": si.medicine_id,
+                "medicine_name": med.name,
+                "sku": med.sku,
+                "quantity": si.quantity,
+                "unit_price": si.unit_price,
+                "line_total": si.line_total,
+            }
+        )
+
+    return {
+        "page": page,
+        "page_size": page_size,
+        "total": total,
+        "items": [
+            {
+                "id": s.id,
+                "branch": s.branch,
+                "cashier_user_id": s.cashier_user_id,
+                "total_amount": s.total_amount,
+                "created_at": s.created_at.isoformat() if getattr(s, "created_at", None) else None,
+                "lines": lines_by_sale.get(s.id, []),
+            }
+            for s in sales
+        ],
+    }
 
 
 def _resolve_medicine(db: Session, tenant_id: str, name_or_sku: str) -> Medicine | None:
