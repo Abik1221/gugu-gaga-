@@ -13,6 +13,11 @@ class AffiliateProfile(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(Integer, index=True)
     code: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    full_name: Mapped[Optional[str]] = mapped_column(String(255))
+    bank_name: Mapped[Optional[str]] = mapped_column(String(255))
+    bank_account_name: Mapped[Optional[str]] = mapped_column(String(255))
+    bank_account_number: Mapped[Optional[str]] = mapped_column(String(64))
+    iban: Mapped[Optional[str]] = mapped_column(String(64))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 

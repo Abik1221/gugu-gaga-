@@ -12,11 +12,21 @@ from datetime import datetime, timedelta
 from app.models.sales import Sale, SaleItem
 from app.models.medicine import Medicine
 from app.deps.ratelimit import rate_limit_user
+from app.schemas.pharmacy_cms import (
+    DashboardResponse,
+    MedicineListResponse,
+    CashierDashboardResponse,
+    CashierKpisResponse,
+    TopSkuItem,
+    AvgBasketHourResponse,
+    BranchComparisonResponse,
+    RefundsResponse,
+)
 
 router = APIRouter(prefix="/pharmacy", tags=["pharmacy_cms"])
 
 
-@router.get("/dashboard")
+@router.get("/dashboard", response_model=DashboardResponse)
 def dashboard(
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin, Role.pharmacy_owner)),
@@ -30,17 +40,44 @@ def dashboard(
     return {"tenant_id": tenant_id, "message": "Pharmacy dashboard placeholder"}
 
 
-@router.get("/medicines")
+@router.get("/medicines", response_model=MedicineListResponse)
 def list_medicines(
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    db: Session = Depends(get_db),
+    q: str | None = None,
+    page: int = 1,
+    page_size: int = 20,
     _ten=Depends(enforce_user_tenant),
     _sub=Depends(enforce_subscription_active),
 ):
-    return {"tenant_id": tenant_id, "items": []}
+    page = max(1, page)
+    page_size = max(1, min(100, page_size))
+    query = db.query(Medicine).filter(Medicine.tenant_id == tenant_id)
+    if q:
+        like = f"%{q}%"
+        query = query.filter((Medicine.name.ilike(like)) | (Medicine.sku.ilike(like)))
+    total = query.count()
+    rows = query.order_by(Medicine.id.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    return {
+        "tenant_id": tenant_id,
+        "page": page,
+        "page_size": page_size,
+        "total": total,
+        "items": [
+            {
+                "id": r.id,
+                "name": r.name,
+                "sku": r.sku,
+                "category": getattr(r, "category", None),
+                "manufacturer": getattr(r, "manufacturer", None),
+            }
+            for r in rows
+        ],
+    }
 
 
-@router.get("/cashier/dashboard")
+@router.get("/cashier/dashboard", response_model=CashierDashboardResponse)
 def cashier_dashboard(
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin, Role.cashier)),
@@ -52,7 +89,7 @@ def cashier_dashboard(
     return {"tenant_id": tenant_id, "total_sales": float(total_sales)}
 
 
-@router.get("/cashier/kpis")
+@router.get("/cashier/kpis", response_model=CashierKpisResponse)
 def cashier_kpis(
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin, Role.cashier)),
@@ -98,7 +135,7 @@ def cashier_kpis(
     }
 
 
-@router.get("/top-skus")
+@router.get("/top-skus", response_model=list[TopSkuItem])
 def top_skus(
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
@@ -134,7 +171,7 @@ def top_skus(
     return [{"name": r.name, "qty": int(r.qty or 0), "revenue": float(r.revenue or 0.0)} for r in rows]
 
 
-@router.get("/cashier/avg-basket-by-hour")
+@router.get("/cashier/avg-basket-by-hour", response_model=AvgBasketHourResponse)
 def avg_basket_by_hour(
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin, Role.cashier)),
@@ -164,7 +201,7 @@ def avg_basket_by_hour(
     return {"tenant_id": tenant_id, "branch": branch, "days": days, "hours": result}
 
 
-@router.get("/branch-comparison")
+@router.get("/branch-comparison", response_model=BranchComparisonResponse)
 def branch_comparison(
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin, Role.pharmacy_owner)),
@@ -188,7 +225,7 @@ def branch_comparison(
     return {"tenant_id": tenant_id, "days": days, "branches": [{"branch": r.branch, "revenue": float(r.revenue or 0.0)} for r in rows]}
 
 
-@router.get("/refunds")
+@router.get("/refunds", response_model=RefundsResponse)
 def refunds_summary(
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin, Role.cashier, Role.pharmacy_owner)),

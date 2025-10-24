@@ -13,11 +13,12 @@ from app.models.sales import Sale, SaleItem
 from app.models.medicine import Medicine, InventoryItem
 from app.deps.ratelimit import rate_limit_user
 from app.services.notifications.notify import notify_user
+from app.schemas.sales import TransactionsListResponse, PosCreateResponse
 
 router = APIRouter(prefix="/sales", tags=["sales"])
 
 
-@router.get("/transactions")
+@router.get("/transactions", response_model=TransactionsListResponse)
 def list_transactions(
     tenant_id: str = Depends(require_tenant),
     _=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
@@ -125,7 +126,7 @@ def _resolve_medicine(db: Session, tenant_id: str, name_or_sku: str) -> Medicine
     return med
 
 
-@router.post("/pos")
+@router.post("/pos", response_model=PosCreateResponse)
 def create_sale_pos(
     lines: List[Dict[str, Any]],
     branch: str | None = None,
