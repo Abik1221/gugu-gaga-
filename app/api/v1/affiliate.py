@@ -5,7 +5,7 @@ from datetime import datetime
 from app.deps.auth import require_role, get_current_user
 from app.core.roles import Role
 from app.db.deps import get_db
-from app.models.affiliate import AffiliateProfile, AffiliateReferral, CommissionPayout
+from app.models.affiliate import AffiliateProfile, AffiliateReferral, CommissionPayout, AffiliateLink
 from app.services.affiliates import compute_monthly_commission
 from app.deps.ratelimit import rate_limit_user
 
@@ -17,7 +17,9 @@ def register_link(
     user=Depends(require_role(Role.admin, Role.affiliate)),
     db: Session = Depends(get_db),
     _rl=Depends(rate_limit_user("affiliate_link_user")),
+    create_new: bool = False,
 ):
+    # Ensure profile exists for completeness
     profile = db.query(AffiliateProfile).filter(AffiliateProfile.user_id == user.id).first()
     if not profile:
         code = f"AFF{user.id:06d}"
@@ -25,7 +27,25 @@ def register_link(
         db.add(profile)
         db.commit()
         db.refresh(profile)
-    return {"link": f"https://zemen.example/ref/{profile.code}", "code": profile.code}
+    # Fetch active links
+    links = db.query(AffiliateLink).filter(AffiliateLink.affiliate_user_id == user.id, AffiliateLink.active == True).all()
+    if create_new and len(links) < 2:
+        import secrets
+        token = secrets.token_urlsafe(12)
+        new_link = AffiliateLink(affiliate_user_id=user.id, token=token, active=True)
+        db.add(new_link)
+        db.commit()
+        db.refresh(new_link)
+        links.append(new_link)
+    return {
+        "max_links": 2,
+        "count": len(links),
+        "links": [
+            {"token": l.token, "url": f"https://zemen.example/ref/{l.token}", "active": l.active}
+            for l in links
+        ],
+        "can_create_more": len(links) < 2,
+    }
 
 
 @router.get("/commissions")
@@ -48,7 +68,23 @@ def dashboard(
     now = datetime.utcnow()
     referrals_count = db.query(AffiliateReferral).filter(AffiliateReferral.affiliate_user_id == user.id).count()
     monthly = compute_monthly_commission(db, affiliate_user_id=user.id, year=now.year, month=now.month)
-    return {"referrals_count": referrals_count, **monthly}
+    pending_total = (
+        db.query(func.coalesce(func.sum(CommissionPayout.amount), 0.0))
+        .filter(CommissionPayout.affiliate_user_id == user.id, CommissionPayout.status == "pending")
+        .scalar()
+        or 0.0
+    )
+    paid_total = (
+        db.query(func.coalesce(func.sum(CommissionPayout.amount), 0.0))
+        .filter(CommissionPayout.affiliate_user_id == user.id, CommissionPayout.status == "paid")
+        .scalar()
+        or 0.0
+    )
+    return {
+        "referrals_count": referrals_count,
+        **monthly,
+        "payouts": {"pending_total": float(pending_total), "paid_total": float(paid_total)},
+    }
 
 
 @router.get("/payouts")

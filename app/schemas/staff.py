@@ -23,3 +23,9 @@ class StaffCreate(BaseModel):
         if v not in allowed:
             raise ValueError("Invalid role for staff")
         return v
+
+
+class StaffOut(BaseModel):
+    id: int
+    email: EmailStr
+    role: str

@@ -4,16 +4,17 @@ from sqlalchemy.orm import Session
 from app.core.roles import Role
 from app.core.security import hash_password
 from app.db.deps import get_db
-from app.deps.tenant import require_tenant, enforce_user_tenant, enforce_subscription_active
+from app.deps.tenant import require_tenant, enforce_user_tenant
 from app.deps.auth import require_role
 from app.models.user import User
-from app.schemas.staff import StaffCreate
+from app.schemas.staff import StaffCreate, StaffOut
 from app.deps.ratelimit import rate_limit_user
+from app.services.billing.subscriptions import ensure_subscription
 
 router = APIRouter(prefix="/staff", tags=["pharmacy_cms"])
 
 
-@router.post("")
+@router.post("", response_model=StaffOut)
 def create_staff(
     payload: StaffCreate,
     tenant_id: str = Depends(require_tenant),
@@ -21,8 +22,18 @@ def create_staff(
     db: Session = Depends(get_db),
     _rl=Depends(rate_limit_user("staff_create_user")),
     _ten=Depends(enforce_user_tenant),
-    _sub=Depends(enforce_subscription_active),
 ):
+    # Only the owner of this tenant or admin can create cashier
+    if user.role != Role.admin.value and user.tenant_id != tenant_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    # Require owner approval and active subscription
+    if user.role != Role.admin.value:
+        owner = db.query(User).filter(User.tenant_id == tenant_id, User.role == Role.pharmacy_owner.value).first()
+        if not owner or not owner.is_approved:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Owner not approved yet")
+        sub = ensure_subscription(db, tenant_id=tenant_id)
+        if sub.blocked:
+            raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked. Submit payment code and await verification.")
     if payload.role not in {Role.cashier.value, "staff"}:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid role")
     existing = db.query(User).filter(User.email == payload.email).first()
