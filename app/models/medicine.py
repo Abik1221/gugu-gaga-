@@ -29,9 +29,11 @@ class InventoryItem(Base):
     tenant_id: Mapped[str] = mapped_column(String(64), index=True)
     medicine_id: Mapped[int] = mapped_column(ForeignKey("medicines.id", ondelete="CASCADE"), index=True)
     branch: Mapped[Optional[str]] = mapped_column(String(64), index=True)
-    quantity: Mapped[int] = mapped_column(Integer, default=0)
+    quantity: Mapped[int] = mapped_column(Integer, default=0)  # stored in base units
     reorder_level: Mapped[int] = mapped_column(Integer, default=0)
     expiry_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    lot_number: Mapped[Optional[str]] = mapped_column(String(64))
+    pack_size: Mapped[int] = mapped_column(Integer, default=1)  # units per pack
     purchase_price: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     sell_price: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
