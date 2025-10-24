@@ -253,12 +253,14 @@ def list_items(
                 "pack_size": r.pack_size,
                 "packs": (r.quantity // r.pack_size) if r.pack_size else r.quantity,
                 "singles": (r.quantity % r.pack_size) if r.pack_size else 0,
-                "pack_size": r.pack_size,
                 "reorder_level": r.reorder_level,
                 "expiry_date": r.expiry_date.isoformat() if r.expiry_date else None,
                 "lot_number": r.lot_number,
                 "sell_price": r.sell_price,
             }
+            for r in rows
+        ],
+    }
 
 
 @router.delete("/items/{item_id}")
@@ -281,9 +283,6 @@ def delete_item(
     db.delete(item)
     db.commit()
     return {"status": "deleted"}
-            for r in rows
-        ],
-    }
 
 
 @router.patch("/items/{item_id}")

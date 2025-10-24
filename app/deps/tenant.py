@@ -28,6 +28,10 @@ def require_tenant(tenant_id: Optional[str] = Depends(get_tenant_id)) -> str:
     return tenant_id
 
 
+def get_optional_tenant_id() -> Optional[str]:
+    return get_tenant_id(optional=True)
+
+
 def enforce_user_tenant(
     tenant_id: str = Depends(require_tenant),
     current_user: User = Depends(get_current_user),

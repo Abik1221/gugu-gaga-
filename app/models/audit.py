@@ -16,5 +16,5 @@ class AuditLog(Base):
     action: Mapped[str] = mapped_column(String(128), index=True)
     target_type: Mapped[Optional[str]] = mapped_column(String(64))
     target_id: Mapped[Optional[str]] = mapped_column(String(64))
-    metadata: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    meta: Mapped[Optional[dict]] = mapped_column("metadata", JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.core.roles import Role
 from app.core.security import create_access_token, hash_password, verify_password
 from app.db.deps import get_db
-from app.deps.tenant import get_tenant_id
+from app.deps.tenant import get_optional_tenant_id
 from app.models.user import User
 from app.models.affiliate import AffiliateProfile, AffiliateReferral
 from app.models.user_tenant import UserTenant
@@ -21,7 +21,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=UserOut)
-def register(payload: UserCreate, db: Session = Depends(get_db), tenant_id: Optional[str] = Depends(get_tenant_id)):
+def register(payload: UserCreate, db: Session = Depends(get_db), tenant_id: Optional[str] = Depends(get_optional_tenant_id)):
     existing = db.query(User).filter(User.email == payload.email).first()
     if existing:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
@@ -71,7 +71,7 @@ def register(payload: UserCreate, db: Session = Depends(get_db), tenant_id: Opti
 def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
-    tenant_id: Optional[str] = Depends(get_tenant_id),
+    tenant_id: Optional[str] = Depends(get_optional_tenant_id),
     _rl=Depends(rate_limit("login", identify_by="ip")),
 ):
     user = db.query(User).filter(User.email == form_data.username).first()
@@ -108,7 +108,7 @@ def verify_registration(
 def login_request_code(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
-    tenant_id: Optional[str] = Depends(get_tenant_id),
+    tenant_id: Optional[str] = Depends(get_optional_tenant_id),
 ):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.password_hash):
@@ -125,7 +125,7 @@ def login_request_code(
 def login_verify(
     email: str,
     code: str,
-    tenant_id: Optional[str] = Depends(get_tenant_id),
+    tenant_id: Optional[str] = Depends(get_optional_tenant_id),
     db: Session = Depends(get_db),
 ):
     user = db.query(User).filter(User.email == email).first()
