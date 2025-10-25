@@ -1,7 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import LogoImage from "@/public/logo.jpg";
 import NavBar from "@/components/layout/NavBar";
 import HowItWorks from "@/components/sections/HowItWorks";
 import SecurityFeatures from "@/components/sections/SecurityFeatures";
@@ -13,6 +11,7 @@ import Benefits from "@/components/sections/Benefits";
 import CTA from "@/components/sections/Cta";
 import WhoIsZemenPharma from "@/components/sections/WhoIsZemenPharma";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/sections/Footer";
 export default function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -43,18 +42,6 @@ export default function HomePage() {
   };
   return (
     <div className="relative">
-      <Image
-        className="fixed z-999 top-5 left-5 w-15 h-12"
-        src={LogoImage}
-        alt="logo-image"
-      />
-      <Button
-        size="lg"
-        variant="outline"
-        className="z-999 hidden md:block md:fixed cursor-pointer fixed top-8 right-5 border-emerald-600 text-emerald-600 hover:bg-emerald-50"
-      >
-        Affiliate
-      </Button>
       <Hero handleScrollToSection={handleScrollToSection} />
       <div className="min-h-screen bg-emerald-50 px-4 py-10">
         <NavBar
@@ -73,6 +60,7 @@ export default function HomePage() {
         <Pricing />
         <CTA />
       </div>
+      <Footer />
     </div>
   );
 }

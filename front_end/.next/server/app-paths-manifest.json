@@ -1,0 +1,6 @@
+{
+  "/(auth)/register/page": "app/(auth)/register/page.js",
+  "/(marketing)/affiliate/page": "app/(marketing)/affiliate/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
+}

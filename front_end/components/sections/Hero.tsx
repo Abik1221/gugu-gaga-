@@ -43,10 +43,10 @@ export default function Hero({
           owners, staff, and customers.
         </p>
         <Button
-          className="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded"
-          onClick={() => handleScrollToSection("features")}
+          asChild
+          className="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-emerald-700 hover:text-white font-bold px-8 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
         >
-          Get Started
+          <a href="/register" className="font-bold">Get Started</a>
         </Button>
       </motion.div>
     </section>

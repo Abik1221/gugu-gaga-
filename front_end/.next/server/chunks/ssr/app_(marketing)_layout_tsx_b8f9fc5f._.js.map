@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/habtamusemagn/Desktop/gugu-gaga-/front_end/app/%28marketing%29/layout.tsx"],"sourcesContent":["// Marketing-specific layout (header with nav, footer)\nimport Link from \"next/link\";\n\nexport default function MarketingLayout({\n  children,\n}: {\n  children: React.ReactNode;\n}) {\n  return (\n    <div className=\"min-h-screen flex flex-col\">\n      <main className=\"flex-1\">\n        {children}\n      </main>\n    </div>\n  );\n}\n"],"names":[],"mappings":"AAAA,sDAAsD;;;;;;;AAGvC,SAAS,gBAAgB,EACtC,QAAQ,EAGT;IACC,qBACE,8OAAC;QAAI,WAAU;kBACb,cAAA,8OAAC;YAAK,WAAU;sBACb;;;;;;;;;;;AAIT","debugId":null}}]
+}

@@ -6,7 +6,13 @@ import Image from "next/image";
 function SecurityFeatures() {
   return (
     <section className="bg-emerald-50 py-12 px-4">
-      <Card className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 relative">
+      <motion.div
+        initial={{ y: 80, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <Card className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 relative">
         {/* Image at the top */}
         <div className="absolute -top-12 md:left-1/5 left-4/5 transform -translate-x-1/2">
           <Image
@@ -16,12 +22,19 @@ function SecurityFeatures() {
           />
         </div>
 
+
         {/* Content Box */}
         <div className="text-2xl font-bold text-emerald-700 mb-12 text-center mt-10">
           Safe & Secure
         </div>
         <div className="grid md:grid-cols-2 gap-10 flex-col lg:flex-row items-center mt-16">
-          <div className="border-b pb-10 md:border-0 md:border-r border-emerald-200 md:pr-6">
+          <motion.div
+            className="border-b pb-10 md:border-0 md:border-r border-emerald-200 md:pr-6"
+            initial={{ y: 40, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: 0.05 }}
+          >
             <CardHeader>
               <CardTitle className="text-lg font-semibold text-emerald-900">
                 Your data stays secure
@@ -33,8 +46,13 @@ function SecurityFeatures() {
               <p>Secure Credentials</p>
               <p>Audit logs for compliance</p>
             </CardContent>
-          </div>
-          <div>
+          </motion.div>
+          <motion.div
+            initial={{ y: 40, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: 0.12 }}
+          >
             <CardHeader>
               <CardTitle className="text-lg font-semibold text-emerald-900">
                 You control every decision
@@ -46,11 +64,13 @@ function SecurityFeatures() {
               <p>Complete visibility</p>
               <p>One click rollback</p>
             </CardContent>
-          </div>
+          </motion.div>
         </div>
-      </Card>
+        </Card>
+      </motion.div>
     </section>
   );
 }
+
 
 export default SecurityFeatures;

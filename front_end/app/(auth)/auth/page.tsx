@@ -43,8 +43,23 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-2xl border rounded bg-white">
+    <div className="min-h-screen flex flex-col bg-emerald-50">
+      <header className="w-full border-b bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+        <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
+          <a href="/" className="flex items-center gap-2 text-emerald-700 font-semibold">
+            <span className="inline-block h-2 w-2 rounded-full bg-emerald-600"></span>
+            <span>Zemen Pharma</span>
+          </a>
+          <nav className="hidden md:flex items-center gap-6 text-sm">
+            <a href="/" className="hover:text-emerald-700">Home</a>
+            <a href="/about" className="hover:text-emerald-700">About</a>
+            <a href="/contact" className="hover:text-emerald-700">Contact</a>
+            <a href="/register" className="text-emerald-700">Owner Register</a>
+          </nav>
+        </div>
+      </header>
+      <main className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-2xl border rounded bg-white shadow-sm animate-in fade-in-50 slide-in-from-bottom-2 duration-300">
         <div className="p-3 border-b flex items-center gap-3 text-sm">
           <button className={`px-3 py-1 rounded ${tab==="signin"?"bg-emerald-600 text-white":"hover:bg-gray-50"}`} onClick={()=>setTab("signin")}>Sign In</button>
           <button className={`px-3 py-1 rounded ${tab==="signup"?"bg-emerald-600 text-white":"hover:bg-gray-50"}`} onClick={()=>setTab("signup")}>Sign Up</button>
@@ -58,8 +73,8 @@ export default function AuthPage() {
                   {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
                 </div>
                 <div>
-                  <label className="text-sm">Username</label>
-                  <Input value={username} onChange={(e)=>setUsername(e.target.value)} required autoComplete="username" />
+                  <label className="text-sm">Email</label>
+                  <Input type="email" value={username} onChange={(e)=>setUsername(e.target.value)} required autoComplete="email" />
                 </div>
                 <div>
                   <label className="text-sm">Password</label>
@@ -90,15 +105,19 @@ export default function AuthPage() {
                 </div>
                 <div className="border rounded p-4">
                   <div className="font-medium">Become an Affiliate</div>
-                  <p className="text-sm text-gray-600 mt-1">Create an account by signing in, then enroll in Affiliate from your dashboard. No pharmacy required.</p>
-                  <Button variant="outline" className="mt-3" onClick={()=>setTab("signin")}>Sign In to Continue</Button>
+                  <p className="text-sm text-gray-600 mt-1">Create an account without pharmacy KYC, then complete your Affiliate profile.</p>
+                  <div className="flex gap-2 mt-3">
+                    <Button asChild><a href="/affiliate-signup">Affiliate Sign Up</a></Button>
+                    <Button variant="outline" onClick={()=>setTab("signin")}>Sign In</Button>
+                  </div>
                 </div>
               </div>
               <div className="text-xs text-gray-500">Note: Duplicate emails are prevented by the backend. If you already registered, please sign in.</div>
             </div>
           )}
         </div>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
