@@ -48,13 +48,15 @@ export default function HomePage() {
         src={LogoImage}
         alt="logo-image"
       />
-      <Button
-        size="lg"
-        variant="outline"
-        className="z-999 hidden md:block md:fixed cursor-pointer fixed top-8 right-5 border-emerald-600 text-emerald-600 hover:bg-emerald-50"
-      >
-        Affiliate
-      </Button>
+      <a href="/auth/affiliate-login">
+        <Button
+          size="lg"
+          variant="outline"
+          className="z-999 hidden md:block md:fixed cursor-pointer fixed top-8 right-5 border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+        >
+          Affiliate
+        </Button>
+      </a>
       <Hero handleScrollToSection={handleScrollToSection} />
       <div className="min-h-screen bg-emerald-50 px-4 py-10">
         <NavBar
@@ -72,6 +74,11 @@ export default function HomePage() {
         <Benefits />
         <Pricing />
         <CTA />
+      </div>
+      <div className="fixed bottom-6 right-6 z-999">
+        <a href="/register">
+          <Button size="lg" className="bg-emerald-600 text-white hover:bg-emerald-700">Get Started (Pharmacy Owner)</Button>
+        </a>
       </div>
     </div>
   );
