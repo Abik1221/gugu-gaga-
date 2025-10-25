@@ -28,8 +28,15 @@ export default function LoginPage() {
       }>("/api/v1/auth/login", { username, password });
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
+      // Determine role and redirect
+      const me = await fetch("/api/v1/auth/me", {
+        headers: { Authorization: `Bearer ${data.access_token}` }
+      }).then(r => r.json());
+      if (me.role === "affiliate") router.replace("/dashboard/affiliate");
+      else if (me.role === "pharmacy_owner" || me.role === "cashier") router.replace("/dashboard/owner");
+      else if (me.role === "admin") router.replace("/dashboard/admin");
+      else router.replace("/dashboard");
       show({ variant: "success", title: "Welcome back", description: "Login successful" });
-      router.replace("/dashboard");
     } catch (err: any) {
       setError(err.message || "Login failed");
       show({ variant: "destructive", title: "Login failed", description: err.message || "Please try again" });

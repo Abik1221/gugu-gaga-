@@ -12,7 +12,9 @@ export default function RegisterPage() {
   const router = useRouter();
   const qp = useSearchParams();
   const { show } = useToast();
-  const [tab, setTab] = useState<Tab>("pharmacy");
+  // If ?tab=affiliate in URL, default to affiliate tab and lock
+  const tabParam = qp.get("tab") as Tab | null;
+  const [tab, setTab] = useState<Tab>(tabParam === "affiliate" ? "affiliate" : "pharmacy");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -109,10 +111,12 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-start justify-center p-6">
       <div className="w-full max-w-3xl space-y-6">
         <h1 className="text-2xl font-semibold">Create an account</h1>
-        <div className="flex gap-2">
-          <Button variant={tab === "pharmacy" ? "default" : "outline"} onClick={() => setTab("pharmacy")}>Pharmacy</Button>
-          <Button variant={tab === "affiliate" ? "default" : "outline"} onClick={() => setTab("affiliate")}>Affiliate</Button>
-        </div>
+        {!tabParam && (
+          <div className="flex gap-2">
+            <Button variant={tab === "pharmacy" ? "default" : "outline"} onClick={() => setTab("pharmacy")}>Pharmacy</Button>
+            <Button variant={tab === "affiliate" ? "default" : "outline"} onClick={() => setTab("affiliate")}>Affiliate</Button>
+          </div>
+        )}
 
         {error && <p className="text-red-600 text-sm">{error}</p>}
         {success && <p className="text-emerald-600 text-sm">{success}</p>}
