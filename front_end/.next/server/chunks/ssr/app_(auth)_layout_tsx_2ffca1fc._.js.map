@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/HP/gugu-gaga-/front_end/app/%28auth%29/layout.tsx"],"sourcesContent":["// Auth layout (no header maybe)\r\nexport default function AuthLayout({\r\n  children,\r\n}: {\r\n  children: React.ReactNode;\r\n}) {\r\n  return <div>{children}</div>;\r\n}\r\n"],"names":[],"mappings":"AAAA,gCAAgC;;;;;;;AACjB,SAAS,WAAW,EACjC,QAAQ,EAGT;IACC,qBAAO,8OAAC;kBAAK;;;;;;AACf","debugId":null}}]
+}
