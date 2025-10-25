@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from .core.settings import settings
 from .api.v1.routes import api_router
 from .middleware.tenant import TenantContextMiddleware
+from .middleware.logging import LoggingMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from .db.session import Base, get_engine, SessionLocal
 from .core.errors import register_error_handlers
@@ -30,6 +31,8 @@ app = FastAPI(
 
 # Multi-tenant context middleware
 app.add_middleware(TenantContextMiddleware)
+# Request/response logging middleware
+app.add_middleware(LoggingMiddleware)
 
 # CORS configuration
 origins = [o.strip() for o in (settings.cors_origins or "").split(",") if o.strip()] or (["*"] if settings.environment != "production" else [])

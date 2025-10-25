@@ -18,6 +18,7 @@ from .notification_prefs import router as notification_prefs_router
 from .ws import router as ws_router
 from .billing import router as billing_router
 from .branches import router as branches_router
+from .uploads import router as uploads_router
 
 api_router = APIRouter()
 
@@ -46,3 +47,4 @@ api_router.include_router(notification_prefs_router)
 api_router.include_router(ws_router)
 api_router.include_router(billing_router)
 api_router.include_router(branches_router)
+api_router.include_router(uploads_router)

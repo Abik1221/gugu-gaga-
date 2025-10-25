@@ -16,6 +16,12 @@ from app.services.billing.subscriptions import verify_payment_and_unblock
 from app.models.affiliate import CommissionPayout, AffiliateProfile, AffiliateReferral
 from app.models.subscription import Subscription
 from app.models.pharmacy import Pharmacy
+from app.schemas.admin import PharmaciesAdminListResponse, AffiliatesAdminListResponse
+from app.deps.ratelimit import rate_limit_user
+from sqlalchemy import func
+from sqlalchemy import text as sa_text
+from app.services.ai.usage import get_usage_summary
+from app.models.audit import AuditLog
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -189,6 +195,47 @@ def list_affiliate_payouts(
     ]
 
 
+@router.get("/usage")
+def usage_summary_admin(
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    days: int = 30,
+):
+    days = max(1, min(365, days))
+    # tenant_id None => aggregate across tenants
+    return get_usage_summary(db, tenant_id=None, days=days)
+
+
+@router.get("/audit")
+def list_audit_events(
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    tenant_id: str | None = None,
+    action: str | None = None,
+    limit: int = 50,
+):
+    limit = max(1, min(200, limit))
+    q = db.query(AuditLog)
+    if tenant_id:
+        q = q.filter(AuditLog.tenant_id == tenant_id)
+    if action:
+        q = q.filter(AuditLog.action == action)
+    rows = q.order_by(AuditLog.id.desc()).limit(limit).all()
+    return [
+        {
+            "id": r.id,
+            "tenant_id": r.tenant_id,
+            "actor_user_id": r.actor_user_id,
+            "action": r.action,
+            "target_type": r.target_type,
+            "target_id": r.target_id,
+            "metadata": r.metadata,
+            "created_at": getattr(r, "created_at", None).isoformat() if getattr(r, "created_at", None) else None,
+        }
+        for r in rows
+    ]
+
+
 @router.post("/affiliate/payouts/{payout_id}/mark-paid")
 def mark_affiliate_payout_paid(
     payout_id: int,
@@ -208,13 +255,31 @@ def mark_affiliate_payout_paid(
     return {"id": payout.id, "status": payout.status}
 
 
-@router.get("/pharmacies")
+@router.post("/affiliate/payouts/{payout_id}/approve")
+def approve_affiliate_payout(
+    payout_id: int,
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+):
+    payout = db.query(CommissionPayout).filter(CommissionPayout.id == payout_id).first()
+    if not payout:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payout not found")
+    if payout.status == "paid":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Payout already paid")
+    payout.status = "approved"
+    db.add(payout)
+    db.commit()
+    return {"id": payout.id, "status": payout.status}
+
+
+@router.get("/pharmacies", response_model=PharmaciesAdminListResponse)
 def list_pharmacies_admin(
     _=Depends(require_role(Role.admin)),
     db: Session = Depends(get_db),
     q: str | None = None,
     page: int = 1,
     page_size: int = 20,
+    _rl=Depends(rate_limit_user("admin_list_pharmacies")),
 ):
     page = max(1, page)
     page_size = max(1, min(100, page_size))
@@ -238,6 +303,7 @@ def list_pharmacies_admin(
                 "owner_email": owner.email if owner else None,
                 "owner_phone": owner.phone if owner else None,
                 "owner_approved": owner.is_approved if owner else None,
+                "kyc_id": kyc.id if kyc else None,
                 "kyc_status": kyc.status if kyc else None,
                 "subscription": {
                     "blocked": bool(sub.blocked) if sub else None,
@@ -249,13 +315,14 @@ def list_pharmacies_admin(
     return {"page": page, "page_size": page_size, "total": total, "items": result}
 
 
-@router.get("/affiliates")
+@router.get("/affiliates", response_model=AffiliatesAdminListResponse)
 def list_affiliates_admin(
     _=Depends(require_role(Role.admin)),
     db: Session = Depends(get_db),
     q: str | None = None,
     page: int = 1,
     page_size: int = 20,
+    _rl=Depends(rate_limit_user("admin_list_affiliates")),
 ):
     page = max(1, page)
     page_size = max(1, min(100, page_size))
@@ -294,3 +361,62 @@ def list_affiliates_admin(
             }
         )
     return {"page": page, "page_size": page_size, "total": total, "items": items}
+
+
+@router.post("/affiliate/payouts/{payout_id}/approve")
+def approve_affiliate_payout(
+    payout_id: int,
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+):
+    payout = db.query(CommissionPayout).filter(CommissionPayout.id == payout_id).first()
+    if not payout:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payout not found")
+    if payout.status == "paid":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Payout already paid")
+    payout.status = "approved"
+    db.add(payout)
+    db.commit()
+    return {"id": payout.id, "status": payout.status}
+
+
+@router.post("/affiliates/{user_id}/approve")
+def approve_affiliate(
+    user_id: int,
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.id == user_id, User.role == Role.affiliate.value).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Affiliate not found")
+    user.is_active = True
+    user.is_approved = True
+    db.add(user)
+    db.commit()
+    if user.email:
+        try:
+            send_email(user.email, "Affiliate Approved", "Your affiliate account has been approved.")
+        except Exception:
+            pass
+    return {"user_id": user_id, "status": "approved"}
+
+
+@router.post("/affiliates/{user_id}/reject")
+def reject_affiliate(
+    user_id: int,
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.id == user_id, User.role == Role.affiliate.value).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Affiliate not found")
+    user.is_active = False
+    user.is_approved = False
+    db.add(user)
+    db.commit()
+    if user.email:
+        try:
+            send_email(user.email, "Affiliate Rejected", "Your affiliate account has been rejected or suspended.")
+        except Exception:
+            pass
+    return {"user_id": user_id, "status": "rejected"}

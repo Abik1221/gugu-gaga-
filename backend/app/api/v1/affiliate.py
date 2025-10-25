@@ -8,11 +8,16 @@ from app.db.deps import get_db
 from app.models.affiliate import AffiliateProfile, AffiliateReferral, CommissionPayout, AffiliateLink
 from app.services.affiliates import compute_monthly_commission
 from app.deps.ratelimit import rate_limit_user
+from app.schemas.affiliate_links import (
+    AffiliateLinksResponse,
+    AffiliateLinkActionResponse,
+    AffiliateLinkItem,
+)
 
 router = APIRouter(prefix="/affiliate", tags=["affiliate"])
 
 
-@router.get("/register-link")
+@router.get("/register-link", response_model=AffiliateLinksResponse)
 def register_link(
     user=Depends(require_role(Role.admin, Role.affiliate)),
     db: Session = Depends(get_db),
@@ -46,6 +51,59 @@ def register_link(
         ],
         "can_create_more": len(links) < 2,
     }
+
+
+@router.post("/links/{token}/deactivate", response_model=AffiliateLinkActionResponse)
+def deactivate_link(
+    token: str,
+    user=Depends(require_role(Role.admin, Role.affiliate)),
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit_user("affiliate_link_manage_user")),
+):
+    link = (
+        db.query(AffiliateLink)
+        .filter(AffiliateLink.token == token, AffiliateLink.affiliate_user_id == user.id)
+        .first()
+    )
+    if not link:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Link not found")
+    link.active = False
+    db.add(link)
+    db.commit()
+    return {"token": token, "status": "deactivated"}
+
+
+@router.post("/links/{token}/rotate", response_model=AffiliateLinkActionResponse)
+def rotate_link(
+    token: str,
+    user=Depends(require_role(Role.admin, Role.affiliate)),
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit_user("affiliate_link_manage_user")),
+):
+    # Deactivate the old link and create a new one if under limit
+    link = (
+        db.query(AffiliateLink)
+        .filter(AffiliateLink.token == token, AffiliateLink.affiliate_user_id == user.id)
+        .first()
+    )
+    if not link:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Link not found")
+    link.active = False
+    db.add(link)
+    db.commit()
+    active_count = (
+        db.query(AffiliateLink)
+        .filter(AffiliateLink.affiliate_user_id == user.id, AffiliateLink.active == True)
+        .count()
+    )
+    if active_count >= 2:
+        return {"token": token, "status": "rotated_but_limit_reached"}
+    import secrets
+    new_token = secrets.token_urlsafe(12)
+    new_link = AffiliateLink(affiliate_user_id=user.id, token=new_token, active=True)
+    db.add(new_link)
+    db.commit()
+    return {"token": new_token, "status": "rotated", "url": f"https://zemen.example/ref/{new_token}"}
 
 
 @router.get("/commissions")

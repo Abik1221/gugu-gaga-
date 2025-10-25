@@ -10,6 +10,7 @@ from app.services.ai.gemini import GeminiClient
 from app.core.settings import settings
 from app.services.ai.langgraph_adapter import PassthroughLangGraph, HeuristicSQLTool, RealLangGraphOrchestrator
 from app.services.db.schema import schema_overview_string
+from app.services.ai.usage import record_ai_usage
 
 
 FORBIDDEN_SQL = ("insert", "update", "delete", "drop", "alter", "create", "grant", "revoke", "truncate")
@@ -68,6 +69,12 @@ def process_message(
     thread_id: int,
     prompt: str,
 ) -> Dict[str, Any]:
+    # System prompt establishes assistant behavior in pharmacy domain.
+    SYSTEM_PROMPT = (
+        "You are Zemen AI, a helpful assistant for a multi-tenant pharmacy system. "
+        "Only use safe, read-only queries. Summarize results clearly and concisely. "
+        "If the request is unclear or unsafe, explain why and suggest a safer query."
+    )
     # Save user message
     user_msg = ChatMessage(
         thread_id=thread_id,
@@ -85,7 +92,7 @@ def process_message(
     if settings.use_langgraph:
         orchestrator = RealLangGraphOrchestrator(tool=HeuristicSQLTool())
         schema_ctx = schema_overview_string(db)
-        result = orchestrator.run(prompt=prompt, tenant_id=tenant_id, user_id=user_id, schema=schema_ctx)
+        result = orchestrator.run(prompt=f"{SYSTEM_PROMPT}\n\nUser: {prompt}", tenant_id=tenant_id, user_id=user_id, schema=schema_ctx)
         sql = result.get("sql", "")
         intent = result.get("intent", "auto")
         if not sql:
@@ -101,6 +108,16 @@ def process_message(
         db.add(asst_msg)
         db.commit()
         db.refresh(asst_msg)
+        # log usage (heuristic model)
+        record_ai_usage(
+            db,
+            tenant_id=tenant_id,
+            user_id=user_id,
+            thread_id=thread_id,
+            prompt_text=f"{SYSTEM_PROMPT}\n\nUser: {prompt}",
+            completion_text=assistant_text,
+            model="heuristic-sql",
+        )
         return {"answer": assistant_text, "intent": intent}
 
     try:
@@ -116,5 +133,15 @@ def process_message(
     db.add(asst_msg)
     db.commit()
     db.refresh(asst_msg)
+    # Record usage after completion
+    record_ai_usage(
+        db,
+        tenant_id=tenant_id,
+        user_id=user_id,
+        thread_id=thread_id,
+        prompt_text=f"{SYSTEM_PROMPT}\n\nUser: {prompt}\n\nSQL: {sql}",
+        completion_text=str(assistant_text),
+        model=("langgraph+heuristic" if settings.use_langgraph else "heuristic-sql"),
+    )
 
     return assistant_text

@@ -52,3 +52,51 @@ def create_staff(
     db.commit()
     db.refresh(staff)
     return {"id": staff.id, "email": staff.email, "role": staff.role}
+
+
+@router.get("")
+def list_staff(
+    tenant_id: str = Depends(require_tenant),
+    user=Depends(require_role(Role.admin, Role.pharmacy_owner)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+):
+    q = db.query(User).filter(User.tenant_id == tenant_id, User.role.in_([Role.cashier.value]))
+    rows = q.order_by(User.id.desc()).all()
+    return [{"id": u.id, "email": u.email, "phone": u.phone, "role": u.role} for u in rows]
+
+
+@router.patch("/{user_id}")
+def update_staff(
+    user_id: int,
+    is_active: bool | None = None,
+    tenant_id: str = Depends(require_tenant),
+    user=Depends(require_role(Role.admin, Role.pharmacy_owner)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+):
+    staff = db.query(User).filter(User.id == user_id, User.tenant_id == tenant_id, User.role == Role.cashier.value).first()
+    if not staff:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Staff not found")
+    if is_active is not None:
+        staff.is_active = bool(is_active)
+    db.add(staff)
+    db.commit()
+    db.refresh(staff)
+    return {"id": staff.id, "email": staff.email, "role": staff.role, "is_active": staff.is_active}
+
+
+@router.delete("/{user_id}")
+def delete_staff(
+    user_id: int,
+    tenant_id: str = Depends(require_tenant),
+    user=Depends(require_role(Role.admin, Role.pharmacy_owner)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+):
+    staff = db.query(User).filter(User.id == user_id, User.tenant_id == tenant_id, User.role == Role.cashier.value).first()
+    if not staff:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Staff not found")
+    db.delete(staff)
+    db.commit()
+    return {"status": "deleted"}
