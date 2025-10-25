@@ -153,13 +153,13 @@ export default function RegisterPage() {
                 <Input value={licenseNumber} onChange={(e)=>setLicenseNumber(e.target.value)} required />
               </div>
               <div className="md:col-span-2 space-y-1">
-                <label className="text-sm">Notes to Reviewer</label>
-                <textarea className="w-full border rounded px-3 py-2" rows={3} value={kycNotes} onChange={(e)=>setKycNotes(e.target.value)} />
+                <label className="text-sm">Pharmacy License Document (Image, required)</label>
+                <input type="file" accept=".jpg,.jpeg,.png" onChange={(e)=>setKycFile(e.target.files?.[0] || null)} required />
+                {kycUploadPath && (<div className="text-xs text-gray-500">Uploaded: {kycUploadPath}</div>)}
               </div>
               <div className="md:col-span-2 space-y-1">
-                <label className="text-sm">KYC Document (PDF/JPG/PNG, max 10MB)</label>
-                <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e)=>setKycFile(e.target.files?.[0] || null)} />
-                {kycUploadPath && (<div className="text-xs text-gray-500">Uploaded: {kycUploadPath}</div>)}
+                <label className="text-sm">Notes to Reviewer</label>
+                <textarea className="w-full border rounded px-3 py-2" rows={3} value={kycNotes} onChange={(e)=>setKycNotes(e.target.value)} />
               </div>
             </div>
             {affiliateToken && (
