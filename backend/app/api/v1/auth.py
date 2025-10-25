@@ -94,15 +94,39 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
             )
             db.add(ref)
             db.commit()
-    # Notify admin
+    # In-app notifications (best-effort)
     try:
-        send_email("admin@zemen.local", "New Pharmacy Registration", f"Pharmacy '{payload.pharmacy_name}' awaiting approval.")
+        from app.services.notifications.in_app import create_notification
+        create_notification(
+            db,
+            tenant_id=None,
+            title="New Pharmacy Registration",
+            body=f"Pharmacy '{payload.pharmacy_name}' submitted KYC and awaits approval.",
+        )
+        create_notification(
+            db,
+            tenant_id=tenant_id,
+            title="Application Received",
+            body="Your pharmacy registration is pending admin approval.",
+        )
     except Exception:
         pass
-    # Send verification code to owner
-    code = issue_code(db, email=owner.email, purpose="register")
-    if owner.email:
-        send_email(owner.email, "Verify your account", f"Your verification code is: {code}")
+    # Notify admin via email (best-effort) with KYC details
+    try:
+        send_email(
+            "admin@zemen.local",
+            "New Pharmacy Registration",
+            f"Pharmacy '{payload.pharmacy_name}' awaiting approval. License: {payload.pharmacy_license_number}; ID: {payload.id_number}",
+        )
+    except Exception:
+        pass
+    # Send verification code to owner (best-effort)
+    try:
+        code = issue_code(db, email=owner.email, purpose="register")
+        if owner.email:
+            send_email(owner.email, "Verify your account", f"Your verification code is: {code}")
+    except Exception:
+        pass
     return UserOut.model_validate(owner)
 
 
@@ -133,10 +157,13 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
     )
     db.add(profile)
     db.commit()
-    # Issue OTP registration code
-    if user.email:
-        reg_code = issue_code(db, email=user.email, purpose="register")
-        send_email(user.email, "Verify your account", f"Your verification code is: {reg_code}")
+    # Issue OTP registration code (best-effort)
+    try:
+        if user.email:
+            reg_code = issue_code(db, email=user.email, purpose="register")
+            send_email(user.email, "Verify your account", f"Your verification code is: {reg_code}")
+    except Exception:
+        pass
     return UserOut.model_validate(user)
 
 

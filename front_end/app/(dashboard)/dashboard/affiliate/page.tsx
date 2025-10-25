@@ -1,96 +1,94 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { API_BASE, getAccessToken, getAuthJSON } from "@/utils/api";
+import { AffiliateAPI } from "@/utils/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { useToast } from "@/components/ui/toast";
 
-type Me = { id: string; tenant_id?: string };
-
-type AffiliateRow = {
-  id: string;
-  full_name: string;
-  email: string;
-  referral_code: string;
-  verified: boolean;
+type Dashboard = {
+  referrals_count: number;
+  amount?: number;
+  payouts?: { pending_total: number; paid_total: number };
 };
 
-type CommissionRow = {
-  id: string;
-  affiliate: string;
-  amount: number;
-  currency: string;
-  status: string;
-  earned_at: string;
-};
+type LinkItem = { token: string; url: string; active: boolean };
 
 export default function AffiliateOverviewPage() {
+  const { show } = useToast();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [me, setMe] = useState<Me | null>(null);
-  const [affiliates, setAffiliates] = useState<AffiliateRow[]>([]);
-  const [commissions, setCommissions] = useState<CommissionRow[]>([]);
-  const [stats, setStats] = useState<{ clicks: number; referrals: number; conversion_rate: number; commissions: number } | null>(null);
+  const [dash, setDash] = useState<Dashboard | null>(null);
+  const [links, setLinks] = useState<LinkItem[]>([]);
+  const [canCreateMore, setCanCreateMore] = useState(true);
+
+  async function refreshAll() {
+    setLoading(true);
+    try {
+      const [d, l] = await Promise.all([
+        AffiliateAPI.dashboard(),
+        AffiliateAPI.getLinks(),
+      ]);
+      setDash(d as any);
+      setLinks((l as any).links || []);
+      setCanCreateMore(Boolean((l as any).can_create_more));
+      setError(null);
+    } catch (e: any) {
+      setError(e.message || "Failed to load affiliate data");
+      show({ variant: "destructive", title: "Error", description: e.message || "Failed to load" });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    let active = true;
-    async function load() {
-      try {
-        const m = await getAuthJSON<Me>("/api/v1/auth/me");
-        if (!active) return;
-        setMe(m);
-        const token = getAccessToken();
-        const headers: HeadersInit = {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          ...(m?.tenant_id ? { "X-Tenant-ID": m.tenant_id } : {}),
-        };
-        const [affRes, comRes, stRes] = await Promise.all([
-          fetch(`${API_BASE}/api/v1/admin/affiliates`, { headers }),
-          fetch(`${API_BASE}/api/v1/admin/commissions`, { headers }),
-          fetch(`${API_BASE}/api/v1/affiliate/stats`, { headers }),
-        ]);
-        if (!affRes.ok) throw new Error(await affRes.text().catch(() => "Failed to load affiliates"));
-        if (!comRes.ok) throw new Error(await comRes.text().catch(() => "Failed to load commissions"));
-        if (!stRes.ok) throw new Error(await stRes.text().catch(() => "Failed to load stats"));
-        const affData = (await affRes.json()) as AffiliateRow[];
-        const comData = (await comRes.json()) as CommissionRow[];
-        const stData = (await stRes.json()) as { clicks: number; referrals: number; conversion_rate: number; commissions: number };
-        if (!active) return;
-        setAffiliates(affData);
-        setCommissions(comData);
-        setStats(stData);
-      } catch (e: any) {
-        if (!active) return;
-        setError(e.message || "Failed to load affiliate data");
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-    load();
-    return () => { active = false };
+    refreshAll();
   }, []);
 
-  const agg = useMemo(() => {
-    const totalAff = affiliates.length;
-    const verified = affiliates.filter(a => a.verified).length;
-    const totalCom = commissions.reduce((s, c) => s + (Number(c.amount) || 0), 0);
-    const pendingCom = commissions.filter(c => String(c.status).toLowerCase() === "pending").length;
-    return { totalAff, verified, totalCom, pendingCom };
-  }, [affiliates, commissions]);
+  const stats = useMemo(() => ({
+    referrals: dash?.referrals_count || 0,
+    pendingPayout: dash?.payouts?.pending_total || 0,
+    paidPayout: dash?.payouts?.paid_total || 0,
+  }), [dash]);
+
+  async function onCreateLink() {
+    try {
+      await AffiliateAPI.createLink();
+      await refreshAll();
+      show({ variant: "success", title: "Link created" });
+    } catch (e: any) {
+      show({ variant: "destructive", title: "Failed to create link", description: e.message });
+    }
+  }
+
+  async function onDeactivate(token: string) {
+    try {
+      await AffiliateAPI.deactivate(token);
+      await refreshAll();
+      show({ variant: "success", title: "Link deactivated" });
+    } catch (e: any) {
+      show({ variant: "destructive", title: "Failed to deactivate", description: e.message });
+    }
+  }
+
+  async function onRotate(token: string) {
+    try {
+      await AffiliateAPI.rotate(token);
+      await refreshAll();
+      show({ variant: "success", title: "Link rotated" });
+    } catch (e: any) {
+      show({ variant: "destructive", title: "Failed to rotate", description: e.message });
+    }
+  }
 
   if (loading) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-8 w-64" />
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => (<Skeleton key={i} className="h-24" />))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (<Skeleton key={i} className="h-24" />))}
         </div>
         <Skeleton className="h-8 w-40" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Skeleton className="h-64" />
-          <Skeleton className="h-64" />
-        </div>
+        <Skeleton className="h-64" />
       </div>
     );
   }
@@ -99,64 +97,42 @@ export default function AffiliateOverviewPage() {
     return <div className="text-sm text-red-600">{error}</div>;
   }
 
-  const recentAff = affiliates.slice(0, 5);
-  const recentCom = commissions.slice(0, 5);
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Affiliate Dashboard</h1>
         <div className="flex gap-2">
-          <Link href="/dashboard/affiliate/register"><Button variant="outline">Register as Affiliate</Button></Link>
+          <Button onClick={onCreateLink} disabled={!canCreateMore} variant={canCreateMore ? "default" : "outline"}>
+            {canCreateMore ? "Create Link" : "Max 2 links reached"}
+          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <CardStat title="Total Affiliates" value={agg.totalAff} />
-        <CardStat title="Verified Affiliates" value={agg.verified} />
-        <CardStat title="Total Commissions" value={`$${agg.totalCom.toFixed(2)}`} />
-        <CardStat title="Pending Commissions" value={agg.pendingCom} />
-        {stats && (
-          <>
-            <CardStat title="Clicks" value={stats.clicks} />
-            <CardStat title="Referrals" value={stats.referrals} />
-            <CardStat title="Conversion Rate" value={`${stats.conversion_rate}%`} />
-          </>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <CardStat title="Referrals" value={stats.referrals} />
+        <CardStat title="Pending Payout" value={`$${stats.pendingPayout.toFixed(2)}`} />
+        <CardStat title="Paid Payout" value={`$${stats.paidPayout.toFixed(2)}`} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="border rounded bg-white">
-          <div className="p-3 border-b font-medium">Recent Affiliates</div>
-          <div className="divide-y">
-            {recentAff.map((a) => (
-              <div key={a.id} className="p-3 flex items-center justify-between">
-                <div>
-                  <div className="font-medium">{a.full_name}</div>
-                  <div className="text-xs text-gray-500">{a.email} · Code: {a.referral_code}</div>
-                </div>
-                <div className={`text-xs px-2 py-1 rounded ${a.verified ? "bg-emerald-50 text-emerald-700" : "bg-gray-50 text-gray-600"}`}>
-                  {a.verified ? "Verified" : "Unverified"}
-                </div>
-              </div>
-            ))}
-            {recentAff.length === 0 && <div className="p-6 text-gray-500">No affiliates yet.</div>}
-          </div>
+      <div className="border rounded bg-white">
+        <div className="p-3 border-b font-medium flex items-center justify-between">
+          <div>Your Referral Links</div>
+          <div className="text-xs text-gray-500">Limit: 2 active</div>
         </div>
-        <div className="border rounded bg-white">
-          <div className="p-3 border-b font-medium">Recent Commissions</div>
-          <div className="divide-y">
-            {recentCom.map((c) => (
-              <div key={c.id} className="p-3 flex items-center justify-between">
-                <div>
-                  <div className="font-medium">{c.affiliate}</div>
-                  <div className="text-xs text-gray-500">{new Date(c.earned_at).toLocaleString()}</div>
-                </div>
-                <div className="text-sm font-medium">{c.currency} {Number(c.amount).toFixed(2)}</div>
+        <div className="divide-y">
+          {links.map((l) => (
+            <div key={l.token} className="p-3 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+              <div>
+                <div className="font-mono text-sm break-all">{l.url}</div>
+                <div className={`text-xs ${l.active ? "text-emerald-600" : "text-gray-500"}`}>{l.active ? "Active" : "Inactive"}</div>
               </div>
-            ))}
-            {recentCom.length === 0 && <div className="p-6 text-gray-500">No commissions yet.</div>}
-          </div>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => onDeactivate(l.token)} disabled={!l.active}>Deactivate</Button>
+                <Button size="sm" variant="outline" onClick={() => onRotate(l.token)}>Rotate</Button>
+              </div>
+            </div>
+          ))}
+          {links.length === 0 && <div className="p-6 text-gray-500">No links yet. Create one to get started.</div>}
         </div>
       </div>
     </div>
