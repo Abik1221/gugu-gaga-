@@ -94,7 +94,6 @@ export default function RegisterPage() {
         bank_name: bankName || undefined,
         bank_account_name: bankAccountName || undefined,
         bank_account_number: bankAccountNumber || undefined,
-        iban: iban || undefined,
       });
       setSuccess("Affiliate registered. Please verify your email.");
       show({ variant: "success", title: "Registered", description: "Check your email for verification code" });
@@ -193,10 +192,6 @@ export default function RegisterPage() {
               <div className="space-y-1">
                 <label className="text-sm">Bank Account Number</label>
                 <Input value={bankAccountNumber} onChange={(e)=>setBankAccountNumber(e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm">IBAN (optional)</label>
-                <Input value={iban} onChange={(e)=>setIban(e.target.value)} />
               </div>
             </div>
             <Button type="submit" disabled={loading}>{loading ? "Registering..." : "Register as Affiliate"}</Button>

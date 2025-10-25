@@ -22,7 +22,6 @@ class UserCreate(BaseModel):
     bank_name: Optional[str] = Field(default=None, description="Affiliate bank name")
     bank_account_name: Optional[str] = Field(default=None, description="Affiliate bank account holder name")
     bank_account_number: Optional[str] = Field(default=None, description="Affiliate bank account number")
-    iban: Optional[str] = Field(default=None, description="Affiliate IBAN (if applicable)")
 
     @field_validator("password")
     @classmethod
