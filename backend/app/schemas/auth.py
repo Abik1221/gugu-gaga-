@@ -1,7 +1,9 @@
-from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
-from pydantic import field_validator
+
+from pydantic import BaseModel, EmailStr, Field, field_validator
+
 from app.core.roles import Role
+from app.core.security import MAX_PASSWORD_BYTES
 
 
 class UserCreate(BaseModel):
@@ -28,6 +30,8 @@ class UserCreate(BaseModel):
     def validate_password(cls, v: str) -> str:
         if len(v) < 6:
             raise ValueError("Password must be at least 6 characters long")
+        if len(v.encode("utf-8")) > MAX_PASSWORD_BYTES:
+            raise ValueError(f"Password must be at most {MAX_PASSWORD_BYTES} characters long")
         return v
 
     @field_validator("role")
@@ -49,6 +53,7 @@ class PharmacyRegister(BaseModel):
     national_id_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded national ID document")
     pharmacy_license_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded pharmacy license document")
     kyc_notes: Optional[str] = Field(default=None, description="Additional notes for KYC reviewer")
+    affiliate_token: Optional[str] = Field(default=None, description="Affiliate referral token, if registration came via an affiliate link")
 
 
 class AffiliateRegister(BaseModel):
@@ -58,6 +63,15 @@ class AffiliateRegister(BaseModel):
     bank_name: Optional[str] = Field(default=None, description="Affiliate bank name")
     bank_account_name: Optional[str] = Field(default=None, description="Affiliate bank account holder name")
     bank_account_number: Optional[str] = Field(default=None, description="Affiliate bank account number")
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        if len(v) < 6:
+            raise ValueError("Password must be at least 6 characters long")
+        if len(v.encode("utf-8")) > MAX_PASSWORD_BYTES:
+            raise ValueError(f"Password must be at most {MAX_PASSWORD_BYTES} characters long")
+        return v
 
 
 class UserLogin(BaseModel):
@@ -81,3 +95,13 @@ class UserOut(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class RegistrationVerifyRequest(BaseModel):
+    email: EmailStr
+    code: str
+
+
+class LoginVerifyRequest(BaseModel):
+    email: EmailStr
+    code: str

@@ -29,6 +29,8 @@ __turbopack_context__.s([
     ()=>postAuthJSON,
     "postForm",
     ()=>postForm,
+    "postJSON",
+    ()=>postJSON,
     "postMultipart",
     ()=>postMultipart
 ]);
@@ -50,6 +52,26 @@ async function postForm(path, data, tenantId) {
             "Content-Type": "application/x-www-form-urlencoded"
         }, tenantId),
         body
+    });
+    if (!res.ok) {
+        try {
+            const data = await res.json();
+            const msg = (data === null || data === void 0 ? void 0 : data.error) || (data === null || data === void 0 ? void 0 : data.detail) || JSON.stringify(data);
+            throw new Error(msg || "Request failed with ".concat(res.status));
+        } catch (e) {
+            const text = await res.text().catch(()=>"");
+            throw new Error(text || "Request failed with ".concat(res.status));
+        }
+    }
+    return await res.json();
+}
+async function postJSON(path, body, tenantId) {
+    const res = await fetch("".concat(API_BASE).concat(path), {
+        method: "POST",
+        headers: buildHeaders({
+            "Content-Type": "application/json"
+        }, tenantId),
+        body: JSON.stringify(body)
     });
     if (!res.ok) {
         try {
@@ -176,8 +198,12 @@ async function postAuthJSON(path, bodyData, tenantId) {
     return await res.json();
 }
 const AuthAPI = {
-    registerAffiliate: (body)=>postAuthJSON("/auth/register/affiliate", body),
-    registerPharmacy: (body)=>postAuthJSON("/auth/register/pharmacy", body),
+    registerAffiliate: (body)=>postJSON("/auth/register/affiliate", body),
+    registerPharmacy: (body)=>postJSON("/auth/register/pharmacy", body),
+    verifyRegistration: (email, code)=>postForm("/auth/register/verify", {
+            email,
+            code
+        }),
     login: (email, password, tenantId)=>postForm("/auth/login", {
             username: email,
             password
@@ -186,7 +212,7 @@ const AuthAPI = {
             username: email,
             password
         }, tenantId),
-    loginVerify: (email, code, tenantId)=>postAuthJSON("/auth/login/verify", {
+    loginVerify: (email, code, tenantId)=>postJSON("/auth/login/verify", {
             email,
             code
         }, tenantId),

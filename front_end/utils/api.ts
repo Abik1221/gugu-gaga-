@@ -31,6 +31,25 @@ export async function postForm<T = any>(path: string, data: Record<string, strin
   return (await res.json()) as T;
 }
 
+export async function postJSON<T = any>(path: string, body: any, tenantId?: string): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    headers: buildHeaders({ "Content-Type": "application/json" }, tenantId),
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    try {
+      const data = await res.json();
+      const msg = data?.error || data?.detail || JSON.stringify(data);
+      throw new Error(msg || `Request failed with ${res.status}`);
+    } catch {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `Request failed with ${res.status}`);
+    }
+  }
+  return (await res.json()) as T;
+}
+
 export async function postMultipart<T = any>(path: string, formData: FormData, tenantId?: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
@@ -146,14 +165,16 @@ export async function postAuthJSON<T = any>(path: string, bodyData: any, tenantI
 
 // Convenience wrappers for key flows
 export const AuthAPI = {
-  registerAffiliate: (body: any) => postAuthJSON("/auth/register/affiliate", body),
-  registerPharmacy: (body: any) => postAuthJSON("/auth/register/pharmacy", body),
+  registerAffiliate: (body: any) => postJSON("/auth/register/affiliate", body),
+  registerPharmacy: (body: any) => postJSON("/auth/register/pharmacy", body),
+  verifyRegistration: (email: string, code: string) =>
+    postForm("/auth/register/verify", { email, code }),
   login: (email: string, password: string, tenantId?: string) =>
     postForm("/auth/login", { username: email, password }, tenantId),
   loginRequestCode: (email: string, password: string, tenantId?: string) =>
     postForm("/auth/login/request-code", { username: email, password }, tenantId),
   loginVerify: (email: string, code: string, tenantId?: string) =>
-    postAuthJSON("/auth/login/verify", { email, code }, tenantId),
+    postJSON("/auth/login/verify", { email, code }, tenantId),
   me: () => getAuthJSON("/auth/me"),
 };
 
@@ -177,8 +198,10 @@ export const AdminAPI = {
     postAuthJSON(`/admin/pharmacies/${applicationId}/approve`, {}, tenantId),
   rejectPharmacy: (tenantId: string, applicationId: number) =>
     postAuthJSON(`/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
-  verifyPayment: (tenantId: string, code: string) =>
-    postAuthJSON(`/admin/payments/${encodeURIComponent(code)}/verify`, {}, tenantId),
+  verifyPayment: (tenantId: string, code?: string | null) =>
+    postAuthJSON(`/admin/payments/verify`, { code: code || null }, tenantId),
+  rejectPayment: (tenantId: string, code?: string | null) =>
+    postAuthJSON(`/admin/payments/reject`, { code: code || null }, tenantId),
   approveAffiliate: (userId: number) => postAuthJSON(`/admin/affiliates/${userId}/approve`, {}),
   rejectAffiliate: (userId: number) => postAuthJSON(`/admin/affiliates/${userId}/reject`, {}),
   listAffiliatePayouts: (status?: string) =>

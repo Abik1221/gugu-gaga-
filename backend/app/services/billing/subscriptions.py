@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, timedelta
 from typing import Optional
+from uuid import uuid4
 
 from sqlalchemy.orm import Session
 
@@ -68,20 +69,41 @@ def process_subscription_due(db: Session, *, tenant_id: str) -> None:
             )
 
 
-def verify_payment_and_unblock(db: Session, *, tenant_id: str, code: str) -> bool:
-    # Mark payment submission verified (latest matching code)
-    ps = (
-        db.query(PaymentSubmission)
-        .filter(PaymentSubmission.tenant_id == tenant_id, PaymentSubmission.code == code, PaymentSubmission.status == "pending")
-        .order_by(PaymentSubmission.id.desc())
-        .first()
+def verify_payment_and_unblock(
+    db: Session,
+    *,
+    tenant_id: str,
+    code: Optional[str],
+    admin_user_id: Optional[int] = None,
+) -> tuple[PaymentSubmission, Subscription] | None:
+    # Locate existing pending submission when code provided
+    ps: Optional[PaymentSubmission] = None
+    query = db.query(PaymentSubmission).filter(
+        PaymentSubmission.tenant_id == tenant_id,
+        PaymentSubmission.status == "pending",
     )
+    if code:
+        query = query.filter(PaymentSubmission.code == code)
+    ps = query.order_by(PaymentSubmission.id.desc()).first()
     if not ps:
-        return False
+        if code:
+            return None
+        ps = PaymentSubmission(
+            tenant_id=tenant_id,
+            code=f"manual-{uuid4().hex[:10]}",
+            status="pending",
+            submitted_by_user_id=admin_user_id,
+        )
+        db.add(ps)
+        db.commit()
+        db.refresh(ps)
+
     ps.status = "verified"
     ps.verified_at = datetime.utcnow()
+    if admin_user_id and not ps.submitted_by_user_id:
+        ps.submitted_by_user_id = admin_user_id
     db.add(ps)
-    # Unblock subscription and advance due date
+
     sub = ensure_subscription(db, tenant_id=tenant_id)
     sub.blocked = False
     sub.next_due_date = max(sub.next_due_date, date.today()) + timedelta(days=BILLING_CYCLE_DAYS)
@@ -89,6 +111,7 @@ def verify_payment_and_unblock(db: Session, *, tenant_id: str, code: str) -> boo
     sub.last_notice_date = None
     db.add(sub)
     db.commit()
+
     notify_broadcast(
         db,
         tenant_id=tenant_id,
@@ -96,4 +119,39 @@ def verify_payment_and_unblock(db: Session, *, tenant_id: str, code: str) -> boo
         title="Subscription Active",
         body=f"Payment verified. Next due date: {sub.next_due_date.isoformat()}.",
     )
-    return True
+    db.refresh(ps)
+    db.refresh(sub)
+    return ps, sub
+
+
+def reject_payment_submission(
+    db: Session,
+    *,
+    tenant_id: str,
+    code: Optional[str],
+    admin_user_id: Optional[int] = None,
+) -> PaymentSubmission | None:
+    ps: Optional[PaymentSubmission] = None
+    query = db.query(PaymentSubmission).filter(
+        PaymentSubmission.tenant_id == tenant_id,
+        PaymentSubmission.status == "pending",
+    )
+    if code:
+        query = query.filter(PaymentSubmission.code == code)
+    ps = query.order_by(PaymentSubmission.id.desc()).first()
+    if not ps:
+        return None
+
+    ps.status = "rejected"
+    ps.verified_at = datetime.utcnow()
+    if admin_user_id and not ps.submitted_by_user_id:
+        ps.submitted_by_user_id = admin_user_id
+    db.add(ps)
+
+    sub = ensure_subscription(db, tenant_id=tenant_id)
+    sub.blocked = True
+    db.add(sub)
+
+    db.commit()
+    db.refresh(ps)
+    return ps

@@ -41,5 +41,14 @@ class Settings(BaseSettings):
         default=30, validation_alias=AliasChoices("RATE_LIMIT_GEMINI_PER_MINUTE", "rate_limit_gemini_per_minute")
     )
 
+    # Email
+    email_enabled: bool = Field(default=False, validation_alias=AliasChoices("EMAIL_ENABLED", "email_enabled"))
+    smtp_host: Optional[str] = Field(default=None, validation_alias=AliasChoices("SMTP_HOST", "smtp_host"))
+    smtp_port: int = Field(default=587, validation_alias=AliasChoices("SMTP_PORT", "smtp_port"))
+    smtp_username: Optional[str] = Field(default=None, validation_alias=AliasChoices("SMTP_USERNAME", "smtp_username"))
+    smtp_password: Optional[str] = Field(default=None, validation_alias=AliasChoices("SMTP_PASSWORD", "smtp_password"))
+    smtp_use_tls: bool = Field(default=True, validation_alias=AliasChoices("SMTP_USE_TLS", "smtp_use_tls"))
+    email_from: Optional[str] = Field(default=None, validation_alias=AliasChoices("EMAIL_FROM", "email_from"))
+
 
 settings = Settings()

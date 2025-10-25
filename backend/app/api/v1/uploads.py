@@ -5,7 +5,7 @@ import uuid
 from typing import Optional
 
 from fastapi import APIRouter, UploadFile, File, HTTPException, status, Depends
-from app.deps.ratelimit import rate_limit_user
+from app.deps.ratelimit import rate_limit
 
 router = APIRouter(prefix="/uploads", tags=["admin"])
 
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/uploads", tags=["admin"])
 @router.post("/kyc")
 async def upload_kyc_document(
     file: UploadFile = File(...),
-    _rl=Depends(rate_limit_user("upload_kyc_doc")),
+    _rl=Depends(rate_limit("upload_kyc_doc", identify_by="ip")),
 ):
     # Basic validation
     if not file.filename:

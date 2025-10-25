@@ -97,10 +97,11 @@ export default function RegisterPage() {
       });
       setSuccess("Affiliate registered. Please verify your email.");
       show({ variant: "success", title: "Registered", description: "Check your email for verification code" });
-      setTimeout(() => router.replace("/login"), 1200);
+      setTimeout(() => router.replace(`/register/verify?email=${encodeURIComponent(affEmail)}`), 800);
     } catch (err: any) {
-      setError(err.message || "Registration failed");
-      show({ variant: "destructive", title: "Failed", description: err.message || "Please try again" });
+      const message = err?.message || "Registration failed";
+      setError(message);
+      show({ variant: "destructive", title: "Failed", description: message });
     } finally {
       setLoading(false);
     }

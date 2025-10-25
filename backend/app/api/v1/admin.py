@@ -1,4 +1,7 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
 from app.deps.auth import require_role, get_current_user
@@ -12,9 +15,9 @@ from app.models.user_tenant import UserTenant
 from app.services.notifications.in_app import create_notification
 from app.services.notifications.email import send_email
 from app.deps.ratelimit import rate_limit_user
-from app.services.billing.subscriptions import verify_payment_and_unblock
+from app.services.billing.subscriptions import verify_payment_and_unblock, reject_payment_submission
 from app.models.affiliate import CommissionPayout, AffiliateProfile, AffiliateReferral
-from app.models.subscription import Subscription
+from app.models.subscription import Subscription, PaymentSubmission
 from app.models.pharmacy import Pharmacy
 from app.schemas.admin import PharmaciesAdminListResponse, AffiliatesAdminListResponse
 from app.deps.ratelimit import rate_limit_user
@@ -22,8 +25,73 @@ from sqlalchemy import func
 from sqlalchemy import text as sa_text
 from app.services.ai.usage import get_usage_summary
 from app.models.audit import AuditLog
+from app.core.security import hash_password
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+
+
+class AdminUserOut(BaseModel):
+    id: int
+    email: EmailStr
+    username: str | None = None
+    role: str
+    is_active: bool
+    is_approved: bool
+    is_verified: bool
+
+
+class AdminUserCreate(BaseModel):
+    email: EmailStr
+    password: str
+    username: str | None = None
+    role: str | None = Role.admin.value
+
+
+class AdminUserDetailOut(AdminUserOut):
+    roles: list[dict[str, str]]
+
+
+class AdminAssignRole(BaseModel):
+    role: str
+
+
+class PaymentActionPayload(BaseModel):
+    code: str | None = None
+
+
+def _role_to_label(role_value: str) -> str:
+    return role_value.replace("_", " ").title()
+
+
+def _user_roles_payload(user: User) -> list[dict[str, str]]:
+    if not user.role:
+        return []
+    return [
+        {
+            "id": user.role,
+            "name": _role_to_label(user.role),
+        }
+    ]
+
+
+def _user_to_admin_out(user: User) -> AdminUserOut:
+    username = getattr(user, "username", None)
+    if not username:
+        username = (user.email.split("@", 1)[0] if user.email else None)
+    return AdminUserOut(
+        id=user.id,
+        email=user.email,
+        username=username,
+        role=user.role,
+        is_active=user.is_active,
+        is_approved=user.is_approved,
+        is_verified=user.is_verified,
+    )
+
+
+def _user_to_admin_detail_out(user: User) -> AdminUserDetailOut:
+    base = _user_to_admin_out(user)
+    return AdminUserDetailOut(**base.model_dump(), roles=_user_roles_payload(user))
 
 
 @router.post("/pharmacies/{application_id}/approve")
@@ -81,9 +149,129 @@ def approve_pharmacy(
     return {"tenant_id": tenant_id, "application_id": application_id, "status": "approved"}
 
 
-@router.post("/payments/{payment_code}/verify")
+@router.get("/users", response_model=List[AdminUserOut])
+def list_users(
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit_user("admin_list_users")),
+):
+    users = db.query(User).order_by(User.id.desc()).limit(200).all()
+    return [_user_to_admin_out(u) for u in users]
+
+
+@router.get("/users/{user_id}", response_model=AdminUserDetailOut)
+def get_user_admin(
+    user_id: int,
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit_user("admin_get_user")),
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return _user_to_admin_detail_out(user)
+
+
+@router.post("/users", response_model=AdminUserOut, status_code=status.HTTP_201_CREATED)
+def create_user_admin(
+    payload: AdminUserCreate,
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit_user("admin_create_user")),
+):
+    if db.query(User).filter(User.email == payload.email).first():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already exists")
+    try:
+        password_hash = hash_password(payload.password)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    user = User(
+        email=payload.email,
+        password_hash=password_hash,
+        role=payload.role or Role.admin.value,
+        is_active=True,
+        is_approved=True,
+        is_verified=True,
+    )
+    if payload.username:
+        setattr(user, "username", payload.username)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return _user_to_admin_out(user)
+
+
+@router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user_admin(
+    user_id: int,
+    current_user=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit_user("admin_delete_user")),
+):
+    if current_user.id == user_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot delete yourself")
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return None
+
+
+@router.post("/users/{user_id}/assign-role", response_model=AdminUserDetailOut)
+def assign_role_admin(
+    user_id: int,
+    payload: AdminAssignRole,
+    current_user=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit_user("admin_assign_role")),
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    role_value = payload.role.lower()
+    if role_value not in {r.value for r in Role}:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid role")
+    user.role = role_value
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return _user_to_admin_detail_out(user)
+
+
+@router.post("/users/{user_id}/remove-role", response_model=AdminUserDetailOut)
+def remove_role_admin(
+    user_id: int,
+    current_user=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit_user("admin_remove_role")),
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    user.role = Role.customer.value
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return _user_to_admin_detail_out(user)
+
+
+@router.get("/roles")
+def list_roles_admin(
+    _=Depends(require_role(Role.admin)),
+):
+    return [
+        {
+            "id": role.value,
+            "name": _role_to_label(role.value),
+        }
+        for role in Role
+    ]
+
+
+@router.post("/payments/verify")
 def verify_payment(
-    payment_code: str,
+    payload: PaymentActionPayload,
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin)),
     db: Session = Depends(get_db),
@@ -91,18 +279,17 @@ def verify_payment(
     _rl=Depends(rate_limit_user("admin_payverify_user")),
     _ten=Depends(enforce_user_tenant),
 ):
-    if not payment_code:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid payment code")
-    ok = verify_payment_and_unblock(db, tenant_id=tenant_id, code=payment_code)
-    if not ok:
+    result = verify_payment_and_unblock(db, tenant_id=tenant_id, code=payload.code, admin_user_id=current_user.id)
+    if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment submission not found or already processed")
+    ps, sub = result
     log_event(
         db,
         tenant_id=tenant_id,
         actor_user_id=current_user.id,
         action="payment_verified",
         target_type="payment",
-        target_id=payment_code,
+        target_id=ps.code,
         metadata={"status": "verified"},
     )
     # Notify tenant (broadcast)
@@ -112,9 +299,42 @@ def verify_payment(
         user_id=None,
         type="payment_verified",
         title="Payment Verified",
-        body=f"Payment code {payment_code} has been verified.",
+        body="Payment verified. Subscription unblocked.",
     )
-    return {"tenant_id": tenant_id, "payment_code": payment_code, "status": "verified"}
+    return {"tenant_id": tenant_id, "payment_code": ps.code, "status": "verified", "next_due_date": sub.next_due_date.isoformat() if sub.next_due_date else None}
+
+
+@router.post("/payments/reject")
+def reject_payment(
+    payload: PaymentActionPayload,
+    tenant_id: str = Depends(require_tenant),
+    user=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+    _rl=Depends(rate_limit_user("admin_payreject_user")),
+    _ten=Depends(enforce_user_tenant),
+):
+    ps = reject_payment_submission(db, tenant_id=tenant_id, code=payload.code, admin_user_id=current_user.id)
+    if not ps:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment submission not found or already processed")
+    log_event(
+        db,
+        tenant_id=tenant_id,
+        actor_user_id=current_user.id,
+        action="payment_rejected",
+        target_type="payment",
+        target_id=ps.code,
+        metadata={"status": "rejected"},
+    )
+    create_notification(
+        db,
+        tenant_id=tenant_id,
+        user_id=None,
+        type="payment_rejected",
+        title="Payment Rejected",
+        body="Payment could not be verified. Please resubmit the correct payment code.",
+    )
+    return {"tenant_id": tenant_id, "payment_code": ps.code, "status": "rejected"}
 
 
 @router.post("/pharmacies/{application_id}/reject")
@@ -294,6 +514,12 @@ def list_pharmacies_admin(
         owner = db.query(User).filter(User.tenant_id == ph.tenant_id, User.role == Role.pharmacy_owner.value).first()
         kyc = db.query(KYCApplication).filter(KYCApplication.tenant_id == ph.tenant_id).order_by(KYCApplication.id.desc()).first()
         sub = db.query(Subscription).filter(Subscription.tenant_id == ph.tenant_id).first()
+        payment = (
+            db.query(PaymentSubmission)
+            .filter(PaymentSubmission.tenant_id == ph.tenant_id)
+            .order_by(PaymentSubmission.id.desc())
+            .first()
+        )
         result.append(
             {
                 "id": ph.id,
@@ -310,6 +536,9 @@ def list_pharmacies_admin(
                     "next_due_date": sub.next_due_date.isoformat() if sub and sub.next_due_date else None,
                 },
                 "created_at": ph.created_at.isoformat() if ph.created_at else None,
+                "latest_payment_code": payment.code if payment else None,
+                "latest_payment_status": payment.status if payment else None,
+                "latest_payment_submitted_at": payment.created_at.isoformat() if payment and payment.created_at else None,
             }
         )
     return {"page": page, "page_size": page_size, "total": total, "items": result}

@@ -11,6 +11,7 @@ type Me = {
   id: string;
   email: string;
   username: string;
+  role?: string;
   tenant_id?: string;
   roles?: { role: { name: string } }[];
 };
@@ -25,12 +26,14 @@ export default function DashboardLayout({
   const [user, setUser] = useState<Me | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [subBanner, setSubBanner] = useState<{ inactive: boolean; in_trial: boolean; trial_days_left?: number } | null>(null);
+  const roleName = (user?.role || user?.roles?.[0]?.role?.name || "").toLowerCase();
+  const isAffiliate = roleName === "affiliate";
 
   useEffect(() => {
     let active = true;
     async function check() {
       try {
-        const me = await getAuthJSON<Me>("/api/v1/auth/me");
+        const me = await getAuthJSON<Me>("/auth/me");
         if (!active) return;
         setUser(me);
         // One-time referral track
@@ -38,7 +41,7 @@ export default function DashboardLayout({
           const ref = typeof window !== "undefined" ? localStorage.getItem("referral_code") : null;
           if (ref && me?.id) {
             const token = getAccessToken();
-            await fetch(`${API_BASE}/api/v1/affiliate/referrals/track`, {
+            await fetch(`${API_BASE}/affiliate/referrals/track`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -68,10 +71,11 @@ export default function DashboardLayout({
     // Fetch subscription status to show banner if inactive (non-blocking UX hint)
     (async () => {
       try {
+        if (isAffiliate) return;
         const token = getAccessToken();
         const tenant = typeof window !== "undefined" ? localStorage.getItem("tenant_id") : null;
         if (!token || !tenant) return;
-        const res = await fetch(`${API_BASE}/api/v1/subscriptions/current?tenant_id=${encodeURIComponent(tenant)}`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE}/subscriptions/current?tenant_id=${encodeURIComponent(tenant)}`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) return;
         const data = await res.json();
         const inactive = !data?.in_trial && String(data?.status || "").toLowerCase() !== "active";
@@ -88,7 +92,7 @@ export default function DashboardLayout({
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
     }
-    router.replace("/login");
+    router.replace(isAffiliate ? "/auth/affiliate-login" : "/login");
   }
 
   if (loading) {
@@ -126,26 +130,42 @@ function Shell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isOwnerOrManager = (user?.roles || []).some(r => {
-    const n = (r?.role?.name || "").toLowerCase();
-    return n === "owner" || n === "manager";
-  });
-  const nav = [
-    { href: "/dashboard", label: "Overview" },
-    { href: "/dashboard/inventory", label: "Inventory" },
-    { href: "/dashboard/pos", label: "POS" },
-    { href: "/dashboard/affiliate", label: "Affiliate" },
-    ...(isOwnerOrManager ? [{ href: "/dashboard/admin/payouts", label: "Payouts" }] : []),
-    { href: "/dashboard/settings", label: "Settings" },
-    { href: "/dashboard/about", label: "About" },
-  ];
+  const roleName = (user?.role || user?.roles?.[0]?.role?.name || "").toLowerCase();
+  const isOwnerOrManager = roleName === "owner" || roleName === "manager";
+  const isAffiliate = roleName === "affiliate";
+  const isAdmin = roleName === "admin";
+
+  const nav = isAffiliate
+    ? [{ href: "/dashboard/affiliate", label: "Affiliate Dashboard" }]
+    : isAdmin
+    ? [
+        { href: "/dashboard/admin", label: "Admin Overview" },
+        { href: "/dashboard/admin/users", label: "Users" },
+        { href: "/dashboard/admin/pharmacies", label: "Pharmacies" },
+        { href: "/dashboard/admin/affiliates", label: "Affiliates" },
+        { href: "/dashboard/admin/payouts", label: "Payouts" },
+        { href: "/dashboard/admin/audit", label: "Audit Log" },
+      ]
+    : [
+        { href: "/dashboard", label: "Overview" },
+        { href: "/dashboard/inventory", label: "Inventory" },
+        { href: "/dashboard/pos", label: "POS" },
+        { href: "/dashboard/affiliate", label: "Affiliate" },
+        ...(isOwnerOrManager ? [{ href: "/dashboard/admin/payouts", label: "Payouts" }] : []),
+        { href: "/dashboard/settings", label: "Settings" },
+        { href: "/dashboard/about", label: "About" },
+      ];
 
   return (
     <div className="min-h-screen grid grid-cols-12">
       <aside className="col-span-12 md:col-span-2 border-r p-4 space-y-6 bg-white">
         <div className="space-y-1">
-          <div className="text-lg font-semibold">Zemen Dashboard</div>
-          <div className="text-xs text-gray-500">Secure area</div>
+          <div className="text-lg font-semibold">
+            {isAffiliate ? "Affiliate Portal" : isAdmin ? "Admin Console" : "Zemen Dashboard"}
+          </div>
+          <div className="text-xs text-gray-500">
+            {isAffiliate ? "Track referrals & payouts" : isAdmin ? "Manage platform data" : "Secure area"}
+          </div>
         </div>
 
         <div className="space-y-1 text-sm">
@@ -153,6 +173,7 @@ function Shell({
             <div>
               <div className="font-medium">{user.username}</div>
               <div className="text-xs text-gray-500 truncate">{user.email}</div>
+              {roleName && <div className="text-2xs uppercase text-gray-400">{roleName}</div>}
             </div>
           ) : null}
         </div>
@@ -187,7 +208,7 @@ function Shell({
       <div className="col-span-12 md:col-span-10 flex flex-col min-h-screen bg-gray-50">
         <header className="border-b bg-white p-4 flex items-center justify-between">
           <div className="font-medium">{nav.find(n => pathname?.startsWith(n.href))?.label || "Overview"}</div>
-          <div className="text-sm text-gray-500">Tenant: {user?.tenant_id || "N/A"}</div>
+          {!isAffiliate && !isAdmin && <div className="text-sm text-gray-500">Tenant: {user?.tenant_id || "N/A"}</div>}
         </header>
         <main className="p-6 flex-1">{children}</main>
       </div>

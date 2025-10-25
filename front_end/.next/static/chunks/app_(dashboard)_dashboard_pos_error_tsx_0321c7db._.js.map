@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/HP/gugu-gaga-/front_end/app/%28dashboard%29/dashboard/pos/error.tsx"],"sourcesContent":["\"use client\";\r\nimport React, { useEffect } from \"react\";\r\n\r\nexport default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {\r\n  useEffect(() => {\r\n    // console.error(error);\r\n  }, [error]);\r\n\r\n  return (\r\n    <div className=\"p-6 space-y-3\">\r\n      <h2 className=\"text-lg font-semibold\">POS failed to load</h2>\r\n      <p className=\"text-sm text-gray-600 break-all\">{error.message}</p>\r\n      <button onClick={reset} className=\"border rounded px-3 py-2 text-sm hover:bg-gray-50\">Try again</button>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AACA;;;AADA;;AAGe,SAAS,MAAM,KAA2E;QAA3E,EAAE,KAAK,EAAE,KAAK,EAA6D,GAA3E;;IAC5B,IAAA,0KAAS;2BAAC;QACR,wBAAwB;QAC1B;0BAAG;QAAC;KAAM;IAEV,qBACE,6LAAC;QAAI,WAAU;;0BACb,6LAAC;gBAAG,WAAU;0BAAwB;;;;;;0BACtC,6LAAC;gBAAE,WAAU;0BAAmC,MAAM,OAAO;;;;;;0BAC7D,6LAAC;gBAAO,SAAS;gBAAO,WAAU;0BAAoD;;;;;;;;;;;;AAG5F;GAZwB;KAAA","debugId":null}}]
+}

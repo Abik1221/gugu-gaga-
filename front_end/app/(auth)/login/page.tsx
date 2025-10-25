@@ -2,7 +2,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { postForm } from "@/utils/api";
+import { AuthAPI } from "@/utils/api";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { Input } from "@/components/ui/input";
@@ -20,18 +20,11 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const data = await postForm<{
-        access_token: string;
-        refresh_token: string;
-        token_type: string;
-        expires_in: number;
-      }>("/api/v1/auth/login", { username, password });
+      const data = await AuthAPI.login(username, password);
       localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("refresh_token", data.refresh_token);
+      localStorage.setItem("refresh_token", data.refresh_token ?? "");
       // Determine role and redirect
-      const me = await fetch("/api/v1/auth/me", {
-        headers: { Authorization: `Bearer ${data.access_token}` }
-      }).then(r => r.json());
+      const me = await AuthAPI.me();
       if (me.role === "affiliate") router.replace("/dashboard/affiliate");
       else if (me.role === "pharmacy_owner" || me.role === "cashier") router.replace("/dashboard/owner");
       else if (me.role === "admin") router.replace("/dashboard/admin");

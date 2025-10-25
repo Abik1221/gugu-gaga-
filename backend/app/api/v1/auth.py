@@ -14,7 +14,7 @@ from app.models.kyc import KYCApplication
 from app.models.user_tenant import UserTenant
 from app.services.verification import issue_code, verify_code
 from app.services.notifications.email import send_email
-from app.schemas.auth import Token, UserLogin, UserOut, PharmacyRegister, AffiliateRegister
+from app.schemas.auth import Token, UserLogin, UserOut, PharmacyRegister, AffiliateRegister, RegistrationVerifyRequest, LoginVerifyRequest
 from app.deps.auth import get_current_user
 from app.deps.ratelimit import rate_limit
 from app.services.billing.subscriptions import ensure_subscription
@@ -52,12 +52,17 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(ph)
     # Create owner user pending approval
+    try:
+        owner_password_hash = hash_password(payload.owner_password)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
     owner = User(
         email=payload.owner_email,
         phone=payload.owner_phone,
         role=Role.pharmacy_owner.value,
         tenant_id=tenant_id,
-        password_hash=hash_password(payload.owner_password),
+        password_hash=owner_password_hash,
         is_active=True,
         is_approved=False,
     )
@@ -130,16 +135,21 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
     return UserOut.model_validate(owner)
 
 
-@router.post("/register/affiliate", response_model=UserOut)
+@router.post("/register/affiliate", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == payload.email).first():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+    try:
+        password_hash = hash_password(payload.password)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
     user = User(
         email=payload.email,
         phone=None,
         role=Role.affiliate.value,
         tenant_id=None,
-        password_hash=hash_password(payload.password),
+        password_hash=password_hash,
         is_active=True,
         is_approved=True,
     )
@@ -200,13 +210,12 @@ def login(
 
 @router.post("/register/verify")
 def verify_registration(
-    email: str,
-    code: str,
+    payload: RegistrationVerifyRequest,
     db: Session = Depends(get_db),
 ):
-    if not verify_code(db, email=email, purpose="register", code=code):
+    if not verify_code(db, email=payload.email, purpose="register", code=payload.code):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code")
-    user = db.query(User).filter(User.email == email).first()
+    user = db.query(User).filter(User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     user.is_verified = True
@@ -234,15 +243,14 @@ def login_request_code(
 
 @router.post("/login/verify", response_model=Token)
 def login_verify(
-    email: str,
-    code: str,
+    payload: LoginVerifyRequest,
     tenant_id: Optional[str] = Depends(get_optional_tenant_id),
     db: Session = Depends(get_db),
 ):
-    user = db.query(User).filter(User.email == email).first()
+    user = db.query(User).filter(User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    if not verify_code(db, email=email, purpose="login", code=code):
+    if not verify_code(db, email=payload.email, purpose="login", code=payload.code):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code")
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")

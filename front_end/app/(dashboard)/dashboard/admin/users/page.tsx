@@ -23,11 +23,11 @@ export default function AdminUsersPage() {
     let active = true;
     async function load() {
       try {
-        const m = await getAuthJSON<{ id: string; tenant_id?: string }>("/api/v1/auth/me");
+        const m = await getAuthJSON<{ id: string; tenant_id?: string }>("/auth/me");
         if (!active) return;
         setMe(m);
         const token = getAccessToken();
-        const res = await fetch(`${API_BASE}/api/v1/users`, {
+        const res = await fetch(`${API_BASE}/admin/users`, {
           headers: {
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -63,7 +63,7 @@ export default function AdminUsersPage() {
     setCreating(true);
     try {
       const token = getAccessToken();
-      const res = await fetch(`${API_BASE}/api/v1/users`, {
+      const res = await fetch(`${API_BASE}/admin/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +87,7 @@ export default function AdminUsersPage() {
     if (typeof window !== "undefined" && !window.confirm("Delete this user?")) return;
     try {
       const token = getAccessToken();
-      const res = await fetch(`${API_BASE}/api/v1/users/${encodeURIComponent(id)}`, {
+      const res = await fetch(`${API_BASE}/admin/users/${encodeURIComponent(id)}`, {
         method: "DELETE",
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),

@@ -15,6 +15,9 @@ class PharmacyAdminItem(BaseModel):
     kyc_status: Optional[str] = None
     subscription: Optional[dict] = None
     created_at: Optional[str] = None
+    latest_payment_code: Optional[str] = None
+    latest_payment_status: Optional[str] = None
+    latest_payment_submitted_at: Optional[str] = None
 
 
 class PharmaciesAdminListResponse(BaseModel):

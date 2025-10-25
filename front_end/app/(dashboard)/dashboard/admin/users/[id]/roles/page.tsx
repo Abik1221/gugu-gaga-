@@ -23,11 +23,11 @@ export default function UserRolesPage() {
     let active = true;
     async function load() {
       try {
-        await getAuthJSON("/api/v1/auth/me");
+        await getAuthJSON("/auth/me");
         const token = getAccessToken();
         const [uRes, rRes] = await Promise.all([
-          fetch(`${API_BASE}/api/v1/users/${encodeURIComponent(userId)}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} }),
-          fetch(`${API_BASE}/api/v1/roles`, { headers: token ? { Authorization: `Bearer ${token}` } : {} }),
+          fetch(`${API_BASE}/admin/users/${encodeURIComponent(userId)}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} }),
+          fetch(`${API_BASE}/admin/roles`, { headers: token ? { Authorization: `Bearer ${token}` } : {} }),
         ]);
         if (!uRes.ok) throw new Error(await uRes.text().catch(() => "Failed to load user"));
         if (!rRes.ok) throw new Error(await rRes.text().catch(() => "Failed to load roles"));
@@ -59,13 +59,17 @@ export default function UserRolesPage() {
     setAssigning(roleId);
     try {
       const token = getAccessToken();
-      const res = await fetch(`${API_BASE}/api/v1/users/${encodeURIComponent(userId)}/assign-role/${encodeURIComponent(roleId)}`, {
+      const res = await fetch(`${API_BASE}/admin/users/${encodeURIComponent(userId)}/assign-role`, {
         method: "POST",
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ role: roleId }),
       });
       if (!res.ok) throw new Error(await res.text().catch(()=>"Failed to assign"));
       // Refresh user
-      const uRes = await fetch(`${API_BASE}/api/v1/users/${encodeURIComponent(userId)}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+      const uRes = await fetch(`${API_BASE}/admin/users/${encodeURIComponent(userId)}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
       const u = await uRes.json();
       setUser(u);
       show({ variant: "success", title: "Role assigned" });
@@ -80,13 +84,17 @@ export default function UserRolesPage() {
     setAssigning(roleId);
     try {
       const token = getAccessToken();
-      const res = await fetch(`${API_BASE}/api/v1/users/${encodeURIComponent(userId)}/remove-role/${encodeURIComponent(roleId)}`, {
-        method: "DELETE",
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      const res = await fetch(`${API_BASE}/admin/users/${encodeURIComponent(userId)}/remove-role`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ role: roleId }),
       });
       if (!res.ok) throw new Error(await res.text().catch(()=>"Failed to remove"));
       // Refresh user
-      const uRes = await fetch(`${API_BASE}/api/v1/users/${encodeURIComponent(userId)}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+      const uRes = await fetch(`${API_BASE}/admin/users/${encodeURIComponent(userId)}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
       const u = await uRes.json();
       setUser(u);
       show({ variant: "success", title: "Role removed" });

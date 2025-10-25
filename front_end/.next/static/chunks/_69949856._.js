@@ -149,6 +149,8 @@ __turbopack_context__.s([
     ()=>postAuthJSON,
     "postForm",
     ()=>postForm,
+    "postJSON",
+    ()=>postJSON,
     "postMultipart",
     ()=>postMultipart
 ]);
@@ -170,6 +172,26 @@ async function postForm(path, data, tenantId) {
             "Content-Type": "application/x-www-form-urlencoded"
         }, tenantId),
         body
+    });
+    if (!res.ok) {
+        try {
+            const data = await res.json();
+            const msg = (data === null || data === void 0 ? void 0 : data.error) || (data === null || data === void 0 ? void 0 : data.detail) || JSON.stringify(data);
+            throw new Error(msg || "Request failed with ".concat(res.status));
+        } catch (e) {
+            const text = await res.text().catch(()=>"");
+            throw new Error(text || "Request failed with ".concat(res.status));
+        }
+    }
+    return await res.json();
+}
+async function postJSON(path, body, tenantId) {
+    const res = await fetch("".concat(API_BASE).concat(path), {
+        method: "POST",
+        headers: buildHeaders({
+            "Content-Type": "application/json"
+        }, tenantId),
+        body: JSON.stringify(body)
     });
     if (!res.ok) {
         try {
@@ -296,8 +318,12 @@ async function postAuthJSON(path, bodyData, tenantId) {
     return await res.json();
 }
 const AuthAPI = {
-    registerAffiliate: (body)=>postAuthJSON("/auth/register/affiliate", body),
-    registerPharmacy: (body)=>postAuthJSON("/auth/register/pharmacy", body),
+    registerAffiliate: (body)=>postJSON("/auth/register/affiliate", body),
+    registerPharmacy: (body)=>postJSON("/auth/register/pharmacy", body),
+    verifyRegistration: (email, code)=>postForm("/auth/register/verify", {
+            email,
+            code
+        }),
     login: (email, password, tenantId)=>postForm("/auth/login", {
             username: email,
             password
@@ -306,7 +332,7 @@ const AuthAPI = {
             username: email,
             password
         }, tenantId),
-    loginVerify: (email, code, tenantId)=>postAuthJSON("/auth/login/verify", {
+    loginVerify: (email, code, tenantId)=>postJSON("/auth/login/verify", {
             email,
             code
         }, tenantId),
@@ -584,8 +610,7 @@ function RegisterPage() {
                 affiliate_full_name: fullName || undefined,
                 bank_name: bankName || undefined,
                 bank_account_name: bankAccountName || undefined,
-                bank_account_number: bankAccountNumber || undefined,
-                iban: iban || undefined
+                bank_account_number: bankAccountNumber || undefined
             });
             setSuccess("Affiliate registered. Please verify your email.");
             show({
@@ -593,13 +618,14 @@ function RegisterPage() {
                 title: "Registered",
                 description: "Check your email for verification code"
             });
-            setTimeout(()=>router.replace("/login"), 1200);
+            setTimeout(()=>router.replace("/register/verify?email=".concat(encodeURIComponent(affEmail))), 800);
         } catch (err) {
-            setError(err.message || "Registration failed");
+            const message = (err === null || err === void 0 ? void 0 : err.message) || "Registration failed";
+            setError(message);
             show({
                 variant: "destructive",
                 title: "Failed",
-                description: err.message || "Please try again"
+                description: message
             });
         } finally{
             setLoading(false);
@@ -856,21 +882,35 @@ function RegisterPage() {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                             className: "text-sm",
-                                            children: "Notes to Reviewer"
+                                            children: "Pharmacy License Document (Image, required)"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/page.tsx",
                                             lineNumber: 156,
                                             columnNumber: 17
                                         }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                            className: "w-full border rounded px-3 py-2",
-                                            rows: 3,
-                                            value: kycNotes,
-                                            onChange: (e)=>setKycNotes(e.target.value)
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            type: "file",
+                                            accept: ".jpg,.jpeg,.png",
+                                            onChange: (e)=>{
+                                                var _e_target_files;
+                                                return setKycFile(((_e_target_files = e.target.files) === null || _e_target_files === void 0 ? void 0 : _e_target_files[0]) || null);
+                                            },
+                                            required: true
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/page.tsx",
                                             lineNumber: 157,
                                             columnNumber: 17
+                                        }, this),
+                                        kycUploadPath && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "text-xs text-gray-500",
+                                            children: [
+                                                "Uploaded: ",
+                                                kycUploadPath
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/app/(auth)/register/page.tsx",
+                                            lineNumber: 158,
+                                            columnNumber: 36
                                         }, this)
                                     ]
                                 }, void 0, true, {
@@ -883,39 +923,26 @@ function RegisterPage() {
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                             className: "text-sm",
-                                            children: "KYC Document (PDF/JPG/PNG, max 10MB)"
-                                        }, void 0, false, {
-                                            fileName: "[project]/app/(auth)/register/page.tsx",
-                                            lineNumber: 160,
-                                            columnNumber: 17
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                            type: "file",
-                                            accept: ".pdf,.jpg,.jpeg,.png",
-                                            onChange: (e)=>{
-                                                var _e_target_files;
-                                                return setKycFile(((_e_target_files = e.target.files) === null || _e_target_files === void 0 ? void 0 : _e_target_files[0]) || null);
-                                            }
+                                            children: "Notes to Reviewer"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/page.tsx",
                                             lineNumber: 161,
                                             columnNumber: 17
                                         }, this),
-                                        kycUploadPath && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "text-xs text-gray-500",
-                                            children: [
-                                                "Uploaded: ",
-                                                kycUploadPath
-                                            ]
-                                        }, void 0, true, {
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                            className: "w-full border rounded px-3 py-2",
+                                            rows: 3,
+                                            value: kycNotes,
+                                            onChange: (e)=>setKycNotes(e.target.value)
+                                        }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/page.tsx",
                                             lineNumber: 162,
-                                            columnNumber: 36
+                                            columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/register/page.tsx",
-                                    lineNumber: 159,
+                                    lineNumber: 160,
                                     columnNumber: 15
                                 }, this)
                             ]
@@ -1106,31 +1133,6 @@ function RegisterPage() {
                                     fileName: "[project]/app/(auth)/register/page.tsx",
                                     lineNumber: 193,
                                     columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "space-y-1",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                            className: "text-sm",
-                                            children: "IBAN (optional)"
-                                        }, void 0, false, {
-                                            fileName: "[project]/app/(auth)/register/page.tsx",
-                                            lineNumber: 198,
-                                            columnNumber: 17
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                                            value: iban,
-                                            onChange: (e)=>setIban(e.target.value)
-                                        }, void 0, false, {
-                                            fileName: "[project]/app/(auth)/register/page.tsx",
-                                            lineNumber: 199,
-                                            columnNumber: 17
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/app/(auth)/register/page.tsx",
-                                    lineNumber: 197,
-                                    columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
@@ -1144,7 +1146,7 @@ function RegisterPage() {
                             children: loading ? "Registering..." : "Register as Affiliate"
                         }, void 0, false, {
                             fileName: "[project]/app/(auth)/register/page.tsx",
-                            lineNumber: 202,
+                            lineNumber: 198,
                             columnNumber: 13
                         }, this)
                     ]
