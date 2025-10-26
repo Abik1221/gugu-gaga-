@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -176,6 +177,12 @@ export default function RegisterPage() {
               <div className="text-xs text-gray-600">Referral token detected.</div>
             )}
             <Button type="submit" disabled={loading}>{loading ? "Submitting..." : "Submit Application"}</Button>
+            <p className="text-sm text-gray-600">
+              Already have an account?{" "}
+              <Link href="/auth?tab=signin" className="text-emerald-600 hover:underline">
+                Sign in
+              </Link>
+            </p>
           </form>
         ) : (
           <form onSubmit={submitAffiliate} className="space-y-4">
@@ -206,6 +213,12 @@ export default function RegisterPage() {
               </div>
             </div>
             <Button type="submit" disabled={loading}>{loading ? "Registering..." : "Register as Affiliate"}</Button>
+            <p className="text-sm text-gray-600">
+              Already have an affiliate account?{" "}
+              <Link href="/affiliate-login" className="text-emerald-600 hover:underline">
+                Sign in
+              </Link>
+            </p>
           </form>
         )}
       </div>

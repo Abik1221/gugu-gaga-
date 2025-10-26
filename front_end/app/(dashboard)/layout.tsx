@@ -21,12 +21,23 @@ type Me = {
   latest_payment_status?: string | null;
 };
 
+function deriveRoles(user: Me | null | undefined): string[] {
+  const roles = new Set<string>();
+  if (user?.role) roles.add(user.role.toLowerCase());
+  user?.roles?.forEach((entry) => {
+    const name = entry?.role?.name;
+    if (name) roles.add(name.toLowerCase());
+  });
+  return Array.from(roles);
+}
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<Me | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -40,8 +51,9 @@ export default function DashboardLayout({
         actionLabel?: string;
       }
   >(null);
-  const roleName = (user?.role || user?.roles?.[0]?.role?.name || "").toLowerCase();
-  const isAffiliate = roleName === "affiliate";
+  const roles = deriveRoles(user);
+  const roleName = roles[0] || "";
+  const isAffiliate = roles.includes("affiliate");
 
   useEffect(() => {
     let active = true;
@@ -50,6 +62,30 @@ export default function DashboardLayout({
         const me = await getAuthJSON<Me>("/auth/me");
         if (!active) return;
         setUser(me);
+        // If KYC is pending and user is an owner/staff, keep them on status page only
+        const primaryRole = (me?.role || me?.roles?.[0]?.role?.name || "").toLowerCase();
+        if (primaryRole !== "admin" && pathname.startsWith("/dashboard/admin")) {
+          router.replace("/dashboard/owner");
+          return;
+        }
+        if (["pharmacy_owner", "owner", "cashier", "manager"].includes(primaryRole)) {
+          const needsKyc = me?.kyc_status !== "approved";
+          const needsPayment = me?.kyc_status === "approved" && me?.subscription_status && me.subscription_status !== "active";
+          const ownerKycPath = "/dashboard/owner/kyc";
+          const ownerPaymentPath = "/dashboard/owner/payment";
+          if (needsKyc && pathname !== ownerKycPath) {
+            router.replace(ownerKycPath);
+            return;
+          }
+          if (!needsKyc && needsPayment && pathname !== ownerPaymentPath) {
+            router.replace(ownerPaymentPath);
+            return;
+          }
+          if (!needsKyc && !needsPayment && (pathname === ownerKycPath || pathname === ownerPaymentPath)) {
+            router.replace("/dashboard/owner");
+            return;
+          }
+        }
         // One-time referral track removed (handled server-side)
       } catch (e: any) {
         if (!active) return;
@@ -69,16 +105,16 @@ export default function DashboardLayout({
     return () => {
       active = false;
     };
-  }, [router]);
+  }, [router, pathname]);
 
   useEffect(() => {
     if (!user) {
       setBanner(null);
       return;
     }
-    const roleName = (user?.role || user?.roles?.[0]?.role?.name || "").toLowerCase();
-    const isOwner = roleName === "pharmacy_owner" || roleName === "owner";
-    const isCashier = roleName === "cashier";
+    const userRoles = deriveRoles(user);
+    const isOwner = userRoles.includes("pharmacy_owner") || userRoles.includes("owner");
+    const isCashier = userRoles.includes("cashier");
     if (!(isOwner || isCashier)) {
       setBanner(null);
       return;
@@ -173,13 +209,18 @@ function Shell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const roleName = (user?.role || user?.roles?.[0]?.role?.name || "").toLowerCase();
-  const isOwner = roleName === "pharmacy_owner" || roleName === "owner";
-  const isCashier = roleName === "cashier";
-  const isManager = roleName === "manager";
-  const isAffiliate = roleName === "affiliate";
-  const isAdmin = roleName === "admin";
+  const roles = deriveRoles(user);
+  const baseRole = (user?.role || "").toLowerCase();
+  const primaryRole = baseRole || roles[0] || "";
+  const isOwner = baseRole === "pharmacy_owner" || baseRole === "owner" || roles.includes("pharmacy_owner") || roles.includes("owner");
+  const isCashier = baseRole === "cashier" || roles.includes("cashier");
+  const isManager = baseRole === "manager" || roles.includes("manager");
+  const isAffiliate = baseRole === "affiliate" || roles.includes("affiliate");
+  const isAdmin = baseRole === "admin";
   const isOwnerOrManager = isOwner || isManager || isCashier;
+  const subscriptionStatus = user?.subscription_status || "active";
+  const requiresPayment = isOwnerOrManager && user?.kyc_status === "approved" && subscriptionStatus !== "active";
+  const kycPending = isOwnerOrManager && user?.kyc_status && user.kyc_status !== "approved";
 
   const nav = isAffiliate
     ? [{ href: "/dashboard/affiliate", label: "Affiliate Dashboard" }]
@@ -193,16 +234,18 @@ function Shell({
         { href: "/dashboard/admin/audit", label: "Audit Log" },
       ]
     : isOwnerOrManager
-    ? [
-        { href: "/dashboard/owner", label: "Owner Overview" },
-        { href: "/dashboard/owner/billing", label: "Billing" },
-        { href: "/dashboard/inventory", label: "Inventory" },
-        { href: "/dashboard/pos", label: "POS" },
-        { href: "/dashboard/affiliate", label: "Affiliate" },
-        { href: "/dashboard/admin/payouts", label: "Payouts" },
-        { href: "/dashboard/settings", label: "Settings" },
-        { href: "/dashboard/about", label: "About" },
-      ]
+    ? (kycPending
+        ? [{ href: "/dashboard/owner/kyc", label: "KYC" }]
+        : requiresPayment
+        ? [{ href: "/dashboard/owner/payment", label: "Payment" }]
+        : [
+            { href: "/dashboard/owner", label: "Owner Overview" },
+            { href: "/dashboard/owner/billing", label: "Billing" },
+            { href: "/dashboard/inventory", label: "Inventory" },
+            { href: "/dashboard/pos", label: "POS" },
+            { href: "/dashboard/settings", label: "Settings" },
+            { href: "/dashboard/about", label: "About" },
+          ])
     : [
         { href: "/dashboard", label: "Overview" },
         { href: "/dashboard/inventory", label: "Inventory" },
@@ -229,7 +272,7 @@ function Shell({
             <div>
               <div className="font-medium">{user.username}</div>
               <div className="text-xs text-gray-500 truncate">{user.email}</div>
-              {roleName && <div className="text-2xs uppercase text-gray-400">{roleName}</div>}
+              {primaryRole && <div className="text-2xs uppercase text-gray-400">{primaryRole}</div>}
             </div>
           ) : null}
         </div>

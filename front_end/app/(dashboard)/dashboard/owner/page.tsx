@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { AuthAPI, PharmaciesAPI, ChatAPI, KYCAPI, UploadAPI } from "@/utils/api";
+import { AuthAPI, PharmaciesAPI, ChatAPI, KYCAPI, UploadAPI, BillingAPI } from "@/utils/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -40,6 +40,8 @@ export default function OwnerDashboardPage() {
     pharmacy_license_document_path: "",
     license_document_name: "",
   });
+  const [paymentCode, setPaymentCode] = useState("");
+  const [submittingPayment, setSubmittingPayment] = useState(false);
 
   const loadKyc = useCallback(
     async (tid: string) => {
@@ -80,22 +82,45 @@ export default function OwnerDashboardPage() {
         const me = await AuthAPI.me();
         if (!active) return;
         setUser(me);
+
+        const tenantFromUser = me?.tenant_id ?? null;
+        const kycApproved = me?.kyc_status === "approved";
+        const subscriptionStatus = me?.subscription_status || "active";
+        const requiresPayment = kycApproved && subscriptionStatus !== "active";
+
+        if (!kycApproved) {
+          setPharmacies([]);
+          setUsage([]);
+          setTenantId(tenantFromUser);
+          if (tenantFromUser) {
+            await loadKyc(tenantFromUser);
+          } else {
+            setKyc(null);
+          }
+          return;
+        }
+
+        if (requiresPayment) {
+          setPharmacies([]);
+          setUsage([]);
+          setTenantId(tenantFromUser);
+          return;
+        }
+
         const ph = await PharmaciesAPI.list(1, 20);
         if (!active) return;
         const items = ph.items || [];
         setPharmacies(items);
-        const tid = me?.tenant_id || (items[0]?.tenant_id ?? null);
+        const tid = tenantFromUser || (items[0]?.tenant_id ?? null);
         if (!active) return;
         setTenantId(tid);
         if (tid) {
-          if (me?.kyc_status === "approved") {
-            try {
-              const u = await ChatAPI.usage(tid, 14);
-              if (!active) return;
-              setUsage(Array.isArray(u) ? u : []);
-            } catch {}
-          } else {
-            await loadKyc(tid);
+          try {
+            const u = await ChatAPI.usage(tid, 14);
+            if (!active) return;
+            setUsage(Array.isArray(u) ? u : []);
+          } catch {
+            setUsage([]);
           }
         }
       } catch (e: any) {
@@ -158,8 +183,15 @@ export default function OwnerDashboardPage() {
     try {
       const latest = await AuthAPI.me();
       setUser(latest);
+      const latestSubscriptionStatus = latest?.subscription_status || "active";
+      const requiresPaymentLatest = latest?.kyc_status === "approved" && latestSubscriptionStatus !== "active";
       if (latest?.kyc_status !== "approved") {
         await loadKyc(tenantId);
+        setPharmacies([]);
+        setUsage([]);
+      } else if (requiresPaymentLatest) {
+        setPharmacies([]);
+        setUsage([]);
       } else {
         const u = await ChatAPI.usage(tenantId, 14).catch(() => []);
         setUsage(Array.isArray(u) ? u : []);
@@ -176,6 +208,48 @@ export default function OwnerDashboardPage() {
   if (error) return <div className="text-red-600 text-sm">{error}</div>;
 
   const tenantStatus = user?.kyc_status || "pending";
+  const subscriptionStatus = user?.subscription_status || "active";
+  const requiresPayment = user?.kyc_status === "approved" && subscriptionStatus !== "active";
+
+  const paymentCopies: Record<string, { title: string; description: string; variant: "info" | "warning" | "success" }> = {
+    awaiting_payment: {
+      title: "Subscription payment required",
+      description: "Your pharmacy has been approved. Please enter the payment code provided by the admin desk so we can activate your tools.",
+      variant: "info",
+    },
+    pending_verification: {
+      title: "Payment awaiting verification",
+      description: "Thanks for submitting your payment code. The admin team is reviewing it now. You’ll be notified as soon as it’s verified.",
+      variant: "success",
+    },
+    payment_rejected: {
+      title: "Payment could not be verified",
+      description: "The last payment submission was rejected. Double-check the receipt and submit a valid payment code to continue.",
+      variant: "warning",
+    },
+  };
+
+  const handleSubmitPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tenantId) return;
+    const trimmed = paymentCode.trim();
+    if (trimmed.length < 4) {
+      show({ variant: "destructive", title: "Code too short", description: "Payment codes must be at least 4 characters." });
+      return;
+    }
+    setSubmittingPayment(true);
+    try {
+      await BillingAPI.submitPaymentCode(tenantId, trimmed);
+      show({ variant: "success", title: "Payment submitted", description: "We’ll notify you once the team verifies it." });
+      setPaymentCode("");
+      const latest = await AuthAPI.me();
+      setUser(latest);
+    } catch (err: any) {
+      show({ variant: "destructive", title: "Submission failed", description: err?.message || "Unable to submit payment code" });
+    } finally {
+      setSubmittingPayment(false);
+    }
+  };
 
   if (user?.kyc_status !== "approved") {
     return (
@@ -310,6 +384,66 @@ export default function OwnerDashboardPage() {
         </div>
       </div>
     );
+  }
+
+  if (requiresPayment) {
+    const paymentMeta = paymentCopies[subscriptionStatus] || paymentCopies.awaiting_payment;
+    return (
+      <div className="max-w-3xl mx-auto space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold">{paymentMeta.title}</h1>
+          <p className="text-sm text-muted-foreground">{paymentMeta.description}</p>
+        </div>
+
+        <div
+          className={`rounded border p-4 space-y-4 ${paymentMeta.variant === "warning" ? "border-red-200 bg-red-50 text-red-800" : paymentMeta.variant === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs uppercase tracking-wide">Current status</div>
+              <div className="text-lg font-semibold capitalize">{subscriptionStatus.replace(/_/g, " ")}</div>
+            </div>
+            <Button variant="outline" onClick={handleRefreshStatus} disabled={refreshing}>
+              {refreshing ? "Refreshing..." : "Refresh status"}
+            </Button>
+          </div>
+
+          {subscriptionStatus !== "pending_verification" && (
+            <form className="space-y-3" onSubmit={handleSubmitPayment}>
+              <div className="space-y-1">
+                <label className="text-xs uppercase tracking-wide text-muted-foreground" htmlFor="payment-code-input">
+                  Payment code
+                </label>
+                <Input
+                  id="payment-code-input"
+                  value={paymentCode}
+                  onChange={(e) => setPaymentCode(e.target.value)}
+                  placeholder="Enter the receipt/payment code"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button type="submit" disabled={submittingPayment}>
+                  {submittingPayment ? "Submitting..." : "Submit code"}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setPaymentCode("")} disabled={submittingPayment || paymentCode.length === 0}>
+                  Clear
+                </Button>
+              </div>
+            </form>
+          )}
+
+          {subscriptionStatus === "pending_verification" && (
+            <div className="text-sm">
+              We will email you once verification is complete. You can refresh this page to check for updates.
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (requiresPayment) {
+    return null;
   }
 
   return (

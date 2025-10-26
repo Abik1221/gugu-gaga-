@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 export default function CTA() {
@@ -20,18 +21,19 @@ export default function CTA() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button
+            asChild
             size="lg"
             className="cursor-pointer bg-emerald-600 hover:bg-emerald-700"
-            onClick={() => (window.location.hash = "#contact")}
           >
-            Get Started
+            <Link href="/register">Get Started</Link>
           </Button>
           <Button
+            asChild
             size="lg"
             variant="outline"
             className="cursor-pointer border-emerald-600 text-emerald-600 hover:bg-emerald-50"
           >
-            Affiliate
+            <Link href="/register?tab=affiliate">Affiliate</Link>
           </Button>
         </div>
       </motion.div>

@@ -273,6 +273,7 @@
     --color-red-500: #fb2c36;
     --color-red-600: #e40014;
     --color-red-700: #bf000f;
+    --color-red-800: #9f0712;
     --color-amber-50: #fffbeb;
     --color-amber-100: #fef3c6;
     --color-amber-200: #fee685;
@@ -363,6 +364,7 @@
       --color-red-500: color(display-p3 .903738 .262579 .253307);
       --color-red-600: color(display-p3 .830323 .140383 .133196);
       --color-red-700: color(display-p3 .692737 .116232 .104679);
+      --color-red-800: color(display-p3 .569606 .121069 .108493);
       --color-amber-50: color(display-p3 .997804 .985047 .926312);
       --color-amber-100: color(display-p3 .989391 .954583 .796328);
       --color-amber-200: color(display-p3 .979824 .904554 .57325);
@@ -404,45 +406,46 @@
 
   @supports (color: lab(0% 0 0)) {
     :root, :host {
-      --color-red-50: lab(96.5005% 4.18508 1.52328);
+      --color-red-50: lab(96.5005% 4.18511 1.52329);
       --color-red-100: lab(92.243% 10.2865 3.83865);
       --color-red-200: lab(86.017% 19.8815 7.75869);
       --color-red-500: lab(55.4814% 75.0732 48.8528);
       --color-red-600: lab(48.4493% 77.4328 61.5452);
       --color-red-700: lab(40.4273% 67.2623 53.7441);
-      --color-amber-50: lab(98.6252% -.635922 8.42309);
-      --color-amber-100: lab(95.916% -1.21653 23.111);
+      --color-red-800: lab(33.7174% 55.8993 41.0293);
+      --color-amber-50: lab(98.6252% -.635982 8.42309);
+      --color-amber-100: lab(95.916% -1.2165 23.111);
       --color-amber-200: lab(91.7203% -.505269 49.9084);
       --color-amber-500: lab(72.7183% 31.8672 97.9407);
       --color-amber-600: lab(60.3514% 40.5624 87.1228);
       --color-amber-700: lab(47.2709% 42.9082 69.2966);
-      --color-amber-800: lab(37.8822% 37.1699 52.2718);
-      --color-green-100: lab(96.1861% -13.8464 6.52365);
-      --color-emerald-50: lab(97.8462% -6.94966 1.85487);
+      --color-amber-800: lab(37.8823% 37.1699 52.2718);
+      --color-green-100: lab(96.186% -13.8464 6.52362);
+      --color-emerald-50: lab(97.8462% -6.94963 1.85487);
       --color-emerald-100: lab(94.9004% -17.0769 5.63836);
       --color-emerald-200: lab(90.2247% -31.039 9.47084);
       --color-emerald-300: lab(83.9203% -48.7124 13.8849);
-      --color-emerald-400: lab(75.0771% -60.7313 19.4147);
+      --color-emerald-400: lab(75.0771% -60.7313 19.4146);
       --color-emerald-500: lab(66.9756% -58.27 19.5419);
       --color-emerald-600: lab(55.0481% -49.9246 15.93);
       --color-emerald-700: lab(44.4871% -41.0396 11.0361);
       --color-emerald-800: lab(35.3675% -33.1188 8.04002);
       --color-emerald-900: lab(28.8637% -26.9249 5.45986);
-      --color-blue-50: lab(96.492% -1.14644 -5.11479);
+      --color-blue-50: lab(96.492% -1.14647 -5.11479);
       --color-blue-100: lab(92.0301% -2.24757 -11.6453);
-      --color-blue-500: lab(54.1736% 13.3369 -74.6839);
+      --color-blue-500: lab(54.1736% 13.3368 -74.6839);
       --color-blue-600: lab(44.0605% 29.0279 -86.0352);
       --color-blue-700: lab(36.9089% 35.0961 -85.6872);
       --color-indigo-500: lab(48.295% 38.3129 -81.9673);
-      --color-slate-50: lab(98.1434% -.369519 -1.05966);
-      --color-slate-900: lab(7.78673% 1.82345 -15.0537);
+      --color-slate-50: lab(98.1434% -.369549 -1.05968);
+      --color-slate-900: lab(7.78673% 1.82346 -15.0537);
       --color-slate-950: lab(1.76974% 1.32743 -9.28855);
       --color-gray-50: lab(98.2596% -.247031 -.706708);
-      --color-gray-100: lab(96.1596% -.0823438 -1.13575);
-      --color-gray-200: lab(91.6229% -.159115 -2.26791);
+      --color-gray-100: lab(96.1596% -.082314 -1.13575);
+      --color-gray-200: lab(91.6229% -.159085 -2.26791);
       --color-gray-300: lab(85.1236% -.612259 -3.7138);
-      --color-gray-400: lab(65.9269% -.832707 -8.17473);
-      --color-gray-500: lab(47.7841% -.393182 -10.0268);
+      --color-gray-400: lab(65.9269% -.832707 -8.17474);
+      --color-gray-500: lab(47.7841% -.393212 -10.0268);
       --color-gray-600: lab(35.6337% -1.58697 -10.8425);
       --color-gray-700: lab(27.1134% -.956401 -12.3224);
       --color-gray-800: lab(16.1051% -1.18239 -11.7533);
@@ -2446,6 +2449,10 @@
     color: var(--color-red-700);
   }
 
+  .text-red-800 {
+    color: var(--color-red-800);
+  }
+
   .text-secondary-foreground {
     color: var(--secondary-foreground);
   }
@@ -2614,12 +2621,6 @@
       .group-hover\:bg-white\/20:is(:where(.group):hover *) {
         background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
       }
-    }
-  }
-
-  @media (hover: hover) {
-    .group-hover\:opacity-100:is(:where(.group):hover *) {
-      opacity: 1;
     }
   }
 
@@ -3187,12 +3188,6 @@
   }
 
   @media (min-width: 40rem) {
-    .sm\:h-screen {
-      height: 100vh;
-    }
-  }
-
-  @media (min-width: 40rem) {
     .sm\:max-w-sm {
       max-width: var(--container-sm);
     }
@@ -3698,16 +3693,16 @@
     --popover-foreground: lab(1.90334% .278696 -5.48866);
     --primary: lab(8.11897% .811279 -12.254);
     --primary-foreground: lab(98.2596% -.247031 -.706708);
-    --secondary: lab(96.1596% -.0823438 -1.13575);
+    --secondary: lab(96.1596% -.082314 -1.13575);
     --secondary-foreground: lab(8.11897% .811279 -12.254);
-    --muted: lab(96.1596% -.0823438 -1.13575);
-    --muted-foreground: lab(47.7841% -.393182 -10.0268);
-    --accent: lab(96.1596% -.0823438 -1.13575);
+    --muted: lab(96.1596% -.082314 -1.13575);
+    --muted-foreground: lab(47.7841% -.393212 -10.0268);
+    --accent: lab(96.1596% -.082314 -1.13575);
     --accent-foreground: lab(8.11897% .811279 -12.254);
     --destructive: lab(48.4493% 77.4328 61.5452);
-    --border: lab(91.6229% -.159115 -2.26791);
-    --input: lab(91.6229% -.159115 -2.26791);
-    --ring: lab(65.9269% -.832707 -8.17473);
+    --border: lab(91.6229% -.159085 -2.26791);
+    --input: lab(91.6229% -.159085 -2.26791);
+    --ring: lab(65.9269% -.832707 -8.17474);
     --chart-1: lab(57.1026% 64.2584 89.8886);
     --chart-2: lab(55.0223% -41.0774 -3.90277);
     --chart-3: lab(30.372% -13.1853 -18.7887);
@@ -3717,10 +3712,10 @@
     --sidebar-foreground: lab(1.90334% .278696 -5.48866);
     --sidebar-primary: lab(8.11897% .811279 -12.254);
     --sidebar-primary-foreground: lab(98.2596% -.247031 -.706708);
-    --sidebar-accent: lab(96.1596% -.0823438 -1.13575);
+    --sidebar-accent: lab(96.1596% -.082314 -1.13575);
     --sidebar-accent-foreground: lab(8.11897% .811279 -12.254);
-    --sidebar-border: lab(91.6229% -.159115 -2.26791);
-    --sidebar-ring: lab(65.9269% -.832707 -8.17473);
+    --sidebar-border: lab(91.6229% -.159085 -2.26791);
+    --sidebar-ring: lab(65.9269% -.832707 -8.17474);
   }
 }
 
@@ -3802,23 +3797,23 @@
     --card-foreground: lab(98.2596% -.247031 -.706708);
     --popover: lab(8.11897% .811279 -12.254);
     --popover-foreground: lab(98.2596% -.247031 -.706708);
-    --primary: lab(91.6229% -.159115 -2.26791);
+    --primary: lab(91.6229% -.159085 -2.26791);
     --primary-foreground: lab(8.11897% .811279 -12.254);
     --secondary: lab(16.1051% -1.18239 -11.7533);
     --secondary-foreground: lab(98.2596% -.247031 -.706708);
     --muted: lab(16.1051% -1.18239 -11.7533);
-    --muted-foreground: lab(65.9269% -.832707 -8.17473);
+    --muted-foreground: lab(65.9269% -.832707 -8.17474);
     --accent: lab(16.1051% -1.18239 -11.7533);
     --accent-foreground: lab(98.2596% -.247031 -.706708);
-    --destructive: lab(63.7053% 60.745 31.3109);
+    --destructive: lab(63.7053% 60.7449 31.3109);
     --border: lab(100% 0 0 / .1);
     --input: lab(100% 0 0 / .15);
-    --ring: lab(47.7841% -.393182 -10.0268);
+    --ring: lab(47.7841% -.393212 -10.0268);
     --chart-1: lab(36.9089% 35.0961 -85.6872);
     --chart-2: lab(66.9756% -58.27 19.5419);
     --chart-3: lab(72.7183% 31.8672 97.9407);
     --chart-4: lab(52.0183% 66.11 -78.2316);
-    --chart-5: lab(56.101% 79.4328 31.4532);
+    --chart-5: lab(56.101% 79.4329 31.4532);
     --sidebar: lab(8.11897% .811279 -12.254);
     --sidebar-foreground: lab(98.2596% -.247031 -.706708);
     --sidebar-primary: lab(36.9089% 35.0961 -85.6872);
@@ -3826,7 +3821,7 @@
     --sidebar-accent: lab(16.1051% -1.18239 -11.7533);
     --sidebar-accent-foreground: lab(98.2596% -.247031 -.706708);
     --sidebar-border: lab(100% 0 0 / .1);
-    --sidebar-ring: lab(47.7841% -.393182 -10.0268);
+    --sidebar-ring: lab(47.7841% -.393212 -10.0268);
   }
 }
 

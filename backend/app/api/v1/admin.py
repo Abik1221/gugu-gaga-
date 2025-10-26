@@ -21,7 +21,7 @@ from app.models.user_tenant import UserTenant
 from app.services.notifications.in_app import create_notification
 from app.services.notifications.email import send_email
 from app.deps.ratelimit import rate_limit_user
-from app.services.billing.subscriptions import verify_payment_and_unblock, reject_payment_submission
+from app.services.billing.subscriptions import verify_payment_and_unblock, reject_payment_submission, ensure_subscription
 from app.models.affiliate import CommissionPayout, AffiliateProfile, AffiliateReferral
 from app.models.subscription import Subscription, PaymentSubmission
 from app.models.pharmacy import Pharmacy
@@ -158,6 +158,11 @@ def approve_pharmacy(
         if link:
             link.is_approved = True
             db.add(link)
+    # Ensure a subscription record exists and remains blocked until payment is verified
+    sub = ensure_subscription(db, tenant_id=tenant_id)
+    if not sub.blocked:
+        sub.blocked = True
+        db.add(sub)
     db.add(app)
     db.commit()
     log_event(

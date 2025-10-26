@@ -1,6 +1,19 @@
 {
+  "/(auth)/affiliate-login/page": "app/(auth)/affiliate-login/page.js",
+  "/(auth)/auth/page": "app/(auth)/auth/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js",
   "/(auth)/register/page": "app/(auth)/register/page.js",
+  "/(dashboard)/dashboard/admin/affiliates/page": "app/(dashboard)/dashboard/admin/affiliates/page.js",
+  "/(dashboard)/dashboard/admin/audit/page": "app/(dashboard)/dashboard/admin/audit/page.js",
+  "/(dashboard)/dashboard/admin/page": "app/(dashboard)/dashboard/admin/page.js",
+  "/(dashboard)/dashboard/admin/payouts/page": "app/(dashboard)/dashboard/admin/payouts/page.js",
+  "/(dashboard)/dashboard/admin/pharmacies/page": "app/(dashboard)/dashboard/admin/pharmacies/page.js",
+  "/(dashboard)/dashboard/admin/users/page": "app/(dashboard)/dashboard/admin/users/page.js",
+  "/(dashboard)/dashboard/owner/kyc/page": "app/(dashboard)/dashboard/owner/kyc/page.js",
+  "/(dashboard)/dashboard/owner/page": "app/(dashboard)/dashboard/owner/page.js",
+  "/(dashboard)/dashboard/owner/payment/page": "app/(dashboard)/dashboard/owner/payment/page.js",
   "/_not-found/page": "app/_not-found/page.js",
+  "/affiliate/page": "app/affiliate/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js"
 }

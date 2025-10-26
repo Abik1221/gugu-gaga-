@@ -295,8 +295,8 @@ export const UploadAPI = {
 };
 
 export const KYCAPI = {
-  status: (tenantId: string) => getAuthJSON(`/kyc/status`, tenantId),
-  update: (tenantId: string, body: any) => putAuthJSON(`/kyc/status`, body, tenantId),
+  status: (tenantId: string) => getAuthJSON(`/owner/kyc/status`, tenantId),
+  update: (tenantId: string, body: any) => putAuthJSON(`/owner/kyc/status`, body, tenantId),
 };
 
 export const PharmaciesAPI = {

@@ -29,8 +29,12 @@ __turbopack_context__.s([
     ()=>AffiliateAPI,
     "AuthAPI",
     ()=>AuthAPI,
+    "BillingAPI",
+    ()=>BillingAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "KYCAPI",
+    ()=>KYCAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
     "StaffAPI",
@@ -50,7 +54,9 @@ __turbopack_context__.s([
     "postJSON",
     ()=>postJSON,
     "postMultipart",
-    ()=>postMultipart
+    ()=>postMultipart,
+    "putAuthJSON",
+    ()=>putAuthJSON
 ]);
 const API_BASE = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "http://localhost:8000/api/v1";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
@@ -60,6 +66,26 @@ function buildHeaders(initHeaders, tenantId) {
     };
     if (tenantId) headers[TENANT_HEADER] = tenantId;
     return headers;
+}
+async function putAuthJSON(path, bodyData, tenantId) {
+    const res = await authFetch(path, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(bodyData)
+    }, true, tenantId);
+    if (!res.ok) {
+        try {
+            const data = await res.json();
+            const msg = data?.error || data?.detail || JSON.stringify(data);
+            throw new Error(msg || `Request failed with ${res.status}`);
+        } catch  {
+            const text = await res.text().catch(()=>"");
+            throw new Error(text || `Request failed with ${res.status}`);
+        }
+    }
+    return await res.json();
 }
 async function postForm(path, data, tenantId) {
     const body = new URLSearchParams(data);
@@ -248,9 +274,44 @@ const AffiliateAPI = {
 const AdminAPI = {
     pharmacies: (page = 1, pageSize = 20, q)=>getAuthJSON(`/admin/pharmacies?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
     affiliates: (page = 1, pageSize = 20, q)=>getAuthJSON(`/admin/affiliates?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
-    approvePharmacy: (tenantId, applicationId)=>postAuthJSON(`/admin/pharmacies/${applicationId}/approve`, {}, tenantId),
+    approvePharmacy: (tenantId, applicationId, body)=>postAuthJSON(`/admin/pharmacies/${applicationId}/approve`, body || {}, tenantId),
     rejectPharmacy: (tenantId, applicationId)=>postAuthJSON(`/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
-    verifyPayment: (tenantId, code)=>postAuthJSON(`/admin/payments/${encodeURIComponent(code)}/verify`, {}, tenantId),
+    verifyPayment: (tenantId, code)=>postAuthJSON(`/admin/payments/verify`, {
+            code: code || null
+        }, tenantId),
+    rejectPayment: (tenantId, code)=>postAuthJSON(`/admin/payments/reject`, {
+            code: code || null
+        }, tenantId),
+    analyticsOverview: (days = 30)=>getAuthJSON(`/admin/analytics/overview?days=${days}`),
+    downloadPharmacyLicense: async (applicationId)=>{
+        const res = await authFetch(`/admin/pharmacies/${applicationId}/license`, {
+            method: "GET"
+        }, true);
+        if (!res.ok) {
+            const text = await res.text().catch(()=>"");
+            throw new Error(text || `HTTP ${res.status}`);
+        }
+        const blob = await res.blob();
+        let filename = `license-${applicationId}`;
+        const disposition = res.headers.get("Content-Disposition") || "";
+        const match = disposition.match(/filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i);
+        const extracted = match?.[1] || match?.[2];
+        if (extracted) {
+            try {
+                filename = decodeURIComponent(extracted);
+            } catch  {
+                filename = extracted;
+            }
+        }
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    },
     approveAffiliate: (userId)=>postAuthJSON(`/admin/affiliates/${userId}/approve`, {}),
     rejectAffiliate: (userId)=>postAuthJSON(`/admin/affiliates/${userId}/reject`, {}),
     listAffiliatePayouts: (status)=>getAuthJSON(`/admin/affiliate/payouts${status ? `?status=${encodeURIComponent(status)}` : ""}`),
@@ -292,12 +353,21 @@ const StaffAPI = {
             return res.json();
         })
 };
+const BillingAPI = {
+    submitPaymentCode: (tenantId, code)=>postAuthJSON("/billing/payment-code", {
+            code
+        }, tenantId)
+};
 const UploadAPI = {
     uploadKyc: async (file)=>{
         const fd = new FormData();
         fd.append("file", file);
         return await postMultipart(`/uploads/kyc`, fd);
     }
+};
+const KYCAPI = {
+    status: (tenantId)=>getAuthJSON(`/kyc/status`, tenantId),
+    update: (tenantId, body)=>putAuthJSON(`/kyc/status`, body, tenantId)
 };
 const PharmaciesAPI = {
     list: (page = 1, pageSize = 20, q)=>getAuthJSON(`/pharmacies?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),

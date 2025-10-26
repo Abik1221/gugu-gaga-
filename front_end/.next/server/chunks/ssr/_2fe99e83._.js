@@ -160,6 +160,8 @@ function OwnerDashboardPage() {
         pharmacy_license_document_path: "",
         license_document_name: ""
     });
+    const [paymentCode, setPaymentCode] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
+    const [submittingPayment, setSubmittingPayment] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const loadKyc = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async (tid)=>{
         setKycLoading(true);
         try {
@@ -201,22 +203,41 @@ function OwnerDashboardPage() {
                 const me = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthAPI"].me();
                 if (!active) return;
                 setUser(me);
+                const tenantFromUser = me?.tenant_id ?? null;
+                const kycApproved = me?.kyc_status === "approved";
+                const subscriptionStatus = me?.subscription_status || "active";
+                const requiresPayment = kycApproved && subscriptionStatus !== "active";
+                if (!kycApproved) {
+                    setPharmacies([]);
+                    setUsage([]);
+                    setTenantId(tenantFromUser);
+                    if (tenantFromUser) {
+                        await loadKyc(tenantFromUser);
+                    } else {
+                        setKyc(null);
+                    }
+                    return;
+                }
+                if (requiresPayment) {
+                    setPharmacies([]);
+                    setUsage([]);
+                    setTenantId(tenantFromUser);
+                    return;
+                }
                 const ph = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PharmaciesAPI"].list(1, 20);
                 if (!active) return;
                 const items = ph.items || [];
                 setPharmacies(items);
-                const tid = me?.tenant_id || (items[0]?.tenant_id ?? null);
+                const tid = tenantFromUser || (items[0]?.tenant_id ?? null);
                 if (!active) return;
                 setTenantId(tid);
                 if (tid) {
-                    if (me?.kyc_status === "approved") {
-                        try {
-                            const u = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ChatAPI"].usage(tid, 14);
-                            if (!active) return;
-                            setUsage(Array.isArray(u) ? u : []);
-                        } catch  {}
-                    } else {
-                        await loadKyc(tid);
+                    try {
+                        const u = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ChatAPI"].usage(tid, 14);
+                        if (!active) return;
+                        setUsage(Array.isArray(u) ? u : []);
+                    } catch  {
+                        setUsage([]);
                     }
                 }
             } catch (e) {
@@ -292,8 +313,15 @@ function OwnerDashboardPage() {
         try {
             const latest = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthAPI"].me();
             setUser(latest);
+            const latestSubscriptionStatus = latest?.subscription_status || "active";
+            const requiresPaymentLatest = latest?.kyc_status === "approved" && latestSubscriptionStatus !== "active";
             if (latest?.kyc_status !== "approved") {
                 await loadKyc(tenantId);
+                setPharmacies([]);
+                setUsage([]);
+            } else if (requiresPaymentLatest) {
+                setPharmacies([]);
+                setUsage([]);
             } else {
                 const u = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ChatAPI"].usage(tenantId, 14).catch(()=>[]);
                 setUsage(Array.isArray(u) ? u : []);
@@ -317,7 +345,7 @@ function OwnerDashboardPage() {
         className: "h-64"
     }, void 0, false, {
         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-        lineNumber: 175,
+        lineNumber: 207,
         columnNumber: 23
     }, this);
     if (error) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -325,10 +353,62 @@ function OwnerDashboardPage() {
         children: error
     }, void 0, false, {
         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-        lineNumber: 176,
+        lineNumber: 208,
         columnNumber: 21
     }, this);
     const tenantStatus = user?.kyc_status || "pending";
+    const subscriptionStatus = user?.subscription_status || "active";
+    const requiresPayment = user?.kyc_status === "approved" && subscriptionStatus !== "active";
+    const paymentCopies = {
+        awaiting_payment: {
+            title: "Subscription payment required",
+            description: "Your pharmacy has been approved. Please enter the payment code provided by the admin desk so we can activate your tools.",
+            variant: "info"
+        },
+        pending_verification: {
+            title: "Payment awaiting verification",
+            description: "Thanks for submitting your payment code. The admin team is reviewing it now. You’ll be notified as soon as it’s verified.",
+            variant: "success"
+        },
+        payment_rejected: {
+            title: "Payment could not be verified",
+            description: "The last payment submission was rejected. Double-check the receipt and submit a valid payment code to continue.",
+            variant: "warning"
+        }
+    };
+    const handleSubmitPayment = async (e)=>{
+        e.preventDefault();
+        if (!tenantId) return;
+        const trimmed = paymentCode.trim();
+        if (trimmed.length < 4) {
+            show({
+                variant: "destructive",
+                title: "Code too short",
+                description: "Payment codes must be at least 4 characters."
+            });
+            return;
+        }
+        setSubmittingPayment(true);
+        try {
+            await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["BillingAPI"].submitPaymentCode(tenantId, trimmed);
+            show({
+                variant: "success",
+                title: "Payment submitted",
+                description: "We’ll notify you once the team verifies it."
+            });
+            setPaymentCode("");
+            const latest = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthAPI"].me();
+            setUser(latest);
+        } catch (err) {
+            show({
+                variant: "destructive",
+                title: "Submission failed",
+                description: err?.message || "Unable to submit payment code"
+            });
+        } finally{
+            setSubmittingPayment(false);
+        }
+    };
     if (user?.kyc_status !== "approved") {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "max-w-3xl mx-auto space-y-6",
@@ -341,7 +421,7 @@ function OwnerDashboardPage() {
                             children: "Your application is under review"
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                            lineNumber: 184,
+                            lineNumber: 258,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -349,7 +429,7 @@ function OwnerDashboardPage() {
                             children: "Thank you for submitting your pharmacy details. Our admin team is reviewing your information and will respond within 24 hours."
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                            lineNumber: 185,
+                            lineNumber: 259,
                             columnNumber: 11
                         }, this),
                         tenantStatus === "rejected" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -357,13 +437,13 @@ function OwnerDashboardPage() {
                             children: "The previous submission was rejected. Please review the notes and update your details below."
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                            lineNumber: 189,
+                            lineNumber: 263,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                    lineNumber: 183,
+                    lineNumber: 257,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -379,7 +459,7 @@ function OwnerDashboardPage() {
                                             children: "Current status"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 198,
+                                            lineNumber: 272,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -387,13 +467,13 @@ function OwnerDashboardPage() {
                                             children: tenantStatus.replace("_", " ")
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 199,
+                                            lineNumber: 273,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                    lineNumber: 197,
+                                    lineNumber: 271,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -403,20 +483,20 @@ function OwnerDashboardPage() {
                                     children: refreshing ? "Refreshing..." : "Refresh status"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                    lineNumber: 201,
+                                    lineNumber: 275,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                            lineNumber: 196,
+                            lineNumber: 270,
                             columnNumber: 11
                         }, this),
                         kycLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Skeleton"], {
                             className: "h-40"
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                            lineNumber: 207,
+                            lineNumber: 281,
                             columnNumber: 13
                         }, this) : editing ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                             onSubmit: handleSave,
@@ -432,7 +512,7 @@ function OwnerDashboardPage() {
                                                     children: "Pharmacy name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 212,
+                                                    lineNumber: 286,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -441,13 +521,13 @@ function OwnerDashboardPage() {
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 213,
+                                                    lineNumber: 287,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 211,
+                                            lineNumber: 285,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -457,7 +537,7 @@ function OwnerDashboardPage() {
                                                     children: "Pharmacy address"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 216,
+                                                    lineNumber: 290,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -465,13 +545,13 @@ function OwnerDashboardPage() {
                                                     onChange: (e)=>handleFieldChange("pharmacy_address", e.target.value)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 217,
+                                                    lineNumber: 291,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 215,
+                                            lineNumber: 289,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -481,7 +561,7 @@ function OwnerDashboardPage() {
                                                     children: "Owner phone"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 220,
+                                                    lineNumber: 294,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -490,13 +570,13 @@ function OwnerDashboardPage() {
                                                     placeholder: "+2519..."
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 221,
+                                                    lineNumber: 295,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 219,
+                                            lineNumber: 293,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -506,7 +586,7 @@ function OwnerDashboardPage() {
                                                     children: "National / company ID"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 224,
+                                                    lineNumber: 298,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -515,13 +595,13 @@ function OwnerDashboardPage() {
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 225,
+                                                    lineNumber: 299,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 223,
+                                            lineNumber: 297,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -531,7 +611,7 @@ function OwnerDashboardPage() {
                                                     children: "Pharmacy license number"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 228,
+                                                    lineNumber: 302,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -540,13 +620,13 @@ function OwnerDashboardPage() {
                                                     required: true
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 229,
+                                                    lineNumber: 303,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 227,
+                                            lineNumber: 301,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -557,7 +637,7 @@ function OwnerDashboardPage() {
                                                     children: "Notes to reviewer"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 232,
+                                                    lineNumber: 306,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -567,13 +647,13 @@ function OwnerDashboardPage() {
                                                     onChange: (e)=>handleFieldChange("notes", e.target.value)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 233,
+                                                    lineNumber: 307,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 231,
+                                            lineNumber: 305,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -584,7 +664,7 @@ function OwnerDashboardPage() {
                                                     children: "Upload license document (PNG/JPG/PDF)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 241,
+                                                    lineNumber: 315,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -593,7 +673,7 @@ function OwnerDashboardPage() {
                                                     onChange: (e)=>setKycFile(e.target.files?.[0] || null)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 242,
+                                                    lineNumber: 316,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -601,19 +681,19 @@ function OwnerDashboardPage() {
                                                     children: kycFile ? `Ready to upload: ${kycFile.name}` : pendingForm.license_document_name ? `Current file: ${pendingForm.license_document_name}` : "No file uploaded yet"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                    lineNumber: 247,
+                                                    lineNumber: 321,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 240,
+                                            lineNumber: 314,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                    lineNumber: 210,
+                                    lineNumber: 284,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -625,7 +705,7 @@ function OwnerDashboardPage() {
                                             children: saving ? "Saving..." : "Submit updates"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 257,
+                                            lineNumber: 331,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -651,19 +731,19 @@ function OwnerDashboardPage() {
                                             children: "Cancel"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 260,
+                                            lineNumber: 334,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                    lineNumber: 256,
+                                    lineNumber: 330,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                            lineNumber: 209,
+                            lineNumber: 283,
                             columnNumber: 13
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "space-y-4",
@@ -676,7 +756,7 @@ function OwnerDashboardPage() {
                                             value: kyc?.pharmacy_name || "—"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 288,
+                                            lineNumber: 362,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Detail, {
@@ -684,7 +764,7 @@ function OwnerDashboardPage() {
                                             value: kyc?.pharmacy_address || "—"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 289,
+                                            lineNumber: 363,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Detail, {
@@ -692,7 +772,7 @@ function OwnerDashboardPage() {
                                             value: kyc?.owner_phone || "—"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 290,
+                                            lineNumber: 364,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Detail, {
@@ -700,7 +780,7 @@ function OwnerDashboardPage() {
                                             value: kyc?.id_number || "—"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 291,
+                                            lineNumber: 365,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Detail, {
@@ -708,7 +788,7 @@ function OwnerDashboardPage() {
                                             value: kyc?.pharmacy_license_number || "—"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 292,
+                                            lineNumber: 366,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Detail, {
@@ -716,7 +796,7 @@ function OwnerDashboardPage() {
                                             value: kyc?.notes || "No notes"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 293,
+                                            lineNumber: 367,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Detail, {
@@ -724,13 +804,13 @@ function OwnerDashboardPage() {
                                             value: kyc?.license_document_name || kyc?.pharmacy_license_document_path || "Not uploaded"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                            lineNumber: 294,
+                                            lineNumber: 368,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                    lineNumber: 287,
+                                    lineNumber: 361,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -743,24 +823,24 @@ function OwnerDashboardPage() {
                                         children: "Edit submission"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                        lineNumber: 300,
+                                        lineNumber: 374,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                    lineNumber: 299,
+                                    lineNumber: 373,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                            lineNumber: 286,
+                            lineNumber: 360,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                    lineNumber: 195,
+                    lineNumber: 269,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -768,15 +848,182 @@ function OwnerDashboardPage() {
                     children: "You can continue to log in and monitor this page. Once the admin approves your application, your full dashboard and point of sale tools will unlock automatically."
                 }, void 0, false, {
                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                    lineNumber: 308,
+                    lineNumber: 382,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-            lineNumber: 182,
+            lineNumber: 256,
             columnNumber: 7
         }, this);
+    }
+    if (requiresPayment) {
+        const paymentMeta = paymentCopies[subscriptionStatus] || paymentCopies.awaiting_payment;
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "max-w-3xl mx-auto space-y-6",
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "space-y-2",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                            className: "text-2xl font-semibold",
+                            children: paymentMeta.title
+                        }, void 0, false, {
+                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                            lineNumber: 394,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "text-sm text-muted-foreground",
+                            children: paymentMeta.description
+                        }, void 0, false, {
+                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                            lineNumber: 395,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                    lineNumber: 393,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: `rounded border p-4 space-y-4 ${paymentMeta.variant === "warning" ? "border-red-200 bg-red-50 text-red-800" : paymentMeta.variant === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-800"}`,
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "flex items-center justify-between",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "text-xs uppercase tracking-wide",
+                                            children: "Current status"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                            lineNumber: 403,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "text-lg font-semibold capitalize",
+                                            children: subscriptionStatus.replace(/_/g, " ")
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                            lineNumber: 404,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                    lineNumber: 402,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                    variant: "outline",
+                                    onClick: handleRefreshStatus,
+                                    disabled: refreshing,
+                                    children: refreshing ? "Refreshing..." : "Refresh status"
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                    lineNumber: 406,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                            lineNumber: 401,
+                            columnNumber: 11
+                        }, this),
+                        subscriptionStatus !== "pending_verification" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
+                            className: "space-y-3",
+                            onSubmit: handleSubmitPayment,
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "space-y-1",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "text-xs uppercase tracking-wide text-muted-foreground",
+                                            htmlFor: "payment-code-input",
+                                            children: "Payment code"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                            lineNumber: 414,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
+                                            id: "payment-code-input",
+                                            value: paymentCode,
+                                            onChange: (e)=>setPaymentCode(e.target.value),
+                                            placeholder: "Enter the receipt/payment code"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                            lineNumber: 417,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                    lineNumber: 413,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "flex gap-2",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                            type: "submit",
+                                            disabled: submittingPayment,
+                                            children: submittingPayment ? "Submitting..." : "Submit code"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                            lineNumber: 425,
+                                            columnNumber: 17
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                            type: "button",
+                                            variant: "outline",
+                                            onClick: ()=>setPaymentCode(""),
+                                            disabled: submittingPayment || paymentCode.length === 0,
+                                            children: "Clear"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                            lineNumber: 428,
+                                            columnNumber: 17
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                                    lineNumber: 424,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                            lineNumber: 412,
+                            columnNumber: 13
+                        }, this),
+                        subscriptionStatus === "pending_verification" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "text-sm",
+                            children: "We will email you once verification is complete. You can refresh this page to check for updates."
+                        }, void 0, false, {
+                            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                            lineNumber: 436,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+                    lineNumber: 398,
+                    columnNumber: 9
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
+            lineNumber: 392,
+            columnNumber: 7
+        }, this);
+    }
+    if (requiresPayment) {
+        return null;
     }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "space-y-6",
@@ -789,7 +1036,7 @@ function OwnerDashboardPage() {
                         children: "Owner Dashboard"
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                        lineNumber: 318,
+                        lineNumber: 452,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -802,12 +1049,12 @@ function OwnerDashboardPage() {
                                     children: "Create Cashier"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                    lineNumber: 320,
+                                    lineNumber: 454,
                                     columnNumber: 51
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 320,
+                                lineNumber: 454,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -817,24 +1064,24 @@ function OwnerDashboardPage() {
                                     children: "Open Chat"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                    lineNumber: 321,
+                                    lineNumber: 455,
                                     columnNumber: 46
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 321,
+                                lineNumber: 455,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                        lineNumber: 319,
+                        lineNumber: 453,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                lineNumber: 317,
+                lineNumber: 451,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -848,7 +1095,7 @@ function OwnerDashboardPage() {
                                 children: "Role"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 326,
+                                lineNumber: 460,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -856,13 +1103,13 @@ function OwnerDashboardPage() {
                                 children: user?.role
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 327,
+                                lineNumber: 461,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                        lineNumber: 325,
+                        lineNumber: 459,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -873,7 +1120,7 @@ function OwnerDashboardPage() {
                                 children: "Tenant"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 330,
+                                lineNumber: 464,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -881,13 +1128,13 @@ function OwnerDashboardPage() {
                                 children: user?.tenant_id || "-"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 331,
+                                lineNumber: 465,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                        lineNumber: 329,
+                        lineNumber: 463,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -898,7 +1145,7 @@ function OwnerDashboardPage() {
                                 children: "Pharmacies"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 334,
+                                lineNumber: 468,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -906,19 +1153,19 @@ function OwnerDashboardPage() {
                                 children: pharmacies.length
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 335,
+                                lineNumber: 469,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                        lineNumber: 333,
+                        lineNumber: 467,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                lineNumber: 324,
+                lineNumber: 458,
                 columnNumber: 7
             }, this),
             usage.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -932,7 +1179,7 @@ function OwnerDashboardPage() {
                                 children: "AI Usage (last 14 days)"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 342,
+                                lineNumber: 476,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -940,13 +1187,13 @@ function OwnerDashboardPage() {
                                 children: "tokens"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 343,
+                                lineNumber: 477,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                        lineNumber: 341,
+                        lineNumber: 475,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -965,7 +1212,7 @@ function OwnerDashboardPage() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                        lineNumber: 351,
+                                        lineNumber: 485,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -973,25 +1220,25 @@ function OwnerDashboardPage() {
                                         children: d.day.slice(5)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                        lineNumber: 352,
+                                        lineNumber: 486,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, d.day, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 350,
+                                lineNumber: 484,
                                 columnNumber: 17
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                        lineNumber: 345,
+                        lineNumber: 479,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                lineNumber: 340,
+                lineNumber: 474,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1008,7 +1255,7 @@ function OwnerDashboardPage() {
                                         children: "Name"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                        lineNumber: 364,
+                                        lineNumber: 498,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1016,7 +1263,7 @@ function OwnerDashboardPage() {
                                         children: "Tenant"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                        lineNumber: 365,
+                                        lineNumber: 499,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1024,18 +1271,18 @@ function OwnerDashboardPage() {
                                         children: "Address"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                        lineNumber: 366,
+                                        lineNumber: 500,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                lineNumber: 363,
+                                lineNumber: 497,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                            lineNumber: 362,
+                            lineNumber: 496,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -1050,7 +1297,7 @@ function OwnerDashboardPage() {
                                                 children: p.name
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                lineNumber: 372,
+                                                lineNumber: 506,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1058,7 +1305,7 @@ function OwnerDashboardPage() {
                                                 children: p.tenant_id
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                lineNumber: 373,
+                                                lineNumber: 507,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -1066,13 +1313,13 @@ function OwnerDashboardPage() {
                                                 children: p.address || "-"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                                lineNumber: 374,
+                                                lineNumber: 508,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, p.id, true, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                        lineNumber: 371,
+                                        lineNumber: 505,
                                         columnNumber: 15
                                     }, this)),
                                 pharmacies.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -1082,35 +1329,35 @@ function OwnerDashboardPage() {
                                         children: "No pharmacies yet."
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                        lineNumber: 378,
+                                        lineNumber: 512,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                                    lineNumber: 378,
+                                    lineNumber: 512,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                            lineNumber: 369,
+                            lineNumber: 503,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                    lineNumber: 361,
+                    lineNumber: 495,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-                lineNumber: 360,
+                lineNumber: 494,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/dashboard/owner/page.tsx",
-        lineNumber: 316,
+        lineNumber: 450,
         columnNumber: 5
     }, this);
 }

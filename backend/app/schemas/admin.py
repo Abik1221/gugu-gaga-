@@ -29,6 +29,7 @@ class PharmacyAdminItem(BaseModel):
     owner_email: Optional[EmailStr] = None
     owner_phone: Optional[str] = None
     owner_approved: Optional[bool] = None
+    kyc_id: Optional[int] = None
     kyc_status: Optional[str] = None
     subscription: Optional[dict] = None
     created_at: Optional[str] = None

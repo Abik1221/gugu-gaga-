@@ -10,6 +10,7 @@ from app.core.roles import Role
 from app.models.user_tenant import UserTenant
 from app.models.user import User
 from app.models.subscription import Subscription
+from app.models.kyc import KYCApplication
 
 
 def get_tenant_id(optional: bool = False) -> Optional[str]:
@@ -60,6 +61,24 @@ def enforce_subscription_active(
 ):
     if current_user and current_user.role == Role.admin.value:
         return True
+    if current_user and current_user.role != Role.affiliate.value:
+        # Owners and staff must have an approved KYC application before accessing dashboards
+        if hasattr(current_user, "is_approved") and not current_user.is_approved:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Pharmacy KYC pending approval",
+            )
+        kyc = (
+            db.query(KYCApplication)
+            .filter(KYCApplication.tenant_id == tenant_id)
+            .order_by(KYCApplication.id.desc())
+            .first()
+        )
+        if kyc and kyc.status != "approved":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Pharmacy KYC pending approval",
+            )
     sub = db.query(Subscription).filter(Subscription.tenant_id == tenant_id).first()
     if sub and sub.blocked:
         raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked: payment required")
