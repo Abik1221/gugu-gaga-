@@ -19,7 +19,7 @@ def ensure_subscription(db: Session, *, tenant_id: str) -> Subscription:
         return sub
     # Default next due date: today + billing cycle
     next_due = date.today() + timedelta(days=BILLING_CYCLE_DAYS)
-    sub = Subscription(tenant_id=tenant_id, next_due_date=next_due, blocked=False, notices_sent=0, last_notice_date=None)
+    sub = Subscription(tenant_id=tenant_id, next_due_date=next_due, blocked=True, notices_sent=0, last_notice_date=None)
     db.add(sub)
     db.commit()
     db.refresh(sub)

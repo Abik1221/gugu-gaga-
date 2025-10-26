@@ -1,4 +1,5 @@
 from typing import Optional
+import base64
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -14,10 +15,21 @@ from app.models.kyc import KYCApplication
 from app.models.user_tenant import UserTenant
 from app.services.verification import issue_code, verify_code
 from app.services.notifications.email import send_email
-from app.schemas.auth import Token, UserLogin, UserOut, PharmacyRegister, AffiliateRegister, RegistrationVerifyRequest, LoginVerifyRequest
+from app.schemas.auth import (
+    Token,
+    UserLogin,
+    UserOut,
+    PharmacyRegister,
+    AffiliateRegister,
+    RegistrationVerifyRequest,
+    LoginVerifyRequest,
+    PasswordResetRequest,
+    PasswordResetConfirm,
+)
 from app.deps.auth import get_current_user
 from app.deps.ratelimit import rate_limit
 from app.services.billing.subscriptions import ensure_subscription
+from app.models.subscription import Subscription, PaymentSubmission
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -35,6 +47,75 @@ def _make_tenant_id_from_name(name: str, existing: list[str]) -> str:
         i += 1
         candidate = f"{base}-{i}"
     return candidate
+
+
+def _user_with_status(db: Session, user: User) -> UserOut:
+    kyc_status: Optional[str] = None
+    subscription_status: Optional[str] = None
+    subscription_blocked: Optional[bool] = None
+    subscription_next_due: Optional[str] = None
+    latest_payment_status: Optional[str] = None
+
+    if user.tenant_id:
+        kyc = (
+            db.query(KYCApplication)
+            .filter(KYCApplication.tenant_id == user.tenant_id)
+            .order_by(KYCApplication.id.desc())
+            .first()
+        )
+        if kyc:
+            kyc_status = kyc.status
+        else:
+            kyc_status = None
+
+        subscription = (
+            db.query(Subscription)
+            .filter(Subscription.tenant_id == user.tenant_id)
+            .first()
+        )
+        payment = (
+            db.query(PaymentSubmission)
+            .filter(PaymentSubmission.tenant_id == user.tenant_id)
+            .order_by(PaymentSubmission.id.desc())
+            .first()
+        )
+        if payment:
+            latest_payment_status = payment.status
+
+        if subscription:
+            subscription_blocked = bool(subscription.blocked)
+            if subscription.next_due_date:
+                subscription_next_due = subscription.next_due_date.isoformat()
+        if kyc_status != "approved":
+            subscription_status = "kyc_pending"
+        else:
+            if subscription:
+                if subscription.blocked:
+                    if payment and payment.status == "pending":
+                        subscription_status = "pending_verification"
+                    elif payment and payment.status == "rejected":
+                        subscription_status = "payment_rejected"
+                    else:
+                        subscription_status = "awaiting_payment"
+                else:
+                    subscription_status = "active"
+            else:
+                subscription_status = "awaiting_payment"
+
+    return UserOut(
+        id=user.id,
+        email=user.email,
+        phone=user.phone,
+        role=user.role,
+        tenant_id=user.tenant_id,
+        is_active=user.is_active,
+        is_approved=user.is_approved,
+        kyc_status=kyc_status,
+        subscription_status=subscription_status,
+        subscription_blocked=subscription_blocked,
+        subscription_next_due_date=subscription_next_due,
+        latest_payment_status=latest_payment_status,
+    )
 
 
 @router.post("/register/pharmacy", response_model=UserOut)
@@ -72,12 +153,47 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
     db.add(UserTenant(user_id=owner.id, tenant_id=tenant_id))
     db.commit()
     # Create KYC application
+    license_name = payload.license_document_name
+    license_mime = payload.license_document_mime
+    license_data = None
+    if payload.license_document_base64:
+        data_str = payload.license_document_base64.strip()
+        if data_str.startswith("data:"):
+            try:
+                header, data_str = data_str.split(",", 1)
+                if not license_mime:
+                    parts = header.split(";", 1)[0]
+                    if parts.startswith("data:"):
+                        license_mime = parts[len("data:") :]
+            except ValueError:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid data URL format for license document")
+        try:
+            license_data = base64.b64decode(data_str)
+        except Exception as exc:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid license document encoding: {exc}")
+        if len(license_data) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="License document too large (max 10MB)")
+        if not license_name:
+            license_name = f"{tenant_id}_license"
+        if not license_mime:
+            license_mime = "application/octet-stream"
+
+    if not license_data and not payload.pharmacy_license_document_path:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Pharmacy license document is required")
+
     app = KYCApplication(
         tenant_id=tenant_id,
         applicant_user_id=owner.id,
         id_number=payload.id_number,
         pharmacy_license_number=payload.pharmacy_license_number,
-        documents_path=payload.pharmacy_license_document_path or payload.national_id_document_path,
+        documents_path=None if license_data else (payload.pharmacy_license_document_path or payload.national_id_document_path),
+        license_document_name=license_name,
+        license_document_mime=license_mime,
+        license_document_data=license_data,
+        pharmacy_name=payload.pharmacy_name,
+        pharmacy_address=payload.address,
+        owner_email=payload.owner_email,
+        owner_phone=payload.owner_phone,
         notes=payload.kyc_notes,
         status="pending",
     )
@@ -99,7 +215,7 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
             )
             db.add(ref)
             db.commit()
-    # In-app notifications (best-effort)
+    # In-app notifications and status emails (best-effort)
     try:
         from app.services.notifications.in_app import create_notification
         create_notification(
@@ -111,9 +227,16 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
         create_notification(
             db,
             tenant_id=tenant_id,
-            title="Application Received",
-            body="Your pharmacy registration is pending admin approval.",
+            user_id=owner.id,
+            title="Application Under Review",
+            body="We have received your pharmacy application. Our team will review it and follow up soon.",
         )
+        if owner.email:
+            send_email(
+                owner.email,
+                "Pharmacy application received",
+                "Thanks for submitting your pharmacy information. Our team is reviewing it now and will contact you soon with next steps.",
+            )
     except Exception:
         pass
     # Notify admin via email (best-effort) with KYC details
@@ -132,7 +255,7 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
             send_email(owner.email, "Verify your account", f"Your verification code is: {code}")
     except Exception:
         pass
-    return UserOut.model_validate(owner)
+    return _user_with_status(db, owner)
 
 
 @router.post("/register/affiliate", response_model=UserOut, status_code=status.HTTP_201_CREATED)
@@ -174,7 +297,7 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
             send_email(user.email, "Verify your account", f"Your verification code is: {reg_code}")
     except Exception:
         pass
-    return UserOut.model_validate(user)
+    return _user_with_status(db, user)
 
 
 @router.post("/login", response_model=Token)
@@ -193,11 +316,11 @@ def login(
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
     # Pharmacy owner/cashier: require admin approval then payment
-    if user.role in {Role.pharmacy_owner.value, Role.cashier.value}:
-        if not user.is_approved:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Awaiting admin approval")
-        if user.tenant_id:
-            sub = ensure_subscription(db, tenant_id=user.tenant_id)
+    if user.role in {Role.pharmacy_owner.value, Role.cashier.value} and user.tenant_id:
+        sub = ensure_subscription(db, tenant_id=user.tenant_id)
+        if user.role == Role.cashier.value:
+            if not user.is_approved:
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Awaiting admin approval")
             if sub.blocked:
                 raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked. Submit payment code and await verification.")
     if user.role != Role.admin.value:
@@ -255,17 +378,60 @@ def login_verify(
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
     # Pharmacy owner/cashier: require approval then payment before issuing token
-    if user.role in {Role.pharmacy_owner.value, Role.cashier.value}:
-        if not user.is_approved:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Awaiting admin approval")
-        if user.tenant_id:
-            sub = ensure_subscription(db, tenant_id=user.tenant_id)
+    if user.role in {Role.pharmacy_owner.value, Role.cashier.value} and user.tenant_id:
+        sub = ensure_subscription(db, tenant_id=user.tenant_id)
+        if user.role == Role.cashier.value:
+            if not user.is_approved:
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Awaiting admin approval")
             if sub.blocked:
                 raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked. Submit payment code and await verification.")
     token = create_access_token(subject=user.email, role=user.role, tenant_id=user.tenant_id)
     return Token(access_token=token)
 
 
+@router.post("/password/reset/request")
+def password_reset_request(payload: PasswordResetRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == payload.email).first()
+    if not user:
+        # Avoid user enumeration
+        return {"status": "sent"}
+    if user.role != Role.pharmacy_owner.value:
+        return {"status": "sent"}
+    if not user.is_approved:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account not yet approved")
+    code = issue_code(db, email=user.email, purpose="password_reset", ttl_minutes=30)
+    if user.email:
+        send_email(
+            user.email,
+            "Reset your password",
+            f"Use this code to reset your password: {code}. It expires in 30 minutes.",
+        )
+    return {"status": "sent"}
+
+
+@router.post("/password/reset/confirm")
+def password_reset_confirm(payload: PasswordResetConfirm, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == payload.email).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    if user.role != Role.pharmacy_owner.value:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password reset not available for this account")
+    if not user.is_approved:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account not yet approved")
+    if not verify_code(db, email=payload.email, purpose="password_reset", code=payload.code):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code")
+    try:
+        user.password_hash = hash_password(payload.new_password)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    db.add(user)
+    db.commit()
+    return {"status": "reset"}
+
+
 @router.get("/me", response_model=UserOut)
-def me(current_user: User = Depends(get_current_user)):
-    return current_user
+def me(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return _user_with_status(db, current_user)

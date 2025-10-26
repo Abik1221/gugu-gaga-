@@ -349,7 +349,12 @@ const AdminAPI = {
     affiliates: (page = 1, pageSize = 20, q)=>getAuthJSON(`/admin/affiliates?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
     approvePharmacy: (tenantId, applicationId)=>postAuthJSON(`/admin/pharmacies/${applicationId}/approve`, {}, tenantId),
     rejectPharmacy: (tenantId, applicationId)=>postAuthJSON(`/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
-    verifyPayment: (tenantId, code)=>postAuthJSON(`/admin/payments/${encodeURIComponent(code)}/verify`, {}, tenantId),
+    verifyPayment: (tenantId, code)=>postAuthJSON(`/admin/payments/verify`, {
+            code: code || null
+        }, tenantId),
+    rejectPayment: (tenantId, code)=>postAuthJSON(`/admin/payments/reject`, {
+            code: code || null
+        }, tenantId),
     approveAffiliate: (userId)=>postAuthJSON(`/admin/affiliates/${userId}/approve`, {}),
     rejectAffiliate: (userId)=>postAuthJSON(`/admin/affiliates/${userId}/reject`, {}),
     listAffiliatePayouts: (status)=>getAuthJSON(`/admin/affiliate/payouts${status ? `?status=${encodeURIComponent(status)}` : ""}`),

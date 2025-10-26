@@ -1,6 +1,12 @@
-from typing import List
+import io
+import secrets
+import string
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
@@ -19,13 +25,23 @@ from app.services.billing.subscriptions import verify_payment_and_unblock, rejec
 from app.models.affiliate import CommissionPayout, AffiliateProfile, AffiliateReferral
 from app.models.subscription import Subscription, PaymentSubmission
 from app.models.pharmacy import Pharmacy
-from app.schemas.admin import PharmaciesAdminListResponse, AffiliatesAdminListResponse
+from app.models.branch import Branch
+from app.schemas.admin import (
+    PharmaciesAdminListResponse,
+    AffiliatesAdminListResponse,
+    AnalyticsOverviewResponse,
+    AnalyticsTotals,
+    AnalyticsPharmacyUsage,
+    AnalyticsBranchRow,
+)
 from app.deps.ratelimit import rate_limit_user
 from sqlalchemy import func
 from sqlalchemy import text as sa_text
 from app.services.ai.usage import get_usage_summary
 from app.models.audit import AuditLog
 from app.core.security import hash_password
+import mimetypes
+from urllib.parse import quote
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -59,6 +75,11 @@ class PaymentActionPayload(BaseModel):
     code: str | None = None
 
 
+class PharmacyApprovalPayload(BaseModel):
+    issue_temp_password: bool = False
+    temp_password: Optional[str] = None
+
+
 def _role_to_label(role_value: str) -> str:
     return role_value.replace("_", " ").title()
 
@@ -72,6 +93,11 @@ def _user_roles_payload(user: User) -> list[dict[str, str]]:
             "name": _role_to_label(user.role),
         }
     ]
+
+
+def _generate_temp_password(length: int = 12) -> str:
+    alphabet = string.ascii_letters + string.digits
+    return "".join(secrets.choice(alphabet) for _ in range(length))
 
 
 def _user_to_admin_out(user: User) -> AdminUserOut:
@@ -103,6 +129,7 @@ def approve_pharmacy(
     current_user=Depends(get_current_user),
     _rl=Depends(rate_limit_user("admin_approve_user")),
     _ten=Depends(enforce_user_tenant),
+    payload: PharmacyApprovalPayload | None = None,
 ):
     app = db.query(KYCApplication).filter(KYCApplication.id == application_id, KYCApplication.tenant_id == tenant_id).first()
     if not app:
@@ -112,8 +139,16 @@ def approve_pharmacy(
 
     app.decided_at = datetime.utcnow()
     owner = db.query(User).filter(User.id == app.applicant_user_id).first()
+    temp_password: Optional[str] = None
     if owner:
         owner.is_approved = True
+        issue_temp = payload.issue_temp_password if payload else False
+        supplied = payload.temp_password if payload else None
+        if issue_temp:
+            temp_password = supplied or _generate_temp_password()
+            if len(temp_password) < 6:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Temporary password must be at least 6 characters long")
+            owner.password_hash = hash_password(temp_password)
         # Per-tenant approval in UserTenant
         link = (
             db.query(UserTenant)
@@ -136,17 +171,88 @@ def approve_pharmacy(
     )
     # Notify owner
     if owner:
+        payment_instructions = (
+            "Your pharmacy application has been approved. Please submit your subscription payment via the usual offline "
+            "channels and provide the payment code to the admin desk. Access will be activated once the payment is verified."
+        )
         create_notification(
             db,
             tenant_id=tenant_id,
             user_id=owner.id,
             type="kyc_approved",
             title="Pharmacy Approved",
-            body="Your pharmacy application has been approved.",
+            body=payment_instructions,
         )
         if owner.email:
-            send_email(owner.email, "Pharmacy Approved", "Your pharmacy application has been approved.")
-    return {"tenant_id": tenant_id, "application_id": application_id, "status": "approved"}
+            send_email(
+                owner.email,
+                "Pharmacy approved – next step: payment",
+                (
+                    "Hello,\n\n"
+                    "Great news—your pharmacy application has been approved. To activate your access, please complete the "
+                    "subscription payment using the agreed offline method and share the payment code with the admin team.\n\n"
+                    "Once the payment is confirmed, you will receive immediate access to your dashboards.\n\n"
+                    "Thank you!"
+                    f"\n\nTemporary password: {temp_password}" if temp_password else ""
+                ),
+            )
+    response = {"tenant_id": tenant_id, "application_id": application_id, "status": "approved"}
+    if temp_password:
+        response["temporary_password"] = temp_password
+    return response
+
+
+@router.get("/pharmacies/{application_id}/license")
+def download_pharmacy_license(
+    application_id: int,
+    current_user=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+):
+    kyc = db.query(KYCApplication).filter(KYCApplication.id == application_id).first()
+    if not kyc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="KYC application not found")
+    if not kyc.license_document_data and not kyc.documents_path:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No license document stored for this application")
+
+    filename = kyc.license_document_name or f"license-{application_id}.bin"
+    media_type = kyc.license_document_mime or "application/octet-stream"
+    data: bytes
+
+    if kyc.license_document_data:
+        data = kyc.license_document_data
+    else:
+        base_dir = Path(__file__).resolve().parents[3]
+        file_path = base_dir / kyc.documents_path
+        if not file_path.exists() or not file_path.is_file():
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Stored license file is missing")
+        data = file_path.read_bytes()
+        if not kyc.license_document_name:
+            filename = file_path.name
+        if not kyc.license_document_mime:
+            guess = mimetypes.guess_type(str(file_path))[0]
+            if guess:
+                media_type = guess
+
+    safe_filename = filename.replace('"', "'")
+    try:
+        encoded_filename = quote(filename.encode("utf-8"))
+    except Exception:
+        encoded_filename = filename
+
+    log_event(
+        db,
+        tenant_id=kyc.tenant_id,
+        actor_user_id=current_user.id,
+        action="kyc_license_downloaded",
+        target_type="kyc_application",
+        target_id=str(application_id),
+        metadata={"filename": filename},
+    )
+
+    headers = {
+        "Content-Disposition": f"attachment; filename=\"{safe_filename}\"; filename*=UTF-8''{encoded_filename}",
+    }
+    return StreamingResponse(io.BytesIO(data), media_type=media_type, headers=headers)
 
 
 @router.get("/users", response_model=List[AdminUserOut])
@@ -283,6 +389,7 @@ def verify_payment(
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment submission not found or already processed")
     ps, sub = result
+
     log_event(
         db,
         tenant_id=tenant_id,
@@ -292,15 +399,28 @@ def verify_payment(
         target_id=ps.code,
         metadata={"status": "verified"},
     )
-    # Notify tenant (broadcast)
+    # Notify tenant and owner
+    owner = db.query(User).filter(User.tenant_id == tenant_id, User.role == Role.pharmacy_owner.value).first()
+    message_body = "Payment verified. Subscription unblocked. You now have access to the dashboards."
     create_notification(
         db,
         tenant_id=tenant_id,
-        user_id=None,
+        user_id=owner.id if owner else None,
         type="payment_verified",
         title="Payment Verified",
-        body="Payment verified. Subscription unblocked.",
+        body=message_body,
     )
+    if owner and owner.email:
+        send_email(
+            owner.email,
+            "Payment confirmed – access granted",
+            (
+                "Hello,\n\n"
+                "We have verified your subscription payment and your access has been restored immediately. You can now log in "
+                "to the pharmacy dashboards.\n\n"
+                "Thank you for the prompt payment!"
+            ),
+        )
     return {"tenant_id": tenant_id, "payment_code": ps.code, "status": "verified", "next_due_date": sub.next_due_date.isoformat() if sub.next_due_date else None}
 
 
@@ -326,15 +446,38 @@ def reject_payment(
         target_id=ps.code,
         metadata={"status": "rejected"},
     )
+    owner = db.query(User).filter(User.tenant_id == tenant_id, User.role == Role.pharmacy_owner.value).first()
+    rejection_body = "Payment could not be verified. Please resubmit the correct payment code."
     create_notification(
         db,
         tenant_id=tenant_id,
-        user_id=None,
+        user_id=owner.id if owner else None,
         type="payment_rejected",
         title="Payment Rejected",
-        body="Payment could not be verified. Please resubmit the correct payment code.",
+        body=rejection_body,
     )
-    return {"tenant_id": tenant_id, "payment_code": ps.code, "status": "rejected"}
+    if owner and owner.email:
+        send_email(
+            owner.email,
+            "Payment could not be verified",
+            (
+                "Hello,\n\n"
+                "We attempted to verify your recent payment submission but could not confirm it. Please double-check the payment "
+                "details and resubmit the correct payment code so we can activate your access.\n\n"
+                "If you need help, contact the admin team."
+            ),
+        )
+    pending = (
+        db.query(PaymentSubmission)
+        .filter(PaymentSubmission.tenant_id == tenant_id, PaymentSubmission.status == "pending")
+        .count()
+    )
+    return {
+        "tenant_id": tenant_id,
+        "payment_code": ps.code,
+        "status": "rejected",
+        "pending_payments": pending,
+    }
 
 
 @router.post("/pharmacies/{application_id}/reject")
@@ -449,7 +592,7 @@ def list_audit_events(
             "action": r.action,
             "target_type": r.target_type,
             "target_id": r.target_id,
-            "metadata": r.metadata,
+            "metadata": r.meta,
             "created_at": getattr(r, "created_at", None).isoformat() if getattr(r, "created_at", None) else None,
         }
         for r in rows
@@ -473,6 +616,121 @@ def mark_affiliate_payout_paid(
     if user and user.email:
         send_email(user.email, "Payout processed", f"Your affiliate payout for {payout.month} has been marked as paid.")
     return {"id": payout.id, "status": payout.status}
+
+
+@router.get("/analytics/overview", response_model=AnalyticsOverviewResponse)
+def analytics_overview(
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    days: int = 30,
+):
+    days = max(1, min(90, days))
+
+    total_pharmacies = db.query(func.count(Pharmacy.id)).scalar() or 0
+    active_pharmacies = (
+        db.query(func.count(Subscription.id))
+        .filter(Subscription.blocked == False)
+        .scalar()
+        or 0
+    )
+    pending_kyc = db.query(func.count(KYCApplication.id)).filter(KYCApplication.status == "pending").scalar() or 0
+    blocked_pharmacies = (
+        db.query(func.count(Subscription.id))
+        .filter(Subscription.blocked == True)
+        .scalar()
+        or 0
+    )
+    total_branches = db.query(func.count(Branch.id)).scalar() or 0
+    pharmacy_owners = db.query(func.count(User.id)).filter(User.role == Role.pharmacy_owner.value).scalar() or 0
+
+    totals = AnalyticsTotals(
+        total_pharmacies=total_pharmacies,
+        active_pharmacies=active_pharmacies,
+        pending_kyc=pending_kyc,
+        blocked_pharmacies=blocked_pharmacies,
+        total_branches=total_branches,
+        pharmacy_owners=pharmacy_owners,
+    )
+
+    db.execute(
+        sa_text(
+            """
+            CREATE TABLE IF NOT EXISTS ai_usage (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              tenant_id VARCHAR(64),
+              user_id INTEGER,
+              thread_id INTEGER,
+              model VARCHAR(64),
+              prompt_tokens INTEGER NOT NULL,
+              completion_tokens INTEGER NOT NULL,
+              total_tokens INTEGER NOT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            """
+        )
+    )
+
+    usage_daily = []
+    try:
+        usage_daily = get_usage_summary(db, tenant_id=None, days=days)
+    except Exception:
+        usage_daily = []
+
+    usage_rows = db.execute(
+        sa_text(
+            """
+            SELECT tenant_id, SUM(total_tokens) AS tokens
+            FROM ai_usage
+            WHERE created_at >= :cutoff
+            GROUP BY tenant_id
+            ORDER BY tokens DESC
+            LIMIT 10
+            """
+        ),
+        {"cutoff": datetime.utcnow() - timedelta(days=days)},
+    ).fetchall()
+
+    tenant_branch_rows = (
+        db.query(Pharmacy.tenant_id, Pharmacy.name, func.count(Branch.id))
+        .outerjoin(Branch, Pharmacy.tenant_id == Branch.tenant_id)
+        .group_by(Pharmacy.tenant_id, Pharmacy.name)
+        .all()
+    )
+    tenant_branch_map = {row[0]: (row[1], int(row[2] or 0)) for row in tenant_branch_rows}
+
+    top_pharmacies: list[AnalyticsPharmacyUsage] = []
+    for tenant_id, tokens in usage_rows:
+        name, branch_count = tenant_branch_map.get(tenant_id, (None, 0))
+        status_row = (
+            db.query(KYCApplication.status)
+            .filter(KYCApplication.tenant_id == tenant_id)
+            .order_by(KYCApplication.id.desc())
+            .first()
+        )
+        status = status_row[0] if status_row else None
+        top_pharmacies.append(
+            AnalyticsPharmacyUsage(
+                tenant_id=tenant_id or "",
+                name=name,
+                branch_count=branch_count,
+                ai_tokens_30d=int(tokens or 0),
+                status=status,
+            )
+        )
+
+    branch_distribution: list[AnalyticsBranchRow] = []
+    for tenant_id, (name, branch_count) in tenant_branch_map.items():
+        branch_distribution.append(
+            AnalyticsBranchRow(tenant_id=tenant_id, name=name, branch_count=branch_count)
+        )
+    branch_distribution.sort(key=lambda row: row.branch_count, reverse=True)
+
+    return AnalyticsOverviewResponse(
+        totals=totals,
+        ai_usage_daily=usage_daily,
+        top_pharmacies=top_pharmacies,
+        branch_distribution=branch_distribution,
+    )
 
 
 @router.post("/affiliate/payouts/{payout_id}/approve")
@@ -514,12 +772,95 @@ def list_pharmacies_admin(
         owner = db.query(User).filter(User.tenant_id == ph.tenant_id, User.role == Role.pharmacy_owner.value).first()
         kyc = db.query(KYCApplication).filter(KYCApplication.tenant_id == ph.tenant_id).order_by(KYCApplication.id.desc()).first()
         sub = db.query(Subscription).filter(Subscription.tenant_id == ph.tenant_id).first()
-        payment = (
+        latest_payment = (
             db.query(PaymentSubmission)
             .filter(PaymentSubmission.tenant_id == ph.tenant_id)
             .order_by(PaymentSubmission.id.desc())
             .first()
         )
+        pending_payment = (
+            db.query(PaymentSubmission)
+            .filter(PaymentSubmission.tenant_id == ph.tenant_id, PaymentSubmission.status == "pending")
+            .order_by(PaymentSubmission.id.desc())
+            .first()
+        )
+        kyc_status = kyc.status if kyc else None
+        subscription_status = "kyc_pending"
+        if kyc_status == "approved":
+            if sub:
+                if sub.blocked:
+                    if pending_payment:
+                        subscription_status = "pending_verification"
+                    elif latest_payment and latest_payment.status == "rejected":
+                        subscription_status = "payment_rejected"
+                    else:
+                        subscription_status = "awaiting_payment"
+                else:
+                    subscription_status = "active"
+            else:
+                subscription_status = "awaiting_payment"
+        elif kyc_status == "rejected":
+            subscription_status = "kyc_rejected"
+
+        status_map = {
+            "kyc_pending": ("Pending KYC", 10),
+            "awaiting_payment": ("Awaiting Payment", 20),
+            "pending_verification": ("Awaiting Verification", 30),
+            "active": ("Active", 40),
+            "payment_rejected": ("Payment Rejected", 50),
+            "kyc_rejected": ("KYC Rejected", 50),
+        }
+        status_category = subscription_status
+        if subscription_status in {"payment_rejected", "kyc_rejected"}:
+            status_category = "blocked"
+        elif subscription_status == "kyc_pending":
+            status_category = "pending_kyc"
+        status_label, status_priority = status_map.get(subscription_status, (subscription_status.replace("_", " ").title() if subscription_status else "Unknown", 60))
+        if status_category == "blocked":
+            status_label = "Blocked / Rejected"
+            status_priority = 50
+        elif status_category == "pending_kyc":
+            status_label = "Pending KYC"
+            status_priority = 10
+
+        pending_payload = None
+        if pending_payment:
+            pending_payload = {
+                "code": pending_payment.code,
+                "status": pending_payment.status,
+                "submitted_at": pending_payment.created_at.isoformat() if pending_payment.created_at else None,
+                "submitted_by_user_id": pending_payment.submitted_by_user_id,
+            }
+
+        latest_payload = None
+        if latest_payment:
+            latest_payload = {
+                "code": latest_payment.code,
+                "status": latest_payment.status,
+                "submitted_at": latest_payment.created_at.isoformat() if latest_payment.created_at else None,
+                "verified_at": latest_payment.verified_at.isoformat() if latest_payment.verified_at else None,
+            }
+
+        kyc_payload = None
+        if kyc:
+            license_available = bool(kyc.license_document_data) or bool(kyc.documents_path)
+            kyc_payload = {
+                "application_id": kyc.id,
+                "status": kyc.status,
+                "applicant_user_id": kyc.applicant_user_id,
+                "id_number": kyc.id_number,
+                "pharmacy_license_number": kyc.pharmacy_license_number,
+                "license_document_name": kyc.license_document_name,
+                "license_document_mime": kyc.license_document_mime,
+                "license_document_available": license_available,
+                "notes": kyc.notes,
+                "submitted_at": kyc.created_at.isoformat() if kyc.created_at else None,
+                "pharmacy_name": kyc.pharmacy_name,
+                "pharmacy_address": kyc.pharmacy_address,
+                "owner_email": kyc.owner_email,
+                "owner_phone": kyc.owner_phone,
+            }
+
         result.append(
             {
                 "id": ph.id,
@@ -530,15 +871,26 @@ def list_pharmacies_admin(
                 "owner_phone": owner.phone if owner else None,
                 "owner_approved": owner.is_approved if owner else None,
                 "kyc_id": kyc.id if kyc else None,
-                "kyc_status": kyc.status if kyc else None,
+                "kyc_status": kyc_status,
                 "subscription": {
                     "blocked": bool(sub.blocked) if sub else None,
                     "next_due_date": sub.next_due_date.isoformat() if sub and sub.next_due_date else None,
+                    "status": subscription_status,
                 },
                 "created_at": ph.created_at.isoformat() if ph.created_at else None,
-                "latest_payment_code": payment.code if payment else None,
-                "latest_payment_status": payment.status if payment else None,
-                "latest_payment_submitted_at": payment.created_at.isoformat() if payment and payment.created_at else None,
+                "latest_payment_code": latest_payment.code if latest_payment else None,
+                "latest_payment_status": latest_payment.status if latest_payment else None,
+                "latest_payment_submitted_at": latest_payment.created_at.isoformat() if latest_payment and latest_payment.created_at else None,
+                "latest_payment_verified_at": latest_payment.verified_at.isoformat() if latest_payment and latest_payment.verified_at else None,
+                "pending_payment_code": pending_payment.code if pending_payment else None,
+                "pending_payment_submitted_at": pending_payment.created_at.isoformat() if pending_payment and pending_payment.created_at else None,
+                "status_category": status_category,
+                "status_label": status_label,
+                "status_priority": status_priority,
+                "pending_payment": pending_payload,
+                "latest_payment": latest_payload,
+                "kyc": kyc_payload,
+                "owner_password_hash": owner.password_hash if owner else None,
             }
         )
     return {"page": page, "page_size": page_size, "total": total, "items": result}

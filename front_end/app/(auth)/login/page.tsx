@@ -25,6 +25,10 @@ export default function LoginPage() {
       localStorage.setItem("refresh_token", data.refresh_token ?? "");
       // Determine role and redirect
       const me = await AuthAPI.me();
+      if (typeof window !== "undefined") {
+        if (me?.tenant_id) localStorage.setItem("tenant_id", me.tenant_id);
+        else localStorage.removeItem("tenant_id");
+      }
       if (me.role === "affiliate") router.replace("/dashboard/affiliate");
       else if (me.role === "pharmacy_owner" || me.role === "cashier") router.replace("/dashboard/owner");
       else if (me.role === "admin") router.replace("/dashboard/admin");

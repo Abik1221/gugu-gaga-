@@ -70,9 +70,16 @@ export default function RegisterPage() {
         pharmacy_license_document_path: docPath,
         affiliate_token: affiliateToken,
       });
-      setSuccess("Application received. Await admin approval.");
-      show({ variant: "success", title: "Submitted", description: "KYC review pending" });
-      setTimeout(() => router.replace("/login"), 1200);
+      const auth = await AuthAPI.login(ownerEmail, ownerPassword);
+      const me = await AuthAPI.me();
+      if (typeof window !== "undefined") {
+        localStorage.setItem("access_token", auth.access_token);
+        if (auth.refresh_token) localStorage.setItem("refresh_token", auth.refresh_token);
+        if (me?.tenant_id) localStorage.setItem("tenant_id", me.tenant_id);
+      }
+      setSuccess("Application received. Redirecting to your dashboard...");
+      show({ variant: "success", title: "Submitted", description: "Your dashboard will update once KYC is approved." });
+      setTimeout(() => router.replace("/dashboard/owner"), 600);
     } catch (err: any) {
       setError(err.message || "Failed to submit");
       show({ variant: "destructive", title: "Failed", description: err.message || "Please try again" });

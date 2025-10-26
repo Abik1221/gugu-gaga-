@@ -55,8 +55,11 @@ def enforce_user_tenant(
 
 def enforce_subscription_active(
     tenant_id: str = Depends(require_tenant),
+    current_user: Optional[User] = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    if current_user and current_user.role == Role.admin.value:
+        return True
     sub = db.query(Subscription).filter(Subscription.tenant_id == tenant_id).first()
     if sub and sub.blocked:
         raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked: payment required")

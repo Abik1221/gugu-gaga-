@@ -365,7 +365,12 @@ const AdminAPI = {
     },
     approvePharmacy: (tenantId, applicationId)=>postAuthJSON("/admin/pharmacies/".concat(applicationId, "/approve"), {}, tenantId),
     rejectPharmacy: (tenantId, applicationId)=>postAuthJSON("/admin/pharmacies/".concat(applicationId, "/reject"), {}, tenantId),
-    verifyPayment: (tenantId, code)=>postAuthJSON("/admin/payments/".concat(encodeURIComponent(code), "/verify"), {}, tenantId),
+    verifyPayment: (tenantId, code)=>postAuthJSON("/admin/payments/verify", {
+            code: code || null
+        }, tenantId),
+    rejectPayment: (tenantId, code)=>postAuthJSON("/admin/payments/reject", {
+            code: code || null
+        }, tenantId),
     approveAffiliate: (userId)=>postAuthJSON("/admin/affiliates/".concat(userId, "/approve"), {}),
     rejectAffiliate: (userId)=>postAuthJSON("/admin/affiliates/".concat(userId, "/reject"), {}),
     listAffiliatePayouts: (status)=>getAuthJSON("/admin/affiliate/payouts".concat(status ? "?status=".concat(encodeURIComponent(status)) : "")),

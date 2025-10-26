@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { API_BASE, getAccessToken, getAuthJSON } from "@/utils/api";
+import { getAuthJSON } from "@/utils/api";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,11 @@ type Me = {
   role?: string;
   tenant_id?: string;
   roles?: { role: { name: string } }[];
+  kyc_status?: string | null;
+  subscription_status?: string | null;
+  subscription_blocked?: boolean | null;
+  subscription_next_due_date?: string | null;
+  latest_payment_status?: string | null;
 };
 
 export default function DashboardLayout({
@@ -25,7 +30,16 @@ export default function DashboardLayout({
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<Me | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [subBanner, setSubBanner] = useState<{ inactive: boolean; in_trial: boolean; trial_days_left?: number } | null>(null);
+  const [banner, setBanner] = useState<
+    | null
+    | {
+        kind: "kyc_pending" | "payment";
+        title: string;
+        description: string;
+        actionHref?: string;
+        actionLabel?: string;
+      }
+  >(null);
   const roleName = (user?.role || user?.roles?.[0]?.role?.name || "").toLowerCase();
   const isAffiliate = roleName === "affiliate";
 
@@ -36,23 +50,7 @@ export default function DashboardLayout({
         const me = await getAuthJSON<Me>("/auth/me");
         if (!active) return;
         setUser(me);
-        // One-time referral track
-        try {
-          const ref = typeof window !== "undefined" ? localStorage.getItem("referral_code") : null;
-          if (ref && me?.id) {
-            const token = getAccessToken();
-            await fetch(`${API_BASE}/affiliate/referrals/track`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-                ...(me?.tenant_id ? { "X-Tenant-ID": me.tenant_id } : {}),
-              },
-              body: JSON.stringify({ referral_code: ref, referred_user_id: me.id }),
-            });
-            localStorage.removeItem("referral_code");
-          }
-        } catch {}
+        // One-time referral track removed (handled server-side)
       } catch (e: any) {
         if (!active) return;
         setError("Unauthorized");
@@ -68,24 +66,62 @@ export default function DashboardLayout({
       return;
     }
     check();
-    // Fetch subscription status to show banner if inactive (non-blocking UX hint)
-    (async () => {
-      try {
-        if (isAffiliate) return;
-        const token = getAccessToken();
-        const tenant = typeof window !== "undefined" ? localStorage.getItem("tenant_id") : null;
-        if (!token || !tenant) return;
-        const res = await fetch(`${API_BASE}/subscriptions/current?tenant_id=${encodeURIComponent(tenant)}`, { headers: { Authorization: `Bearer ${token}` } });
-        if (!res.ok) return;
-        const data = await res.json();
-        const inactive = !data?.in_trial && String(data?.status || "").toLowerCase() !== "active";
-        setSubBanner({ inactive, in_trial: !!data?.in_trial, trial_days_left: data?.trial_days_left });
-      } catch {}
-    })();
     return () => {
       active = false;
     };
   }, [router]);
+
+  useEffect(() => {
+    if (!user) {
+      setBanner(null);
+      return;
+    }
+    const roleName = (user?.role || user?.roles?.[0]?.role?.name || "").toLowerCase();
+    const isOwner = roleName === "pharmacy_owner" || roleName === "owner";
+    const isCashier = roleName === "cashier";
+    if (!(isOwner || isCashier)) {
+      setBanner(null);
+      return;
+    }
+
+    if (user.kyc_status && user.kyc_status !== "approved") {
+      setBanner({
+        kind: "kyc_pending",
+        title: "KYC review in progress",
+        description: "Thanks for submitting your application. Our compliance team is reviewing your documents — you will receive an email once it is approved.",
+      });
+      return;
+    }
+
+    const status = user.subscription_status || "active";
+    if (["awaiting_payment", "pending_verification", "payment_rejected"].includes(status)) {
+      const copies: Record<string, { title: string; description: string }> = {
+        awaiting_payment: {
+          title: "Subscription payment required",
+          description: "Complete your first subscription payment and submit the receipt code so the admin team can activate your access.",
+        },
+        pending_verification: {
+          title: "Payment awaiting verification",
+          description: "We have received your payment code. The admin team is verifying it — you will be notified once access is restored.",
+        },
+        payment_rejected: {
+          title: "Payment could not be verified",
+          description: "The last payment submission was rejected. Please double-check the receipt code and submit it again.",
+        },
+      };
+      const copy = copies[status];
+      setBanner({
+        kind: "payment",
+        title: copy.title,
+        description: copy.description,
+        actionHref: "/dashboard/owner/billing",
+        actionLabel: "View payment guide",
+      });
+      return;
+    }
+
+    setBanner(null);
+  }, [user]);
 
   function logout() {
     if (typeof window !== "undefined") {
@@ -109,10 +145,17 @@ export default function DashboardLayout({
 
   return (
     <Shell user={user} onLogout={logout}>
-      {subBanner?.inactive && (
-        <div className="mb-4 p-3 border rounded bg-amber-50 text-amber-800 text-sm">
-          Subscription inactive. Please go to Billing to activate and restore full access.
-          <a href="/dashboard/settings" className="ml-3 underline">Go to Billing</a>
+      {banner && (
+        <div className="mb-4 p-3 border rounded bg-amber-50 text-amber-800 text-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <div className="font-medium">{banner.title}</div>
+            <div className="text-xs md:text-sm">{banner.description}</div>
+          </div>
+          {banner.actionHref && banner.actionLabel && (
+            <a href={banner.actionHref} className="inline-flex items-center justify-center rounded border border-amber-600 px-3 py-1 text-xs font-medium text-amber-700 hover:bg-amber-100">
+              {banner.actionLabel}
+            </a>
+          )}
         </div>
       )}
       {children}
@@ -131,9 +174,12 @@ function Shell({
 }) {
   const pathname = usePathname();
   const roleName = (user?.role || user?.roles?.[0]?.role?.name || "").toLowerCase();
-  const isOwnerOrManager = roleName === "owner" || roleName === "manager";
+  const isOwner = roleName === "pharmacy_owner" || roleName === "owner";
+  const isCashier = roleName === "cashier";
+  const isManager = roleName === "manager";
   const isAffiliate = roleName === "affiliate";
   const isAdmin = roleName === "admin";
+  const isOwnerOrManager = isOwner || isManager || isCashier;
 
   const nav = isAffiliate
     ? [{ href: "/dashboard/affiliate", label: "Affiliate Dashboard" }]
@@ -146,12 +192,22 @@ function Shell({
         { href: "/dashboard/admin/payouts", label: "Payouts" },
         { href: "/dashboard/admin/audit", label: "Audit Log" },
       ]
+    : isOwnerOrManager
+    ? [
+        { href: "/dashboard/owner", label: "Owner Overview" },
+        { href: "/dashboard/owner/billing", label: "Billing" },
+        { href: "/dashboard/inventory", label: "Inventory" },
+        { href: "/dashboard/pos", label: "POS" },
+        { href: "/dashboard/affiliate", label: "Affiliate" },
+        { href: "/dashboard/admin/payouts", label: "Payouts" },
+        { href: "/dashboard/settings", label: "Settings" },
+        { href: "/dashboard/about", label: "About" },
+      ]
     : [
         { href: "/dashboard", label: "Overview" },
         { href: "/dashboard/inventory", label: "Inventory" },
         { href: "/dashboard/pos", label: "POS" },
         { href: "/dashboard/affiliate", label: "Affiliate" },
-        ...(isOwnerOrManager ? [{ href: "/dashboard/admin/payouts", label: "Payouts" }] : []),
         { href: "/dashboard/settings", label: "Settings" },
         { href: "/dashboard/about", label: "About" },
       ];

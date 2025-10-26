@@ -194,14 +194,43 @@ export const AdminAPI = {
     getAuthJSON(`/admin/pharmacies?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
   affiliates: (page = 1, pageSize = 20, q?: string) =>
     getAuthJSON(`/admin/affiliates?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
-  approvePharmacy: (tenantId: string, applicationId: number) =>
-    postAuthJSON(`/admin/pharmacies/${applicationId}/approve`, {}, tenantId),
+  approvePharmacy: (tenantId: string, applicationId: number, body?: { issue_temp_password?: boolean; temp_password?: string }) =>
+    postAuthJSON(`/admin/pharmacies/${applicationId}/approve`, body || {}, tenantId),
   rejectPharmacy: (tenantId: string, applicationId: number) =>
     postAuthJSON(`/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
   verifyPayment: (tenantId: string, code?: string | null) =>
     postAuthJSON(`/admin/payments/verify`, { code: code || null }, tenantId),
   rejectPayment: (tenantId: string, code?: string | null) =>
     postAuthJSON(`/admin/payments/reject`, { code: code || null }, tenantId),
+  analyticsOverview: (days = 30) =>
+    getAuthJSON(`/admin/analytics/overview?days=${days}`),
+  downloadPharmacyLicense: async (applicationId: number) => {
+    const res = await authFetch(`/admin/pharmacies/${applicationId}/license`, { method: "GET" }, true);
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `HTTP ${res.status}`);
+    }
+    const blob = await res.blob();
+    let filename = `license-${applicationId}`;
+    const disposition = res.headers.get("Content-Disposition") || "";
+    const match = disposition.match(/filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i);
+    const extracted = match?.[1] || match?.[2];
+    if (extracted) {
+      try {
+        filename = decodeURIComponent(extracted);
+      } catch {
+        filename = extracted;
+      }
+    }
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  },
   approveAffiliate: (userId: number) => postAuthJSON(`/admin/affiliates/${userId}/approve`, {}),
   rejectAffiliate: (userId: number) => postAuthJSON(`/admin/affiliates/${userId}/reject`, {}),
   listAffiliatePayouts: (status?: string) =>
@@ -231,6 +260,11 @@ export const StaffAPI = {
   remove: (tenantId: string, userId: number) =>
     authFetch(`/staff/${userId}`, { method: "DELETE" }, true, tenantId)
       .then(async (res)=>{ if (!res.ok) { const t = await res.text(); throw new Error(t || `HTTP ${res.status}`); } return res.json(); }),
+};
+
+export const BillingAPI = {
+  submitPaymentCode: (tenantId: string, code: string) =>
+    postAuthJSON("/billing/payment-code", { code }, tenantId),
 };
 
 export const UploadAPI = {

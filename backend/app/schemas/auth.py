@@ -17,6 +17,9 @@ class UserCreate(BaseModel):
     pharmacy_license_number: Optional[str] = Field(default=None, description="Official pharmacy license number (required for pharmacy_owner)")
     national_id_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded national ID document")
     pharmacy_license_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded pharmacy license document")
+    license_document_name: Optional[str] = Field(default=None, description="Original filename for the pharmacy license document")
+    license_document_mime: Optional[str] = Field(default=None, description="MIME type for the pharmacy license document")
+    license_document_base64: Optional[str] = Field(default=None, description="Base64-encoded pharmacy license document contents")
     kyc_notes: Optional[str] = Field(default=None, description="Additional notes for KYC reviewer")
     affiliate_token: Optional[str] = Field(default=None, description="Referral link token if pharmacy arrived via affiliate link")
     # Affiliate details
@@ -87,6 +90,11 @@ class UserOut(BaseModel):
     tenant_id: Optional[str] = None
     is_active: bool
     is_approved: bool
+    kyc_status: Optional[str] = None
+    subscription_status: Optional[str] = None
+    subscription_blocked: Optional[bool] = None
+    subscription_next_due_date: Optional[str] = None
+    latest_payment_status: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -105,3 +113,22 @@ class RegistrationVerifyRequest(BaseModel):
 class LoginVerifyRequest(BaseModel):
     email: EmailStr
     code: str
+
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+
+class PasswordResetConfirm(BaseModel):
+    email: EmailStr
+    code: str
+    new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_new_password(cls, v: str) -> str:
+        if len(v) < 6:
+            raise ValueError("Password must be at least 6 characters long")
+        if len(v.encode("utf-8")) > MAX_PASSWORD_BYTES:
+            raise ValueError(f"Password must be at most {MAX_PASSWORD_BYTES} characters long")
+        return v
