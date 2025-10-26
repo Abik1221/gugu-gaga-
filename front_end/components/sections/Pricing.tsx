@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import Image from "next/image";
 import planIcon from "@/public/plan.png";
 import { Button } from "../ui/button";
+import { motion } from "framer-motion";
 const FreePlanCard = () => {
   return (
     <Card className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6 border border-gray-300">
@@ -106,10 +107,14 @@ function Pricing() {
       <p className="text-center text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
         Select the perfect plan for your needs and maximize productivity.
       </p>
-      <div className="lg:h-screen flex gap-10 flex-row flex-wrap max-w-5xl mx-auto my-10">
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className="lg:h-screen flex gap-10 flex-row flex-wrap max-w-5xl mx-auto my-10"
+      >
         <FreePlanCard />
         <ProPlanCard />
-      </div>
+      </motion.div>
     </div>
   );
 }

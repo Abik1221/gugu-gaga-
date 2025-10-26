@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Autoplay from "embla-carousel-autoplay";
 export default function WhoIsZemenPharma() {
   return (
-    <section className="h-screen flex flex-col justify-center max-w-5xl mx-auto">
+    <section className="md:h-screen flex flex-col justify-center max-w-5xl mx-auto">
       <h3 className="text-2xl font-bold text-emerald-700 mb-12 text-center">
         Who is Zemen Pharma for?
       </h3>
