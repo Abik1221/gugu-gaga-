@@ -1,11 +1,7 @@
 {
-  "/(auth)/login/page": "app/(auth)/login/page.js",
   "/(auth)/register/page": "app/(auth)/register/page.js",
-  "/(dashboard)/dashboard/admin/affiliates/page": "app/(dashboard)/dashboard/admin/affiliates/page.js",
-  "/(dashboard)/dashboard/admin/audit/page": "app/(dashboard)/dashboard/admin/audit/page.js",
-  "/(dashboard)/dashboard/admin/page": "app/(dashboard)/dashboard/admin/page.js",
-  "/(dashboard)/dashboard/admin/payouts/page": "app/(dashboard)/dashboard/admin/payouts/page.js",
-  "/(dashboard)/dashboard/admin/pharmacies/page": "app/(dashboard)/dashboard/admin/pharmacies/page.js",
+  "/(dashboard)/dashboard/owner/page": "app/(dashboard)/dashboard/owner/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js"
 }

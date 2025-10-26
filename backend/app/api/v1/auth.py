@@ -118,7 +118,7 @@ def _user_with_status(db: Session, user: User) -> UserOut:
     )
 
 
-@router.post("/register/pharmacy", response_model=UserOut)
+@router.post("/register/pharmacy")
 def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
     # Ensure owner email unused
     if db.query(User).filter(User.email == payload.owner_email).first():
@@ -132,10 +132,12 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
     db.add(ph)
     db.commit()
     db.refresh(ph)
-    # Create owner user pending approval
+
     try:
         owner_password_hash = hash_password(payload.owner_password)
     except ValueError as exc:
+        db.delete(ph)
+        db.commit()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
     owner = User(
@@ -150,6 +152,7 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
     db.add(owner)
     db.commit()
     db.refresh(owner)
+
     db.add(UserTenant(user_id=owner.id, tenant_id=tenant_id))
     db.commit()
     # Create KYC application
@@ -255,7 +258,23 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
             send_email(owner.email, "Verify your account", f"Your verification code is: {code}")
     except Exception:
         pass
-    return _user_with_status(db, owner)
+    return {
+        "user": _user_with_status(db, owner),
+        "tenant_id": tenant_id,
+        "kyc": {
+            "id": app.id,
+            "status": app.status,
+            "pharmacy_name": app.pharmacy_name,
+            "pharmacy_address": app.pharmacy_address,
+            "id_number": app.id_number,
+            "pharmacy_license_number": app.pharmacy_license_number,
+            "owner_phone": app.owner_phone,
+            "notes": app.notes,
+            "license_document_name": app.license_document_name,
+            "license_document_mime": app.license_document_mime,
+            "documents_path": app.documents_path,
+        },
+    }
 
 
 @router.post("/register/affiliate", response_model=UserOut, status_code=status.HTTP_201_CREATED)

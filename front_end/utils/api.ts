@@ -9,6 +9,25 @@ function buildHeaders(initHeaders?: HeadersInit, tenantId?: string): HeadersInit
   return headers;
 }
 
+export async function putAuthJSON<T = any>(path: string, bodyData: any, tenantId?: string): Promise<T> {
+  const res = await authFetch(path, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(bodyData),
+  }, true, tenantId);
+  if (!res.ok) {
+    try {
+      const data = await res.json();
+      const msg = data?.error || data?.detail || JSON.stringify(data);
+      throw new Error(msg || `Request failed with ${res.status}`);
+    } catch {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `Request failed with ${res.status}`);
+    }
+  }
+  return (await res.json()) as T;
+}
+
 export async function postForm<T = any>(path: string, data: Record<string, string>, tenantId?: string): Promise<T> {
   const body = new URLSearchParams(data);
   const res = await fetch(`${API_BASE}${path}`, {
@@ -273,6 +292,11 @@ export const UploadAPI = {
     fd.append("file", file);
     return await postMultipart(`/uploads/kyc`, fd);
   },
+};
+
+export const KYCAPI = {
+  status: (tenantId: string) => getAuthJSON(`/kyc/status`, tenantId),
+  update: (tenantId: string, body: any) => putAuthJSON(`/kyc/status`, body, tenantId),
 };
 
 export const PharmaciesAPI = {

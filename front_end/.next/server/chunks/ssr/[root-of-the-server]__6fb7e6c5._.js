@@ -33,6 +33,8 @@ __turbopack_context__.s([
     ()=>BillingAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "KYCAPI",
+    ()=>KYCAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
     "StaffAPI",
@@ -52,7 +54,9 @@ __turbopack_context__.s([
     "postJSON",
     ()=>postJSON,
     "postMultipart",
-    ()=>postMultipart
+    ()=>postMultipart,
+    "putAuthJSON",
+    ()=>putAuthJSON
 ]);
 const API_BASE = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "http://localhost:8000/api/v1";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
@@ -62,6 +66,26 @@ function buildHeaders(initHeaders, tenantId) {
     };
     if (tenantId) headers[TENANT_HEADER] = tenantId;
     return headers;
+}
+async function putAuthJSON(path, bodyData, tenantId) {
+    const res = await authFetch(path, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(bodyData)
+    }, true, tenantId);
+    if (!res.ok) {
+        try {
+            const data = await res.json();
+            const msg = data?.error || data?.detail || JSON.stringify(data);
+            throw new Error(msg || `Request failed with ${res.status}`);
+        } catch  {
+            const text = await res.text().catch(()=>"");
+            throw new Error(text || `Request failed with ${res.status}`);
+        }
+    }
+    return await res.json();
 }
 async function postForm(path, data, tenantId) {
     const body = new URLSearchParams(data);
@@ -340,6 +364,10 @@ const UploadAPI = {
         fd.append("file", file);
         return await postMultipart(`/uploads/kyc`, fd);
     }
+};
+const KYCAPI = {
+    status: (tenantId)=>getAuthJSON(`/kyc/status`, tenantId),
+    update: (tenantId, body)=>putAuthJSON(`/kyc/status`, body, tenantId)
 };
 const PharmaciesAPI = {
     list: (page = 1, pageSize = 20, q)=>getAuthJSON(`/pharmacies?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),

@@ -55,6 +55,9 @@ class PharmacyRegister(BaseModel):
     pharmacy_license_number: str = Field(..., description="Official pharmacy license number")
     national_id_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded national ID document")
     pharmacy_license_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded pharmacy license document")
+    license_document_name: Optional[str] = Field(default=None, description="Original filename for uploaded pharmacy license")
+    license_document_mime: Optional[str] = Field(default=None, description="MIME type for uploaded pharmacy license")
+    license_document_base64: Optional[str] = Field(default=None, description="Base64 encoded pharmacy license document")
     kyc_notes: Optional[str] = Field(default=None, description="Additional notes for KYC reviewer")
     affiliate_token: Optional[str] = Field(default=None, description="Affiliate referral token, if registration came via an affiliate link")
 

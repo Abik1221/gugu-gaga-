@@ -58,7 +58,7 @@ export default function RegisterPage() {
         docPath = up.path;
         setKycUploadPath(up.path);
       }
-      await AuthAPI.registerPharmacy({
+      const registerRes = await AuthAPI.registerPharmacy({
         pharmacy_name: pharmacyName,
         address: address || undefined,
         owner_email: ownerEmail,
@@ -70,12 +70,15 @@ export default function RegisterPage() {
         pharmacy_license_document_path: docPath,
         affiliate_token: affiliateToken,
       });
-      const auth = await AuthAPI.login(ownerEmail, ownerPassword);
-      const me = await AuthAPI.me();
+      const auth = await AuthAPI.login(ownerEmail, ownerPassword, registerRes?.tenant_id);
       if (typeof window !== "undefined") {
         localStorage.setItem("access_token", auth.access_token);
         if (auth.refresh_token) localStorage.setItem("refresh_token", auth.refresh_token);
-        if (me?.tenant_id) localStorage.setItem("tenant_id", me.tenant_id);
+        if (registerRes?.tenant_id) localStorage.setItem("tenant_id", registerRes.tenant_id);
+      }
+      const me = await AuthAPI.me();
+      if (typeof window !== "undefined" && me?.tenant_id) {
+        localStorage.setItem("tenant_id", me.tenant_id);
       }
       setSuccess("Application received. Redirecting to your dashboard...");
       show({ variant: "success", title: "Submitted", description: "Your dashboard will update once KYC is approved." });

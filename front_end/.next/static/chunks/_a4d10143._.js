@@ -15,6 +15,8 @@ __turbopack_context__.s([
     ()=>BillingAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "KYCAPI",
+    ()=>KYCAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
     "StaffAPI",
@@ -34,7 +36,9 @@ __turbopack_context__.s([
     "postJSON",
     ()=>postJSON,
     "postMultipart",
-    ()=>postMultipart
+    ()=>postMultipart,
+    "putAuthJSON",
+    ()=>putAuthJSON
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 const API_BASE = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "http://localhost:8000/api/v1";
@@ -45,6 +49,26 @@ function buildHeaders(initHeaders, tenantId) {
     };
     if (tenantId) headers[TENANT_HEADER] = tenantId;
     return headers;
+}
+async function putAuthJSON(path, bodyData, tenantId) {
+    const res = await authFetch(path, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(bodyData)
+    }, true, tenantId);
+    if (!res.ok) {
+        try {
+            const data = await res.json();
+            const msg = (data === null || data === void 0 ? void 0 : data.error) || (data === null || data === void 0 ? void 0 : data.detail) || JSON.stringify(data);
+            throw new Error(msg || "Request failed with ".concat(res.status));
+        } catch (e) {
+            const text = await res.text().catch(()=>"");
+            throw new Error(text || "Request failed with ".concat(res.status));
+        }
+    }
+    return await res.json();
 }
 async function postForm(path, data, tenantId) {
     const body = new URLSearchParams(data);
@@ -341,6 +365,10 @@ const UploadAPI = {
         fd.append("file", file);
         return await postMultipart("/uploads/kyc", fd);
     }
+};
+const KYCAPI = {
+    status: (tenantId)=>getAuthJSON("/kyc/status", tenantId),
+    update: (tenantId, body)=>putAuthJSON("/kyc/status", body, tenantId)
 };
 const PharmaciesAPI = {
     list: function() {
