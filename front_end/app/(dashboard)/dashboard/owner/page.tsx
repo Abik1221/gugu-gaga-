@@ -1,12 +1,36 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { AuthAPI, PharmaciesAPI, ChatAPI, KYCAPI, UploadAPI, BillingAPI } from "@/utils/api";
+import {
+  AuthAPI,
+  PharmaciesAPI,
+  ChatAPI,
+  KYCAPI,
+  UploadAPI,
+  BillingAPI,
+  OwnerAnalyticsAPI,
+} from "@/utils/api";
+import type { OwnerAnalyticsResponse } from "@/utils/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useToast } from "@/components/ui/toast";
 import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
 const Detail: React.FC<{ label: string; value: ReactNode; description?: ReactNode; className?: string }> = ({ label, value, description, className }) => (
   <div className={`space-y-1 rounded border border-border/60 bg-white/40 p-3 ${className || ""}`}>
@@ -42,6 +66,9 @@ export default function OwnerDashboardPage() {
   });
   const [paymentCode, setPaymentCode] = useState("");
   const [submittingPayment, setSubmittingPayment] = useState(false);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [analyticsError, setAnalyticsError] = useState<string | null>(null);
+  const [analytics, setAnalytics] = useState<OwnerAnalyticsResponse | null>(null);
 
   const loadKyc = useCallback(
     async (tid: string) => {
@@ -122,6 +149,7 @@ export default function OwnerDashboardPage() {
           } catch {
             setUsage([]);
           }
+          await loadAnalytics(tid);
         }
       } catch (e: any) {
         if (!active) return;
@@ -135,6 +163,20 @@ export default function OwnerDashboardPage() {
       active = false;
     };
   }, [show, loadKyc]);
+
+  async function loadAnalytics(tid: string) {
+    setAnalyticsLoading(true);
+    setAnalyticsError(null);
+    try {
+      const data = await OwnerAnalyticsAPI.overview(tid);
+      setAnalytics(data);
+    } catch (err: any) {
+      setAnalyticsError(err?.message || "Failed to load analytics");
+      setAnalytics(null);
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  }
 
   const handleFieldChange = (key: keyof typeof pendingForm, value: string) => {
     setPendingForm((prev) => ({ ...prev, [key]: value }));
@@ -195,6 +237,7 @@ export default function OwnerDashboardPage() {
       } else {
         const u = await ChatAPI.usage(tenantId, 14).catch(() => []);
         setUsage(Array.isArray(u) ? u : []);
+        await loadAnalytics(tenantId);
       }
       show({ variant: "success", title: "Status refreshed", description: "We have the latest update." });
     } catch (err: any) {
@@ -442,78 +485,247 @@ export default function OwnerDashboardPage() {
     );
   }
 
-  if (requiresPayment) {
-    return null;
-  }
+  const revenueTrend = analytics?.revenue_trend || [];
+  const revenueCards = [
+    { label: "Total Revenue", value: analytics?.totals?.total_revenue ?? 0, prefix: "ETB", trend: analytics?.deltas?.revenue_vs_last_period },
+    { label: "Average Ticket", value: analytics?.totals?.average_ticket ?? 0, prefix: "ETB", trend: analytics?.deltas?.avg_ticket_vs_last_period },
+    { label: "Units Sold", value: analytics?.totals?.units_sold ?? 0, trend: analytics?.deltas?.units_vs_last_period },
+    { label: "Active Cashiers", value: analytics?.totals?.active_cashiers ?? 0 },
+  ];
+
+  const topProducts = analytics?.top_products || [];
+  const stockBreakdown = analytics?.inventory_health || [];
+  const recentPayments = analytics?.recent_payments || [];
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Owner Dashboard</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Welcome back, {user?.username || "Owner"}</h1>
+          <p className="text-sm text-muted-foreground">
+            Track pharmacy performance, watch inventory health, and keep your staff on the same page.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
           <Link href="/dashboard/owner/staff/new"><Button variant="outline">Create Cashier</Button></Link>
           <Link href="/dashboard/owner/chat"><Button variant="outline">Open Chat</Button></Link>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="border rounded p-4">
-          <div className="text-xs text-gray-500">Role</div>
-          <div className="text-lg font-medium">{user?.role}</div>
-        </div>
-        <div className="border rounded p-4">
-          <div className="text-xs text-gray-500">Tenant</div>
-          <div className="text-lg font-medium">{user?.tenant_id || "-"}</div>
-        </div>
-        <div className="border rounded p-4">
-          <div className="text-xs text-gray-500">Pharmacies</div>
-          <div className="text-lg font-medium">{pharmacies.length}</div>
-        </div>
-      </div>
 
-      {usage.length > 0 && (
-        <div className="border rounded p-4">
-          <div className="flex items-center justify-between mb-2">
-            <div className="font-medium">AI Usage (last 14 days)</div>
-            <div className="text-xs text-gray-500">tokens</div>
-          </div>
-          <div className="flex items-end gap-1 h-24">
-            {usage.map((d)=>{
-              const max = Math.max(...usage.map(x=>x.tokens || 0)) || 1;
-              const h = Math.max(2, Math.round((d.tokens / max) * 96));
-              return (
-                <div key={d.day} className="flex flex-col items-center" title={`${d.day}: ${d.tokens}`}>
-                  <div className="bg-blue-500 w-4" style={{ height: `${h}px` }} />
-                  <div className="text-[10px] text-gray-500 mt-1">{d.day.slice(5)}</div>
-                </div>
-              );
-            })}
-          </div>
+      {analyticsError && (
+        <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          {analyticsError}
         </div>
       )}
 
-      <div className="overflow-auto border rounded">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-3 py-2 text-left">Name</th>
-              <th className="px-3 py-2 text-left">Tenant</th>
-              <th className="px-3 py-2 text-left">Address</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {pharmacies.map((p)=> (
-              <tr key={p.id} className="hover:bg-gray-50 cursor-pointer" onClick={()=>location.href=`/dashboard/owner/pharmacies/${p.id}/settings`}>
-                <td className="px-3 py-2">{p.name}</td>
-                <td className="px-3 py-2 font-mono text-xs">{p.tenant_id}</td>
-                <td className="px-3 py-2">{p.address || "-"}</td>
-              </tr>
+      <div className="grid gap-6 xl:grid-cols-3">
+        <section className="space-y-6 xl:col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            {revenueCards.map((card) => (
+              <Card key={card.label} className="shadow-sm border border-emerald-100">
+                <CardHeader className="space-y-1">
+                  <CardTitle className="text-xs font-medium text-muted-foreground">{card.label}</CardTitle>
+                  {analyticsLoading ? (
+                    <Skeleton className="h-8 w-24" />
+                  ) : (
+                    <div className="text-2xl font-semibold text-gray-900">
+                      {card.prefix ? `${card.prefix} ` : ""}
+                      {typeof card.value === "number"
+                        ? card.value.toLocaleString("en-US", { maximumFractionDigits: 2 })
+                        : card.value}
+                    </div>
+                  )}
+                </CardHeader>
+                {typeof card.trend === "number" && !Number.isNaN(card.trend) && (
+                  <CardContent>
+                    {analyticsLoading ? (
+                      <Skeleton className="h-4 w-20" />
+                    ) : (
+                      <div className={`text-sm ${card.trend >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                        {card.trend >= 0 ? "▲" : "▼"} {Math.abs(card.trend).toFixed(1)}% vs last period
+                      </div>
+                    )}
+                  </CardContent>
+                )}
+              </Card>
             ))}
-            {pharmacies.length === 0 && (
-              <tr><td className="px-3 py-4 text-gray-500" colSpan={3}>No pharmacies yet.</td></tr>
-            )}
-          </tbody>
-        </table>
+          </div>
+
+          <Card className="shadow-sm">
+            <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+              <CardTitle>Revenue trend</CardTitle>
+              <div className="text-xs text-muted-foreground">Last 12 weeks</div>
+            </CardHeader>
+            <CardContent className="h-64">
+              {analyticsLoading ? (
+                <Skeleton className="h-full w-full" />
+              ) : revenueTrend.length === 0 ? (
+                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No revenue data yet.</div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={revenueTrend} margin={{ top: 10, right: 20, left: -10, bottom: 5 }}>
+                    <defs>
+                      <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#047857" stopOpacity={0.45} />
+                        <stop offset="95%" stopColor="#047857" stopOpacity={0.05} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="period" tickLine={false} axisLine={false} fontSize={12} />
+                    <YAxis
+                      tickFormatter={(v) => `ETB ${v.toLocaleString("en-US", { maximumFractionDigits: 0 })}`}
+                      width={90}
+                      axisLine={false}
+                      tickLine={false}
+                      fontSize={12}
+                    />
+                    <Tooltip
+                      formatter={(value: number) => [`ETB ${value.toLocaleString("en-US", { maximumFractionDigits: 2 })}`, "Revenue"]}
+                      labelFormatter={(label) => label}
+                    />
+                    <Area type="monotone" dataKey="revenue" stroke="#047857" strokeWidth={2} fillOpacity={1} fill="url(#revenueGradient)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-sm">
+            <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+              <CardTitle>Top products</CardTitle>
+              <div className="text-xs text-muted-foreground">Past 30 days</div>
+            </CardHeader>
+            <CardContent className="h-64">
+              {analyticsLoading ? (
+                <Skeleton className="h-full w-full" />
+              ) : topProducts.length === 0 ? (
+                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No product sales yet.</div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={topProducts} layout="vertical" margin={{ top: 10, right: 20, left: -10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis type="number" tickFormatter={(v) => `ETB ${v.toLocaleString("en-US", { maximumFractionDigits: 0 })}`} hide />
+                    <YAxis type="category" dataKey="name" width={160} tickLine={false} axisLine={false} fontSize={12} />
+                    <Tooltip formatter={(value: number) => [`ETB ${value.toLocaleString("en-US", { maximumFractionDigits: 2 })}`, "Revenue"]} />
+                    <Bar dataKey="revenue" radius={4} fill="#10b981" />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-sm">
+            <CardHeader className="flex items-center justify-between">
+              <CardTitle>Assistant usage</CardTitle>
+              <div className="text-xs text-muted-foreground">Last 14 days</div>
+            </CardHeader>
+            <CardContent className="h-48 flex items-end">
+              {usage.length === 0 ? (
+                <div className="w-full text-center text-sm text-muted-foreground">No assistant usage yet.</div>
+              ) : (
+                <div className="flex w-full items-end gap-1">
+                  {usage.map((d) => {
+                    const max = Math.max(...usage.map((x) => x.tokens || 0)) || 1;
+                    const height = Math.max(4, Math.round(((d.tokens || 0) / max) * 160));
+                    return (
+                      <div key={d.day} className="flex flex-1 flex-col items-center" title={`${d.day}: ${d.tokens}`}>
+                        <div className="w-full rounded bg-sky-500" style={{ height: `${height}px` }} />
+                        <div className="mt-1 text-[10px] text-muted-foreground">{d.day.slice(5)}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </section>
+
+        <aside className="space-y-6">
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle>Inventory health</CardTitle>
+            </CardHeader>
+            <CardContent className="h-64">
+              {analyticsLoading ? (
+                <Skeleton className="h-full w-full" />
+              ) : stockBreakdown.length === 0 ? (
+                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No inventory data yet.</div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Tooltip formatter={(value: number, name: string) => [`${value} items`, name]} />
+                    <Pie data={stockBreakdown} dataKey="count" nameKey="label" innerRadius={50} outerRadius={80} paddingAngle={2}>
+                      {stockBreakdown.map((entry, index) => {
+                        const colors = ["#0ea5e9", "#f97316", "#10b981", "#6366f1"];
+                        return <Cell key={entry.label} fill={colors[index % colors.length]} />;
+                      })}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-sm">
+            <CardHeader>
+              <CardTitle>Recent payment activity</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {analyticsLoading ? (
+                <Skeleton className="h-32" />
+              ) : recentPayments.length === 0 ? (
+                <div className="text-muted-foreground">No payment submissions logged yet.</div>
+              ) : (
+                recentPayments.map((payment) => (
+                  <div key={payment.id} className="rounded border border-emerald-100 bg-emerald-50 p-3 text-emerald-900">
+                    <div className="font-medium">{payment.status_label}</div>
+                    <div className="text-xs text-emerald-700">{payment.created_at_formatted}</div>
+                    <div className="text-xs text-emerald-700">Code: {payment.code || "—"}</div>
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+        </aside>
       </div>
+
+      <Card className="shadow-sm">
+        <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+          <CardTitle>Registered pharmacies</CardTitle>
+          <div className="text-xs text-muted-foreground">Tenant: {user?.tenant_id || "—"}</div>
+        </CardHeader>
+        <CardContent className="overflow-auto">
+          <table className="min-w-full text-sm">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 py-2 text-left">Name</th>
+                <th className="px-3 py-2 text-left">Tenant</th>
+                <th className="px-3 py-2 text-left">Address</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {pharmacies.map((p) => (
+                <tr
+                  key={p.id}
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => (location.href = `/dashboard/owner/pharmacies/${p.id}/settings`)}
+                >
+                  <td className="px-3 py-2">{p.name}</td>
+                  <td className="px-3 py-2 font-mono text-xs">{p.tenant_id}</td>
+                  <td className="px-3 py-2">{p.address || "-"}</td>
+                </tr>
+              ))}
+              {pharmacies.length === 0 && (
+                <tr>
+                  <td className="px-3 py-4 text-center text-muted-foreground" colSpan={3}>
+                    No pharmacies yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

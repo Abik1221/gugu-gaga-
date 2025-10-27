@@ -22,8 +22,15 @@ type Item = {
   stock_qty: number;
 };
 
+type InventoryResponse = {
+  items: Item[];
+  total: number;
+  page: number;
+  page_size: number;
+};
+
 export default function InventoryPage() {
-  const [items, setItems] = useState<Item[] | null>(null);
+  const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { show } = useToast();
@@ -49,12 +56,14 @@ export default function InventoryPage() {
     let active = true;
     async function load() {
       try {
-        const data = await getAuthJSON<Item[]>("/api/v1/inventory/items");
+        const data = await getAuthJSON<InventoryResponse>("/api/v1/inventory/items");
+        const list = Array.isArray(data?.items) ? data.items : [];
         if (!active) return;
-        setItems(data);
+        setItems(list);
       } catch (e: any) {
         if (!active) return;
         setError(e.message || "Failed to load inventory");
+        setItems([]);
       } finally {
         if (active) setLoading(false);
       }
@@ -95,7 +104,7 @@ export default function InventoryPage() {
     return <div className="text-red-600">{error}</div>;
   }
 
-  const filtered = (items || []).filter((it) => {
+  const filtered = items.filter((it) => {
     const q = query.trim().toLowerCase();
     if (!q) return true;
     return (
@@ -166,8 +175,8 @@ export default function InventoryPage() {
                   // refresh list
                   setLoading(true);
                   try {
-                    const data = await getAuthJSON<Item[]>("/api/v1/inventory/items");
-                    setItems(data);
+                    const data = await getAuthJSON<InventoryResponse>("/api/v1/inventory/items");
+                    setItems(Array.isArray(data?.items) ? data.items : []);
                   } finally {
                     setLoading(false);
                   }
@@ -259,8 +268,8 @@ export default function InventoryPage() {
                               // refresh list
                               setLoading(true);
                               try {
-                                const data = await getAuthJSON<Item[]>("/api/v1/inventory/items");
-                                setItems(data);
+                                const data = await getAuthJSON<InventoryResponse>("/api/v1/inventory/items");
+                                setItems(Array.isArray(data?.items) ? data.items : []);
                               } finally {
                                 setLoading(false);
                               }

@@ -3,6 +3,15 @@ export const API_BASE =
 export const TENANT_HEADER =
   process.env.NEXT_PUBLIC_TENANT_HEADER || "X-Tenant-ID";
 
+const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
+let API_BASE_PATH = "";
+try {
+  const parsed = new URL(API_BASE_NORMALIZED);
+  API_BASE_PATH = parsed.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+} catch {
+  API_BASE_PATH = "";
+}
+
 function buildHeaders(
   initHeaders?: HeadersInit,
   tenantId?: string
@@ -14,13 +23,41 @@ function buildHeaders(
   return headers;
 }
 
+function resolveApiUrl(path: string): string {
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
+  if (path.startsWith("?") || path.startsWith("#")) {
+    return `${API_BASE_NORMALIZED}${path}`;
+  }
+
+  const normalizedPath = path.replace(/^\/+/, "");
+  let relativePath = normalizedPath;
+
+  if (API_BASE_PATH) {
+    const prefix = `${API_BASE_PATH}/`;
+    if (relativePath.startsWith(prefix)) {
+      relativePath = relativePath.slice(prefix.length);
+    } else if (relativePath === API_BASE_PATH) {
+      relativePath = "";
+    }
+  }
+
+  if (!relativePath) {
+    return API_BASE_NORMALIZED;
+  }
+
+  return `${API_BASE_NORMALIZED}/${relativePath}`;
+}
+
 export async function postForm<T = any>(
   path: string,
   data: Record<string, string>,
   tenantId?: string
 ): Promise<T> {
   const body = new URLSearchParams(data);
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(resolveApiUrl(path), {
     method: "POST",
     headers: buildHeaders(
       { "Content-Type": "application/x-www-form-urlencoded" },
@@ -72,7 +109,7 @@ export async function postJSON<T = any>(
   body: any,
   tenantId?: string
 ): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(resolveApiUrl(path), {
     method: "POST",
     headers: buildHeaders({ "Content-Type": "application/json" }, tenantId),
     body: JSON.stringify(body),
@@ -97,7 +134,7 @@ export async function putAuthJSON<T = any>(
   bodyData: any,
   tenantId?: string
 ): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(resolveApiUrl(path), {
     method: "PUT",
     headers: buildHeaders({ "Content-Type": "application/json" }, tenantId),
     body: JSON.stringify(bodyData),
@@ -121,7 +158,7 @@ export async function postMultipart<T = any>(
   formData: FormData,
   tenantId?: string
 ): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(resolveApiUrl(path), {
     method: "POST",
     headers: buildHeaders(undefined, tenantId),
     body: formData,
@@ -143,6 +180,11 @@ export async function postMultipart<T = any>(
 export function getAccessToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("access_token");
+}
+
+function getTenantId(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("tenant_id");
 }
 
 function getRefreshToken(): string | null {
@@ -181,27 +223,29 @@ async function authFetch(
   tenantId?: string
 ): Promise<Response> {
   const token = getAccessToken();
+  const activeTenantId = tenantId ?? getTenantId() ?? undefined;
   const headers: HeadersInit = buildHeaders(
     {
       ...(init?.headers || {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    tenantId
+    activeTenantId
   );
-  let res = await fetch(`${API_BASE}${path}`, { ...(init || {}), headers });
+  let res = await fetch(resolveApiUrl(path), { ...(init || {}), headers });
 
   if (res.status === 401 && retry) {
     const ok = await refreshTokens();
     if (ok) {
       const newToken = getAccessToken();
+      const retryTenantId = tenantId ?? getTenantId() ?? undefined;
       const retryHeaders: HeadersInit = buildHeaders(
         {
           ...(init?.headers || {}),
           ...(newToken ? { Authorization: `Bearer ${newToken}` } : {}),
         },
-        tenantId
+        retryTenantId
       );
-      res = await fetch(`${API_BASE}${path}`, {
+      res = await fetch(resolveApiUrl(path), {
         ...(init || {}),
         headers: retryHeaders,
       });
@@ -428,6 +472,37 @@ export const ChatAPI = {
     postAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, { prompt }, tenantId),
   usage: (tenantId: string, days = 30) =>
     getAuthJSON(`/api/v1/chat/usage?days=${days}`, tenantId),
+};
+
+export type OwnerAnalyticsResponse = {
+  totals: {
+    total_revenue: number;
+    average_ticket: number;
+    units_sold: number;
+    sale_count: number;
+    active_cashiers: number;
+  };
+  deltas: {
+    revenue_vs_last_period: number;
+    avg_ticket_vs_last_period: number;
+    units_vs_last_period: number;
+  };
+  revenue_trend: { period: string; revenue: number }[];
+  top_products: { name: string; revenue: number; quantity: number }[];
+  inventory_health: { label: string; count: number }[];
+  recent_payments: {
+    id: number;
+    status: string;
+    status_label: string;
+    code?: string | null;
+    created_at: string;
+    created_at_formatted: string;
+  }[];
+};
+
+export const OwnerAnalyticsAPI = {
+  overview: (tenantId: string) =>
+    getAuthJSON<OwnerAnalyticsResponse>("/api/v1/owner/analytics/overview", tenantId),
 };
 
 // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged

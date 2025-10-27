@@ -38,6 +38,10 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith("/dashboard/admin");
+  const loginPath = isAdminRoute
+    ? "/login"
+    : `/auth?tab=signin&next=${encodeURIComponent(pathname || "/dashboard")}`;
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<Me | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -64,6 +68,17 @@ export default function DashboardLayout({
         setUser(me);
         // If KYC is pending and user is an owner/staff, keep them on status page only
         const primaryRole = (me?.role || me?.roles?.[0]?.role?.name || "").toLowerCase();
+        const roleSet = deriveRoles(me);
+        const isOwnerRole = roleSet.includes("pharmacy_owner") || roleSet.includes("owner");
+        const isCashierRole = roleSet.includes("cashier");
+        if (isOwnerRole && pathname.startsWith("/dashboard/pos")) {
+          router.replace("/dashboard/owner");
+          return;
+        }
+        if (!isOwnerRole && pathname.startsWith("/dashboard/owner/staff")) {
+          router.replace(isCashierRole ? "/dashboard/pos" : "/dashboard");
+          return;
+        }
         if (primaryRole !== "admin" && pathname.startsWith("/dashboard/admin")) {
           router.replace("/dashboard/owner");
           return;
@@ -90,7 +105,7 @@ export default function DashboardLayout({
       } catch (e: any) {
         if (!active) return;
         setError("Unauthorized");
-        router.replace("/login");
+        router.replace(loginPath);
       } finally {
         if (active) setLoading(false);
       }
@@ -98,14 +113,14 @@ export default function DashboardLayout({
     // If no token, redirect immediately
     if (typeof window !== "undefined" && !localStorage.getItem("access_token")) {
       setLoading(false);
-      router.replace("/login");
+      router.replace(loginPath);
       return;
     }
     check();
     return () => {
       active = false;
     };
-  }, [router, pathname]);
+  }, [router, pathname, loginPath]);
 
   useEffect(() => {
     if (!user) {
@@ -164,7 +179,15 @@ export default function DashboardLayout({
       localStorage.removeItem("access_token");
       localStorage.removeItem("refresh_token");
     }
-    router.replace(isAffiliate ? "/auth/affiliate-login" : "/login");
+    if (isAffiliate) {
+      router.replace("/auth/affiliate-login");
+      return;
+    }
+    if (roleName === "admin") {
+      router.replace("/login");
+      return;
+    }
+    router.replace("/auth?tab=signin");
   }
 
   if (loading) {
@@ -217,42 +240,58 @@ function Shell({
   const isManager = baseRole === "manager" || roles.includes("manager");
   const isAffiliate = baseRole === "affiliate" || roles.includes("affiliate");
   const isAdmin = baseRole === "admin";
-  const isOwnerOrManager = isOwner || isManager || isCashier;
+  const isTenantStaff = isOwner || isManager || isCashier;
   const subscriptionStatus = user?.subscription_status || "active";
-  const requiresPayment = isOwnerOrManager && user?.kyc_status === "approved" && subscriptionStatus !== "active";
-  const kycPending = isOwnerOrManager && user?.kyc_status && user.kyc_status !== "approved";
+  const requiresPayment = isTenantStaff && user?.kyc_status === "approved" && subscriptionStatus !== "active";
+  const kycPending = isTenantStaff && user?.kyc_status && user.kyc_status !== "approved";
 
-  const nav = isAffiliate
-    ? [{ href: "/dashboard/affiliate", label: "Affiliate Dashboard" }]
-    : isAdmin
-    ? [
-        { href: "/dashboard/admin", label: "Admin Overview" },
-        { href: "/dashboard/admin/users", label: "Users" },
-        { href: "/dashboard/admin/pharmacies", label: "Pharmacies" },
-        { href: "/dashboard/admin/affiliates", label: "Affiliates" },
-        { href: "/dashboard/admin/payouts", label: "Payouts" },
-        { href: "/dashboard/admin/audit", label: "Audit Log" },
-      ]
-    : isOwnerOrManager
-    ? (kycPending
-        ? [{ href: "/dashboard/owner/kyc", label: "KYC" }]
-        : requiresPayment
-        ? [{ href: "/dashboard/owner/payment", label: "Payment" }]
-        : [
-            { href: "/dashboard/owner", label: "Owner Overview" },
-            { href: "/dashboard/inventory", label: "Inventory" },
-            { href: "/dashboard/pos", label: "POS" },
-            { href: "/dashboard/settings", label: "Settings" },
-            { href: "/dashboard/about", label: "About" },
-          ])
-    : [
-        { href: "/dashboard", label: "Overview" },
+  let nav: { href: string; label: string }[];
+  if (isAffiliate) {
+    nav = [{ href: "/dashboard/affiliate", label: "Affiliate Dashboard" }];
+  } else if (isAdmin) {
+    nav = [
+      { href: "/dashboard/admin", label: "Admin Overview" },
+      { href: "/dashboard/admin/users", label: "Users" },
+      { href: "/dashboard/admin/pharmacies", label: "Pharmacies" },
+      { href: "/dashboard/admin/affiliates", label: "Affiliates" },
+      { href: "/dashboard/admin/payouts", label: "Payouts" },
+      { href: "/dashboard/admin/audit", label: "Audit Log" },
+    ];
+  } else if (isOwner) {
+    if (kycPending) {
+      nav = [{ href: "/dashboard/owner/kyc", label: "KYC" }];
+    } else if (requiresPayment) {
+      nav = [{ href: "/dashboard/owner/payment", label: "Payment" }];
+    } else {
+      nav = [
+        { href: "/dashboard/owner", label: "Owner Overview" },
         { href: "/dashboard/inventory", label: "Inventory" },
-        { href: "/dashboard/pos", label: "POS" },
-        { href: "/dashboard/affiliate", label: "Affiliate" },
         { href: "/dashboard/settings", label: "Settings" },
-        { href: "/dashboard/about", label: "About" },
+        { href: "/dashboard/owner/staff", label: "Staff Management" },
       ];
+    }
+  } else if ((isManager || isCashier)) {
+    if (kycPending) {
+      nav = [{ href: "/dashboard/owner/kyc", label: "KYC" }];
+    } else if (requiresPayment) {
+      nav = [{ href: "/dashboard/owner/payment", label: "Payment" }];
+    } else {
+      nav = [
+        { href: "/dashboard/pos", label: "Point of Sale" },
+        { href: "/dashboard/inventory", label: "Inventory" },
+        { href: "/dashboard/settings", label: "Settings" },
+      ];
+    }
+  } else {
+    nav = [
+      { href: "/dashboard", label: "Overview" },
+      { href: "/dashboard/inventory", label: "Inventory" },
+      { href: "/dashboard/pos", label: "POS" },
+      { href: "/dashboard/affiliate", label: "Affiliate" },
+      { href: "/dashboard/settings", label: "Settings" },
+      { href: "/dashboard/about", label: "About" },
+    ];
+  }
 
   return (
     <div className="min-h-screen grid grid-cols-12">

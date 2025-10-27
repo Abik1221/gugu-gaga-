@@ -16,6 +16,16 @@ type Item = {
   stock_qty: number;
 };
 
+type InventoryResponse = {
+  items: Array<{
+    id: number | string;
+    medicine_name?: string;
+    sku?: string | null;
+    sell_price?: number | null;
+    quantity?: number | null;
+  }>;
+};
+
 type CartLine = {
   id: string;
   name: string;
@@ -44,6 +54,8 @@ export default function POSPage() {
       const r = tx.receipts[0];
       if (r && r.id) return String(r.id);
     }
+    return null;
+  }
 
   function authHeaders(): HeadersInit {
     const t = getAccessToken();
@@ -109,19 +121,35 @@ export default function POSPage() {
     let active = true;
     async function load() {
       try {
-        const data = await getAuthJSON<Item[]>("/api/v1/inventory/items");
+        const data = await getAuthJSON<InventoryResponse>("/api/v1/inventory/items");
+        const list = Array.isArray(data?.items)
+          ? data.items.map((raw) => ({
+              id: String(raw.id ?? ""),
+              name: String(raw.medicine_name ?? ""),
+              sku: String(raw.sku ?? ""),
+              sale_price: Number(raw.sell_price ?? 0),
+              stock_qty: Number(raw.quantity ?? 0),
+            }))
+          : [];
         if (!active) return;
-        setItems(data);
+        setItems(list);
       } catch (e: any) {
         if (!active) return;
         show({ variant: "destructive", title: "Failed to load items", description: e.message || "" });
+        setItems([]);
       } finally {
         if (active) setLoading(false);
       }
     }
     async function loadBranches() {
       try {
-        const res = await fetch(`${API_BASE}/api/v1/admin/branches`, { headers: { ...(getAccessToken()? { Authorization: `Bearer ${getAccessToken()}` } : {}) } });
+        const token = getAccessToken();
+        const tenant = typeof window !== "undefined" ? localStorage.getItem("tenant_id") : null;
+        const headers: HeadersInit = {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(tenant ? { "X-Tenant-ID": tenant } : {}),
+        };
+        const res = await fetch(`${API_BASE}/api/v1/admin/branches`, { headers });
         if (!res.ok) return;
         const b = await res.json();
         if (!active) return;

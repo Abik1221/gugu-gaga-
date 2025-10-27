@@ -17,6 +17,8 @@ __turbopack_context__.s([
     ()=>ChatAPI,
     "KYCAPI",
     ()=>KYCAPI,
+    "OwnerAnalyticsAPI",
+    ()=>OwnerAnalyticsAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
     "StaffAPI",
@@ -42,6 +44,14 @@ __turbopack_context__.s([
 ]);
 const API_BASE = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "http://localhost:8000";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
+const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
+let API_BASE_PATH = "";
+try {
+    const parsed = new URL(API_BASE_NORMALIZED);
+    API_BASE_PATH = parsed.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+} catch  {
+    API_BASE_PATH = "";
+}
 function buildHeaders(initHeaders, tenantId) {
     const headers = {
         ...initHeaders
@@ -49,9 +59,31 @@ function buildHeaders(initHeaders, tenantId) {
     if (tenantId) headers[TENANT_HEADER] = tenantId;
     return headers;
 }
+function resolveApiUrl(path) {
+    if (/^https?:\/\//i.test(path)) {
+        return path;
+    }
+    if (path.startsWith("?") || path.startsWith("#")) {
+        return `${API_BASE_NORMALIZED}${path}`;
+    }
+    const normalizedPath = path.replace(/^\/+/, "");
+    let relativePath = normalizedPath;
+    if (API_BASE_PATH) {
+        const prefix = `${API_BASE_PATH}/`;
+        if (relativePath.startsWith(prefix)) {
+            relativePath = relativePath.slice(prefix.length);
+        } else if (relativePath === API_BASE_PATH) {
+            relativePath = "";
+        }
+    }
+    if (!relativePath) {
+        return API_BASE_NORMALIZED;
+    }
+    return `${API_BASE_NORMALIZED}/${relativePath}`;
+}
 async function postForm(path, data, tenantId) {
     const body = new URLSearchParams(data);
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/x-www-form-urlencoded"
@@ -88,7 +120,7 @@ async function postForm(path, data, tenantId) {
     return await res.json();
 }
 async function postJSON(path, body, tenantId) {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/json"
@@ -108,7 +140,7 @@ async function postJSON(path, body, tenantId) {
     return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(resolveApiUrl(path), {
         method: "PUT",
         headers: buildHeaders({
             "Content-Type": "application/json"
@@ -128,7 +160,7 @@ async function putAuthJSON(path, bodyData, tenantId) {
     return await res.json();
 }
 async function postMultipart(path, formData, tenantId) {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders(undefined, tenantId),
         body: formData
@@ -145,6 +177,11 @@ async function postMultipart(path, formData, tenantId) {
     return await res.json();
 }
 function getAccessToken() {
+    if ("TURBOPACK compile-time truthy", 1) return null;
+    //TURBOPACK unreachable
+    ;
+}
+function getTenantId() {
     if ("TURBOPACK compile-time truthy", 1) return null;
     //TURBOPACK unreachable
     ;
@@ -174,13 +211,14 @@ async function refreshTokens() {
 }
 async function authFetch(path, init, retry = true, tenantId) {
     const token = getAccessToken();
+    const activeTenantId = tenantId ?? getTenantId() ?? undefined;
     const headers = buildHeaders({
         ...init?.headers || {},
         ...token ? {
             Authorization: `Bearer ${token}`
         } : {}
-    }, tenantId);
-    let res = await fetch(`${API_BASE}${path}`, {
+    }, activeTenantId);
+    let res = await fetch(resolveApiUrl(path), {
         ...init || {},
         headers
     });
@@ -188,13 +226,14 @@ async function authFetch(path, init, retry = true, tenantId) {
         const ok = await refreshTokens();
         if (ok) {
             const newToken = getAccessToken();
+            const retryTenantId = tenantId ?? getTenantId() ?? undefined;
             const retryHeaders = buildHeaders({
                 ...init?.headers || {},
                 ...newToken ? {
                     Authorization: `Bearer ${newToken}`
                 } : {}
-            }, tenantId);
-            res = await fetch(`${API_BASE}${path}`, {
+            }, retryTenantId);
+            res = await fetch(resolveApiUrl(path), {
                 ...init || {},
                 headers: retryHeaders
             });
@@ -359,6 +398,9 @@ const ChatAPI = {
             prompt
         }, tenantId),
     usage: (tenantId, days = 30)=>getAuthJSON(`/api/v1/chat/usage?days=${days}`, tenantId)
+};
+const OwnerAnalyticsAPI = {
+    overview: (tenantId)=>getAuthJSON("/api/v1/owner/analytics/overview", tenantId)
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";

@@ -17,6 +17,8 @@ __turbopack_context__.s([
     ()=>ChatAPI,
     "KYCAPI",
     ()=>KYCAPI,
+    "OwnerAnalyticsAPI",
+    ()=>OwnerAnalyticsAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
     "StaffAPI",
@@ -41,8 +43,16 @@ __turbopack_context__.s([
     ()=>putAuthJSON
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
-const API_BASE = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "http://localhost:8000/api/v1";
+const API_BASE = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "http://localhost:8000";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
+const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
+let API_BASE_PATH = "";
+try {
+    const parsed = new URL(API_BASE_NORMALIZED);
+    API_BASE_PATH = parsed.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+} catch (e) {
+    API_BASE_PATH = "";
+}
 function buildHeaders(initHeaders, tenantId) {
     const headers = {
         ...initHeaders
@@ -50,9 +60,31 @@ function buildHeaders(initHeaders, tenantId) {
     if (tenantId) headers[TENANT_HEADER] = tenantId;
     return headers;
 }
+function resolveApiUrl(path) {
+    if (/^https?:\/\//i.test(path)) {
+        return path;
+    }
+    if (path.startsWith("?") || path.startsWith("#")) {
+        return "".concat(API_BASE_NORMALIZED).concat(path);
+    }
+    const normalizedPath = path.replace(/^\/+/, "");
+    let relativePath = normalizedPath;
+    if (API_BASE_PATH) {
+        const prefix = "".concat(API_BASE_PATH, "/");
+        if (relativePath.startsWith(prefix)) {
+            relativePath = relativePath.slice(prefix.length);
+        } else if (relativePath === API_BASE_PATH) {
+            relativePath = "";
+        }
+    }
+    if (!relativePath) {
+        return API_BASE_NORMALIZED;
+    }
+    return "".concat(API_BASE_NORMALIZED, "/").concat(relativePath);
+}
 async function postForm(path, data, tenantId) {
     const body = new URLSearchParams(data);
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/x-www-form-urlencoded"
@@ -89,7 +121,7 @@ async function postForm(path, data, tenantId) {
     return await res.json();
 }
 async function postJSON(path, body, tenantId) {
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/json"
@@ -109,7 +141,7 @@ async function postJSON(path, body, tenantId) {
     return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "PUT",
         headers: buildHeaders({
             "Content-Type": "application/json"
@@ -129,7 +161,7 @@ async function putAuthJSON(path, bodyData, tenantId) {
     return await res.json();
 }
 async function postMultipart(path, formData, tenantId) {
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders(undefined, tenantId),
         body: formData
@@ -149,6 +181,11 @@ function getAccessToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
     return localStorage.getItem("access_token");
+}
+function getTenantId() {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    return localStorage.getItem("tenant_id");
 }
 function getRefreshToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
@@ -178,13 +215,15 @@ async function refreshTokens() {
 async function authFetch(path, init) {
     let retry = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true, tenantId = arguments.length > 3 ? arguments[3] : void 0;
     const token = getAccessToken();
+    var _ref;
+    const activeTenantId = (_ref = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref !== void 0 ? _ref : undefined;
     const headers = buildHeaders({
         ...(init === null || init === void 0 ? void 0 : init.headers) || {},
         ...token ? {
             Authorization: "Bearer ".concat(token)
         } : {}
-    }, tenantId);
-    let res = await fetch("".concat(API_BASE).concat(path), {
+    }, activeTenantId);
+    let res = await fetch(resolveApiUrl(path), {
         ...init || {},
         headers
     });
@@ -192,13 +231,15 @@ async function authFetch(path, init) {
         const ok = await refreshTokens();
         if (ok) {
             const newToken = getAccessToken();
+            var _ref1;
+            const retryTenantId = (_ref1 = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref1 !== void 0 ? _ref1 : undefined;
             const retryHeaders = buildHeaders({
                 ...(init === null || init === void 0 ? void 0 : init.headers) || {},
                 ...newToken ? {
                     Authorization: "Bearer ".concat(newToken)
                 } : {}
-            }, tenantId);
-            res = await fetch("".concat(API_BASE).concat(path), {
+            }, retryTenantId);
+            res = await fetch(resolveApiUrl(path), {
                 ...init || {},
                 headers: retryHeaders
             });
@@ -229,11 +270,11 @@ async function postAuthJSON(path, bodyData, tenantId) {
     return await res.json();
 }
 const AuthAPI = {
-    registerAffiliate: (body)=>postJSON("/auth/register/affiliate", body),
-    registerPharmacy: (body)=>postJSON("/auth/register/pharmacy", body),
+    registerAffiliate: (body)=>postJSON("/api/v1/auth/register/affiliate", body),
+    registerPharmacy: (body)=>postJSON("/api/v1/auth/register/pharmacy", body),
     registerVerify: async (email, code)=>{
         try {
-            return await postForm("/auth/register/verify", {
+            return await postForm("/api/v1/auth/register/verify", {
                 email,
                 code
             });
@@ -243,7 +284,7 @@ const AuthAPI = {
                     body: err.body
                 });
                 try {
-                    return await postJSON("/auth/register/verify", {
+                    return await postJSON("/api/v1/auth/register/verify", {
                         email,
                         code
                     });
@@ -257,68 +298,68 @@ const AuthAPI = {
             throw err;
         }
     },
-    verifyRegistration: (email, code)=>postForm("/auth/register/verify", {
+    verifyRegistration: (email, code)=>postForm("/api/v1/auth/register/verify", {
             email,
             code
         }),
-    login: (email, password, tenantId)=>postForm("/auth/login", {
+    login: (email, password, tenantId)=>postForm("/api/v1/auth/login", {
             username: email,
             password
         }, tenantId),
-    loginRequestCode: (email, password, tenantId)=>postForm("/auth/login/request-code", {
+    loginRequestCode: (email, password, tenantId)=>postForm("/api/v1/auth/login/request-code", {
             username: email,
             password
         }, tenantId),
-    loginVerify: (email, code, tenantId)=>postJSON("/auth/login/verify", {
+    loginVerify: (email, code, tenantId)=>postJSON("/api/v1/auth/login/verify", {
             email,
             code
         }, tenantId),
-    me: ()=>getAuthJSON("/auth/me")
+    me: ()=>getAuthJSON("/api/v1/auth/me")
 };
 const AffiliateAPI = {
-    getLinks: ()=>getAuthJSON("/affiliate/register-link"),
-    createLink: ()=>getAuthJSON("/affiliate/register-link?create_new=true"),
-    deactivate: (token)=>postAuthJSON("/affiliate/links/".concat(encodeURIComponent(token), "/deactivate"), {}),
-    rotate: (token)=>postAuthJSON("/affiliate/links/".concat(encodeURIComponent(token), "/rotate"), {}),
-    dashboard: ()=>getAuthJSON("/affiliate/dashboard"),
-    payouts: (status)=>getAuthJSON("/affiliate/payouts".concat(status ? "?status_filter=".concat(encodeURIComponent(status)) : "")),
+    getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
+    createLink: ()=>getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
+    deactivate: (token)=>postAuthJSON("/api/v1/affiliate/links/".concat(encodeURIComponent(token), "/deactivate"), {}),
+    rotate: (token)=>postAuthJSON("/api/v1/affiliate/links/".concat(encodeURIComponent(token), "/rotate"), {}),
+    dashboard: ()=>getAuthJSON("/api/v1/affiliate/dashboard"),
+    payouts: (status)=>getAuthJSON("/api/v1/affiliate/payouts".concat(status ? "?status_filter=".concat(encodeURIComponent(status)) : "")),
     requestPayout: function(month) {
         let percent = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 5;
-        return postAuthJSON("/affiliate/payouts/request", {
+        return postAuthJSON("/api/v1/affiliate/payouts/request", {
             month,
             percent
         });
     },
-    updateProfile: (body)=>postAuthJSON("/affiliate/profile", body)
+    updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body)
 };
 const AdminAPI = {
     pharmacies: function() {
         let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 ? arguments[2] : void 0;
-        return getAuthJSON("/admin/pharmacies?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
+        return getAuthJSON("/api/v1/admin/pharmacies?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
     },
     affiliates: function() {
         let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 ? arguments[2] : void 0;
-        return getAuthJSON("/admin/affiliates?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
+        return getAuthJSON("/api/v1/admin/affiliates?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
     },
-    approvePharmacy: (tenantId, applicationId, body)=>postAuthJSON("/admin/pharmacies/".concat(applicationId, "/approve"), body || {}, tenantId),
-    rejectPharmacy: (tenantId, applicationId)=>postAuthJSON("/admin/pharmacies/".concat(applicationId, "/reject"), {}, tenantId),
-    verifyPayment: (tenantId, code)=>postAuthJSON("/admin/payments/verify", {
+    approvePharmacy: (tenantId, applicationId, body)=>postAuthJSON("/api/v1/admin/pharmacies/".concat(applicationId, "/approve"), body || {}, tenantId),
+    rejectPharmacy: (tenantId, applicationId)=>postAuthJSON("/api/v1/admin/pharmacies/".concat(applicationId, "/reject"), {}, tenantId),
+    verifyPayment: (tenantId, code)=>postAuthJSON("/api/v1/admin/payments/verify", {
             code: code || null
         }, tenantId),
-    rejectPayment: (tenantId, code)=>postAuthJSON("/admin/payments/reject", {
+    rejectPayment: (tenantId, code)=>postAuthJSON("/api/v1/admin/payments/reject", {
             code: code || null
         }, tenantId),
     analyticsOverview: function() {
         let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 30;
-        return getAuthJSON("/admin/analytics/overview?days=".concat(days));
+        return getAuthJSON("/api/v1/admin/analytics/overview?days=".concat(days));
     },
-    approveAffiliate: (userId)=>postAuthJSON("/admin/affiliates/".concat(userId, "/approve"), {}),
-    rejectAffiliate: (userId)=>postAuthJSON("/admin/affiliates/".concat(userId, "/reject"), {})
+    approveAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/approve"), {}),
+    rejectAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/reject"), {})
 };
 const StaffAPI = {
-    createCashier: (tenantId, body)=>postAuthJSON("/staff", body, tenantId),
-    list: (tenantId)=>getAuthJSON("/staff", tenantId),
-    update: (tenantId, userId, body)=>authFetch("/staff/".concat(userId), {
+    createCashier: (tenantId, body)=>postAuthJSON("/api/v1/staff", body, tenantId),
+    list: (tenantId)=>getAuthJSON("/api/v1/staff", tenantId),
+    update: (tenantId, userId, body)=>authFetch("/api/v1/staff/".concat(userId), {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
@@ -328,7 +369,7 @@ const StaffAPI = {
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         }),
-    remove: (tenantId, userId)=>authFetch("/staff/".concat(userId), {
+    remove: (tenantId, userId)=>authFetch("/api/v1/staff/".concat(userId), {
             method: "DELETE"
         }, true, tenantId).then(async (res)=>{
             if (!res.ok) throw new Error(await res.text());
@@ -336,7 +377,7 @@ const StaffAPI = {
         })
 };
 const BillingAPI = {
-    submitPaymentCode: (tenantId, code)=>postAuthJSON("/owner/billing/payment-code", {
+    submitPaymentCode: (tenantId, code)=>postAuthJSON("/api/v1/owner/billing/payment-code", {
             code
         }, tenantId)
 };
@@ -348,16 +389,16 @@ const UploadAPI = {
     }
 };
 const KYCAPI = {
-    status: (tenantId)=>getAuthJSON("/owner/kyc/status", tenantId),
-    update: (tenantId, body)=>putAuthJSON("/owner/kyc/status", body, tenantId)
+    status: (tenantId)=>getAuthJSON("/api/v1/owner/kyc/status", tenantId),
+    update: (tenantId, body)=>putAuthJSON("/api/v1/owner/kyc/status", body, tenantId)
 };
 const PharmaciesAPI = {
     list: function() {
         let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 ? arguments[2] : void 0;
-        return getAuthJSON("/pharmacies?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
+        return getAuthJSON("/api/v1/pharmacies?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
     },
-    get: (id)=>getAuthJSON("/pharmacies/".concat(id)),
-    update: (id, body)=>authFetch("/pharmacies/".concat(id), {
+    get: (id)=>getAuthJSON("/api/v1/pharmacies/".concat(id)),
+    update: (id, body)=>authFetch("/api/v1/pharmacies/".concat(id), {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
@@ -369,18 +410,21 @@ const PharmaciesAPI = {
         })
 };
 const ChatAPI = {
-    listThreads: (tenantId)=>getAuthJSON("/chat/threads", tenantId),
-    createThread: (tenantId, title)=>postAuthJSON("/chat/threads", {
+    listThreads: (tenantId)=>getAuthJSON("/api/v1/chat/threads", tenantId),
+    createThread: (tenantId, title)=>postAuthJSON("/api/v1/chat/threads", {
             title
         }, tenantId),
-    listMessages: (tenantId, threadId)=>getAuthJSON("/chat/threads/".concat(threadId, "/messages"), tenantId),
-    sendMessage: (tenantId, threadId, prompt)=>postAuthJSON("/chat/threads/".concat(threadId, "/messages"), {
+    listMessages: (tenantId, threadId)=>getAuthJSON("/api/v1/chat/threads/".concat(threadId, "/messages"), tenantId),
+    sendMessage: (tenantId, threadId, prompt)=>postAuthJSON("/api/v1/chat/threads/".concat(threadId, "/messages"), {
             prompt
         }, tenantId),
     usage: function(tenantId) {
         let days = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 30;
-        return getAuthJSON("/chat/usage?days=".concat(days), tenantId);
+        return getAuthJSON("/api/v1/chat/usage?days=".concat(days), tenantId);
     }
+};
+const OwnerAnalyticsAPI = {
+    overview: (tenantId)=>getAuthJSON("/api/v1/owner/analytics/overview", tenantId)
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";

@@ -17,6 +17,8 @@ __turbopack_context__.s([
     ()=>ChatAPI,
     "KYCAPI",
     ()=>KYCAPI,
+    "OwnerAnalyticsAPI",
+    ()=>OwnerAnalyticsAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
     "StaffAPI",
@@ -43,6 +45,14 @@ __turbopack_context__.s([
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 const API_BASE = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "http://localhost:8000";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
+const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
+let API_BASE_PATH = "";
+try {
+    const parsed = new URL(API_BASE_NORMALIZED);
+    API_BASE_PATH = parsed.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+} catch (e) {
+    API_BASE_PATH = "";
+}
 function buildHeaders(initHeaders, tenantId) {
     const headers = {
         ...initHeaders
@@ -50,9 +60,31 @@ function buildHeaders(initHeaders, tenantId) {
     if (tenantId) headers[TENANT_HEADER] = tenantId;
     return headers;
 }
+function resolveApiUrl(path) {
+    if (/^https?:\/\//i.test(path)) {
+        return path;
+    }
+    if (path.startsWith("?") || path.startsWith("#")) {
+        return "".concat(API_BASE_NORMALIZED).concat(path);
+    }
+    const normalizedPath = path.replace(/^\/+/, "");
+    let relativePath = normalizedPath;
+    if (API_BASE_PATH) {
+        const prefix = "".concat(API_BASE_PATH, "/");
+        if (relativePath.startsWith(prefix)) {
+            relativePath = relativePath.slice(prefix.length);
+        } else if (relativePath === API_BASE_PATH) {
+            relativePath = "";
+        }
+    }
+    if (!relativePath) {
+        return API_BASE_NORMALIZED;
+    }
+    return "".concat(API_BASE_NORMALIZED, "/").concat(relativePath);
+}
 async function postForm(path, data, tenantId) {
     const body = new URLSearchParams(data);
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/x-www-form-urlencoded"
@@ -89,7 +121,7 @@ async function postForm(path, data, tenantId) {
     return await res.json();
 }
 async function postJSON(path, body, tenantId) {
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/json"
@@ -109,7 +141,7 @@ async function postJSON(path, body, tenantId) {
     return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "PUT",
         headers: buildHeaders({
             "Content-Type": "application/json"
@@ -129,7 +161,7 @@ async function putAuthJSON(path, bodyData, tenantId) {
     return await res.json();
 }
 async function postMultipart(path, formData, tenantId) {
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders(undefined, tenantId),
         body: formData
@@ -149,6 +181,11 @@ function getAccessToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
     return localStorage.getItem("access_token");
+}
+function getTenantId() {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    return localStorage.getItem("tenant_id");
 }
 function getRefreshToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
@@ -178,13 +215,15 @@ async function refreshTokens() {
 async function authFetch(path, init) {
     let retry = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true, tenantId = arguments.length > 3 ? arguments[3] : void 0;
     const token = getAccessToken();
+    var _ref;
+    const activeTenantId = (_ref = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref !== void 0 ? _ref : undefined;
     const headers = buildHeaders({
         ...(init === null || init === void 0 ? void 0 : init.headers) || {},
         ...token ? {
             Authorization: "Bearer ".concat(token)
         } : {}
-    }, tenantId);
-    let res = await fetch("".concat(API_BASE).concat(path), {
+    }, activeTenantId);
+    let res = await fetch(resolveApiUrl(path), {
         ...init || {},
         headers
     });
@@ -192,13 +231,15 @@ async function authFetch(path, init) {
         const ok = await refreshTokens();
         if (ok) {
             const newToken = getAccessToken();
+            var _ref1;
+            const retryTenantId = (_ref1 = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref1 !== void 0 ? _ref1 : undefined;
             const retryHeaders = buildHeaders({
                 ...(init === null || init === void 0 ? void 0 : init.headers) || {},
                 ...newToken ? {
                     Authorization: "Bearer ".concat(newToken)
                 } : {}
-            }, tenantId);
-            res = await fetch("".concat(API_BASE).concat(path), {
+            }, retryTenantId);
+            res = await fetch(resolveApiUrl(path), {
                 ...init || {},
                 headers: retryHeaders
             });
@@ -381,6 +422,9 @@ const ChatAPI = {
         let days = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 30;
         return getAuthJSON("/api/v1/chat/usage?days=".concat(days), tenantId);
     }
+};
+const OwnerAnalyticsAPI = {
+    overview: (tenantId)=>getAuthJSON("/api/v1/owner/analytics/overview", tenantId)
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
@@ -990,6 +1034,8 @@ function DashboardLayout(param) {
     _s();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
+    const isAdminRoute = pathname === null || pathname === void 0 ? void 0 : pathname.startsWith("/dashboard/admin");
+    const loginPath = isAdminRoute ? "/login" : "/auth?tab=signin&next=".concat(encodeURIComponent(pathname || "/dashboard"));
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     const [user, setUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
@@ -1008,6 +1054,17 @@ function DashboardLayout(param) {
                     setUser(me);
                     // If KYC is pending and user is an owner/staff, keep them on status page only
                     const primaryRole = ((me === null || me === void 0 ? void 0 : me.role) || (me === null || me === void 0 ? void 0 : (_me_roles = me.roles) === null || _me_roles === void 0 ? void 0 : (_me_roles_ = _me_roles[0]) === null || _me_roles_ === void 0 ? void 0 : (_me_roles__role = _me_roles_.role) === null || _me_roles__role === void 0 ? void 0 : _me_roles__role.name) || "").toLowerCase();
+                    const roleSet = deriveRoles(me);
+                    const isOwnerRole = roleSet.includes("pharmacy_owner") || roleSet.includes("owner");
+                    const isCashierRole = roleSet.includes("cashier");
+                    if (isOwnerRole && pathname.startsWith("/dashboard/pos")) {
+                        router.replace("/dashboard/owner");
+                        return;
+                    }
+                    if (!isOwnerRole && pathname.startsWith("/dashboard/owner/staff")) {
+                        router.replace(isCashierRole ? "/dashboard/pos" : "/dashboard");
+                        return;
+                    }
                     if (primaryRole !== "admin" && pathname.startsWith("/dashboard/admin")) {
                         router.replace("/dashboard/owner");
                         return;
@@ -1039,7 +1096,7 @@ function DashboardLayout(param) {
                 } catch (e) {
                     if (!active) return;
                     setError("Unauthorized");
-                    router.replace("/login");
+                    router.replace(loginPath);
                 } finally{
                     if (active) setLoading(false);
                 }
@@ -1047,7 +1104,7 @@ function DashboardLayout(param) {
             // If no token, redirect immediately
             if ("object" !== "undefined" && !localStorage.getItem("access_token")) {
                 setLoading(false);
-                router.replace("/login");
+                router.replace(loginPath);
                 return;
             }
             check();
@@ -1059,7 +1116,8 @@ function DashboardLayout(param) {
         }
     }["DashboardLayout.useEffect"], [
         router,
-        pathname
+        pathname,
+        loginPath
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "DashboardLayout.useEffect": ()=>{
@@ -1122,7 +1180,15 @@ function DashboardLayout(param) {
             localStorage.removeItem("access_token");
             localStorage.removeItem("refresh_token");
         }
-        router.replace(isAffiliate ? "/auth/affiliate-login" : "/login");
+        if (isAffiliate) {
+            router.replace("/auth/affiliate-login");
+            return;
+        }
+        if (roleName === "admin") {
+            router.replace("/login");
+            return;
+        }
+        router.replace("/auth?tab=signin");
     }
     if (loading) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1132,12 +1198,12 @@ function DashboardLayout(param) {
                 children: "Loading dashboard..."
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 173,
+                lineNumber: 196,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/(dashboard)/layout.tsx",
-            lineNumber: 172,
+            lineNumber: 195,
             columnNumber: 7
         }, this);
     }
@@ -1158,7 +1224,7 @@ function DashboardLayout(param) {
                                 children: banner.title
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 187,
+                                lineNumber: 210,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1166,13 +1232,13 @@ function DashboardLayout(param) {
                                 children: banner.description
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 188,
+                                lineNumber: 211,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 186,
+                        lineNumber: 209,
                         columnNumber: 11
                     }, this),
                     banner.actionHref && banner.actionLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -1181,20 +1247,20 @@ function DashboardLayout(param) {
                         children: banner.actionLabel
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 191,
+                        lineNumber: 214,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 185,
+                lineNumber: 208,
                 columnNumber: 9
             }, this),
             children
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/layout.tsx",
-        lineNumber: 183,
+        lineNumber: 206,
         columnNumber: 5
     }, this);
 }
@@ -1218,97 +1284,139 @@ function Shell(param) {
     const isManager = baseRole === "manager" || roles.includes("manager");
     const isAffiliate = baseRole === "affiliate" || roles.includes("affiliate");
     const isAdmin = baseRole === "admin";
-    const isOwnerOrManager = isOwner || isManager || isCashier;
+    const isTenantStaff = isOwner || isManager || isCashier;
     const subscriptionStatus = (user === null || user === void 0 ? void 0 : user.subscription_status) || "active";
-    const requiresPayment = isOwnerOrManager && (user === null || user === void 0 ? void 0 : user.kyc_status) === "approved" && subscriptionStatus !== "active";
-    const kycPending = isOwnerOrManager && (user === null || user === void 0 ? void 0 : user.kyc_status) && user.kyc_status !== "approved";
-    const nav = isAffiliate ? [
-        {
-            href: "/dashboard/affiliate",
-            label: "Affiliate Dashboard"
+    const requiresPayment = isTenantStaff && (user === null || user === void 0 ? void 0 : user.kyc_status) === "approved" && subscriptionStatus !== "active";
+    const kycPending = isTenantStaff && (user === null || user === void 0 ? void 0 : user.kyc_status) && user.kyc_status !== "approved";
+    let nav;
+    if (isAffiliate) {
+        nav = [
+            {
+                href: "/dashboard/affiliate",
+                label: "Affiliate Dashboard"
+            }
+        ];
+    } else if (isAdmin) {
+        nav = [
+            {
+                href: "/dashboard/admin",
+                label: "Admin Overview"
+            },
+            {
+                href: "/dashboard/admin/users",
+                label: "Users"
+            },
+            {
+                href: "/dashboard/admin/pharmacies",
+                label: "Pharmacies"
+            },
+            {
+                href: "/dashboard/admin/affiliates",
+                label: "Affiliates"
+            },
+            {
+                href: "/dashboard/admin/payouts",
+                label: "Payouts"
+            },
+            {
+                href: "/dashboard/admin/audit",
+                label: "Audit Log"
+            }
+        ];
+    } else if (isOwner) {
+        if (kycPending) {
+            nav = [
+                {
+                    href: "/dashboard/owner/kyc",
+                    label: "KYC"
+                }
+            ];
+        } else if (requiresPayment) {
+            nav = [
+                {
+                    href: "/dashboard/owner/payment",
+                    label: "Payment"
+                }
+            ];
+        } else {
+            nav = [
+                {
+                    href: "/dashboard/owner",
+                    label: "Owner Overview"
+                },
+                {
+                    href: "/dashboard/inventory",
+                    label: "Inventory"
+                },
+                {
+                    href: "/dashboard/settings",
+                    label: "Settings"
+                },
+                {
+                    href: "/dashboard/owner/staff",
+                    label: "Staff Management"
+                }
+            ];
         }
-    ] : isAdmin ? [
-        {
-            href: "/dashboard/admin",
-            label: "Admin Overview"
-        },
-        {
-            href: "/dashboard/admin/users",
-            label: "Users"
-        },
-        {
-            href: "/dashboard/admin/pharmacies",
-            label: "Pharmacies"
-        },
-        {
-            href: "/dashboard/admin/affiliates",
-            label: "Affiliates"
-        },
-        {
-            href: "/dashboard/admin/payouts",
-            label: "Payouts"
-        },
-        {
-            href: "/dashboard/admin/audit",
-            label: "Audit Log"
+    } else if (isManager || isCashier) {
+        if (kycPending) {
+            nav = [
+                {
+                    href: "/dashboard/owner/kyc",
+                    label: "KYC"
+                }
+            ];
+        } else if (requiresPayment) {
+            nav = [
+                {
+                    href: "/dashboard/owner/payment",
+                    label: "Payment"
+                }
+            ];
+        } else {
+            nav = [
+                {
+                    href: "/dashboard/pos",
+                    label: "Point of Sale"
+                },
+                {
+                    href: "/dashboard/inventory",
+                    label: "Inventory"
+                },
+                {
+                    href: "/dashboard/settings",
+                    label: "Settings"
+                }
+            ];
         }
-    ] : isOwnerOrManager ? kycPending ? [
-        {
-            href: "/dashboard/owner/kyc",
-            label: "KYC"
-        }
-    ] : requiresPayment ? [
-        {
-            href: "/dashboard/owner/payment",
-            label: "Payment"
-        }
-    ] : [
-        {
-            href: "/dashboard/owner",
-            label: "Owner Overview"
-        },
-        {
-            href: "/dashboard/inventory",
-            label: "Inventory"
-        },
-        {
-            href: "/dashboard/pos",
-            label: "POS"
-        },
-        {
-            href: "/dashboard/settings",
-            label: "Settings"
-        },
-        {
-            href: "/dashboard/about",
-            label: "About"
-        }
-    ] : [
-        {
-            href: "/dashboard",
-            label: "Overview"
-        },
-        {
-            href: "/dashboard/inventory",
-            label: "Inventory"
-        },
-        {
-            href: "/dashboard/pos",
-            label: "POS"
-        },
-        {
-            href: "/dashboard/affiliate",
-            label: "Affiliate"
-        },
-        {
-            href: "/dashboard/settings",
-            label: "Settings"
-        },
-        {
-            href: "/dashboard/about",
-            label: "About"
-        }
-    ];
+    } else {
+        nav = [
+            {
+                href: "/dashboard",
+                label: "Overview"
+            },
+            {
+                href: "/dashboard/inventory",
+                label: "Inventory"
+            },
+            {
+                href: "/dashboard/pos",
+                label: "POS"
+            },
+            {
+                href: "/dashboard/affiliate",
+                label: "Affiliate"
+            },
+            {
+                href: "/dashboard/settings",
+                label: "Settings"
+            },
+            {
+                href: "/dashboard/about",
+                label: "About"
+            }
+        ];
+    }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "min-h-screen grid grid-cols-12",
         children: [
@@ -1323,7 +1431,7 @@ function Shell(param) {
                                 children: isAffiliate ? "Affiliate Portal" : isAdmin ? "Admin Console" : "Zemen Dashboard"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 261,
+                                lineNumber: 300,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1331,13 +1439,13 @@ function Shell(param) {
                                 children: isAffiliate ? "Track referrals & payouts" : isAdmin ? "Manage platform data" : "Secure area"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 264,
+                                lineNumber: 303,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 260,
+                        lineNumber: 299,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1349,7 +1457,7 @@ function Shell(param) {
                                     children: user.username
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                    lineNumber: 272,
+                                    lineNumber: 311,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1357,7 +1465,7 @@ function Shell(param) {
                                     children: user.email
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                    lineNumber: 273,
+                                    lineNumber: 312,
                                     columnNumber: 15
                                 }, this),
                                 primaryRole && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1365,18 +1473,18 @@ function Shell(param) {
                                     children: primaryRole
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                    lineNumber: 274,
+                                    lineNumber: 313,
                                     columnNumber: 31
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                            lineNumber: 271,
+                            lineNumber: 310,
                             columnNumber: 13
                         }, this) : null
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 269,
+                        lineNumber: 308,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -1389,13 +1497,13 @@ function Shell(param) {
                                 children: item.label
                             }, item.href, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 283,
+                                lineNumber: 322,
                                 columnNumber: 15
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 279,
+                        lineNumber: 318,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1407,18 +1515,18 @@ function Shell(param) {
                             children: "Logout"
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                            lineNumber: 300,
+                            lineNumber: 339,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 299,
+                        lineNumber: 338,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 259,
+                lineNumber: 298,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1432,7 +1540,7 @@ function Shell(param) {
                                 children: ((_nav_find = nav.find((n)=>pathname === null || pathname === void 0 ? void 0 : pathname.startsWith(n.href))) === null || _nav_find === void 0 ? void 0 : _nav_find.label) || "Overview"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 308,
+                                lineNumber: 347,
                                 columnNumber: 11
                             }, this),
                             !isAffiliate && !isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1443,13 +1551,13 @@ function Shell(param) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 309,
+                                lineNumber: 348,
                                 columnNumber: 40
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 307,
+                        lineNumber: 346,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -1457,19 +1565,19 @@ function Shell(param) {
                         children: children
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 311,
+                        lineNumber: 350,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 306,
+                lineNumber: 345,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/layout.tsx",
-        lineNumber: 258,
+        lineNumber: 297,
         columnNumber: 5
     }, this);
 }

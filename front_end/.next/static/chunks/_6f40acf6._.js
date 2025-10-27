@@ -17,6 +17,8 @@ __turbopack_context__.s([
     ()=>ChatAPI,
     "KYCAPI",
     ()=>KYCAPI,
+    "OwnerAnalyticsAPI",
+    ()=>OwnerAnalyticsAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
     "StaffAPI",
@@ -43,6 +45,14 @@ __turbopack_context__.s([
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 const API_BASE = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "http://localhost:8000";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
+const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
+let API_BASE_PATH = "";
+try {
+    const parsed = new URL(API_BASE_NORMALIZED);
+    API_BASE_PATH = parsed.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+} catch (e) {
+    API_BASE_PATH = "";
+}
 function buildHeaders(initHeaders, tenantId) {
     const headers = {
         ...initHeaders
@@ -50,9 +60,31 @@ function buildHeaders(initHeaders, tenantId) {
     if (tenantId) headers[TENANT_HEADER] = tenantId;
     return headers;
 }
+function resolveApiUrl(path) {
+    if (/^https?:\/\//i.test(path)) {
+        return path;
+    }
+    if (path.startsWith("?") || path.startsWith("#")) {
+        return "".concat(API_BASE_NORMALIZED).concat(path);
+    }
+    const normalizedPath = path.replace(/^\/+/, "");
+    let relativePath = normalizedPath;
+    if (API_BASE_PATH) {
+        const prefix = "".concat(API_BASE_PATH, "/");
+        if (relativePath.startsWith(prefix)) {
+            relativePath = relativePath.slice(prefix.length);
+        } else if (relativePath === API_BASE_PATH) {
+            relativePath = "";
+        }
+    }
+    if (!relativePath) {
+        return API_BASE_NORMALIZED;
+    }
+    return "".concat(API_BASE_NORMALIZED, "/").concat(relativePath);
+}
 async function postForm(path, data, tenantId) {
     const body = new URLSearchParams(data);
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/x-www-form-urlencoded"
@@ -89,7 +121,7 @@ async function postForm(path, data, tenantId) {
     return await res.json();
 }
 async function postJSON(path, body, tenantId) {
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/json"
@@ -109,7 +141,7 @@ async function postJSON(path, body, tenantId) {
     return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "PUT",
         headers: buildHeaders({
             "Content-Type": "application/json"
@@ -129,7 +161,7 @@ async function putAuthJSON(path, bodyData, tenantId) {
     return await res.json();
 }
 async function postMultipart(path, formData, tenantId) {
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    const res = await fetch(resolveApiUrl(path), {
         method: "POST",
         headers: buildHeaders(undefined, tenantId),
         body: formData
@@ -149,6 +181,11 @@ function getAccessToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
     return localStorage.getItem("access_token");
+}
+function getTenantId() {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    return localStorage.getItem("tenant_id");
 }
 function getRefreshToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
@@ -178,13 +215,15 @@ async function refreshTokens() {
 async function authFetch(path, init) {
     let retry = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true, tenantId = arguments.length > 3 ? arguments[3] : void 0;
     const token = getAccessToken();
+    var _ref;
+    const activeTenantId = (_ref = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref !== void 0 ? _ref : undefined;
     const headers = buildHeaders({
         ...(init === null || init === void 0 ? void 0 : init.headers) || {},
         ...token ? {
             Authorization: "Bearer ".concat(token)
         } : {}
-    }, tenantId);
-    let res = await fetch("".concat(API_BASE).concat(path), {
+    }, activeTenantId);
+    let res = await fetch(resolveApiUrl(path), {
         ...init || {},
         headers
     });
@@ -192,13 +231,15 @@ async function authFetch(path, init) {
         const ok = await refreshTokens();
         if (ok) {
             const newToken = getAccessToken();
+            var _ref1;
+            const retryTenantId = (_ref1 = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref1 !== void 0 ? _ref1 : undefined;
             const retryHeaders = buildHeaders({
                 ...(init === null || init === void 0 ? void 0 : init.headers) || {},
                 ...newToken ? {
                     Authorization: "Bearer ".concat(newToken)
                 } : {}
-            }, tenantId);
-            res = await fetch("".concat(API_BASE).concat(path), {
+            }, retryTenantId);
+            res = await fetch(resolveApiUrl(path), {
                 ...init || {},
                 headers: retryHeaders
             });
@@ -381,6 +422,9 @@ const ChatAPI = {
         let days = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 30;
         return getAuthJSON("/api/v1/chat/usage?days=".concat(days), tenantId);
     }
+};
+const OwnerAnalyticsAPI = {
+    overview: (tenantId)=>getAuthJSON("/api/v1/owner/analytics/overview", tenantId)
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";

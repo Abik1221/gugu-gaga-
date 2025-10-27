@@ -1,23 +1,5 @@
 {
   "/(auth)/auth/page": "app/(auth)/auth/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/(auth)/register/page": "app/(auth)/register/page.js",
-  "/(auth)/verify/page": "app/(auth)/verify/page.js",
-  "/(dashboard)/dashboard/about/page": "app/(dashboard)/dashboard/about/page.js",
-  "/(dashboard)/dashboard/admin/affiliates/page": "app/(dashboard)/dashboard/admin/affiliates/page.js",
-  "/(dashboard)/dashboard/admin/page": "app/(dashboard)/dashboard/admin/page.js",
-  "/(dashboard)/dashboard/admin/payouts/page": "app/(dashboard)/dashboard/admin/payouts/page.js",
-  "/(dashboard)/dashboard/admin/pharmacies/page": "app/(dashboard)/dashboard/admin/pharmacies/page.js",
-  "/(dashboard)/dashboard/affiliate/page": "app/(dashboard)/dashboard/affiliate/page.js",
-  "/(dashboard)/dashboard/inventory/page": "app/(dashboard)/dashboard/inventory/page.js",
-  "/(dashboard)/dashboard/owner/chat/page": "app/(dashboard)/dashboard/owner/chat/page.js",
-  "/(dashboard)/dashboard/owner/kyc/page": "app/(dashboard)/dashboard/owner/kyc/page.js",
   "/(dashboard)/dashboard/owner/page": "app/(dashboard)/dashboard/owner/page.js",
-  "/(dashboard)/dashboard/owner/payment/page": "app/(dashboard)/dashboard/owner/payment/page.js",
-  "/(dashboard)/dashboard/owner/staff/new/page": "app/(dashboard)/dashboard/owner/staff/new/page.js",
-  "/(dashboard)/dashboard/pos/page": "app/(dashboard)/dashboard/pos/page.js",
-  "/(dashboard)/dashboard/settings/page": "app/(dashboard)/dashboard/settings/page.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js"
 }
