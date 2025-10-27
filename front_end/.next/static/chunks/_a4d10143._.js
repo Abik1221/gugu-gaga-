@@ -40,7 +40,7 @@ __turbopack_context__.s([
     "putAuthJSON",
     ()=>putAuthJSON
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/.pnpm/next@15.5.4_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 const API_BASE = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "http://localhost:8000/api/v1";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
 function buildHeaders(initHeaders, tenantId) {
@@ -50,26 +50,6 @@ function buildHeaders(initHeaders, tenantId) {
     if (tenantId) headers[TENANT_HEADER] = tenantId;
     return headers;
 }
-async function putAuthJSON(path, bodyData, tenantId) {
-    const res = await authFetch(path, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(bodyData)
-    }, true, tenantId);
-    if (!res.ok) {
-        try {
-            const data = await res.json();
-            const msg = (data === null || data === void 0 ? void 0 : data.error) || (data === null || data === void 0 ? void 0 : data.detail) || JSON.stringify(data);
-            throw new Error(msg || "Request failed with ".concat(res.status));
-        } catch (e) {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || "Request failed with ".concat(res.status));
-        }
-    }
-    return await res.json();
-}
 async function postForm(path, data, tenantId) {
     const body = new URLSearchParams(data);
     const res = await fetch("".concat(API_BASE).concat(path), {
@@ -78,6 +58,43 @@ async function postForm(path, data, tenantId) {
             "Content-Type": "application/x-www-form-urlencoded"
         }, tenantId),
         body
+    });
+    if (!res.ok) {
+        let parsed = null;
+        try {
+            parsed = await res.json();
+        } catch (e) {
+            parsed = await res.text().catch(()=>null);
+        }
+        let msg = "";
+        if (!parsed) msg = "Request failed with ".concat(res.status);
+        else if (typeof parsed === "string") msg = parsed;
+        else if (Array.isArray(parsed)) msg = parsed.join(", ");
+        else if (parsed === null || parsed === void 0 ? void 0 : parsed.detail) msg = parsed.detail;
+        else if (parsed === null || parsed === void 0 ? void 0 : parsed.message) msg = parsed.message;
+        else if (parsed === null || parsed === void 0 ? void 0 : parsed.error) msg = parsed.error;
+        else if (parsed === null || parsed === void 0 ? void 0 : parsed.errors) {
+            msg = Object.keys(parsed.errors).map((k)=>"".concat(k, ": ").concat(Array.isArray(parsed.errors[k]) ? parsed.errors[k].join(", ") : parsed.errors[k])).join(" | ");
+        } else msg = JSON.stringify(parsed);
+        const err = new Error(msg || "Request failed with ".concat(res.status));
+        err.status = res.status;
+        err.body = parsed;
+        console.error("[postForm] failed", {
+            path,
+            status: res.status,
+            parsed
+        });
+        throw err;
+    }
+    return await res.json();
+}
+async function postJSON(path, body, tenantId) {
+    const res = await fetch("".concat(API_BASE).concat(path), {
+        method: "POST",
+        headers: buildHeaders({
+            "Content-Type": "application/json"
+        }, tenantId),
+        body: JSON.stringify(body)
     });
     if (!res.ok) {
         try {
@@ -91,13 +108,13 @@ async function postForm(path, data, tenantId) {
     }
     return await res.json();
 }
-async function postJSON(path, body, tenantId) {
+async function putAuthJSON(path, bodyData, tenantId) {
     const res = await fetch("".concat(API_BASE).concat(path), {
-        method: "POST",
+        method: "PUT",
         headers: buildHeaders({
             "Content-Type": "application/json"
         }, tenantId),
-        body: JSON.stringify(body)
+        body: JSON.stringify(bodyData)
     });
     if (!res.ok) {
         try {
@@ -123,8 +140,7 @@ async function postMultipart(path, formData, tenantId) {
             const msg = (data === null || data === void 0 ? void 0 : data.error) || (data === null || data === void 0 ? void 0 : data.detail) || JSON.stringify(data);
             throw new Error(msg || "Request failed with ".concat(res.status));
         } catch (e) {
-            let message = "Request failed with ".concat(res.status);
-            throw new Error(message);
+            throw new Error("Request failed with ".concat(res.status));
         }
     }
     return await res.json();
@@ -167,7 +183,7 @@ async function authFetch(path, init) {
             Authorization: "Bearer ".concat(token)
         } : {}
     }, tenantId);
-    const res = await fetch("".concat(API_BASE).concat(path), {
+    let res = await fetch("".concat(API_BASE).concat(path), {
         ...init || {},
         headers
     });
@@ -181,7 +197,7 @@ async function authFetch(path, init) {
                     Authorization: "Bearer ".concat(newToken)
                 } : {}
             }, tenantId);
-            return fetch("".concat(API_BASE).concat(path), {
+            res = await fetch("".concat(API_BASE).concat(path), {
                 ...init || {},
                 headers: retryHeaders
             });
@@ -192,14 +208,8 @@ async function authFetch(path, init) {
 async function getAuthJSON(path, tenantId) {
     const res = await authFetch(path, undefined, true, tenantId);
     if (!res.ok) {
-        try {
-            const data = await res.json();
-            const msg = (data === null || data === void 0 ? void 0 : data.error) || (data === null || data === void 0 ? void 0 : data.detail) || JSON.stringify(data);
-            throw new Error(msg || "Request failed with ".concat(res.status));
-        } catch (e) {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || "Request failed with ".concat(res.status));
-        }
+        const data = await res.text().catch(()=>"");
+        throw new Error(data || "Request failed with ".concat(res.status));
     }
     return await res.json();
 }
@@ -212,20 +222,40 @@ async function postAuthJSON(path, bodyData, tenantId) {
         body: JSON.stringify(bodyData)
     }, true, tenantId);
     if (!res.ok) {
-        try {
-            const data = await res.json();
-            const msg = (data === null || data === void 0 ? void 0 : data.error) || (data === null || data === void 0 ? void 0 : data.detail) || JSON.stringify(data);
-            throw new Error(msg || "Request failed with ".concat(res.status));
-        } catch (e) {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || "Request failed with ".concat(res.status));
-        }
+        const data = await res.text().catch(()=>"");
+        throw new Error(data || "Request failed with ".concat(res.status));
     }
     return await res.json();
 }
 const AuthAPI = {
     registerAffiliate: (body)=>postJSON("/auth/register/affiliate", body),
     registerPharmacy: (body)=>postJSON("/auth/register/pharmacy", body),
+    registerVerify: async (email, code)=>{
+        try {
+            return await postForm("/auth/register/verify", {
+                email,
+                code
+            });
+        } catch (err) {
+            if ((err === null || err === void 0 ? void 0 : err.status) === 422) {
+                console.warn("[AuthAPI.registerVerify] 422, retrying with JSON", {
+                    body: err.body
+                });
+                try {
+                    return await postJSON("/auth/register/verify", {
+                        email,
+                        code
+                    });
+                } catch (err2) {
+                    const e = new Error((err2 === null || err2 === void 0 ? void 0 : err2.message) || (err === null || err === void 0 ? void 0 : err.message) || "Verification failed");
+                    e.original = err;
+                    e.retry = err2;
+                    throw e;
+                }
+            }
+            throw err;
+        }
+    },
     verifyRegistration: (email, code)=>postForm("/auth/register/verify", {
             email,
             code
@@ -281,52 +311,8 @@ const AdminAPI = {
         let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 30;
         return getAuthJSON("/admin/analytics/overview?days=".concat(days));
     },
-    downloadPharmacyLicense: async (applicationId)=>{
-        const res = await authFetch("/admin/pharmacies/".concat(applicationId, "/license"), {
-            method: "GET"
-        }, true);
-        if (!res.ok) {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || "HTTP ".concat(res.status));
-        }
-        const blob = await res.blob();
-        let filename = "license-".concat(applicationId);
-        const disposition = res.headers.get("Content-Disposition") || "";
-        const match = disposition.match(/filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i);
-        const extracted = (match === null || match === void 0 ? void 0 : match[1]) || (match === null || match === void 0 ? void 0 : match[2]);
-        if (extracted) {
-            try {
-                filename = decodeURIComponent(extracted);
-            } catch (e) {
-                filename = extracted;
-            }
-        }
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-    },
     approveAffiliate: (userId)=>postAuthJSON("/admin/affiliates/".concat(userId, "/approve"), {}),
-    rejectAffiliate: (userId)=>postAuthJSON("/admin/affiliates/".concat(userId, "/reject"), {}),
-    listAffiliatePayouts: (status)=>getAuthJSON("/admin/affiliate/payouts".concat(status ? "?status=".concat(encodeURIComponent(status)) : "")),
-    markPayoutPaid: (payoutId)=>postAuthJSON("/admin/affiliate/payouts/".concat(payoutId, "/mark-paid"), {}),
-    approvePayout: (payoutId)=>postAuthJSON("/admin/affiliate/payouts/".concat(payoutId, "/approve"), {}),
-    usage: function() {
-        let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 30;
-        return getAuthJSON("/admin/usage?days=".concat(days));
-    },
-    audit: (params)=>getAuthJSON("/admin/audit".concat((()=>{
-            const qs = new URLSearchParams();
-            if (params === null || params === void 0 ? void 0 : params.tenant_id) qs.set("tenant_id", params.tenant_id);
-            if (params === null || params === void 0 ? void 0 : params.action) qs.set("action", params.action);
-            if (params === null || params === void 0 ? void 0 : params.limit) qs.set("limit", String(params.limit));
-            const s = qs.toString();
-            return s ? "?".concat(s) : "";
-        })()))
+    rejectAffiliate: (userId)=>postAuthJSON("/admin/affiliates/".concat(userId, "/reject"), {})
 };
 const StaffAPI = {
     createCashier: (tenantId, body)=>postAuthJSON("/staff", body, tenantId),
@@ -338,19 +324,13 @@ const StaffAPI = {
             },
             body: JSON.stringify(body)
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) {
-                const t = await res.text();
-                throw new Error(t || "HTTP ".concat(res.status));
-            }
+            if (!res.ok) throw new Error(await res.text());
             return res.json();
         }),
     remove: (tenantId, userId)=>authFetch("/staff/".concat(userId), {
             method: "DELETE"
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) {
-                const t = await res.text();
-                throw new Error(t || "HTTP ".concat(res.status));
-            }
+            if (!res.ok) throw new Error(await res.text());
             return res.json();
         })
 };
@@ -363,7 +343,7 @@ const UploadAPI = {
     uploadKyc: async (file)=>{
         const fd = new FormData();
         fd.append("file", file);
-        return await postMultipart("/uploads/kyc", fd);
+        return postMultipart("/uploads/kyc", fd);
     }
 };
 const KYCAPI = {
@@ -383,10 +363,7 @@ const PharmaciesAPI = {
             },
             body: JSON.stringify(body)
         }).then(async (res)=>{
-            if (!res.ok) {
-                const t = await res.text();
-                throw new Error(t || "HTTP ".concat(res.status));
-            }
+            if (!res.ok) throw new Error(await res.text());
             return res.json();
         })
 };
@@ -402,45 +379,486 @@ const ChatAPI = {
     usage: function(tenantId) {
         let days = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 30;
         return getAuthJSON("/chat/usage?days=".concat(days), tenantId);
-    },
-    sendStream: async (tenantId, threadId, prompt, onEvent)=>{
-        const res = await authFetch("/chat/threads/".concat(threadId, "/messages/stream"), {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                prompt
-            })
-        }, true, tenantId);
-        if (!res.ok || !res.body) {
-            const t = await res.text().catch(()=>"");
-            throw new Error(t || "HTTP ".concat(res.status));
-        }
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buf = "";
-        while(true){
-            const { done, value } = await reader.read();
-            if (done) break;
-            buf += decoder.decode(value, {
-                stream: true
-            });
-            let idx;
-            while((idx = buf.indexOf("\n\n")) !== -1){
-                const chunk = buf.slice(0, idx).trim();
-                buf = buf.slice(idx + 2);
-                if (chunk.startsWith("data:")) {
-                    try {
-                        const jsonStr = chunk.slice(5).trim();
-                        const obj = JSON.parse(jsonStr);
-                        onEvent(obj);
-                    } catch (e) {}
-                }
-            }
-        }
     }
-};
+}; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
+ // export const API_BASE =
+ //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
+ // export const TENANT_HEADER =
+ //   process.env.NEXT_PUBLIC_TENANT_HEADER || "X-Tenant-ID";
+ // function buildHeaders(
+ //   initHeaders?: HeadersInit,
+ //   tenantId?: string
+ // ): HeadersInit {
+ //   const headers: Record<string, string> = {
+ //     ...(initHeaders as Record<string, string>),
+ //   };
+ //   if (tenantId) headers[TENANT_HEADER] = tenantId;
+ //   return headers;
+ // }
+ // export async function putAuthJSON<T = any>(
+ //   path: string,
+ //   bodyData: any,
+ //   tenantId?: string
+ // ): Promise<T> {
+ //   const res = await authFetch(
+ //     path,
+ //     {
+ //       method: "PUT",
+ //       headers: { "Content-Type": "application/json" },
+ //       body: JSON.stringify(bodyData),
+ //     },
+ //     true,
+ //     tenantId
+ //   );
+ //   if (!res.ok) {
+ //     try {
+ //       const data = await res.json();
+ //       const msg = data?.error || data?.detail || JSON.stringify(data);
+ //       throw new Error(msg || `Request failed with ${res.status}`);
+ //     } catch {
+ //       const text = await res.text().catch(() => "");
+ //       throw new Error(text || `Request failed with ${res.status}`);
+ //     }
+ //   }
+ //   return (await res.json()) as T;
+ // }
+ // export async function postForm<T = any>(
+ //   path: string,
+ //   data: Record<string, string>,
+ //   tenantId?: string
+ // ): Promise<T> {
+ //   const body = new URLSearchParams(data);
+ //   const res = await fetch(`${API_BASE}${path}`, {
+ //     method: "POST",
+ //     headers: buildHeaders(
+ //       {
+ //         "Content-Type": "application/x-www-form-urlencoded",
+ //       },
+ //       tenantId
+ //     ),
+ //     body,
+ //   });
+ //   if (!res.ok) {
+ //     try {
+ //       const data = await res.json();
+ //       const msg = data?.error || data?.detail || JSON.stringify(data);
+ //       throw new Error(msg || `Request failed with ${res.status}`);
+ //     } catch {
+ //       const text = await res.text().catch(() => "");
+ //       throw new Error(text || `Request failed with ${res.status}`);
+ //     }
+ //   }
+ //   return (await res.json()) as T;
+ // }
+ // export async function postJSON<T = any>(
+ //   path: string,
+ //   body: any,
+ //   tenantId?: string
+ // ): Promise<T> {
+ //   const res = await fetch(`${API_BASE}${path}`, {
+ //     method: "POST",
+ //     headers: buildHeaders({ "Content-Type": "application/json" }, tenantId),
+ //     body: JSON.stringify(body),
+ //   });
+ //   if (!res.ok) {
+ //     try {
+ //       const data = await res.json();
+ //       const msg = data?.error || data?.detail || JSON.stringify(data);
+ //       throw new Error(msg || `Request failed with ${res.status}`);
+ //     } catch {
+ //       const text = await res.text().catch(() => "");
+ //       throw new Error(text || `Request failed with ${res.status}`);
+ //     }
+ //   }
+ //   return (await res.json()) as T;
+ // }
+ // export async function postMultipart<T = any>(
+ //   path: string,
+ //   formData: FormData,
+ //   tenantId?: string
+ // ): Promise<T> {
+ //   const res = await fetch(`${API_BASE}${path}`, {
+ //     method: "POST",
+ //     headers: buildHeaders(undefined, tenantId),
+ //     body: formData,
+ //   });
+ //   if (!res.ok) {
+ //     try {
+ //       const data = await res.json();
+ //       const msg = data?.error || data?.detail || JSON.stringify(data);
+ //       throw new Error(msg || `Request failed with ${res.status}`);
+ //     } catch {
+ //       let message = `Request failed with ${res.status}`;
+ //       throw new Error(message);
+ //     }
+ //   }
+ //   return (await res.json()) as T;
+ // }
+ // export function getAccessToken(): string | null {
+ //   if (typeof window === "undefined") return null;
+ //   return localStorage.getItem("access_token");
+ // }
+ // function getRefreshToken(): string | null {
+ //   if (typeof window === "undefined") return null;
+ //   return localStorage.getItem("refresh_token");
+ // }
+ // async function refreshTokens(): Promise<boolean> {
+ //   const rt = getRefreshToken();
+ //   if (!rt) return false;
+ //   const url = `${API_BASE}/api/v1/auth/refresh?refresh_token=${encodeURIComponent(
+ //     rt
+ //   )}`;
+ //   const res = await fetch(url, { method: "POST" });
+ //   if (!res.ok) return false;
+ //   try {
+ //     const data = (await res.json()) as {
+ //       access_token: string;
+ //       refresh_token: string;
+ //       token_type: string;
+ //       expires_in: number;
+ //     };
+ //     if (typeof window !== "undefined") {
+ //       localStorage.setItem("access_token", data.access_token);
+ //       localStorage.setItem("refresh_token", data.refresh_token);
+ //     }
+ //     return true;
+ //   } catch {
+ //     return false;
+ //   }
+ // }
+ // async function authFetch(
+ //   path: string,
+ //   init?: RequestInit,
+ //   retry = true,
+ //   tenantId?: string
+ // ): Promise<Response> {
+ //   const token = getAccessToken();
+ //   const headers: HeadersInit = buildHeaders(
+ //     {
+ //       ...(init?.headers || {}),
+ //       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+ //     },
+ //     tenantId
+ //   );
+ //   const res = await fetch(`${API_BASE}${path}`, { ...(init || {}), headers });
+ //   if (res.status === 401 && retry) {
+ //     const ok = await refreshTokens();
+ //     if (ok) {
+ //       const newToken = getAccessToken();
+ //       const retryHeaders: HeadersInit = buildHeaders(
+ //         {
+ //           ...(init?.headers || {}),
+ //           ...(newToken ? { Authorization: `Bearer ${newToken}` } : {}),
+ //         },
+ //         tenantId
+ //       );
+ //       return fetch(`${API_BASE}${path}`, {
+ //         ...(init || {}),
+ //         headers: retryHeaders,
+ //       });
+ //     }
+ //   }
+ //   return res;
+ // }
+ // export async function getAuthJSON<T = any>(
+ //   path: string,
+ //   tenantId?: string
+ // ): Promise<T> {
+ //   const res = await authFetch(path, undefined, true, tenantId);
+ //   if (!res.ok) {
+ //     try {
+ //       const data = await res.json();
+ //       const msg = data?.error || data?.detail || JSON.stringify(data);
+ //       throw new Error(msg || `Request failed with ${res.status}`);
+ //     } catch {
+ //       const text = await res.text().catch(() => "");
+ //       throw new Error(text || `Request failed with ${res.status}`);
+ //     }
+ //   }
+ //   return (await res.json()) as T;
+ // }
+ // export async function postAuthJSON<T = any>(
+ //   path: string,
+ //   bodyData: any,
+ //   tenantId?: string
+ // ): Promise<T> {
+ //   const res = await authFetch(
+ //     path,
+ //     {
+ //       method: "POST",
+ //       headers: { "Content-Type": "application/json" },
+ //       body: JSON.stringify(bodyData),
+ //     },
+ //     true,
+ //     tenantId
+ //   );
+ //   if (!res.ok) {
+ //     try {
+ //       const data = await res.json();
+ //       const msg = data?.error || data?.detail || JSON.stringify(data);
+ //       throw new Error(msg || `Request failed with ${res.status}`);
+ //     } catch {
+ //       const text = await res.text().catch(() => "");
+ //       throw new Error(text || `Request failed with ${res.status}`);
+ //     }
+ //   }
+ //   return (await res.json()) as T;
+ // }
+ // // Convenience wrappers for key flows
+ // export const AuthAPI = {
+ //   registerAffiliate: (body: any) => postJSON("/auth/register/affiliate", body),
+ //   registerPharmacy: (body: any) => postJSON("/auth/register/pharmacy", body),
+ //   registerVerify: (email: string, code: string) =>
+ //     postForm("/auth/register/verify", { email, code }),
+ //   verifyRegistration: (email: string, code: string) =>
+ //     postForm("/auth/register/verify", { email, code }),
+ //   login: (email: string, password: string, tenantId?: string) =>
+ //     postForm("/auth/login", { username: email, password }, tenantId),
+ //   loginRequestCode: (email: string, password: string, tenantId?: string) =>
+ //     postForm(
+ //       "/auth/login/request-code",
+ //       { username: email, password },
+ //       tenantId
+ //     ),
+ //   loginVerify: (email: string, code: string, tenantId?: string) =>
+ //     postJSON("/auth/login/verify", { email, code }, tenantId),
+ //   me: () => getAuthJSON("/auth/me"),
+ // };
+ // export const AffiliateAPI = {
+ //   getLinks: () => getAuthJSON("/affiliate/register-link"),
+ //   createLink: () => getAuthJSON("/affiliate/register-link?create_new=true"),
+ //   deactivate: (token: string) =>
+ //     postAuthJSON(
+ //       `/affiliate/links/${encodeURIComponent(token)}/deactivate`,
+ //       {}
+ //     ),
+ //   rotate: (token: string) =>
+ //     postAuthJSON(`/affiliate/links/${encodeURIComponent(token)}/rotate`, {}),
+ //   dashboard: () => getAuthJSON("/affiliate/dashboard"),
+ //   payouts: (status?: string) =>
+ //     getAuthJSON(
+ //       `/affiliate/payouts${
+ //         status ? `?status_filter=${encodeURIComponent(status)}` : ""
+ //       }`
+ //     ),
+ //   requestPayout: (month?: string, percent = 5) =>
+ //     postAuthJSON("/affiliate/payouts/request", { month, percent }),
+ //   updateProfile: (body: any) => postAuthJSON("/affiliate/profile", body),
+ // };
+ // export const AdminAPI = {
+ //   pharmacies: (page = 1, pageSize = 20, q?: string) =>
+ //     getAuthJSON(
+ //       `/admin/pharmacies?page=${page}&page_size=${pageSize}${
+ //         q ? `&q=${encodeURIComponent(q)}` : ""
+ //       }`
+ //     ),
+ //   affiliates: (page = 1, pageSize = 20, q?: string) =>
+ //     getAuthJSON(
+ //       `/admin/affiliates?page=${page}&page_size=${pageSize}${
+ //         q ? `&q=${encodeURIComponent(q)}` : ""
+ //       }`
+ //     ),
+ //   approvePharmacy: (
+ //     tenantId: string,
+ //     applicationId: number,
+ //     body?: { issue_temp_password?: boolean; temp_password?: string }
+ //   ) =>
+ //     postAuthJSON(
+ //       `/admin/pharmacies/${applicationId}/approve`,
+ //       body || {},
+ //       tenantId
+ //     ),
+ //   rejectPharmacy: (tenantId: string, applicationId: number) =>
+ //     postAuthJSON(`/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
+ //   verifyPayment: (tenantId: string, code?: string | null) =>
+ //     postAuthJSON(`/admin/payments/verify`, { code: code || null }, tenantId),
+ //   rejectPayment: (tenantId: string, code?: string | null) =>
+ //     postAuthJSON(`/admin/payments/reject`, { code: code || null }, tenantId),
+ //   analyticsOverview: (days = 30) =>
+ //     getAuthJSON(`/admin/analytics/overview?days=${days}`),
+ //   downloadPharmacyLicense: async (applicationId: number) => {
+ //     const res = await authFetch(
+ //       `/admin/pharmacies/${applicationId}/license`,
+ //       { method: "GET" },
+ //       true
+ //     );
+ //     if (!res.ok) {
+ //       const text = await res.text().catch(() => "");
+ //       throw new Error(text || `HTTP ${res.status}`);
+ //     }
+ //     const blob = await res.blob();
+ //     let filename = `license-${applicationId}`;
+ //     const disposition = res.headers.get("Content-Disposition") || "";
+ //     const match = disposition.match(
+ //       /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i
+ //     );
+ //     const extracted = match?.[1] || match?.[2];
+ //     if (extracted) {
+ //       try {
+ //         filename = decodeURIComponent(extracted);
+ //       } catch {
+ //         filename = extracted;
+ //       }
+ //     }
+ //     const url = window.URL.createObjectURL(blob);
+ //     const link = document.createElement("a");
+ //     link.href = url;
+ //     link.download = filename;
+ //     document.body.appendChild(link);
+ //     link.click();
+ //     document.body.removeChild(link);
+ //     window.URL.revokeObjectURL(url);
+ //   },
+ //   approveAffiliate: (userId: number) =>
+ //     postAuthJSON(`/admin/affiliates/${userId}/approve`, {}),
+ //   rejectAffiliate: (userId: number) =>
+ //     postAuthJSON(`/admin/affiliates/${userId}/reject`, {}),
+ //   listAffiliatePayouts: (status?: string) =>
+ //     getAuthJSON(
+ //       `/admin/affiliate/payouts${
+ //         status ? `?status=${encodeURIComponent(status)}` : ""
+ //       }`
+ //     ),
+ //   markPayoutPaid: (payoutId: number) =>
+ //     postAuthJSON(`/admin/affiliate/payouts/${payoutId}/mark-paid`, {}),
+ //   approvePayout: (payoutId: number) =>
+ //     postAuthJSON(`/admin/affiliate/payouts/${payoutId}/approve`, {}),
+ //   usage: (days = 30) => getAuthJSON(`/admin/usage?days=${days}`),
+ //   audit: (params?: { tenant_id?: string; action?: string; limit?: number }) =>
+ //     getAuthJSON(
+ //       `/admin/audit${(() => {
+ //         const qs = new URLSearchParams();
+ //         if (params?.tenant_id) qs.set("tenant_id", params.tenant_id);
+ //         if (params?.action) qs.set("action", params.action);
+ //         if (params?.limit) qs.set("limit", String(params.limit));
+ //         const s = qs.toString();
+ //         return s ? `?${s}` : "";
+ //       })()}`
+ //     ),
+ // };
+ // export const StaffAPI = {
+ //   createCashier: (tenantId: string, body: any) =>
+ //     postAuthJSON("/staff", body, tenantId),
+ //   list: (tenantId: string) => getAuthJSON("/staff", tenantId),
+ //   update: (tenantId: string, userId: number, body: { is_active?: boolean }) =>
+ //     authFetch(
+ //       `/staff/${userId}`,
+ //       {
+ //         method: "PATCH",
+ //         headers: { "Content-Type": "application/json" },
+ //         body: JSON.stringify(body),
+ //       },
+ //       true,
+ //       tenantId
+ //     ).then(async (res) => {
+ //       if (!res.ok) {
+ //         const t = await res.text();
+ //         throw new Error(t || `HTTP ${res.status}`);
+ //       }
+ //       return res.json();
+ //     }),
+ //   remove: (tenantId: string, userId: number) =>
+ //     authFetch(`/staff/${userId}`, { method: "DELETE" }, true, tenantId).then(
+ //       async (res) => {
+ //         if (!res.ok) {
+ //           const t = await res.text();
+ //           throw new Error(t || `HTTP ${res.status}`);
+ //         }
+ //         return res.json();
+ //       }
+ //     ),
+ // };
+ // export const BillingAPI = {
+ //   submitPaymentCode: (tenantId: string, code: string) =>
+ //     postAuthJSON("/billing/payment-code", { code }, tenantId),
+ // };
+ // export const UploadAPI = {
+ //   uploadKyc: async (
+ //     file: File
+ //   ): Promise<{ path: string; size: number; filename: string }> => {
+ //     const fd = new FormData();
+ //     fd.append("file", file);
+ //     return await postMultipart(`/uploads/kyc`, fd);
+ //   },
+ // };
+ // export const KYCAPI = {
+ //   status: (tenantId: string) => getAuthJSON(`/owner/kyc/status`, tenantId),
+ //   update: (tenantId: string, body: any) =>
+ //     putAuthJSON(`/owner/kyc/status`, body, tenantId),
+ // };
+ // export const PharmaciesAPI = {
+ //   list: (page = 1, pageSize = 20, q?: string) =>
+ //     getAuthJSON(
+ //       `/pharmacies?page=${page}&page_size=${pageSize}${
+ //         q ? `&q=${encodeURIComponent(q)}` : ""
+ //       }`
+ //     ),
+ //   get: (id: number) => getAuthJSON(`/pharmacies/${id}`),
+ //   update: (id: number, body: { name?: string; address?: string }) =>
+ //     authFetch(`/pharmacies/${id}`, {
+ //       method: "PATCH",
+ //       headers: { "Content-Type": "application/json" },
+ //       body: JSON.stringify(body),
+ //     }).then(async (res) => {
+ //       if (!res.ok) {
+ //         const t = await res.text();
+ //         throw new Error(t || `HTTP ${res.status}`);
+ //       }
+ //       return res.json();
+ //     }),
+ // };
+ // export const ChatAPI = {
+ //   listThreads: (tenantId: string) => getAuthJSON(`/chat/threads`, tenantId),
+ //   createThread: (tenantId: string, title: string) =>
+ //     postAuthJSON(`/chat/threads`, { title }, tenantId),
+ //   listMessages: (tenantId: string, threadId: number) =>
+ //     getAuthJSON(`/chat/threads/${threadId}/messages`, tenantId),
+ //   sendMessage: (tenantId: string, threadId: number, prompt: string) =>
+ //     postAuthJSON(`/chat/threads/${threadId}/messages`, { prompt }, tenantId),
+ //   usage: (tenantId: string, days = 30) =>
+ //     getAuthJSON(`/chat/usage?days=${days}`, tenantId),
+ //   sendStream: async (
+ //     tenantId: string,
+ //     threadId: number,
+ //     prompt: string,
+ //     onEvent: (evt: { event: string; data?: any }) => void
+ //   ): Promise<void> => {
+ //     const res = await authFetch(
+ //       `/chat/threads/${threadId}/messages/stream`,
+ //       {
+ //         method: "POST",
+ //         headers: { "Content-Type": "application/json" },
+ //         body: JSON.stringify({ prompt }),
+ //       },
+ //       true,
+ //       tenantId
+ //     );
+ //     if (!res.ok || !res.body) {
+ //       const t = await res.text().catch(() => "");
+ //       throw new Error(t || `HTTP ${res.status}`);
+ //     }
+ //     const reader = res.body.getReader();
+ //     const decoder = new TextDecoder();
+ //     let buf = "";
+ //     while (true) {
+ //       const { done, value } = await reader.read();
+ //       if (done) break;
+ //       buf += decoder.decode(value, { stream: true });
+ //       let idx;
+ //       while ((idx = buf.indexOf("\n\n")) !== -1) {
+ //         const chunk = buf.slice(0, idx).trim();
+ //         buf = buf.slice(idx + 2);
+ //         if (chunk.startsWith("data:")) {
+ //           try {
+ //             const jsonStr = chunk.slice(5).trim();
+ //             const obj = JSON.parse(jsonStr);
+ //             onEvent(obj);
+ //           } catch {}
+ //         }
+ //       }
+ //     }
+ //   },
+ // };
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
 }
@@ -452,15 +870,15 @@ __turbopack_context__.s([
     "cn",
     ()=>cn
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/clsx/dist/clsx.mjs [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$tailwind$2d$merge$2f$dist$2f$bundle$2d$mjs$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/tailwind-merge/dist/bundle-mjs.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$clsx$40$2$2e$1$2e$1$2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/clsx@2.1.1/node_modules/clsx/dist/clsx.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$tailwind$2d$merge$40$3$2e$3$2e$1$2f$node_modules$2f$tailwind$2d$merge$2f$dist$2f$bundle$2d$mjs$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/tailwind-merge@3.3.1/node_modules/tailwind-merge/dist/bundle-mjs.mjs [app-client] (ecmascript)");
 ;
 ;
 function cn() {
     for(var _len = arguments.length, inputs = new Array(_len), _key = 0; _key < _len; _key++){
         inputs[_key] = arguments[_key];
     }
-    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$tailwind$2d$merge$2f$dist$2f$bundle$2d$mjs$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["twMerge"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["clsx"])(inputs));
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$tailwind$2d$merge$40$3$2e$3$2e$1$2f$node_modules$2f$tailwind$2d$merge$2f$dist$2f$bundle$2d$mjs$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["twMerge"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$clsx$40$2$2e$1$2e$1$2f$node_modules$2f$clsx$2f$dist$2f$clsx$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["clsx"])(inputs));
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
@@ -475,15 +893,15 @@ __turbopack_context__.s([
     "buttonVariants",
     ()=>buttonVariants
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$slot$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@radix-ui/react-slot/dist/index.mjs [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$class$2d$variance$2d$authority$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/class-variance-authority/dist/index.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/next@15.5.4_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$radix$2d$ui$2b$react$2d$slot$40$1$2e$2$2e$3_$40$types$2b$react$40$19$2e$2$2e$2_react$40$19$2e$1$2e$0$2f$node_modules$2f40$radix$2d$ui$2f$react$2d$slot$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/@radix-ui+react-slot@1.2.3_@types+react@19.2.2_react@19.1.0/node_modules/@radix-ui/react-slot/dist/index.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$class$2d$variance$2d$authority$40$0$2e$7$2e$1$2f$node_modules$2f$class$2d$variance$2d$authority$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/class-variance-authority@0.7.1/node_modules/class-variance-authority/dist/index.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/utils.ts [app-client] (ecmascript)");
 ;
 ;
 ;
 ;
-const buttonVariants = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$class$2d$variance$2d$authority$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cva"])("inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive", {
+const buttonVariants = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$class$2d$variance$2d$authority$40$0$2e$7$2e$1$2f$node_modules$2f$class$2d$variance$2d$authority$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cva"])("inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive", {
     variants: {
         variant: {
             default: "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -509,8 +927,8 @@ const buttonVariants = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_
 });
 function Button(param) {
     let { className, variant, size, asChild = false, ...props } = param;
-    const Comp = asChild ? __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$slot$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Slot"] : "button";
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Comp, {
+    const Comp = asChild ? __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$radix$2d$ui$2b$react$2d$slot$40$1$2e$2$2e$3_$40$types$2b$react$40$19$2e$2$2e$2_react$40$19$2e$1$2e$0$2f$node_modules$2f40$radix$2d$ui$2f$react$2d$slot$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Slot"] : "button";
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Comp, {
         "data-slot": "button",
         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])(buttonVariants({
             variant,
@@ -540,11 +958,11 @@ __turbopack_context__.s([
     "default",
     ()=>DashboardLayout
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/next@15.5.4_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/next@15.5.4_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/next@15.5.4_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/navigation.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/utils/api.ts [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/next@15.5.4_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/button.tsx [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
@@ -569,16 +987,16 @@ function deriveRoles(user) {
 function DashboardLayout(param) {
     let { children } = param;
     _s();
-    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
-    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
-    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
-    const [user, setUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    const [banner, setBanner] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
+    const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [user, setUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [banner, setBanner] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const roles = deriveRoles(user);
     const roleName = roles[0] || "";
     const isAffiliate = roles.includes("affiliate");
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "DashboardLayout.useEffect": ()=>{
             let active = true;
             async function check() {
@@ -642,7 +1060,7 @@ function DashboardLayout(param) {
         router,
         pathname
     ]);
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "DashboardLayout.useEffect": ()=>{
             if (!user) {
                 setBanner(null);
@@ -706,9 +1124,9 @@ function DashboardLayout(param) {
         router.replace(isAffiliate ? "/auth/affiliate-login" : "/login");
     }
     if (loading) {
-        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "min-h-screen flex items-center justify-center",
-            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "animate-pulse text-gray-500",
                 children: "Loading dashboard..."
             }, void 0, false, {
@@ -725,16 +1143,16 @@ function DashboardLayout(param) {
     if (error) {
         return null; // Redirected
     }
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Shell, {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Shell, {
         user: user,
         onLogout: logout,
         children: [
-            banner && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            banner && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "mb-4 p-3 border rounded bg-amber-50 text-amber-800 text-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3",
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "font-medium",
                                 children: banner.title
                             }, void 0, false, {
@@ -742,7 +1160,7 @@ function DashboardLayout(param) {
                                 lineNumber: 187,
                                 columnNumber: 13
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "text-xs md:text-sm",
                                 children: banner.description
                             }, void 0, false, {
@@ -756,7 +1174,7 @@ function DashboardLayout(param) {
                         lineNumber: 186,
                         columnNumber: 11
                     }, this),
-                    banner.actionHref && banner.actionLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                    banner.actionHref && banner.actionLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
                         href: banner.actionHref,
                         className: "inline-flex items-center justify-center rounded border border-amber-600 px-3 py-1 text-xs font-medium text-amber-700 hover:bg-amber-100",
                         children: banner.actionLabel
@@ -781,8 +1199,8 @@ function DashboardLayout(param) {
 }
 _s(DashboardLayout, "xjczNEOPzB1V3UUtWtpnFmQHby4=", false, function() {
     return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
-        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"]
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"]
     ];
 });
 _c = DashboardLayout;
@@ -790,7 +1208,7 @@ function Shell(param) {
     let { user, onLogout, children } = param;
     var _nav_find;
     _s1();
-    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
+    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
     const roles = deriveRoles(user);
     const baseRole = ((user === null || user === void 0 ? void 0 : user.role) || "").toLowerCase();
     const primaryRole = baseRole || roles[0] || "";
@@ -894,16 +1312,16 @@ function Shell(param) {
             label: "About"
         }
     ];
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "min-h-screen grid grid-cols-12",
         children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
                 className: "col-span-12 md:col-span-2 border-r p-4 space-y-6 bg-white",
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "space-y-1",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "text-lg font-semibold",
                                 children: isAffiliate ? "Affiliate Portal" : isAdmin ? "Admin Console" : "Zemen Dashboard"
                             }, void 0, false, {
@@ -911,7 +1329,7 @@ function Shell(param) {
                                 lineNumber: 262,
                                 columnNumber: 11
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "text-xs text-gray-500",
                                 children: isAffiliate ? "Track referrals & payouts" : isAdmin ? "Manage platform data" : "Secure area"
                             }, void 0, false, {
@@ -925,11 +1343,11 @@ function Shell(param) {
                         lineNumber: 261,
                         columnNumber: 9
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "space-y-1 text-sm",
-                        children: user ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        children: user ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "font-medium",
                                     children: user.username
                                 }, void 0, false, {
@@ -937,7 +1355,7 @@ function Shell(param) {
                                     lineNumber: 273,
                                     columnNumber: 15
                                 }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "text-xs text-gray-500 truncate",
                                     children: user.email
                                 }, void 0, false, {
@@ -945,7 +1363,7 @@ function Shell(param) {
                                     lineNumber: 274,
                                     columnNumber: 15
                                 }, this),
-                                primaryRole && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                primaryRole && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "text-2xs uppercase text-gray-400",
                                     children: primaryRole
                                 }, void 0, false, {
@@ -964,11 +1382,11 @@ function Shell(param) {
                         lineNumber: 270,
                         columnNumber: 9
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
                         className: "space-y-1",
                         children: nav.map((item)=>{
                             const active = pathname === item.href || (pathname === null || pathname === void 0 ? void 0 : pathname.startsWith(item.href + "/"));
-                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                            return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                 href: item.href,
                                 className: "block rounded px-3 py-2 text-sm " + (active ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "hover:bg-gray-50 text-gray-700"),
                                 children: item.label
@@ -983,9 +1401,9 @@ function Shell(param) {
                         lineNumber: 280,
                         columnNumber: 9
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "pt-4",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                             variant: "outline",
                             onClick: onLogout,
                             className: "w-full text-red-600 border-red-200 hover:bg-red-50",
@@ -1006,13 +1424,13 @@ function Shell(param) {
                 lineNumber: 260,
                 columnNumber: 7
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "col-span-12 md:col-span-10 flex flex-col min-h-screen bg-gray-50",
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
                         className: "border-b bg-white p-4 flex items-center justify-between",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "font-medium",
                                 children: ((_nav_find = nav.find((n)=>pathname === null || pathname === void 0 ? void 0 : pathname.startsWith(n.href))) === null || _nav_find === void 0 ? void 0 : _nav_find.label) || "Overview"
                             }, void 0, false, {
@@ -1020,7 +1438,7 @@ function Shell(param) {
                                 lineNumber: 309,
                                 columnNumber: 11
                             }, this),
-                            !isAffiliate && !isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            !isAffiliate && !isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "text-sm text-gray-500",
                                 children: [
                                     "Tenant: ",
@@ -1037,7 +1455,7 @@ function Shell(param) {
                         lineNumber: 308,
                         columnNumber: 9
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
                         className: "p-6 flex-1",
                         children: children
                     }, void 0, false, {
@@ -1060,7 +1478,7 @@ function Shell(param) {
 }
 _s1(Shell, "xbyQPtUVMO7MNj7WjJlpdWqRcTo=", false, function() {
     return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"]
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$15$2e$5$2e$4_react$2d$dom$40$19$2e$1$2e$0_react$40$19$2e$1$2e$0_$5f$react$40$19$2e$1$2e$0$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"]
     ];
 });
 _c1 = Shell;

@@ -124,7 +124,7 @@ export default function NavBar({
                   transition={{ delay: 5 * 0.1 + 0.3 }}
                 >
                   <span className="relative z-10">
-                    <Link href="/affiliate">Affiliate</Link>
+                    <Link href="/register">Affiliate</Link>
                   </span>
                   <motion.div
                     className={[

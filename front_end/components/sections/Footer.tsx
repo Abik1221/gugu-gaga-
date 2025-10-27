@@ -62,22 +62,6 @@ export default function Footer() {
               <li>
                 <Link
                   className="transition-colors hover:underline"
-                  href="/(marketing)/contact"
-                >
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="transition-colors hover:underline"
-                  href="/(marketing)"
-                >
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="transition-colors hover:underline"
                   href="/(auth)/login"
                 >
                   Login
@@ -103,18 +87,16 @@ export default function Footer() {
             </p>
             <form
               className="mt-4 flex gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
+              onSubmit={(e) => e.preventDefault()}
             >
               <input
                 type="email"
                 placeholder="you@example.com"
-                className="w-full rounded-md border border-emerald-500 bg-emerald-600/30 px-3 py-2 text-emerald-50 placeholder:text-emerald-100/60 outline-none focus:ring-2 focus:ring-emerald-400/60"
+                className="w-full rounded-md border border-emerald-500 bg-emerald-600/30 px-2 py-1 text-xs text-emerald-50 placeholder:text-emerald-100/60 outline-none focus:ring-1 focus:ring-emerald-400/60"
               />
               <button
                 type="submit"
-                className="whitespace-nowrap rounded-md bg-emerald-50 px-3 py-2 text-emerald-800 transition-colors hover:bg-emerald-100"
+                className="whitespace-nowrap rounded-md bg-emerald-50 px-2 py-1 text-xs text-emerald-800 transition-colors hover:bg-emerald-100"
               >
                 Subscribe
               </button>
@@ -122,12 +104,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-emerald-600 pt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-emerald-50/80">
+        <div className="mt-10 border-t border-emerald-600 pt-6 flex flex-col items-center justify-center gap-4">
+          <p className="text-xs text-emerald-50/80 text-center">
             © {year} Zemen Pharma. All rights reserved.
           </p>
 
-          <nav className="flex flex-wrap items-center gap-4 text-xs text-emerald-50/90">
+          <nav className="flex flex-wrap items-center justify-center gap-4 text-xs text-emerald-50/90">
             <Link className="transition-colors hover:underline" href="/terms">
               Terms
             </Link>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+
 export default function CTA() {
   return (
     <section
@@ -8,9 +9,12 @@ export default function CTA() {
       className="h-screen flex flex-col justify-center text-center max-w-2xl mx-auto"
     >
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{
+          duration: 1.2, // slower animation
+          ease: "easeOut", // smooth easing
+        }}
       >
         <h3 className="text-2xl font-bold text-emerald-700 mb-4">
           Ready to Transform Your Pharmacy?
