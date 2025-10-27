@@ -126,7 +126,7 @@ function InventoryPage() {
         let active = true;
         async function load() {
             try {
-                const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAuthJSON"])("/api/v1/inventory/items");
+                const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAuthJSON"])("/inventory/items");
                 if (!active) return;
                 setItems(data);
             } catch (e) {
@@ -502,7 +502,7 @@ function InventoryPage() {
                                             });
                                             return;
                                         }
-                                        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["postAuthJSON"])("/api/v1/inventory/items", payload);
+                                        await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["postAuthJSON"])("/inventory/items", payload);
                                         show({
                                             variant: "success",
                                             title: "Item created"
@@ -523,7 +523,7 @@ function InventoryPage() {
                                         // refresh list
                                         setLoading(true);
                                         try {
-                                            const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAuthJSON"])("/api/v1/inventory/items");
+                                            const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAuthJSON"])("/inventory/items");
                                             setItems(data);
                                         } finally{
                                             setLoading(false);
@@ -776,7 +776,7 @@ function InventoryPage() {
                                                                             if ("undefined" !== "undefined" && !window.confirm(confirmMsg)) //TURBOPACK unreachable
                                                                             ;
                                                                             try {
-                                                                                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["postAuthJSON"])(`/api/v1/inventory/items/${it.id}/adjust-stock`, {
+                                                                                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["postAuthJSON"])(`/inventory/items/${it.id}/adjust-stock`, {
                                                                                     delta,
                                                                                     reason: adjustReason.trim()
                                                                                 });
@@ -788,7 +788,7 @@ function InventoryPage() {
                                                                                 // refresh list
                                                                                 setLoading(true);
                                                                                 try {
-                                                                                    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAuthJSON"])("/api/v1/inventory/items");
+                                                                                    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAuthJSON"])("/inventory/items");
                                                                                     setItems(data);
                                                                                 } finally{
                                                                                     setLoading(false);

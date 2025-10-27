@@ -1,5 +1,5 @@
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
+  process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000";
 export const TENANT_HEADER =
   process.env.NEXT_PUBLIC_TENANT_HEADER || "X-Tenant-ID";
 
@@ -153,7 +153,8 @@ function getRefreshToken(): string | null {
 async function refreshTokens(): Promise<boolean> {
   const rt = getRefreshToken();
   if (!rt) return false;
-  const url = `${API_BASE}/api/v1/auth/refresh?refresh_token=${encodeURIComponent(
+  const BASE = "http://localhost:8000";
+  const url = `${BASE}/api/v1/auth/refresh?refresh_token=${encodeURIComponent(
     rt
   )}`;
   const res = await fetch(url, { method: "POST" });
@@ -248,19 +249,19 @@ export async function postAuthJSON<T = any>(
 
 // ----------------- AuthAPI -----------------
 export const AuthAPI = {
-  registerAffiliate: (body: any) => postJSON("/auth/register/affiliate", body),
-  registerPharmacy: (body: any) => postJSON("/auth/register/pharmacy", body),
+  registerAffiliate: (body: any) => postJSON("/api/v1/auth/register/affiliate", body),
+  registerPharmacy: (body: any) => postJSON("/api/v1/auth/register/pharmacy", body),
 
   registerVerify: async (email: string, code: string) => {
     try {
-      return await postForm("/auth/register/verify", { email, code });
+      return await postForm("/api/v1/auth/register/verify", { email, code });
     } catch (err: any) {
       if (err?.status === 422) {
         console.warn("[AuthAPI.registerVerify] 422, retrying with JSON", {
           body: err.body,
         });
         try {
-          return await postJSON("/auth/register/verify", { email, code });
+          return await postJSON("/api/v1/auth/register/verify", { email, code });
         } catch (err2: any) {
           const e: any = new Error(
             err2?.message || err?.message || "Verification failed"
@@ -275,85 +276,85 @@ export const AuthAPI = {
   },
 
   verifyRegistration: (email: string, code: string) =>
-    postForm("/auth/register/verify", { email, code }),
+    postForm("/api/v1/auth/register/verify", { email, code }),
   login: (email: string, password: string, tenantId?: string) =>
-    postForm("/auth/login", { username: email, password }, tenantId),
+    postForm("/api/v1/auth/login", { username: email, password }, tenantId),
   loginRequestCode: (email: string, password: string, tenantId?: string) =>
     postForm(
-      "/auth/login/request-code",
+      "/api/v1/auth/login/request-code",
       { username: email, password },
       tenantId
     ),
   loginVerify: (email: string, code: string, tenantId?: string) =>
-    postJSON("/auth/login/verify", { email, code }, tenantId),
-  me: () => getAuthJSON("/auth/me"),
+    postJSON("/api/v1/auth/login/verify", { email, code }, tenantId),
+  me: () => getAuthJSON("/api/v1/auth/me"),
 };
 
 // ----------------- AffiliateAPI -----------------
 export const AffiliateAPI = {
-  getLinks: () => getAuthJSON("/affiliate/register-link"),
-  createLink: () => getAuthJSON("/affiliate/register-link?create_new=true"),
+  getLinks: () => getAuthJSON("/api/v1/affiliate/register-link"),
+  createLink: () => getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
   deactivate: (token: string) =>
     postAuthJSON(
-      `/affiliate/links/${encodeURIComponent(token)}/deactivate`,
+      `/api/v1/affiliate/links/${encodeURIComponent(token)}/deactivate`,
       {}
     ),
   rotate: (token: string) =>
-    postAuthJSON(`/affiliate/links/${encodeURIComponent(token)}/rotate`, {}),
-  dashboard: () => getAuthJSON("/affiliate/dashboard"),
+    postAuthJSON(`/api/v1/affiliate/links/${encodeURIComponent(token)}/rotate`, {}),
+  dashboard: () => getAuthJSON("/api/v1/affiliate/dashboard"),
   payouts: (status?: string) =>
     getAuthJSON(
-      `/affiliate/payouts${
+      `/api/v1/affiliate/payouts${
         status ? `?status_filter=${encodeURIComponent(status)}` : ""
       }`
     ),
   requestPayout: (month?: string, percent = 5) =>
-    postAuthJSON("/affiliate/payouts/request", { month, percent }),
-  updateProfile: (body: any) => postAuthJSON("/affiliate/profile", body),
+    postAuthJSON("/api/v1/affiliate/payouts/request", { month, percent }),
+  updateProfile: (body: any) => postAuthJSON("/api/v1/affiliate/profile", body),
 };
 
 // ----------------- AdminAPI -----------------
 export const AdminAPI = {
   pharmacies: (page = 1, pageSize = 20, q?: string) =>
     getAuthJSON(
-      `/admin/pharmacies?page=${page}&page_size=${pageSize}${
+      `/api/v1/admin/pharmacies?page=${page}&page_size=${pageSize}${
         q ? `&q=${encodeURIComponent(q)}` : ""
       }`
     ),
   affiliates: (page = 1, pageSize = 20, q?: string) =>
     getAuthJSON(
-      `/admin/affiliates?page=${page}&page_size=${pageSize}${
+      `/api/v1/admin/affiliates?page=${page}&page_size=${pageSize}${
         q ? `&q=${encodeURIComponent(q)}` : ""
       }`
     ),
   approvePharmacy: (tenantId: string, applicationId: number, body?: any) =>
     postAuthJSON(
-      `/admin/pharmacies/${applicationId}/approve`,
+      `/api/v1/admin/pharmacies/${applicationId}/approve`,
       body || {},
       tenantId
     ),
   rejectPharmacy: (tenantId: string, applicationId: number) =>
-    postAuthJSON(`/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
+    postAuthJSON(`/api/v1/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
   verifyPayment: (tenantId: string, code?: string | null) =>
-    postAuthJSON(`/admin/payments/verify`, { code: code || null }, tenantId),
+    postAuthJSON(`/api/v1/admin/payments/verify`, { code: code || null }, tenantId),
   rejectPayment: (tenantId: string, code?: string | null) =>
-    postAuthJSON(`/admin/payments/reject`, { code: code || null }, tenantId),
+    postAuthJSON(`/api/v1/admin/payments/reject`, { code: code || null }, tenantId),
   analyticsOverview: (days = 30) =>
-    getAuthJSON(`/admin/analytics/overview?days=${days}`),
+    getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
   approveAffiliate: (userId: number) =>
-    postAuthJSON(`/admin/affiliates/${userId}/approve`, {}),
+    postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
   rejectAffiliate: (userId: number) =>
-    postAuthJSON(`/admin/affiliates/${userId}/reject`, {}),
+    postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {}),
 };
 
 // ----------------- StaffAPI -----------------
 export const StaffAPI = {
   createCashier: (tenantId: string, body: any) =>
-    postAuthJSON("/staff", body, tenantId),
-  list: (tenantId: string) => getAuthJSON("/staff", tenantId),
+    postAuthJSON("/api/v1/staff", body, tenantId),
+  list: (tenantId: string) => getAuthJSON("/api/v1/staff", tenantId),
   update: (tenantId: string, userId: number, body: { is_active?: boolean }) =>
     authFetch(
-      `/staff/${userId}`,
+      `/api/v1/staff/${userId}`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -366,7 +367,7 @@ export const StaffAPI = {
       return res.json();
     }),
   remove: (tenantId: string, userId: number) =>
-    authFetch(`/staff/${userId}`, { method: "DELETE" }, true, tenantId).then(
+    authFetch(`/api/v1/staff/${userId}`, { method: "DELETE" }, true, tenantId).then(
       async (res) => {
         if (!res.ok) throw new Error(await res.text());
         return res.json();
@@ -377,7 +378,7 @@ export const StaffAPI = {
 // ----------------- BillingAPI -----------------
 export const BillingAPI = {
   submitPaymentCode: (tenantId: string, code: string) =>
-    postAuthJSON("/billing/payment-code", { code }, tenantId),
+    postAuthJSON("/api/v1/owner/billing/payment-code", { code }, tenantId),
 };
 
 // ----------------- UploadAPI -----------------
@@ -391,22 +392,22 @@ export const UploadAPI = {
 
 // ----------------- KYCAPI -----------------
 export const KYCAPI = {
-  status: (tenantId: string) => getAuthJSON("/owner/kyc/status", tenantId),
+  status: (tenantId: string) => getAuthJSON("/api/v1/owner/kyc/status", tenantId),
   update: (tenantId: string, body: any) =>
-    putAuthJSON("/owner/kyc/status", body, tenantId),
+    putAuthJSON("/api/v1/owner/kyc/status", body, tenantId),
 };
 
 // ----------------- PharmaciesAPI -----------------
 export const PharmaciesAPI = {
   list: (page = 1, pageSize = 20, q?: string) =>
     getAuthJSON(
-      `/pharmacies?page=${page}&page_size=${pageSize}${
+      `/api/v1/pharmacies?page=${page}&page_size=${pageSize}${
         q ? `&q=${encodeURIComponent(q)}` : ""
       }`
     ),
-  get: (id: number) => getAuthJSON(`/pharmacies/${id}`),
+  get: (id: number) => getAuthJSON(`/api/v1/pharmacies/${id}`),
   update: (id: number, body: { name?: string; address?: string }) =>
-    authFetch(`/pharmacies/${id}`, {
+    authFetch(`/api/v1/pharmacies/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -418,15 +419,15 @@ export const PharmaciesAPI = {
 
 // ----------------- ChatAPI -----------------
 export const ChatAPI = {
-  listThreads: (tenantId: string) => getAuthJSON(`/chat/threads`, tenantId),
+  listThreads: (tenantId: string) => getAuthJSON(`/api/v1/chat/threads`, tenantId),
   createThread: (tenantId: string, title: string) =>
-    postAuthJSON(`/chat/threads`, { title }, tenantId),
+    postAuthJSON(`/api/v1/chat/threads`, { title }, tenantId),
   listMessages: (tenantId: string, threadId: number) =>
-    getAuthJSON(`/chat/threads/${threadId}/messages`, tenantId),
+    getAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, tenantId),
   sendMessage: (tenantId: string, threadId: number, prompt: string) =>
-    postAuthJSON(`/chat/threads/${threadId}/messages`, { prompt }, tenantId),
+    postAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, { prompt }, tenantId),
   usage: (tenantId: string, days = 30) =>
-    getAuthJSON(`/chat/usage?days=${days}`, tenantId),
+    getAuthJSON(`/api/v1/chat/usage?days=${days}`, tenantId),
 };
 
 // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged

@@ -150,8 +150,8 @@ export default function DashboardLayout({
         kind: "payment",
         title: copy.title,
         description: copy.description,
-        actionHref: "/dashboard/owner/billing",
-        actionLabel: "View payment guide",
+        actionHref: "/dashboard/owner/payment",
+        actionLabel: "Submit payment",
       });
       return;
     }
@@ -240,7 +240,6 @@ function Shell({
         ? [{ href: "/dashboard/owner/payment", label: "Payment" }]
         : [
             { href: "/dashboard/owner", label: "Owner Overview" },
-            { href: "/dashboard/owner/billing", label: "Billing" },
             { href: "/dashboard/inventory", label: "Inventory" },
             { href: "/dashboard/pos", label: "POS" },
             { href: "/dashboard/settings", label: "Settings" },

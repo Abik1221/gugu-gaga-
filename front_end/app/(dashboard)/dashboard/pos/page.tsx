@@ -104,8 +104,6 @@ export default function POSPage() {
     setCart([]);
     show({ variant: "success", title: "Cart cleared" });
   }
-    return null;
-  }
 
   useEffect(() => {
     let active = true;
