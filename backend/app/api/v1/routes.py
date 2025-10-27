@@ -18,6 +18,7 @@ from .notification_prefs import router as notification_prefs_router
 from .ws import router as ws_router
 from .billing import router as billing_router
 from .subscriptions import router as subscriptions_router
+from .owner_analytics import router as owner_analytics_router
 from .branches import router as branches_router
 from .uploads import router as uploads_router
 
@@ -48,5 +49,6 @@ api_router.include_router(notification_prefs_router)
 api_router.include_router(ws_router)
 api_router.include_router(billing_router, prefix="/owner")
 api_router.include_router(subscriptions_router, prefix="/owner")
+api_router.include_router(owner_analytics_router, prefix="/owner")
 api_router.include_router(branches_router)
 api_router.include_router(uploads_router)

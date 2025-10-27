@@ -1,516 +1,244 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import type { ReactNode } from "react";
+
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+
 import {
   AuthAPI,
-  PharmaciesAPI,
-  ChatAPI,
-  KYCAPI,
-  UploadAPI,
-  BillingAPI,
   OwnerAnalyticsAPI,
+  type OwnerAnalyticsResponse,
 } from "@/utils/api";
-import type { OwnerAnalyticsResponse } from "@/utils/api";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { useToast } from "@/components/ui/toast";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ResponsiveContainer,
   AreaChart,
   Area,
+  CartesianGrid,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  CartesianGrid,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 
-const Detail: React.FC<{ label: string; value: ReactNode; description?: ReactNode; className?: string }> = ({ label, value, description, className }) => (
-  <div className={`space-y-1 rounded border border-border/60 bg-white/40 p-3 ${className || ""}`}>
-    <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
-    <div className="text-sm font-medium break-words">{value}</div>
-    {description && <div className="text-xs text-muted-foreground">{description}</div>}
-  </div>
-);
+type StaffActivityEntry = OwnerAnalyticsResponse["staff_activity"][number];
+
+const HORIZONS: { value: string; label: string }[] = [
+  { value: "day", label: "24h" },
+  { value: "week", label: "7d" },
+  { value: "month", label: "30d" },
+  { value: "quarter", label: "90d" },
+  { value: "year", label: "12m" },
+];
+
+const DEFAULT_TREND_WEEKS = 12;
+
+function formatCurrency(value: number | undefined | null): string {
+  const num = Number(value ?? 0);
+  return `ETB ${num.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+}
+
+function TrendPill({ delta }: { delta: number | undefined | null }) {
+  if (delta === undefined || delta === null || Number.isNaN(delta)) return null;
+  const positive = delta >= 0;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 text-xs font-medium ${
+        positive ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
+      }`}
+    >
+      {positive ? "▲" : "▼"} {Math.abs(delta).toFixed(1)}%
+    </span>
+  );
+}
+
+function EmptyState({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-2 rounded border border-dashed border-gray-200 p-8 text-center text-sm text-muted-foreground">
+      <div className="text-base font-medium text-gray-600">{title}</div>
+      <p className="max-w-sm text-xs leading-relaxed text-gray-500">{description}</p>
+    </div>
+  );
+}
 
 export default function OwnerDashboardPage() {
   const { show } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
-  const [pharmacies, setPharmacies] = useState<any[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [usage, setUsage] = useState<Array<{ day: string; tokens: number }>>([]);
+
+  const [me, setMe] = useState<any>(null);
   const [tenantId, setTenantId] = useState<string | null>(null);
-  const [kyc, setKyc] = useState<any | null>(null);
-  const [kycLoading, setKycLoading] = useState(false);
-  const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [kycFile, setKycFile] = useState<File | null>(null);
-  const [pendingForm, setPendingForm] = useState({
-    pharmacy_name: "",
-    pharmacy_address: "",
-    owner_phone: "",
-    id_number: "",
-    pharmacy_license_number: "",
-    notes: "",
-    pharmacy_license_document_path: "",
-    license_document_name: "",
-  });
-  const [paymentCode, setPaymentCode] = useState("");
-  const [submittingPayment, setSubmittingPayment] = useState(false);
-  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [analyticsError, setAnalyticsError] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<OwnerAnalyticsResponse | null>(null);
+  const [horizon, setHorizon] = useState<string>("month");
+  const [trendWeeks, setTrendWeeks] = useState<number>(DEFAULT_TREND_WEEKS);
 
-  const loadKyc = useCallback(
-    async (tid: string) => {
-      setKycLoading(true);
+  const loadAnalytics = useCallback(
+    async (tid: string, options?: { horizon?: string; trendWeeks?: number }) => {
+      setAnalyticsLoading(true);
+      setAnalyticsError(null);
       try {
-        const data = await KYCAPI.status(tid);
-        setKyc(data);
-        setPendingForm({
-          pharmacy_name: data?.pharmacy_name || "",
-          pharmacy_address: data?.pharmacy_address || "",
-          owner_phone: data?.owner_phone || "",
-          id_number: data?.id_number || "",
-          pharmacy_license_number: data?.pharmacy_license_number || "",
-          notes: data?.notes || "",
-          pharmacy_license_document_path: data?.pharmacy_license_document_path || "",
-          license_document_name: data?.license_document_name || "",
+        const data = await OwnerAnalyticsAPI.overview(tid, {
+          horizon: options?.horizon || horizon,
+          trendWeeks: options?.trendWeeks || trendWeeks,
         });
-      } catch (err: any) {
-        const msg = err?.message || "";
-        if (msg.toLowerCase().includes("no kyc submission")) {
-          setKyc(null);
-        } else {
-          show({ variant: "destructive", title: "Unable to load application", description: msg || "Unknown error" });
-        }
+        setAnalytics(data);
+      } catch (error: any) {
+        setAnalytics(null);
+        setAnalyticsError(error?.message || "Unable to load analytics data");
       } finally {
-        setKycLoading(false);
-        setKycFile(null);
+        setAnalyticsLoading(false);
       }
     },
-    [show],
+    [horizon, trendWeeks],
   );
 
   useEffect(() => {
     let active = true;
-    (async () => {
-      setLoading(true);
+    async function bootstrap() {
+      setLoadingUser(true);
       try {
-        const me = await AuthAPI.me();
+        const profile = await AuthAPI.me();
         if (!active) return;
-        setUser(me);
-
-        const tenantFromUser = me?.tenant_id ?? null;
-        const kycApproved = me?.kyc_status === "approved";
-        const subscriptionStatus = me?.subscription_status || "active";
-        const requiresPayment = kycApproved && subscriptionStatus !== "active";
-
-        if (!kycApproved) {
-          setPharmacies([]);
-          setUsage([]);
-          setTenantId(tenantFromUser);
-          if (tenantFromUser) {
-            await loadKyc(tenantFromUser);
-          } else {
-            setKyc(null);
-          }
-          return;
-        }
-
-        if (requiresPayment) {
-          setPharmacies([]);
-          setUsage([]);
-          setTenantId(tenantFromUser);
-          return;
-        }
-
-        const ph = await PharmaciesAPI.list(1, 20);
-        if (!active) return;
-        const items = ph.items || [];
-        setPharmacies(items);
-        const tid = tenantFromUser || (items[0]?.tenant_id ?? null);
-        if (!active) return;
+        setMe(profile);
+        const tid = profile?.tenant_id || null;
         setTenantId(tid);
         if (tid) {
-          try {
-            const u = await ChatAPI.usage(tid, 14);
-            if (!active) return;
-            setUsage(Array.isArray(u) ? u : []);
-          } catch {
-            setUsage([]);
-          }
           await loadAnalytics(tid);
         }
-      } catch (e: any) {
+      } catch (error: any) {
         if (!active) return;
-        setError(e.message || "Failed to load dashboard");
-        show({ variant: "destructive", title: "Error", description: e.message || "Failed" });
+        setMe(null);
+        setTenantId(null);
+        setAnalytics(null);
+        setAnalyticsError(error?.message || "You are not authorised to view this dashboard");
       } finally {
-        if (active) setLoading(false);
+        if (active) setLoadingUser(false);
       }
-    })();
+    }
+    bootstrap();
     return () => {
       active = false;
     };
-  }, [show, loadKyc]);
+  }, [loadAnalytics]);
 
-  async function loadAnalytics(tid: string) {
-    setAnalyticsLoading(true);
-    setAnalyticsError(null);
-    try {
-      const data = await OwnerAnalyticsAPI.overview(tid);
-      setAnalytics(data);
-    } catch (err: any) {
-      setAnalyticsError(err?.message || "Failed to load analytics");
-      setAnalytics(null);
-    } finally {
-      setAnalyticsLoading(false);
-    }
-  }
-
-  const handleFieldChange = (key: keyof typeof pendingForm, value: string) => {
-    setPendingForm((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRefresh = async () => {
     if (!tenantId) return;
-    setSaving(true);
-    try {
-      let documentPath = pendingForm.pharmacy_license_document_path || undefined;
-      let documentName = pendingForm.license_document_name || undefined;
-      if (kycFile) {
-        const upload = await UploadAPI.uploadKyc(kycFile);
-        documentPath = upload.path;
-        documentName = upload.filename;
-      }
+    await loadAnalytics(tenantId);
+    show({ variant: "success", title: "Analytics refreshed", description: "Latest sales and inventory metrics are now visible." });
+  };
 
-      const payload: any = {
-        pharmacy_name: pendingForm.pharmacy_name || undefined,
-        pharmacy_address: pendingForm.pharmacy_address || undefined,
-        owner_phone: pendingForm.owner_phone || undefined,
-        id_number: pendingForm.id_number || undefined,
-        pharmacy_license_number: pendingForm.pharmacy_license_number || undefined,
-        notes: pendingForm.notes || undefined,
-      };
-      if (documentPath) payload.pharmacy_license_document_path = documentPath;
-      if (documentName) payload.license_document_name = documentName;
-
-      await KYCAPI.update(tenantId, payload);
-      show({ variant: "success", title: "Application updated", description: "We will review your changes shortly." });
-      setEditing(false);
-      await loadKyc(tenantId);
-      const latest = await AuthAPI.me();
-      setUser(latest);
-    } catch (err: any) {
-      show({ variant: "destructive", title: "Update failed", description: err?.message || "Unable to update application" });
-    } finally {
-      setSaving(false);
+  const handleHorizonChange = async (value: string) => {
+    if (value === horizon) return;
+    setHorizon(value);
+    if (tenantId) {
+      await loadAnalytics(tenantId, { horizon: value });
     }
   };
 
-  const handleRefreshStatus = async () => {
-    if (!tenantId) return;
-    setRefreshing(true);
-    try {
-      const latest = await AuthAPI.me();
-      setUser(latest);
-      const latestSubscriptionStatus = latest?.subscription_status || "active";
-      const requiresPaymentLatest = latest?.kyc_status === "approved" && latestSubscriptionStatus !== "active";
-      if (latest?.kyc_status !== "approved") {
-        await loadKyc(tenantId);
-        setPharmacies([]);
-        setUsage([]);
-      } else if (requiresPaymentLatest) {
-        setPharmacies([]);
-        setUsage([]);
-      } else {
-        const u = await ChatAPI.usage(tenantId, 14).catch(() => []);
-        setUsage(Array.isArray(u) ? u : []);
-        await loadAnalytics(tenantId);
-      }
-      show({ variant: "success", title: "Status refreshed", description: "We have the latest update." });
-    } catch (err: any) {
-      show({ variant: "destructive", title: "Refresh failed", description: err?.message || "Unable to refresh status" });
-    } finally {
-      setRefreshing(false);
+  const handleTrendWeeksChange = async (weeks: number) => {
+    if (weeks === trendWeeks) return;
+    setTrendWeeks(weeks);
+    if (tenantId) {
+      await loadAnalytics(tenantId, { trendWeeks: weeks });
     }
   };
 
-  if (loading) return <Skeleton className="h-64" />;
-  if (error) return <div className="text-red-600 text-sm">{error}</div>;
+  const revenueCards = useMemo(() => {
+    const totals = analytics?.totals;
+    const deltas = analytics?.deltas;
+    return [
+      {
+        label: "Total revenue",
+        value: formatCurrency(totals?.total_revenue),
+        delta: deltas?.revenue_vs_last_period,
+      },
+      {
+        label: "Average ticket",
+        value: formatCurrency(totals?.average_ticket),
+        delta: deltas?.avg_ticket_vs_last_period,
+      },
+      {
+        label: "Units sold",
+        value: (totals?.units_sold ?? 0).toLocaleString("en-US"),
+        delta: deltas?.units_vs_last_period,
+      },
+      {
+        label: "Completed sales",
+        value: (totals?.sale_count ?? 0).toLocaleString("en-US"),
+        delta: undefined,
+      },
+      {
+        label: "Active cashiers",
+        value: (totals?.active_cashiers ?? 0).toLocaleString("en-US"),
+        delta: undefined,
+      },
+    ];
+  }, [analytics]);
 
-  const tenantStatus = user?.kyc_status || "pending";
-  const subscriptionStatus = user?.subscription_status || "active";
-  const requiresPayment = user?.kyc_status === "approved" && subscriptionStatus !== "active";
-
-  const paymentCopies: Record<string, { title: string; description: string; variant: "info" | "warning" | "success" }> = {
-    awaiting_payment: {
-      title: "Subscription payment required",
-      description: "Your pharmacy has been approved. Please enter the payment code provided by the admin desk so we can activate your tools.",
-      variant: "info",
-    },
-    pending_verification: {
-      title: "Payment awaiting verification",
-      description: "Thanks for submitting your payment code. The admin team is reviewing it now. You’ll be notified as soon as it’s verified.",
-      variant: "success",
-    },
-    payment_rejected: {
-      title: "Payment could not be verified",
-      description: "The last payment submission was rejected. Double-check the receipt and submit a valid payment code to continue.",
-      variant: "warning",
-    },
-  };
-
-  const handleSubmitPayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!tenantId) return;
-    const trimmed = paymentCode.trim();
-    if (trimmed.length < 4) {
-      show({ variant: "destructive", title: "Code too short", description: "Payment codes must be at least 4 characters." });
-      return;
-    }
-    setSubmittingPayment(true);
-    try {
-      await BillingAPI.submitPaymentCode(tenantId, trimmed);
-      show({ variant: "success", title: "Payment submitted", description: "We’ll notify you once the team verifies it." });
-      setPaymentCode("");
-      const latest = await AuthAPI.me();
-      setUser(latest);
-    } catch (err: any) {
-      show({ variant: "destructive", title: "Submission failed", description: err?.message || "Unable to submit payment code" });
-    } finally {
-      setSubmittingPayment(false);
-    }
-  };
-
-  if (user?.kyc_status !== "approved") {
-    return (
-      <div className="max-w-3xl mx-auto space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">Your application is under review</h1>
-          <p className="text-sm text-muted-foreground">
-            Thank you for submitting your pharmacy details. Our admin team is reviewing your information and will respond within 24 hours.
-          </p>
-          {tenantStatus === "rejected" && (
-            <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-              The previous submission was rejected. Please review the notes and update your details below.
-            </div>
-          )}
-        </div>
-
-        <div className="rounded border bg-white p-4 shadow-sm space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs uppercase tracking-wide text-muted-foreground">Current status</div>
-              <div className="text-lg font-semibold capitalize">{tenantStatus.replace("_", " ")}</div>
-            </div>
-            <Button variant="outline" onClick={handleRefreshStatus} disabled={refreshing}>
-              {refreshing ? "Refreshing..." : "Refresh status"}
-            </Button>
-          </div>
-
-          {kycLoading ? (
-            <Skeleton className="h-40" />
-          ) : editing ? (
-            <form onSubmit={handleSave} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-muted-foreground">Pharmacy name</label>
-                  <Input value={pendingForm.pharmacy_name} onChange={(e) => handleFieldChange("pharmacy_name", e.target.value)} required />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">Pharmacy address</label>
-                  <Input value={pendingForm.pharmacy_address} onChange={(e) => handleFieldChange("pharmacy_address", e.target.value)} />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">Owner phone</label>
-                  <Input value={pendingForm.owner_phone} onChange={(e) => handleFieldChange("owner_phone", e.target.value)} placeholder="+2519..." />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">National / company ID</label>
-                  <Input value={pendingForm.id_number} onChange={(e) => handleFieldChange("id_number", e.target.value)} required />
-                </div>
-                <div>
-                  <label className="text-sm text-muted-foreground">Pharmacy license number</label>
-                  <Input value={pendingForm.pharmacy_license_number} onChange={(e) => handleFieldChange("pharmacy_license_number", e.target.value)} required />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="text-sm text-muted-foreground">Notes to reviewer</label>
-                  <textarea
-                    className="mt-1 w-full rounded border border-input px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring focus-visible:ring-ring"
-                    rows={4}
-                    value={pendingForm.notes}
-                    onChange={(e) => handleFieldChange("notes", e.target.value)}
-                  />
-                </div>
-                <div className="md:col-span-2 space-y-2">
-                  <label className="text-sm text-muted-foreground">Upload license document (PNG/JPG/PDF)</label>
-                  <input
-                    type="file"
-                    accept=".jpg,.jpeg,.png,.pdf"
-                    onChange={(e) => setKycFile(e.target.files?.[0] || null)}
-                  />
-                  <div className="text-xs text-muted-foreground">
-                    {kycFile
-                      ? `Ready to upload: ${kycFile.name}`
-                      : pendingForm.license_document_name
-                      ? `Current file: ${pendingForm.license_document_name}`
-                      : "No file uploaded yet"}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <Button type="submit" disabled={saving}>
-                  {saving ? "Saving..." : "Submit updates"}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setEditing(false);
-                    if (kyc) {
-                      setPendingForm({
-                        pharmacy_name: kyc?.pharmacy_name || "",
-                        pharmacy_address: kyc?.pharmacy_address || "",
-                        owner_phone: kyc?.owner_phone || "",
-                        id_number: kyc?.id_number || "",
-                        pharmacy_license_number: kyc?.pharmacy_license_number || "",
-                        notes: kyc?.notes || "",
-                        pharmacy_license_document_path: kyc?.pharmacy_license_document_path || "",
-                        license_document_name: kyc?.license_document_name || "",
-                      });
-                    }
-                    setKycFile(null);
-                  }}
-                  disabled={saving}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          ) : (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <Detail label="Pharmacy name" value={kyc?.pharmacy_name || "—"} />
-                <Detail label="Address" value={kyc?.pharmacy_address || "—"} />
-                <Detail label="Owner phone" value={kyc?.owner_phone || "—"} />
-                <Detail label="National / company ID" value={kyc?.id_number || "—"} />
-                <Detail label="License number" value={kyc?.pharmacy_license_number || "—"} />
-                <Detail label="Notes" value={kyc?.notes || "No notes"} />
-                <Detail
-                  label="License document"
-                  value={kyc?.license_document_name || kyc?.pharmacy_license_document_path || "Not uploaded"}
-                />
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <Button onClick={() => { setEditing(true); setKycFile(null); }}>
-                  Edit submission
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-          You can continue to log in and monitor this page. Once the admin approves your application, your full dashboard and point of sale tools will unlock automatically.
-        </div>
-      </div>
-    );
-  }
-
-  if (requiresPayment) {
-    const paymentMeta = paymentCopies[subscriptionStatus] || paymentCopies.awaiting_payment;
-    return (
-      <div className="max-w-3xl mx-auto space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">{paymentMeta.title}</h1>
-          <p className="text-sm text-muted-foreground">{paymentMeta.description}</p>
-        </div>
-
-        <div
-          className={`rounded border p-4 space-y-4 ${paymentMeta.variant === "warning" ? "border-red-200 bg-red-50 text-red-800" : paymentMeta.variant === "success" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs uppercase tracking-wide">Current status</div>
-              <div className="text-lg font-semibold capitalize">{subscriptionStatus.replace(/_/g, " ")}</div>
-            </div>
-            <Button variant="outline" onClick={handleRefreshStatus} disabled={refreshing}>
-              {refreshing ? "Refreshing..." : "Refresh status"}
-            </Button>
-          </div>
-
-          {subscriptionStatus !== "pending_verification" && (
-            <form className="space-y-3" onSubmit={handleSubmitPayment}>
-              <div className="space-y-1">
-                <label className="text-xs uppercase tracking-wide text-muted-foreground" htmlFor="payment-code-input">
-                  Payment code
-                </label>
-                <Input
-                  id="payment-code-input"
-                  value={paymentCode}
-                  onChange={(e) => setPaymentCode(e.target.value)}
-                  placeholder="Enter the receipt/payment code"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button type="submit" disabled={submittingPayment}>
-                  {submittingPayment ? "Submitting..." : "Submit code"}
-                </Button>
-                <Button type="button" variant="outline" onClick={() => setPaymentCode("")} disabled={submittingPayment || paymentCode.length === 0}>
-                  Clear
-                </Button>
-              </div>
-            </form>
-          )}
-
-          {subscriptionStatus === "pending_verification" && (
-            <div className="text-sm">
-              We will email you once verification is complete. You can refresh this page to check for updates.
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+  const activityStream: StaffActivityEntry[] = useMemo(() => {
+    return (analytics?.staff_activity || []).slice(0, 20);
+  }, [analytics]);
 
   const revenueTrend = analytics?.revenue_trend || [];
-  const revenueCards = [
-    { label: "Total Revenue", value: analytics?.totals?.total_revenue ?? 0, prefix: "ETB", trend: analytics?.deltas?.revenue_vs_last_period },
-    { label: "Average Ticket", value: analytics?.totals?.average_ticket ?? 0, prefix: "ETB", trend: analytics?.deltas?.avg_ticket_vs_last_period },
-    { label: "Units Sold", value: analytics?.totals?.units_sold ?? 0, trend: analytics?.deltas?.units_vs_last_period },
-    { label: "Active Cashiers", value: analytics?.totals?.active_cashiers ?? 0 },
-  ];
-
+  const branchComparison = analytics?.branch_comparison || [];
+  const productivity = analytics?.staff_productivity || [];
   const topProducts = analytics?.top_products || [];
-  const stockBreakdown = analytics?.inventory_health || [];
+  const inventorySlices = analytics?.inventory_health || [];
   const recentPayments = analytics?.recent_payments || [];
 
+  const loading = loadingUser || analyticsLoading;
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">Welcome back, {user?.username || "Owner"}</h1>
-          <p className="text-sm text-muted-foreground">
-            Track pharmacy performance, watch inventory health, and keep your staff on the same page.
+    <div className="space-y-8">
+      <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            {loadingUser ? "Loading..." : `Welcome back, ${me?.username || "owner"}`}
+          </h1>
+          <p className="text-sm text-gray-500">
+            Monitor revenue, compare branches, and coach your pharmacy team from a single command center.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link href="/dashboard/owner/staff/new"><Button variant="outline">Create Cashier</Button></Link>
-          <Link href="/dashboard/owner/chat"><Button variant="outline">Open Chat</Button></Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex rounded border border-gray-200 bg-white p-1 text-xs shadow-sm">
+            {HORIZONS.map((item) => {
+              const active = horizon === item.value;
+              return (
+                <button
+                  key={item.value}
+                  type="button"
+                  onClick={() => handleHorizonChange(item.value)}
+                  className={`rounded px-3 py-1 font-medium transition ${
+                    active ? "bg-emerald-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                  disabled={analyticsLoading}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+          <select
+            value={trendWeeks}
+            onChange={(event) => handleTrendWeeksChange(Number(event.target.value) || DEFAULT_TREND_WEEKS)}
+            className="rounded border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 shadow-sm focus:outline-none focus:ring"
+            disabled={analyticsLoading}
+          >
+            <option value={4}>4 weeks</option>
+            <option value={8}>8 weeks</option>
+            <option value={12}>12 weeks</option>
+            <option value={24}>24 weeks</option>
+          </select>
+          <Button variant="outline" size="sm" onClick={handleRefresh} disabled={analyticsLoading || !tenantId}>
+            Refresh
+          </Button>
+          <Link href="/dashboard/owner/staff/new">
+            <Button size="sm">Invite staff</Button>
+          </Link>
         </div>
-      </div>
+      </header>
 
       {analyticsError && (
         <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
@@ -518,214 +246,274 @@ export default function OwnerDashboardPage() {
         </div>
       )}
 
-      <div className="grid gap-6 xl:grid-cols-3">
-        <section className="space-y-6 xl:col-span-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            {revenueCards.map((card) => (
-              <Card key={card.label} className="shadow-sm border border-emerald-100">
-                <CardHeader className="space-y-1">
-                  <CardTitle className="text-xs font-medium text-muted-foreground">{card.label}</CardTitle>
-                  {analyticsLoading ? (
-                    <Skeleton className="h-8 w-24" />
-                  ) : (
-                    <div className="text-2xl font-semibold text-gray-900">
-                      {card.prefix ? `${card.prefix} ` : ""}
-                      {typeof card.value === "number"
-                        ? card.value.toLocaleString("en-US", { maximumFractionDigits: 2 })
-                        : card.value}
-                    </div>
-                  )}
-                </CardHeader>
-                {typeof card.trend === "number" && !Number.isNaN(card.trend) && (
-                  <CardContent>
-                    {analyticsLoading ? (
-                      <Skeleton className="h-4 w-20" />
-                    ) : (
-                      <div className={`text-sm ${card.trend >= 0 ? "text-emerald-600" : "text-red-600"}`}>
-                        {card.trend >= 0 ? "▲" : "▼"} {Math.abs(card.trend).toFixed(1)}% vs last period
-                      </div>
-                    )}
-                  </CardContent>
-                )}
-              </Card>
-            ))}
-          </div>
-
-          <Card className="shadow-sm">
-            <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-              <CardTitle>Revenue trend</CardTitle>
-              <div className="text-xs text-muted-foreground">Last 12 weeks</div>
-            </CardHeader>
-            <CardContent className="h-64">
-              {analyticsLoading ? (
-                <Skeleton className="h-full w-full" />
-              ) : revenueTrend.length === 0 ? (
-                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No revenue data yet.</div>
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        {revenueCards.map((card) => (
+          <Card key={card.label} className="border border-emerald-100 shadow-sm">
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-xs uppercase tracking-wide text-emerald-700/80">
+                {card.label}
+              </CardTitle>
+              {loading ? (
+                <Skeleton className="h-8 w-24" />
               ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={revenueTrend} margin={{ top: 10, right: 20, left: -10, bottom: 5 }}>
-                    <defs>
-                      <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#047857" stopOpacity={0.45} />
-                        <stop offset="95%" stopColor="#047857" stopOpacity={0.05} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                    <XAxis dataKey="period" tickLine={false} axisLine={false} fontSize={12} />
-                    <YAxis
-                      tickFormatter={(v) => `ETB ${v.toLocaleString("en-US", { maximumFractionDigits: 0 })}`}
-                      width={90}
-                      axisLine={false}
-                      tickLine={false}
-                      fontSize={12}
-                    />
-                    <Tooltip
-                      formatter={(value: number) => [`ETB ${value.toLocaleString("en-US", { maximumFractionDigits: 2 })}`, "Revenue"]}
-                      labelFormatter={(label) => label}
-                    />
-                    <Area type="monotone" dataKey="revenue" stroke="#047857" strokeWidth={2} fillOpacity={1} fill="url(#revenueGradient)" />
-                  </AreaChart>
-                </ResponsiveContainer>
+                <div className="text-xl font-semibold text-gray-900">{card.value}</div>
               )}
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-sm">
-            <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-              <CardTitle>Top products</CardTitle>
-              <div className="text-xs text-muted-foreground">Past 30 days</div>
+              {!loading && <TrendPill delta={card.delta} />}
             </CardHeader>
-            <CardContent className="h-64">
-              {analyticsLoading ? (
-                <Skeleton className="h-full w-full" />
-              ) : topProducts.length === 0 ? (
-                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No product sales yet.</div>
-              ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={topProducts} layout="vertical" margin={{ top: 10, right: 20, left: -10, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                    <XAxis type="number" tickFormatter={(v) => `ETB ${v.toLocaleString("en-US", { maximumFractionDigits: 0 })}`} hide />
-                    <YAxis type="category" dataKey="name" width={160} tickLine={false} axisLine={false} fontSize={12} />
-                    <Tooltip formatter={(value: number) => [`ETB ${value.toLocaleString("en-US", { maximumFractionDigits: 2 })}`, "Revenue"]} />
-                    <Bar dataKey="revenue" radius={4} fill="#10b981" />
-                  </BarChart>
-                </ResponsiveContainer>
-              )}
-            </CardContent>
           </Card>
+        ))}
+      </section>
 
-          <Card className="shadow-sm">
-            <CardHeader className="flex items-center justify-between">
-              <CardTitle>Assistant usage</CardTitle>
-              <div className="text-xs text-muted-foreground">Last 14 days</div>
-            </CardHeader>
-            <CardContent className="h-48 flex items-end">
-              {usage.length === 0 ? (
-                <div className="w-full text-center text-sm text-muted-foreground">No assistant usage yet.</div>
-              ) : (
-                <div className="flex w-full items-end gap-1">
-                  {usage.map((d) => {
-                    const max = Math.max(...usage.map((x) => x.tokens || 0)) || 1;
-                    const height = Math.max(4, Math.round(((d.tokens || 0) / max) * 160));
-                    return (
-                      <div key={d.day} className="flex flex-1 flex-col items-center" title={`${d.day}: ${d.tokens}`}>
-                        <div className="w-full rounded bg-sky-500" style={{ height: `${height}px` }} />
-                        <div className="mt-1 text-[10px] text-muted-foreground">{d.day.slice(5)}</div>
-                      </div>
-                    );
-                  })}
+      <section className="grid gap-6 lg:grid-cols-5">
+        <Card className="lg:col-span-3">
+          <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+            <CardTitle>Revenue trend</CardTitle>
+            <span className="text-xs text-gray-500">{trendWeeks} week trajectory</span>
+          </CardHeader>
+          <CardContent className="h-72">
+            {loading ? (
+              <Skeleton className="h-full w-full" />
+            ) : revenueTrend.length === 0 ? (
+              <EmptyState
+                title="No sales recorded"
+                description="Capture a sale from the POS to start building your revenue history."
+              />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={revenueTrend} margin={{ top: 10, right: 16, bottom: 8, left: -4 }}>
+                  <defs>
+                    <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#059669" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#059669" stopOpacity={0.05} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="period" tickLine={false} axisLine={false} fontSize={12} />
+                  <YAxis
+                    tickFormatter={(val) => `ETB ${val.toLocaleString("en-US", { maximumFractionDigits: 0 })}`}
+                    width={90}
+                    axisLine={false}
+                    tickLine={false}
+                    fontSize={12}
+                  />
+                  <Tooltip
+                    formatter={(value: number) => formatCurrency(value)}
+                    labelFormatter={(label) => label}
+                  />
+                  <Area type="monotone" dataKey="revenue" stroke="#047857" strokeWidth={2} fill="url(#trendGradient)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Inventory health</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {loading ? (
+              <Skeleton className="h-32" />
+            ) : inventorySlices.length === 0 ? (
+              <EmptyState
+                title="No inventory audits"
+                description="Sync your inventory lots so owners know which medicines need attention."
+              />
+            ) : (
+              inventorySlices.map((slice) => (
+                <div key={slice.label} className="flex items-center justify-between rounded border border-gray-100 bg-white px-3 py-2">
+                  <div className="text-sm font-medium text-gray-700">{slice.label}</div>
+                  <span className="text-sm font-semibold text-gray-900">{slice.count}</span>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </section>
+              ))
+            )}
+          </CardContent>
+        </Card>
+      </section>
 
-        <aside className="space-y-6">
-          <Card className="shadow-sm">
-            <CardHeader>
-              <CardTitle>Inventory health</CardTitle>
-            </CardHeader>
-            <CardContent className="h-64">
-              {analyticsLoading ? (
-                <Skeleton className="h-full w-full" />
-              ) : stockBreakdown.length === 0 ? (
-                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No inventory data yet.</div>
-              ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Tooltip formatter={(value: number, name: string) => [`${value} items`, name]} />
-                    <Pie data={stockBreakdown} dataKey="count" nameKey="label" innerRadius={50} outerRadius={80} paddingAngle={2}>
-                      {stockBreakdown.map((entry, index) => {
-                        const colors = ["#0ea5e9", "#f97316", "#10b981", "#6366f1"];
-                        return <Cell key={entry.label} fill={colors[index % colors.length]} />;
-                      })}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              )}
-            </CardContent>
-          </Card>
+      <section className="grid gap-6 lg:grid-cols-5">
+        <Card className="lg:col-span-3">
+          <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+            <CardTitle>Branch comparison</CardTitle>
+            <span className="text-xs text-gray-500">Revenue, transactions, and units sold</span>
+          </CardHeader>
+          <CardContent className="space-y-2 overflow-x-auto">
+            {loading ? (
+              <Skeleton className="h-32" />
+            ) : branchComparison.length === 0 ? (
+              <EmptyState
+                title="No branches on record"
+                description="Add the branch field when creating sales to see how each site performs."
+              />
+            ) : (
+              <table className="min-w-full divide-y divide-gray-200 text-sm">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-3 py-2 text-left font-semibold text-gray-600">Branch</th>
+                    <th className="px-3 py-2 text-left font-semibold text-gray-600">Revenue</th>
+                    <th className="px-3 py-2 text-left font-semibold text-gray-600">Sales</th>
+                    <th className="px-3 py-2 text-left font-semibold text-gray-600">Units sold</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 bg-white">
+                  {branchComparison.map((row) => (
+                    <tr key={row.branch ?? "_default"}>
+                      <td className="px-3 py-2 text-gray-700">{row.branch || "Unassigned"}</td>
+                      <td className="px-3 py-2 text-gray-900">{formatCurrency(row.revenue)}</td>
+                      <td className="px-3 py-2 text-gray-700">{row.sale_count.toLocaleString("en-US")}</td>
+                      <td className="px-3 py-2 text-gray-700">{row.units_sold.toLocaleString("en-US")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </CardContent>
+        </Card>
 
-          <Card className="shadow-sm">
-            <CardHeader>
-              <CardTitle>Recent payment activity</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              {analyticsLoading ? (
-                <Skeleton className="h-32" />
-              ) : recentPayments.length === 0 ? (
-                <div className="text-muted-foreground">No payment submissions logged yet.</div>
-              ) : (
-                recentPayments.map((payment) => (
-                  <div key={payment.id} className="rounded border border-emerald-100 bg-emerald-50 p-3 text-emerald-900">
-                    <div className="font-medium">{payment.status_label}</div>
-                    <div className="text-xs text-emerald-700">{payment.created_at_formatted}</div>
-                    <div className="text-xs text-emerald-700">Code: {payment.code || "—"}</div>
-                  </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
-        </aside>
-      </div>
+        <Card className="lg:col-span-2">
+          <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+            <CardTitle>Staff productivity</CardTitle>
+            <Link href="/dashboard/owner/staff" className="text-xs font-medium text-emerald-600 hover:underline">
+              View staff list
+            </Link>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {loading ? (
+              <Skeleton className="h-32" />
+            ) : productivity.length === 0 ? (
+              <EmptyState
+                title="No staff sales captured"
+                description="Record a sale from the POS to start ranking your cashiers."
+              />
+            ) : (
+              <ul className="space-y-2">
+                {productivity.map((item) => (
+                  <li key={item.user_id} className="rounded border border-gray-100 bg-white px-3 py-2">
+                    <div className="flex items-center justify-between text-sm font-medium text-gray-900">
+                      <span>{item.name}</span>
+                      <span>{formatCurrency(item.total_sales)}</span>
+                    </div>
+                    <div className="mt-1 text-xs text-gray-500">
+                      <span>{item.role}</span>
+                      <span>
+                        {item.transactions} transactions · {item.units_sold} units
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </section>
 
-      <Card className="shadow-sm">
-        <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-          <CardTitle>Registered pharmacies</CardTitle>
-          <div className="text-xs text-muted-foreground">Tenant: {user?.tenant_id || "—"}</div>
-        </CardHeader>
-        <CardContent className="overflow-auto">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-3 py-2 text-left">Name</th>
-                <th className="px-3 py-2 text-left">Tenant</th>
-                <th className="px-3 py-2 text-left">Address</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {pharmacies.map((p) => (
-                <tr
-                  key={p.id}
-                  className="hover:bg-gray-50 cursor-pointer"
-                  onClick={() => (location.href = `/dashboard/owner/pharmacies/${p.id}/settings`)}
-                >
-                  <td className="px-3 py-2">{p.name}</td>
-                  <td className="px-3 py-2 font-mono text-xs">{p.tenant_id}</td>
-                  <td className="px-3 py-2">{p.address || "-"}</td>
-                </tr>
-              ))}
-              {pharmacies.length === 0 && (
-                <tr>
-                  <td className="px-3 py-4 text-center text-muted-foreground" colSpan={3}>
-                    No pharmacies yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </CardContent>
-      </Card>
+      <section className="grid gap-6 lg:grid-cols-5">
+        <Card className="lg:col-span-3">
+          <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+            <CardTitle>Staff activity</CardTitle>
+            <span className="text-xs text-gray-500">Most recent inventory & POS changes</span>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {loading ? (
+              <Skeleton className="h-40" />
+            ) : activityStream.length === 0 ? (
+              <EmptyState
+                title="No recent activity"
+                description="Inventory updates, POS sales and staff audits will show here."
+              />
+            ) : (
+              <ul className="space-y-2">
+                {activityStream.map((entry) => (
+                  <li key={entry.id} className="rounded border border-gray-100 bg-white p-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-gray-800">{entry.action.replace(/_/g, " ")}</span>
+                      <span className="text-xs text-gray-400">
+                        {new Date(entry.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="mt-1 text-xs text-gray-500">
+                      {entry.actor_name ? `${entry.actor_name} (${entry.actor_role || "staff"})` : "System"}
+                    </div>
+                    {entry.metadata && (
+                      <pre className="mt-2 max-h-32 overflow-auto rounded bg-gray-50 p-2 text-xs text-gray-600">
+                        {JSON.stringify(entry.metadata, null, 2)}
+                      </pre>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Recent payment activity</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {loading ? (
+              <Skeleton className="h-32" />
+            ) : recentPayments.length === 0 ? (
+              <EmptyState
+                title="No submissions yet"
+                description="Payment uploads appear here for the owner’s records."
+              />
+            ) : (
+              <ul className="space-y-2 text-sm">
+                {recentPayments.map((payment) => (
+                  <li key={payment.id} className="rounded border border-gray-100 bg-white px-3 py-2">
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span className="font-medium uppercase text-gray-600">{payment.status_label || payment.status}</span>
+                      <span>{payment.created_at_formatted || new Date(payment.created_at).toLocaleString()}</span>
+                    </div>
+                    <div className="mt-1 text-sm font-semibold text-gray-900">{payment.code || "—"}</div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="space-y-3">
+        <Card>
+          <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+            <CardTitle>Top products</CardTitle>
+            <span className="text-xs text-gray-500">Most recent best sellers</span>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <Skeleton className="h-32" />
+            ) : topProducts.length === 0 ? (
+              <EmptyState
+                title="No product insights yet"
+                description="Run more sales through the POS to see which medicines drive revenue."
+              />
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 text-sm">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Product</th>
+                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Revenue</th>
+                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 bg-white">
+                    {topProducts.map((item) => (
+                      <tr key={item.name}>
+                        <td className="px-3 py-2 text-gray-700">{item.name}</td>
+                        <td className="px-3 py-2 text-gray-900">{formatCurrency(item.revenue)}</td>
+                        <td className="px-3 py-2 text-gray-700">{item.quantity.toLocaleString("en-US")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </section>
     </div>
   );
 }

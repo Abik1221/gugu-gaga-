@@ -6,7 +6,7 @@ from fastapi.responses import PlainTextResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
-from app.deps.auth import require_role
+from app.deps.auth import require_role, get_current_user
 from app.deps.tenant import require_tenant, enforce_user_tenant, enforce_subscription_active
 from app.core.roles import Role
 from app.db.deps import get_db
@@ -14,6 +14,7 @@ from app.models.medicine import InventoryItem, Medicine
 from app.models.sales import SaleItem
 from app.deps.ratelimit import rate_limit_user
 from app.schemas.inventory import IdResponse, StatusResponse, InventoryBulkResult, InventoryListResponse
+from app.services.audit import log_event
 
 router = APIRouter(prefix="/inventory", tags=["inventory"])
 
@@ -38,6 +39,7 @@ def upsert_item(
     reorder_level: int = 0,
     tenant_id: str = Depends(require_tenant),
     _role=Depends(require_role(Role.admin, Role.pharmacy_owner)),
+    current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
     _ten=Depends(enforce_user_tenant),
     _sub=Depends(enforce_subscription_active),
@@ -75,6 +77,21 @@ def upsert_item(
         db.add(existing)
         db.commit()
         db.refresh(existing)
+        log_event(
+            db,
+            tenant_id=tenant_id,
+            actor_user_id=getattr(current_user, "id", None),
+            action="inventory_upsert",
+            target_type="inventory_item",
+            target_id=str(existing.id),
+            metadata={
+                "medicine_id": medicine_id,
+                "branch": branch,
+                "quantity": existing.quantity,
+                "reorder_level": existing.reorder_level,
+                "expiry_date": existing.expiry_date.isoformat() if existing.expiry_date else None,
+            },
+        )
         return {"id": existing.id}
     item = InventoryItem(
         tenant_id=tenant_id,
@@ -91,6 +108,21 @@ def upsert_item(
     db.add(item)
     db.commit()
     db.refresh(item)
+    log_event(
+        db,
+        tenant_id=tenant_id,
+        actor_user_id=getattr(current_user, "id", None),
+        action="inventory_upsert",
+        target_type="inventory_item",
+        target_id=str(item.id),
+        metadata={
+            "medicine_id": medicine_id,
+            "branch": branch,
+            "quantity": item.quantity,
+            "reorder_level": item.reorder_level,
+            "expiry_date": item.expiry_date.isoformat() if item.expiry_date else None,
+        },
+    )
     return {"id": item.id}
 
 
@@ -101,6 +133,7 @@ def bulk_upsert_inventory(
     dry_run: bool = False,
     tenant_id: str = Depends(require_tenant),
     _role=Depends(require_role(Role.admin, Role.pharmacy_owner)),
+    current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
     _ten=Depends(enforce_user_tenant),
     _sub=Depends(enforce_subscription_active),
@@ -196,6 +229,15 @@ def bulk_upsert_inventory(
             created += 1
     if not dry_run:
         db.commit()
+        log_event(
+            db,
+            tenant_id=tenant_id,
+            actor_user_id=getattr(current_user, "id", None),
+            action="inventory_bulk_upsert",
+            target_type="inventory",
+            target_id=None,
+            metadata={"created": created, "updated": updated},
+        )
     return {"created": created, "updated": updated, "errors": errors, "dry_run": dry_run}
 
 

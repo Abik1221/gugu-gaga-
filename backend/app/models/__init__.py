@@ -17,3 +17,5 @@ from app.models.notification_pref import NotificationPreference  # noqa: F401
 from app.models.chat import ChatThread, ChatMessage  # noqa: F401
 from app.models.audit import AuditLog  # noqa: F401
 from app.models.verification import VerificationCode  # noqa: F401
+from app.models.session import AuthSession  # noqa: F401
+from app.models.tenant_activity import TenantActivityLog  # noqa: F401

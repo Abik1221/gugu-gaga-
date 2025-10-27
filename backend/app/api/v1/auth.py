@@ -25,6 +25,7 @@ from app.schemas.auth import (
     LoginVerifyRequest,
     PasswordResetRequest,
     PasswordResetConfirm,
+    UserProfileUpdate,
 )
 from app.deps.auth import get_current_user
 from app.deps.ratelimit import rate_limit
@@ -106,6 +107,9 @@ def _user_with_status(db: Session, user: User) -> UserOut:
         id=user.id,
         email=user.email,
         phone=user.phone,
+        username=user.username,
+        first_name=user.first_name,
+        last_name=user.last_name,
         role=user.role,
         tenant_id=user.tenant_id,
         is_active=user.is_active,
@@ -348,6 +352,44 @@ def login(
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
     token = create_access_token(subject=user.email, role=user.role, tenant_id=user.tenant_id)
     return Token(access_token=token)
+
+
+@router.put("/me", response_model=UserOut)
+def update_me(
+    payload: UserProfileUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    updated = False
+
+    if payload.username is not None:
+        username = payload.username.strip() or None
+        if username:
+            existing = db.query(User).filter(User.username == username, User.id != current_user.id).first()
+            if existing:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already taken")
+        current_user.username = username
+        updated = True
+
+    if payload.first_name is not None:
+        current_user.first_name = payload.first_name.strip() or None
+        updated = True
+
+    if payload.last_name is not None:
+        current_user.last_name = payload.last_name.strip() or None
+        updated = True
+
+    if payload.phone is not None:
+        current_user.phone = payload.phone.strip() or None
+        updated = True
+
+    if not updated:
+        return _user_with_status(db, current_user)
+
+    db.add(current_user)
+    db.commit()
+    db.refresh(current_user)
+    return _user_with_status(db, current_user)
 
 
 @router.post("/register/verify")

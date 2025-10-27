@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     access_token_expires_minutes: int = Field(
         default=30, validation_alias=AliasChoices("ACCESS_TOKEN_EXPIRES_MINUTES", "access_token_expires_minutes")
     )
+    refresh_token_expires_days: int = Field(
+        default=30, validation_alias=AliasChoices("REFRESH_TOKEN_EXPIRES_DAYS", "refresh_token_expires_days")
+    )
 
     # Rate limits
     rate_limit_general_per_minute: int = Field(

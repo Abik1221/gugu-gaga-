@@ -71,12 +71,18 @@ export default function DashboardLayout({
         const roleSet = deriveRoles(me);
         const isOwnerRole = roleSet.includes("pharmacy_owner") || roleSet.includes("owner");
         const isCashierRole = roleSet.includes("cashier");
+        const isManagerRole = roleSet.includes("manager");
+        const isStaffRole = isCashierRole || isManagerRole;
         if (isOwnerRole && pathname.startsWith("/dashboard/pos")) {
           router.replace("/dashboard/owner");
           return;
         }
         if (!isOwnerRole && pathname.startsWith("/dashboard/owner/staff")) {
           router.replace(isCashierRole ? "/dashboard/pos" : "/dashboard");
+          return;
+        }
+        if (!isOwnerRole && pathname.startsWith("/dashboard/owner")) {
+          router.replace(isCashierRole ? "/dashboard/pos" : isManagerRole ? "/dashboard/inventory" : "/dashboard");
           return;
         }
         if (primaryRole !== "admin" && pathname.startsWith("/dashboard/admin")) {
@@ -266,7 +272,7 @@ function Shell({
       nav = [
         { href: "/dashboard/owner", label: "Owner Overview" },
         { href: "/dashboard/inventory", label: "Inventory" },
-        { href: "/dashboard/settings", label: "Settings" },
+        { href: "/dashboard/owner/settings", label: "Settings" },
         { href: "/dashboard/owner/staff", label: "Staff Management" },
       ];
     }

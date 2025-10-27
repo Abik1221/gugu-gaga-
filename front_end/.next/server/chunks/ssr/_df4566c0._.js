@@ -15,12 +15,18 @@ __turbopack_context__.s([
     ()=>BillingAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "InventoryAPI",
+    ()=>InventoryAPI,
     "KYCAPI",
     ()=>KYCAPI,
+    "MedicinesAPI",
+    ()=>MedicinesAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
+    "SalesAPI",
+    ()=>SalesAPI,
     "StaffAPI",
     ()=>StaffAPI,
     "TENANT_HEADER",
@@ -308,7 +314,8 @@ const AuthAPI = {
             email,
             code
         }, tenantId),
-    me: ()=>getAuthJSON("/api/v1/auth/me")
+    me: ()=>getAuthJSON("/api/v1/auth/me"),
+    updateProfile: (body)=>putAuthJSON("/api/v1/auth/me", body)
 };
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
@@ -400,7 +407,132 @@ const ChatAPI = {
     usage: (tenantId, days = 30)=>getAuthJSON(`/api/v1/chat/usage?days=${days}`, tenantId)
 };
 const OwnerAnalyticsAPI = {
-    overview: (tenantId)=>getAuthJSON("/api/v1/owner/analytics/overview", tenantId)
+    overview: (tenantId, options)=>{
+        const params = new URLSearchParams();
+        if (options?.horizon) params.set("horizon", options.horizon);
+        if (options?.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+        const query = params.toString();
+        const path = `/api/v1/owner/analytics/overview${query ? `?${query}` : ""}`;
+        return getAuthJSON(path, tenantId);
+    }
+};
+const InventoryAPI = {
+    list: (tenantId, options)=>{
+        const params = new URLSearchParams();
+        if (options?.q) params.set("q", options.q);
+        if (options?.branch) params.set("branch", options.branch);
+        if (typeof options?.expiringInDays === "number") {
+            params.set("expiring_in_days", String(options.expiringInDays));
+        }
+        if (options?.lowStockOnly) params.set("low_stock_only", "true");
+        if (options?.page) params.set("page", String(options.page));
+        if (options?.pageSize) params.set("page_size", String(options.pageSize));
+        const query = params.toString();
+        const path = `/api/v1/inventory/items${query ? `?${query}` : ""}`;
+        return getAuthJSON(path, tenantId);
+    },
+    create: async (tenantId, payload)=>{
+        const form = new URLSearchParams();
+        form.set("medicine_id", String(payload.medicine_id));
+        form.set("pack_size", String(Math.max(1, payload.pack_size || 1)));
+        if (payload.branch) {
+            form.set("branch", payload.branch);
+        }
+        if (typeof payload.packs_count === "number") {
+            form.set("packs_count", String(Math.max(0, payload.packs_count)));
+        }
+        if (typeof payload.singles_count === "number") {
+            form.set("singles_count", String(Math.max(0, payload.singles_count)));
+        }
+        if (payload.expiry_date) {
+            form.set("expiry_date", payload.expiry_date);
+        }
+        if (payload.lot_number) {
+            form.set("lot_number", payload.lot_number);
+        }
+        if (typeof payload.purchase_price === "number") {
+            form.set("purchase_price", String(payload.purchase_price));
+        }
+        if (typeof payload.sell_price === "number") {
+            form.set("sell_price", String(payload.sell_price));
+        }
+        if (typeof payload.reorder_level === "number") {
+            form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+        }
+        const res = await authFetch(`/api/v1/inventory/items`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: form.toString()
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || `Request failed with ${res.status}`);
+        }
+        return res.json();
+    },
+    update: async (tenantId, itemId, payload)=>{
+        const form = new URLSearchParams();
+        if (typeof payload.quantity === "number") {
+            form.set("quantity", String(payload.quantity));
+        }
+        if (typeof payload.reorder_level === "number") {
+            form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+        }
+        if (typeof payload.sell_price === "number") {
+            form.set("sell_price", String(payload.sell_price));
+        }
+        if (payload.expiry_date !== undefined) {
+            form.set("expiry_date", payload.expiry_date || "");
+        }
+        if (payload.lot_number !== undefined) {
+            form.set("lot_number", payload.lot_number || "");
+        }
+        const res = await authFetch(`/api/v1/inventory/items/${itemId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: form.toString()
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || `Request failed with ${res.status}`);
+        }
+        return res.json();
+    },
+    remove: async (tenantId, itemId)=>{
+        const res = await authFetch(`/api/v1/inventory/items/${itemId}`, {
+            method: "DELETE"
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || `Request failed with ${res.status}`);
+        }
+        return res.json();
+    }
+};
+const MedicinesAPI = {
+    list: (tenantId, options)=>{
+        const query = new URLSearchParams();
+        if (options?.q) {
+            query.set("q", options.q);
+        }
+        if (options?.page) {
+            query.set("page", String(options.page));
+        }
+        if (options?.pageSize) {
+            query.set("page_size", String(Math.min(200, Math.max(1, options.pageSize))));
+        }
+        const path = `/api/v1/medicines${query.toString() ? `?${query.toString()}` : ""}`;
+        return getAuthJSON(path, tenantId);
+    }
+};
+const SalesAPI = {
+    pos: (tenantId, payload)=>{
+        const { lines, branch } = payload;
+        const query = branch ? `?branch=${encodeURIComponent(branch)}` : "";
+        const path = `/api/v1/sales/pos${query}`;
+        return postAuthJSON(path, lines, tenantId);
+    }
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";

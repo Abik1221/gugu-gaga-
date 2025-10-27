@@ -292,6 +292,22 @@ export async function postAuthJSON<T = any>(
 }
 
 // ----------------- AuthAPI -----------------
+export type AuthProfile = {
+  id: number;
+  email: string;
+  username?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  phone?: string | null;
+  role?: string | null;
+  tenant_id?: string | null;
+  kyc_status?: string | null;
+  subscription_status?: string | null;
+  subscription_blocked?: boolean | null;
+  subscription_next_due_date?: string | null;
+  latest_payment_status?: string | null;
+};
+
 export const AuthAPI = {
   registerAffiliate: (body: any) => postJSON("/api/v1/auth/register/affiliate", body),
   registerPharmacy: (body: any) => postJSON("/api/v1/auth/register/pharmacy", body),
@@ -331,7 +347,9 @@ export const AuthAPI = {
     ),
   loginVerify: (email: string, code: string, tenantId?: string) =>
     postJSON("/api/v1/auth/login/verify", { email, code }, tenantId),
-  me: () => getAuthJSON("/api/v1/auth/me"),
+  me: () => getAuthJSON<AuthProfile>("/api/v1/auth/me"),
+  updateProfile: (body: Partial<Pick<AuthProfile, "username" | "first_name" | "last_name" | "phone">>) =>
+    putAuthJSON<AuthProfile>("/api/v1/auth/me", body),
 };
 
 // ----------------- AffiliateAPI -----------------
@@ -475,6 +493,7 @@ export const ChatAPI = {
 };
 
 export type OwnerAnalyticsResponse = {
+  horizon: string;
   totals: {
     total_revenue: number;
     average_ticket: number;
@@ -498,11 +517,262 @@ export type OwnerAnalyticsResponse = {
     created_at: string;
     created_at_formatted: string;
   }[];
+  branch_comparison: {
+    branch: string | null;
+    revenue: number;
+    sale_count: number;
+    units_sold: number;
+  }[];
+  staff_productivity: {
+    user_id: number;
+    name: string;
+    email?: string | null;
+    role: string;
+    total_sales: number;
+    transactions: number;
+    units_sold: number;
+  }[];
+  staff_activity: {
+    id: number;
+    action: string;
+    actor_user_id?: number | null;
+    actor_name?: string | null;
+    actor_role?: string | null;
+    target_type?: string | null;
+    target_id?: string | null;
+    metadata?: Record<string, any> | null;
+    created_at: string;
+  }[];
 };
 
 export const OwnerAnalyticsAPI = {
-  overview: (tenantId: string) =>
-    getAuthJSON<OwnerAnalyticsResponse>("/api/v1/owner/analytics/overview", tenantId),
+  overview: (
+    tenantId: string,
+    options?: { horizon?: string; trendWeeks?: number }
+  ) => {
+    const params = new URLSearchParams();
+    if (options?.horizon) params.set("horizon", options.horizon);
+    if (options?.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+    const query = params.toString();
+    const path = `/api/v1/owner/analytics/overview${query ? `?${query}` : ""}`;
+    return getAuthJSON<OwnerAnalyticsResponse>(path, tenantId);
+  },
+};
+
+// ----------------- InventoryAPI -----------------
+export type InventoryItem = {
+  id: number;
+  medicine_id: number;
+  medicine_name: string;
+  sku?: string | null;
+  branch?: string | null;
+  quantity: number;
+  pack_size: number;
+  packs: number;
+  singles: number;
+  reorder_level: number;
+  expiry_date?: string | null;
+  lot_number?: string | null;
+  sell_price?: number | null;
+};
+
+export type InventoryListResponse = {
+  page: number;
+  page_size: number;
+  total: number;
+  items: InventoryItem[];
+};
+
+type InventoryListOptions = {
+  q?: string;
+  branch?: string;
+  expiringInDays?: number;
+  lowStockOnly?: boolean;
+  page?: number;
+  pageSize?: number;
+};
+
+type InventoryUpdatePayload = {
+  quantity?: number;
+  reorder_level?: number;
+  expiry_date?: string | null;
+  lot_number?: string | null;
+  sell_price?: number | null;
+};
+
+type InventoryCreatePayload = {
+  medicine_id: number;
+  branch?: string | null;
+  pack_size: number;
+  packs_count?: number;
+  singles_count?: number;
+  expiry_date?: string | null;
+  lot_number?: string | null;
+  purchase_price?: number | null;
+  sell_price?: number | null;
+  reorder_level?: number;
+};
+
+export const InventoryAPI = {
+  list: (tenantId?: string, options?: InventoryListOptions) => {
+    const params = new URLSearchParams();
+    if (options?.q) params.set("q", options.q);
+    if (options?.branch) params.set("branch", options.branch);
+    if (typeof options?.expiringInDays === "number") {
+      params.set("expiring_in_days", String(options.expiringInDays));
+    }
+    if (options?.lowStockOnly) params.set("low_stock_only", "true");
+    if (options?.page) params.set("page", String(options.page));
+    if (options?.pageSize) params.set("page_size", String(options.pageSize));
+    const query = params.toString();
+    const path = `/api/v1/inventory/items${query ? `?${query}` : ""}`;
+    return getAuthJSON<InventoryListResponse>(path, tenantId);
+  },
+  create: async (tenantId: string | undefined, payload: InventoryCreatePayload) => {
+    const form = new URLSearchParams();
+    form.set("medicine_id", String(payload.medicine_id));
+    form.set("pack_size", String(Math.max(1, payload.pack_size || 1)));
+    if (payload.branch) {
+      form.set("branch", payload.branch);
+    }
+    if (typeof payload.packs_count === "number") {
+      form.set("packs_count", String(Math.max(0, payload.packs_count)));
+    }
+    if (typeof payload.singles_count === "number") {
+      form.set("singles_count", String(Math.max(0, payload.singles_count)));
+    }
+    if (payload.expiry_date) {
+      form.set("expiry_date", payload.expiry_date);
+    }
+    if (payload.lot_number) {
+      form.set("lot_number", payload.lot_number);
+    }
+    if (typeof payload.purchase_price === "number") {
+      form.set("purchase_price", String(payload.purchase_price));
+    }
+    if (typeof payload.sell_price === "number") {
+      form.set("sell_price", String(payload.sell_price));
+    }
+    if (typeof payload.reorder_level === "number") {
+      form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+    }
+    const res = await authFetch(
+      `/api/v1/inventory/items`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: form.toString(),
+      },
+      true,
+      tenantId
+    );
+    if (!res.ok) {
+      throw new Error((await res.text().catch(() => "")) || `Request failed with ${res.status}`);
+    }
+    return res.json();
+  },
+  update: async (tenantId: string | undefined, itemId: number, payload: InventoryUpdatePayload) => {
+    const form = new URLSearchParams();
+    if (typeof payload.quantity === "number") {
+      form.set("quantity", String(payload.quantity));
+    }
+    if (typeof payload.reorder_level === "number") {
+      form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+    }
+    if (typeof payload.sell_price === "number") {
+      form.set("sell_price", String(payload.sell_price));
+    }
+    if (payload.expiry_date !== undefined) {
+      form.set("expiry_date", payload.expiry_date || "");
+    }
+    if (payload.lot_number !== undefined) {
+      form.set("lot_number", payload.lot_number || "");
+    }
+    const res = await authFetch(
+      `/api/v1/inventory/items/${itemId}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: form.toString(),
+      },
+      true,
+      tenantId
+    );
+    if (!res.ok) {
+      throw new Error((await res.text().catch(() => "")) || `Request failed with ${res.status}`);
+    }
+    return res.json();
+  },
+  remove: async (tenantId: string | undefined, itemId: number) => {
+    const res = await authFetch(
+      `/api/v1/inventory/items/${itemId}`,
+      { method: "DELETE" },
+      true,
+      tenantId
+    );
+    if (!res.ok) {
+      throw new Error((await res.text().catch(() => "")) || `Request failed with ${res.status}`);
+    }
+    return res.json();
+  },
+};
+
+// ----------------- MedicinesAPI -----------------
+export type MedicineListItem = {
+  id: number;
+  name: string;
+  sku?: string | null;
+  category?: string | null;
+  manufacturer?: string | null;
+};
+
+export type MedicinesListResponse = {
+  page: number;
+  page_size: number;
+  total: number;
+  items: MedicineListItem[];
+};
+
+type MedicinesListOptions = {
+  q?: string;
+  page?: number;
+  pageSize?: number;
+};
+
+export const MedicinesAPI = {
+  list: (tenantId?: string, options?: MedicinesListOptions) => {
+    const query = new URLSearchParams();
+    if (options?.q) {
+      query.set("q", options.q);
+    }
+    if (options?.page) {
+      query.set("page", String(options.page));
+    }
+    if (options?.pageSize) {
+      query.set("page_size", String(Math.min(200, Math.max(1, options.pageSize))));
+    }
+    const path = `/api/v1/medicines${query.toString() ? `?${query.toString()}` : ""}`;
+    return getAuthJSON<MedicinesListResponse>(path, tenantId);
+  },
+};
+
+// ----------------- SalesAPI -----------------
+type SaleLineInput = {
+  name_or_sku: string;
+  quantity_units: number;
+  unit_price?: number;
+};
+
+export const SalesAPI = {
+  pos: (
+    tenantId: string | undefined,
+    payload: { lines: SaleLineInput[]; branch?: string | null }
+  ) => {
+    const { lines, branch } = payload;
+    const query = branch ? `?branch=${encodeURIComponent(branch)}` : "";
+    const path = `/api/v1/sales/pos${query}`;
+    return postAuthJSON<{ id: number; total: number }>(path, lines, tenantId);
+  },
 };
 
 // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged

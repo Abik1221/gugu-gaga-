@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
@@ -85,10 +86,28 @@ class UserLogin(BaseModel):
     password: str
 
 
+class SessionOut(BaseModel):
+    id: int
+    created_at: datetime
+    last_seen_at: datetime
+    expires_at: datetime
+    revoked_at: Optional[datetime]
+    is_revoked: bool
+    user_agent: Optional[str]
+    ip_address: Optional[str]
+    is_current: bool = False
+
+    class Config:
+        from_attributes = True
+
+
 class UserOut(BaseModel):
     id: int
     email: EmailStr
     phone: Optional[str] = None
+    username: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     role: str
     tenant_id: Optional[str] = None
     is_active: bool
@@ -103,9 +122,25 @@ class UserOut(BaseModel):
         from_attributes = True
 
 
+class UserProfileUpdate(BaseModel):
+    username: Optional[str] = Field(default=None, max_length=64)
+    first_name: Optional[str] = Field(default=None, max_length=120)
+    last_name: Optional[str] = Field(default=None, max_length=120)
+    phone: Optional[str] = Field(default=None, max_length=32)
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class TokenWithRefresh(Token):
+    refresh_token: str
+    session_id: int
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
 
 
 class RegistrationVerifyRequest(BaseModel):

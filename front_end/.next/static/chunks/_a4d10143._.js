@@ -15,12 +15,18 @@ __turbopack_context__.s([
     ()=>BillingAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "InventoryAPI",
+    ()=>InventoryAPI,
     "KYCAPI",
     ()=>KYCAPI,
+    "MedicinesAPI",
+    ()=>MedicinesAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
+    "SalesAPI",
+    ()=>SalesAPI,
     "StaffAPI",
     ()=>StaffAPI,
     "TENANT_HEADER",
@@ -314,7 +320,8 @@ const AuthAPI = {
             email,
             code
         }, tenantId),
-    me: ()=>getAuthJSON("/api/v1/auth/me")
+    me: ()=>getAuthJSON("/api/v1/auth/me"),
+    updateProfile: (body)=>putAuthJSON("/api/v1/auth/me", body)
 };
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
@@ -424,7 +431,132 @@ const ChatAPI = {
     }
 };
 const OwnerAnalyticsAPI = {
-    overview: (tenantId)=>getAuthJSON("/api/v1/owner/analytics/overview", tenantId)
+    overview: (tenantId, options)=>{
+        const params = new URLSearchParams();
+        if (options === null || options === void 0 ? void 0 : options.horizon) params.set("horizon", options.horizon);
+        if (options === null || options === void 0 ? void 0 : options.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+        const query = params.toString();
+        const path = "/api/v1/owner/analytics/overview".concat(query ? "?".concat(query) : "");
+        return getAuthJSON(path, tenantId);
+    }
+};
+const InventoryAPI = {
+    list: (tenantId, options)=>{
+        const params = new URLSearchParams();
+        if (options === null || options === void 0 ? void 0 : options.q) params.set("q", options.q);
+        if (options === null || options === void 0 ? void 0 : options.branch) params.set("branch", options.branch);
+        if (typeof (options === null || options === void 0 ? void 0 : options.expiringInDays) === "number") {
+            params.set("expiring_in_days", String(options.expiringInDays));
+        }
+        if (options === null || options === void 0 ? void 0 : options.lowStockOnly) params.set("low_stock_only", "true");
+        if (options === null || options === void 0 ? void 0 : options.page) params.set("page", String(options.page));
+        if (options === null || options === void 0 ? void 0 : options.pageSize) params.set("page_size", String(options.pageSize));
+        const query = params.toString();
+        const path = "/api/v1/inventory/items".concat(query ? "?".concat(query) : "");
+        return getAuthJSON(path, tenantId);
+    },
+    create: async (tenantId, payload)=>{
+        const form = new URLSearchParams();
+        form.set("medicine_id", String(payload.medicine_id));
+        form.set("pack_size", String(Math.max(1, payload.pack_size || 1)));
+        if (payload.branch) {
+            form.set("branch", payload.branch);
+        }
+        if (typeof payload.packs_count === "number") {
+            form.set("packs_count", String(Math.max(0, payload.packs_count)));
+        }
+        if (typeof payload.singles_count === "number") {
+            form.set("singles_count", String(Math.max(0, payload.singles_count)));
+        }
+        if (payload.expiry_date) {
+            form.set("expiry_date", payload.expiry_date);
+        }
+        if (payload.lot_number) {
+            form.set("lot_number", payload.lot_number);
+        }
+        if (typeof payload.purchase_price === "number") {
+            form.set("purchase_price", String(payload.purchase_price));
+        }
+        if (typeof payload.sell_price === "number") {
+            form.set("sell_price", String(payload.sell_price));
+        }
+        if (typeof payload.reorder_level === "number") {
+            form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+        }
+        const res = await authFetch("/api/v1/inventory/items", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: form.toString()
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || "Request failed with ".concat(res.status));
+        }
+        return res.json();
+    },
+    update: async (tenantId, itemId, payload)=>{
+        const form = new URLSearchParams();
+        if (typeof payload.quantity === "number") {
+            form.set("quantity", String(payload.quantity));
+        }
+        if (typeof payload.reorder_level === "number") {
+            form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+        }
+        if (typeof payload.sell_price === "number") {
+            form.set("sell_price", String(payload.sell_price));
+        }
+        if (payload.expiry_date !== undefined) {
+            form.set("expiry_date", payload.expiry_date || "");
+        }
+        if (payload.lot_number !== undefined) {
+            form.set("lot_number", payload.lot_number || "");
+        }
+        const res = await authFetch("/api/v1/inventory/items/".concat(itemId), {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: form.toString()
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || "Request failed with ".concat(res.status));
+        }
+        return res.json();
+    },
+    remove: async (tenantId, itemId)=>{
+        const res = await authFetch("/api/v1/inventory/items/".concat(itemId), {
+            method: "DELETE"
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || "Request failed with ".concat(res.status));
+        }
+        return res.json();
+    }
+};
+const MedicinesAPI = {
+    list: (tenantId, options)=>{
+        const query = new URLSearchParams();
+        if (options === null || options === void 0 ? void 0 : options.q) {
+            query.set("q", options.q);
+        }
+        if (options === null || options === void 0 ? void 0 : options.page) {
+            query.set("page", String(options.page));
+        }
+        if (options === null || options === void 0 ? void 0 : options.pageSize) {
+            query.set("page_size", String(Math.min(200, Math.max(1, options.pageSize))));
+        }
+        const path = "/api/v1/medicines".concat(query.toString() ? "?".concat(query.toString()) : "");
+        return getAuthJSON(path, tenantId);
+    }
+};
+const SalesAPI = {
+    pos: (tenantId, payload)=>{
+        const { lines, branch } = payload;
+        const query = branch ? "?branch=".concat(encodeURIComponent(branch)) : "";
+        const path = "/api/v1/sales/pos".concat(query);
+        return postAuthJSON(path, lines, tenantId);
+    }
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
@@ -1057,12 +1189,18 @@ function DashboardLayout(param) {
                     const roleSet = deriveRoles(me);
                     const isOwnerRole = roleSet.includes("pharmacy_owner") || roleSet.includes("owner");
                     const isCashierRole = roleSet.includes("cashier");
+                    const isManagerRole = roleSet.includes("manager");
+                    const isStaffRole = isCashierRole || isManagerRole;
                     if (isOwnerRole && pathname.startsWith("/dashboard/pos")) {
                         router.replace("/dashboard/owner");
                         return;
                     }
                     if (!isOwnerRole && pathname.startsWith("/dashboard/owner/staff")) {
                         router.replace(isCashierRole ? "/dashboard/pos" : "/dashboard");
+                        return;
+                    }
+                    if (!isOwnerRole && pathname.startsWith("/dashboard/owner")) {
+                        router.replace(isCashierRole ? "/dashboard/pos" : isManagerRole ? "/dashboard/inventory" : "/dashboard");
                         return;
                     }
                     if (primaryRole !== "admin" && pathname.startsWith("/dashboard/admin")) {
@@ -1198,12 +1336,12 @@ function DashboardLayout(param) {
                 children: "Loading dashboard..."
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 196,
+                lineNumber: 202,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/(dashboard)/layout.tsx",
-            lineNumber: 195,
+            lineNumber: 201,
             columnNumber: 7
         }, this);
     }
@@ -1224,7 +1362,7 @@ function DashboardLayout(param) {
                                 children: banner.title
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 210,
+                                lineNumber: 216,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1232,13 +1370,13 @@ function DashboardLayout(param) {
                                 children: banner.description
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 211,
+                                lineNumber: 217,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 209,
+                        lineNumber: 215,
                         columnNumber: 11
                     }, this),
                     banner.actionHref && banner.actionLabel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -1247,20 +1385,20 @@ function DashboardLayout(param) {
                         children: banner.actionLabel
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 214,
+                        lineNumber: 220,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 208,
+                lineNumber: 214,
                 columnNumber: 9
             }, this),
             children
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/layout.tsx",
-        lineNumber: 206,
+        lineNumber: 212,
         columnNumber: 5
     }, this);
 }
@@ -1349,7 +1487,7 @@ function Shell(param) {
                     label: "Inventory"
                 },
                 {
-                    href: "/dashboard/settings",
+                    href: "/dashboard/owner/settings",
                     label: "Settings"
                 },
                 {
@@ -1431,7 +1569,7 @@ function Shell(param) {
                                 children: isAffiliate ? "Affiliate Portal" : isAdmin ? "Admin Console" : "Zemen Dashboard"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 300,
+                                lineNumber: 306,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1439,13 +1577,13 @@ function Shell(param) {
                                 children: isAffiliate ? "Track referrals & payouts" : isAdmin ? "Manage platform data" : "Secure area"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 303,
+                                lineNumber: 309,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 299,
+                        lineNumber: 305,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1457,7 +1595,7 @@ function Shell(param) {
                                     children: user.username
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                    lineNumber: 311,
+                                    lineNumber: 317,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1465,7 +1603,7 @@ function Shell(param) {
                                     children: user.email
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                    lineNumber: 312,
+                                    lineNumber: 318,
                                     columnNumber: 15
                                 }, this),
                                 primaryRole && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1473,18 +1611,18 @@ function Shell(param) {
                                     children: primaryRole
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                    lineNumber: 313,
+                                    lineNumber: 319,
                                     columnNumber: 31
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                            lineNumber: 310,
+                            lineNumber: 316,
                             columnNumber: 13
                         }, this) : null
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 308,
+                        lineNumber: 314,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -1497,13 +1635,13 @@ function Shell(param) {
                                 children: item.label
                             }, item.href, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 322,
+                                lineNumber: 328,
                                 columnNumber: 15
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 318,
+                        lineNumber: 324,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1515,18 +1653,18 @@ function Shell(param) {
                             children: "Logout"
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                            lineNumber: 339,
+                            lineNumber: 345,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 338,
+                        lineNumber: 344,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 298,
+                lineNumber: 304,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1540,7 +1678,7 @@ function Shell(param) {
                                 children: ((_nav_find = nav.find((n)=>pathname === null || pathname === void 0 ? void 0 : pathname.startsWith(n.href))) === null || _nav_find === void 0 ? void 0 : _nav_find.label) || "Overview"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 347,
+                                lineNumber: 353,
                                 columnNumber: 11
                             }, this),
                             !isAffiliate && !isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1551,13 +1689,13 @@ function Shell(param) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 348,
+                                lineNumber: 354,
                                 columnNumber: 40
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 346,
+                        lineNumber: 352,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -1565,19 +1703,19 @@ function Shell(param) {
                         children: children
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 350,
+                        lineNumber: 356,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 345,
+                lineNumber: 351,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/layout.tsx",
-        lineNumber: 297,
+        lineNumber: 303,
         columnNumber: 5
     }, this);
 }

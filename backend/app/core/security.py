@@ -24,7 +24,14 @@ def verify_password(password: str, password_hash: str) -> bool:
     return pwd_context.verify(password, password_hash)
 
 
-def create_access_token(subject: str, role: str, tenant_id: Optional[str], expires_minutes: Optional[int] = None) -> str:
+def create_access_token(
+    subject: str,
+    role: str,
+    tenant_id: Optional[str],
+    *,
+    expires_minutes: Optional[int] = None,
+    session_id: Optional[int] = None,
+) -> str:
     expire_minutes = expires_minutes or settings.access_token_expires_minutes
     expire = datetime.now(tz=timezone.utc) + timedelta(minutes=expire_minutes)
     payload: Dict[str, Any] = {
@@ -34,6 +41,8 @@ def create_access_token(subject: str, role: str, tenant_id: Optional[str], expir
         "exp": expire,
         "iat": datetime.now(tz=timezone.utc),
     }
+    if session_id is not None:
+        payload["sid"] = session_id
     token = jwt.encode(payload, settings.jwt_secret or "dev-secret", algorithm=settings.jwt_algorithm)
     return token
 
