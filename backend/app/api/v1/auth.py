@@ -363,7 +363,8 @@ def verify_registration(
     user.is_verified = True
     db.add(user)
     db.commit()
-    return {"status": "verified"}
+    token = create_access_token(subject=user.email, role=user.role, tenant_id=user.tenant_id)
+    return {"status": "verified", "access_token": token, "token_type": "bearer"}
 
 
 @router.post("/login/request-code")

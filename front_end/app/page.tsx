@@ -63,16 +63,6 @@ export default function HomePage() {
         <CTA />
       </div>
       <Footer />
-      <div className="fixed bottom-6 right-6 z-999">
-        <a href="/register">
-          <Button
-            size="lg"
-            className="bg-emerald-600 text-white hover:bg-emerald-700"
-          >
-            Get Started (Pharmacy Owner)
-          </Button>
-        </a>
-      </div>
     </div>
   );
 }
