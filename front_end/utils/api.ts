@@ -195,12 +195,14 @@ function getRefreshToken(): string | null {
 async function refreshTokens(): Promise<boolean> {
   const rt = getRefreshToken();
   if (!rt) return false;
-  const BASE = "http://localhost:8000";
-  const url = `${BASE}/api/v1/auth/refresh?refresh_token=${encodeURIComponent(
-    rt
-  )}`;
-  const res = await fetch(url, { method: "POST" });
-  if (!res.ok) return false;
+  const res = await fetch(resolveApiUrl("/api/v1/auth/refresh"), {
+    method: "POST",
+    headers: buildHeaders({ "Content-Type": "application/json" }),
+    body: JSON.stringify({ refresh_token: rt }),
+  });
+  if (!res.ok) {
+    return false;
+  }
   try {
     const data = (await res.json()) as {
       access_token: string;

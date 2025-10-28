@@ -2,6 +2,7 @@ import io
 import secrets
 import string
 from datetime import datetime, timedelta
+import json
 from pathlib import Path
 from typing import List, Optional
 
@@ -38,6 +39,7 @@ from app.deps.ratelimit import rate_limit_user
 from sqlalchemy import func
 from sqlalchemy import text as sa_text
 from app.services.ai.usage import get_usage_summary
+from app.services.redis_client import get_redis
 from app.models.audit import AuditLog
 from app.core.security import hash_password
 import mimetypes
@@ -630,6 +632,17 @@ def analytics_overview(
     days: int = 30,
 ):
     days = max(1, min(90, days))
+    cache_key = f"admin_analytics:{days}"
+    redis_client = get_redis()
+
+    if redis_client:
+        cached_payload = redis_client.get(cache_key)
+        if cached_payload:
+            try:
+                data = json.loads(cached_payload)
+                return AnalyticsOverviewResponse.model_validate(data)
+            except (json.JSONDecodeError, ValueError):
+                pass
 
     total_pharmacies = db.query(func.count(Pharmacy.id)).scalar() or 0
     active_pharmacies = (
@@ -730,12 +743,20 @@ def analytics_overview(
         )
     branch_distribution.sort(key=lambda row: row.branch_count, reverse=True)
 
-    return AnalyticsOverviewResponse(
+    response = AnalyticsOverviewResponse(
         totals=totals,
         ai_usage_daily=usage_daily,
         top_pharmacies=top_pharmacies,
         branch_distribution=branch_distribution,
     )
+
+    if redis_client:
+        try:
+            redis_client.setex(cache_key, 60, response.model_dump_json())
+        except Exception:
+            pass
+
+    return response
 
 
 @router.post("/affiliate/payouts/{payout_id}/approve")

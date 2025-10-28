@@ -189,13 +189,20 @@ export default function OwnerDashboardPage() {
   const recentPayments = analytics?.recent_payments || [];
 
   const loading = loadingUser || analyticsLoading;
+  const displayName = useMemo(() => {
+    if (!me) return "owner";
+    const firstName = (me.first_name || "").trim();
+    if (firstName) return firstName;
+    const fallback = (me.username || me.email || "owner").trim();
+    return fallback || "owner";
+  }, [me]);
 
   return (
     <div className="space-y-8">
       <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold text-gray-900">
-            {loadingUser ? "Loading..." : `Welcome back, ${me?.username || "owner"}`}
+            {loadingUser ? "Loading..." : `Welcome back, ${displayName}`}
           </h1>
           <p className="text-sm text-gray-500">
             Monitor revenue, compare branches, and coach your pharmacy team from a single command center.

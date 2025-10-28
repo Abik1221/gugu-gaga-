@@ -144,7 +144,7 @@ def get_staff_productivity(
         .join(SaleItem, SaleItem.sale_id == Sale.id)
         .filter(
             User.tenant_id == tenant_id,
-            User.role.in_([Role.cashier.value, Role.pharmacy_owner.value, Role.manager.value]),
+            User.role.in_([Role.cashier.value, Role.pharmacy_owner.value]),
             Sale.created_at >= since,
         )
         .group_by(User.id, User.first_name, User.last_name, User.email, User.role)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+import json
 from typing import List
 
 from fastapi import APIRouter, Depends
@@ -26,9 +27,11 @@ from app.services.owner_analytics import (
     get_period_bounds,
     get_revenue_summary,
     get_revenue_trend,
+    get_staff_activity,
     get_staff_productivity,
     get_top_products,
 )
+from app.services.redis_client import get_redis
 
 router = APIRouter(prefix="/analytics", tags=["owner_analytics"])
 
@@ -48,6 +51,18 @@ def owner_analytics_overview(
     trend_weeks: int = 12,
 ):
     horizon = horizon.lower()
+    cache_key = f"owner_analytics:{tenant_id}:{horizon}:{trend_weeks}"
+    redis_client = get_redis()
+
+    if redis_client:
+        cached_payload = redis_client.get(cache_key)
+        if cached_payload:
+            try:
+                data = json.loads(cached_payload)
+                return OwnerAnalyticsResponse.model_validate(data)
+            except (json.JSONDecodeError, ValueError):
+                pass
+
     current_start, current_end = get_period_bounds(horizon)
     previous_start, previous_end = get_period_bounds(horizon, now=current_start)
 
@@ -92,6 +107,7 @@ def owner_analytics_overview(
 
     branch_comparison = get_branch_comparison(db, tenant_id=tenant_id, since=current_start)
     staff_productivity = get_staff_productivity(db, tenant_id=tenant_id, since=current_start)
+    staff_activity = get_staff_activity(db, tenant_id=tenant_id, since=current_start)
     inventory_health = get_inventory_health(db, tenant_id=tenant_id)
 
     # --- Recent payment submissions ---
@@ -119,7 +135,7 @@ def owner_analytics_overview(
         for row in payment_rows
     ]
 
-    return OwnerAnalyticsResponse(
+    response = OwnerAnalyticsResponse(
         horizon=horizon,
         totals=totals,
         deltas=deltas,
@@ -148,4 +164,26 @@ def owner_analytics_overview(
             }
             for item in staff_productivity
         ],
+        staff_activity=[
+            {
+                "id": item.id,
+                "action": item.action,
+                "actor_user_id": item.actor_user_id,
+                "actor_name": item.actor_name,
+                "actor_role": item.actor_role,
+                "target_type": item.target_type,
+                "target_id": item.target_id,
+                "metadata": item.metadata,
+                "created_at": item.created_at,
+            }
+            for item in staff_activity
+        ],
     )
+
+    if redis_client:
+        try:
+            redis_client.setex(cache_key, 60, response.model_dump_json())
+        except Exception:
+            pass
+
+    return response
