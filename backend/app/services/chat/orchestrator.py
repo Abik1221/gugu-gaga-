@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List, Tuple
+import re
 
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app.models.chat import ChatMessage
+from app.models.chat import ChatMessage, ChatThread
 from app.services.ai.gemini import GeminiClient
 from app.core.settings import settings
 from app.services.ai.langgraph_adapter import PassthroughLangGraph, HeuristicSQLTool, RealLangGraphOrchestrator
@@ -31,6 +32,52 @@ def _rows_to_dicts(rows) -> List[Dict[str, Any]]:
         else:
             results.append(dict(row))
     return results
+
+
+def _clean_title(text: str, max_length: int = 100) -> str:
+    cleaned = re.sub(r"\s+", " ", text.strip())
+    cleaned = cleaned.strip(" .,:;-")
+    if not cleaned:
+        return "Conversation"
+    if len(cleaned) > max_length:
+        cleaned = cleaned[:max_length].rstrip(" .,:;-") + "…"
+    return cleaned
+
+
+def _fallback_title(prompt: str) -> str:
+    sanitized = re.sub(r"[\r\n]+", " ", prompt).strip()
+    if not sanitized:
+        return "Conversation"
+    words = sanitized.split()
+    snippet = " ".join(words[:8])
+    if len(words) > 8:
+        snippet += "…"
+    return _clean_title(snippet.title())
+
+
+def _generate_chat_title(prompt: str, *, user_id: int | None) -> str:
+    client = GeminiClient()
+    if client.is_configured():
+        response = client.ask(
+            (
+                "Craft a concise (max 6 words) title summarizing this pharmacy analytics chat. "
+                "Only return the title text without additional commentary or punctuation.\n\n"
+                f"User message: {prompt}"
+            ),
+            scope="chat_title",
+            user_id=str(user_id) if user_id is not None else None,
+        )
+        candidate = None
+        if isinstance(response, dict):
+            candidate = response.get("answer")
+        if candidate:
+            if candidate.startswith("[") and "]" in candidate:
+                candidate = candidate.split("]", 1)[-1].strip()
+            candidate = candidate.strip().strip('"')
+            cleaned = _clean_title(candidate)
+            if cleaned and not cleaned.lower().startswith("[not-implemented]") and not cleaned.lower().startswith("[stubbed]"):
+                return cleaned
+    return _fallback_title(prompt)
 
 
 def _heuristic_sql_from_prompt(prompt: str) -> Tuple[str, str]:
@@ -76,6 +123,14 @@ def process_message(
         "Only use safe, read-only queries. Summarize results clearly and concisely. "
         "If the request is unclear or unsafe, explain why and suggest a safer query."
     )
+    thread: ChatThread | None = (
+        db.query(ChatThread)
+        .filter(ChatThread.id == thread_id, ChatThread.tenant_id == tenant_id)
+        .first()
+    )
+    if thread is None:
+        raise ValueError("Chat thread not found for message processing")
+
     # Save user message
     user_msg = ChatMessage(
         thread_id=thread_id,
@@ -84,6 +139,9 @@ def process_message(
         role=user_role,
         content=prompt,
     )
+    if not thread.title or not thread.title.strip():
+        thread.title = _generate_chat_title(prompt, user_id=user_id)
+
     db.add(user_msg)
     db.commit()
     db.refresh(user_msg)
