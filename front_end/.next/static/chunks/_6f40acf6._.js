@@ -23,6 +23,8 @@ __turbopack_context__.s([
     ()=>MedicinesAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
+    "OwnerChatAPI",
+    ()=>OwnerChatAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
     "SalesAPI",
@@ -31,6 +33,8 @@ __turbopack_context__.s([
     ()=>StaffAPI,
     "TENANT_HEADER",
     ()=>TENANT_HEADER,
+    "TenantAPI",
+    ()=>TenantAPI,
     "UploadAPI",
     ()=>UploadAPI,
     "getAccessToken",
@@ -311,7 +315,16 @@ const AuthAPI = {
     login: (email, password, tenantId)=>postForm("/api/v1/auth/login", {
             username: email,
             password
-        }, tenantId),
+        }, tenantId).then((resp)=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                localStorage.setItem("access_token", resp.access_token);
+                localStorage.setItem("refresh_token", resp.refresh_token);
+                if (tenantId) {
+                    localStorage.setItem("tenant_id", tenantId);
+                }
+            }
+            return resp;
+        }),
     loginRequestCode: (email, password, tenantId)=>postForm("/api/v1/auth/login/request-code", {
             username: email,
             password
@@ -319,9 +332,48 @@ const AuthAPI = {
     loginVerify: (email, code, tenantId)=>postJSON("/api/v1/auth/login/verify", {
             email,
             code
-        }, tenantId),
-    me: ()=>getAuthJSON("/api/v1/auth/me"),
+        }, tenantId).then((resp)=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                localStorage.setItem("access_token", resp.access_token);
+                localStorage.setItem("refresh_token", resp.refresh_token);
+                if (tenantId) {
+                    localStorage.setItem("tenant_id", tenantId);
+                }
+            }
+            return resp;
+        }),
+    refresh: (refreshToken)=>postJSON("/api/v1/auth/refresh", {
+            refresh_token: refreshToken
+        }),
+    sessions: ()=>getAuthJSON("/api/v1/auth/sessions"),
+    revokeSession: (sessionId)=>authFetch("/api/v1/auth/sessions/".concat(sessionId), {
+            method: "DELETE"
+        }).then((res)=>{
+            if (!res.ok) throw new Error("Failed to revoke session");
+        }),
+    changePassword: (body)=>postAuthJSON("/api/v1/auth/change-password", body),
+    me: ()=>getAuthJSON("/api/v1/auth/me").then((profile)=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                if (profile === null || profile === void 0 ? void 0 : profile.tenant_id) {
+                    localStorage.setItem("tenant_id", profile.tenant_id);
+                }
+            }
+            return profile;
+        }),
     updateProfile: (body)=>putAuthJSON("/api/v1/auth/me", body)
+};
+const TenantAPI = {
+    activity: (params)=>{
+        const searchParams = new URLSearchParams();
+        if (params === null || params === void 0 ? void 0 : params.limit) searchParams.set("limit", params.limit.toString());
+        if (params === null || params === void 0 ? void 0 : params.offset) searchParams.set("offset", params.offset.toString());
+        if (params === null || params === void 0 ? void 0 : params.action) {
+            params.action.forEach((a)=>searchParams.append("action", a));
+        }
+        const qs = searchParams.toString();
+        const path = qs ? "/api/v1/tenant/activity?".concat(qs) : "/api/v1/tenant/activity";
+        return getAuthJSON(path);
+    }
 };
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
@@ -439,6 +491,16 @@ const OwnerAnalyticsAPI = {
         const path = "/api/v1/owner/analytics/overview".concat(query ? "?".concat(query) : "");
         return getAuthJSON(path, tenantId);
     }
+};
+const OwnerChatAPI = {
+    listThreads: (tenantId)=>getAuthJSON("/api/v1/owner/chat/threads", tenantId),
+    createThread: (tenantId, title)=>postAuthJSON("/api/v1/owner/chat/threads", {
+            title
+        }, tenantId),
+    listMessages: (tenantId, threadId)=>getAuthJSON("/api/v1/owner/chat/threads/".concat(threadId, "/messages"), tenantId),
+    sendMessage: (tenantId, threadId, prompt)=>postAuthJSON("/api/v1/owner/chat/threads/".concat(threadId, "/messages"), {
+            prompt
+        }, tenantId)
 };
 const InventoryAPI = {
     list: (tenantId, options)=>{

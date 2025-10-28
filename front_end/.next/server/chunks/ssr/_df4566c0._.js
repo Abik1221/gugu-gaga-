@@ -23,6 +23,8 @@ __turbopack_context__.s([
     ()=>MedicinesAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
+    "OwnerChatAPI",
+    ()=>OwnerChatAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
     "SalesAPI",
@@ -31,6 +33,8 @@ __turbopack_context__.s([
     ()=>StaffAPI,
     "TENANT_HEADER",
     ()=>TENANT_HEADER,
+    "TenantAPI",
+    ()=>TenantAPI,
     "UploadAPI",
     ()=>UploadAPI,
     "getAccessToken",
@@ -305,7 +309,11 @@ const AuthAPI = {
     login: (email, password, tenantId)=>postForm("/api/v1/auth/login", {
             username: email,
             password
-        }, tenantId),
+        }, tenantId).then((resp)=>{
+            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+            ;
+            return resp;
+        }),
     loginRequestCode: (email, password, tenantId)=>postForm("/api/v1/auth/login/request-code", {
             username: email,
             password
@@ -313,9 +321,40 @@ const AuthAPI = {
     loginVerify: (email, code, tenantId)=>postJSON("/api/v1/auth/login/verify", {
             email,
             code
-        }, tenantId),
-    me: ()=>getAuthJSON("/api/v1/auth/me"),
+        }, tenantId).then((resp)=>{
+            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+            ;
+            return resp;
+        }),
+    refresh: (refreshToken)=>postJSON("/api/v1/auth/refresh", {
+            refresh_token: refreshToken
+        }),
+    sessions: ()=>getAuthJSON("/api/v1/auth/sessions"),
+    revokeSession: (sessionId)=>authFetch(`/api/v1/auth/sessions/${sessionId}`, {
+            method: "DELETE"
+        }).then((res)=>{
+            if (!res.ok) throw new Error("Failed to revoke session");
+        }),
+    changePassword: (body)=>postAuthJSON("/api/v1/auth/change-password", body),
+    me: ()=>getAuthJSON("/api/v1/auth/me").then((profile)=>{
+            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+            ;
+            return profile;
+        }),
     updateProfile: (body)=>putAuthJSON("/api/v1/auth/me", body)
+};
+const TenantAPI = {
+    activity: (params)=>{
+        const searchParams = new URLSearchParams();
+        if (params?.limit) searchParams.set("limit", params.limit.toString());
+        if (params?.offset) searchParams.set("offset", params.offset.toString());
+        if (params?.action) {
+            params.action.forEach((a)=>searchParams.append("action", a));
+        }
+        const qs = searchParams.toString();
+        const path = qs ? `/api/v1/tenant/activity?${qs}` : "/api/v1/tenant/activity";
+        return getAuthJSON(path);
+    }
 };
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
@@ -415,6 +454,16 @@ const OwnerAnalyticsAPI = {
         const path = `/api/v1/owner/analytics/overview${query ? `?${query}` : ""}`;
         return getAuthJSON(path, tenantId);
     }
+};
+const OwnerChatAPI = {
+    listThreads: (tenantId)=>getAuthJSON("/api/v1/owner/chat/threads", tenantId),
+    createThread: (tenantId, title)=>postAuthJSON("/api/v1/owner/chat/threads", {
+            title
+        }, tenantId),
+    listMessages: (tenantId, threadId)=>getAuthJSON(`/api/v1/owner/chat/threads/${threadId}/messages`, tenantId),
+    sendMessage: (tenantId, threadId, prompt)=>postAuthJSON(`/api/v1/owner/chat/threads/${threadId}/messages`, {
+            prompt
+        }, tenantId)
 };
 const InventoryAPI = {
     list: (tenantId, options)=>{

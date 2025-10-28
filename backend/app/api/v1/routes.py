@@ -21,6 +21,7 @@ from .subscriptions import router as subscriptions_router
 from .owner_analytics import router as owner_analytics_router
 from .branches import router as branches_router
 from .uploads import router as uploads_router
+from .tenant_activity import router as tenant_activity_router
 
 api_router = APIRouter()
 
@@ -52,3 +53,4 @@ api_router.include_router(subscriptions_router, prefix="/owner")
 api_router.include_router(owner_analytics_router, prefix="/owner")
 api_router.include_router(branches_router)
 api_router.include_router(uploads_router)
+api_router.include_router(tenant_activity_router)

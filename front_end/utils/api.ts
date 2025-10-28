@@ -308,6 +308,37 @@ export type AuthProfile = {
   latest_payment_status?: string | null;
 };
 
+export type AuthTokenResponse = {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  session_id: number;
+};
+
+export type SessionInfo = {
+  id: number;
+  created_at: string;
+  last_seen_at: string;
+  expires_at: string;
+  revoked_at?: string | null;
+  is_revoked: boolean;
+  user_agent?: string | null;
+  ip_address?: string | null;
+  is_current: boolean;
+};
+
+export type TenantActivityRecord = {
+  id: number;
+  tenant_id: string;
+  actor_user_id?: number | null;
+  action: string;
+  message: string;
+  target_type?: string | null;
+  target_id?: string | null;
+  metadata?: Record<string, unknown> | null;
+  created_at: string;
+};
+
 export const AuthAPI = {
   registerAffiliate: (body: any) => postJSON("/api/v1/auth/register/affiliate", body),
   registerPharmacy: (body: any) => postJSON("/api/v1/auth/register/pharmacy", body),
@@ -338,7 +369,18 @@ export const AuthAPI = {
   verifyRegistration: (email: string, code: string) =>
     postForm("/api/v1/auth/register/verify", { email, code }),
   login: (email: string, password: string, tenantId?: string) =>
-    postForm("/api/v1/auth/login", { username: email, password }, tenantId),
+    postForm<AuthTokenResponse>("/api/v1/auth/login", { username: email, password }, tenantId).then(
+      (resp) => {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("access_token", resp.access_token);
+          localStorage.setItem("refresh_token", resp.refresh_token);
+          if (tenantId) {
+            localStorage.setItem("tenant_id", tenantId);
+          }
+        }
+        return resp;
+      }
+    ),
   loginRequestCode: (email: string, password: string, tenantId?: string) =>
     postForm(
       "/api/v1/auth/login/request-code",
@@ -346,10 +388,50 @@ export const AuthAPI = {
       tenantId
     ),
   loginVerify: (email: string, code: string, tenantId?: string) =>
-    postJSON("/api/v1/auth/login/verify", { email, code }, tenantId),
-  me: () => getAuthJSON<AuthProfile>("/api/v1/auth/me"),
+    postJSON<AuthTokenResponse>("/api/v1/auth/login/verify", { email, code }, tenantId).then((resp) => {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("access_token", resp.access_token);
+        localStorage.setItem("refresh_token", resp.refresh_token);
+        if (tenantId) {
+          localStorage.setItem("tenant_id", tenantId);
+        }
+      }
+      return resp;
+    }),
+  refresh: (refreshToken: string) =>
+    postJSON<AuthTokenResponse>("/api/v1/auth/refresh", { refresh_token: refreshToken }),
+  sessions: () => getAuthJSON<SessionInfo[]>("/api/v1/auth/sessions"),
+  revokeSession: (sessionId: number) =>
+    authFetch(`/api/v1/auth/sessions/${sessionId}`, { method: "DELETE" }).then((res) => {
+      if (!res.ok) throw new Error("Failed to revoke session");
+    }),
+  changePassword: (body: { current_password: string; new_password: string }) =>
+    postAuthJSON<{ status: string }>("/api/v1/auth/change-password", body),
+  me: () =>
+    getAuthJSON<AuthProfile>("/api/v1/auth/me").then((profile) => {
+      if (typeof window !== "undefined") {
+        if (profile?.tenant_id) {
+          localStorage.setItem("tenant_id", profile.tenant_id);
+        }
+      }
+      return profile;
+    }),
   updateProfile: (body: Partial<Pick<AuthProfile, "username" | "first_name" | "last_name" | "phone">>) =>
     putAuthJSON<AuthProfile>("/api/v1/auth/me", body),
+};
+
+export const TenantAPI = {
+  activity: (params?: { action?: string[]; limit?: number; offset?: number }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.limit) searchParams.set("limit", params.limit.toString());
+    if (params?.offset) searchParams.set("offset", params.offset.toString());
+    if (params?.action) {
+      params.action.forEach((a) => searchParams.append("action", a));
+    }
+    const qs = searchParams.toString();
+    const path = qs ? `/api/v1/tenant/activity?${qs}` : "/api/v1/tenant/activity";
+    return getAuthJSON<TenantActivityRecord[]>(path);
+  },
 };
 
 // ----------------- AffiliateAPI -----------------
@@ -557,6 +639,32 @@ export const OwnerAnalyticsAPI = {
     const path = `/api/v1/owner/analytics/overview${query ? `?${query}` : ""}`;
     return getAuthJSON<OwnerAnalyticsResponse>(path, tenantId);
   },
+};
+
+// ----------------- OwnerChatAPI -----------------
+export type OwnerChatThread = {
+  id: number;
+  title: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type OwnerChatMessage = {
+  id: number;
+  thread_id: number;
+  role: "owner" | "assistant";
+  content: string;
+  created_at: string;
+};
+
+export const OwnerChatAPI = {
+  listThreads: (tenantId: string) => getAuthJSON<OwnerChatThread[]>("/api/v1/owner/chat/threads", tenantId),
+  createThread: (tenantId: string, title: string) =>
+    postAuthJSON<OwnerChatThread>("/api/v1/owner/chat/threads", { title }, tenantId),
+  listMessages: (tenantId: string, threadId: number) =>
+    getAuthJSON<OwnerChatMessage[]>(`/api/v1/owner/chat/threads/${threadId}/messages`, tenantId),
+  sendMessage: (tenantId: string, threadId: number, prompt: string) =>
+    postAuthJSON<OwnerChatMessage>(`/api/v1/owner/chat/threads/${threadId}/messages`, { prompt }, tenantId),
 };
 
 // ----------------- InventoryAPI -----------------

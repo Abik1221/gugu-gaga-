@@ -48,16 +48,26 @@ __turbopack_context__.s([
     ()=>BillingAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "InventoryAPI",
+    ()=>InventoryAPI,
     "KYCAPI",
     ()=>KYCAPI,
+    "MedicinesAPI",
+    ()=>MedicinesAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
+    "OwnerChatAPI",
+    ()=>OwnerChatAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
+    "SalesAPI",
+    ()=>SalesAPI,
     "StaffAPI",
     ()=>StaffAPI,
     "TENANT_HEADER",
     ()=>TENANT_HEADER,
+    "TenantAPI",
+    ()=>TenantAPI,
     "UploadAPI",
     ()=>UploadAPI,
     "getAccessToken",
@@ -338,7 +348,16 @@ const AuthAPI = {
     login: (email, password, tenantId)=>postForm("/api/v1/auth/login", {
             username: email,
             password
-        }, tenantId),
+        }, tenantId).then((resp)=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                localStorage.setItem("access_token", resp.access_token);
+                localStorage.setItem("refresh_token", resp.refresh_token);
+                if (tenantId) {
+                    localStorage.setItem("tenant_id", tenantId);
+                }
+            }
+            return resp;
+        }),
     loginRequestCode: (email, password, tenantId)=>postForm("/api/v1/auth/login/request-code", {
             username: email,
             password
@@ -346,8 +365,48 @@ const AuthAPI = {
     loginVerify: (email, code, tenantId)=>postJSON("/api/v1/auth/login/verify", {
             email,
             code
-        }, tenantId),
-    me: ()=>getAuthJSON("/api/v1/auth/me")
+        }, tenantId).then((resp)=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                localStorage.setItem("access_token", resp.access_token);
+                localStorage.setItem("refresh_token", resp.refresh_token);
+                if (tenantId) {
+                    localStorage.setItem("tenant_id", tenantId);
+                }
+            }
+            return resp;
+        }),
+    refresh: (refreshToken)=>postJSON("/api/v1/auth/refresh", {
+            refresh_token: refreshToken
+        }),
+    sessions: ()=>getAuthJSON("/api/v1/auth/sessions"),
+    revokeSession: (sessionId)=>authFetch("/api/v1/auth/sessions/".concat(sessionId), {
+            method: "DELETE"
+        }).then((res)=>{
+            if (!res.ok) throw new Error("Failed to revoke session");
+        }),
+    changePassword: (body)=>postAuthJSON("/api/v1/auth/change-password", body),
+    me: ()=>getAuthJSON("/api/v1/auth/me").then((profile)=>{
+            if ("TURBOPACK compile-time truthy", 1) {
+                if (profile === null || profile === void 0 ? void 0 : profile.tenant_id) {
+                    localStorage.setItem("tenant_id", profile.tenant_id);
+                }
+            }
+            return profile;
+        }),
+    updateProfile: (body)=>putAuthJSON("/api/v1/auth/me", body)
+};
+const TenantAPI = {
+    activity: (params)=>{
+        const searchParams = new URLSearchParams();
+        if (params === null || params === void 0 ? void 0 : params.limit) searchParams.set("limit", params.limit.toString());
+        if (params === null || params === void 0 ? void 0 : params.offset) searchParams.set("offset", params.offset.toString());
+        if (params === null || params === void 0 ? void 0 : params.action) {
+            params.action.forEach((a)=>searchParams.append("action", a));
+        }
+        const qs = searchParams.toString();
+        const path = qs ? "/api/v1/tenant/activity?".concat(qs) : "/api/v1/tenant/activity";
+        return getAuthJSON(path);
+    }
 };
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
@@ -457,7 +516,142 @@ const ChatAPI = {
     }
 };
 const OwnerAnalyticsAPI = {
-    overview: (tenantId)=>getAuthJSON("/api/v1/owner/analytics/overview", tenantId)
+    overview: (tenantId, options)=>{
+        const params = new URLSearchParams();
+        if (options === null || options === void 0 ? void 0 : options.horizon) params.set("horizon", options.horizon);
+        if (options === null || options === void 0 ? void 0 : options.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+        const query = params.toString();
+        const path = "/api/v1/owner/analytics/overview".concat(query ? "?".concat(query) : "");
+        return getAuthJSON(path, tenantId);
+    }
+};
+const OwnerChatAPI = {
+    listThreads: (tenantId)=>getAuthJSON("/api/v1/owner/chat/threads", tenantId),
+    createThread: (tenantId, title)=>postAuthJSON("/api/v1/owner/chat/threads", {
+            title
+        }, tenantId),
+    listMessages: (tenantId, threadId)=>getAuthJSON("/api/v1/owner/chat/threads/".concat(threadId, "/messages"), tenantId),
+    sendMessage: (tenantId, threadId, prompt)=>postAuthJSON("/api/v1/owner/chat/threads/".concat(threadId, "/messages"), {
+            prompt
+        }, tenantId)
+};
+const InventoryAPI = {
+    list: (tenantId, options)=>{
+        const params = new URLSearchParams();
+        if (options === null || options === void 0 ? void 0 : options.q) params.set("q", options.q);
+        if (options === null || options === void 0 ? void 0 : options.branch) params.set("branch", options.branch);
+        if (typeof (options === null || options === void 0 ? void 0 : options.expiringInDays) === "number") {
+            params.set("expiring_in_days", String(options.expiringInDays));
+        }
+        if (options === null || options === void 0 ? void 0 : options.lowStockOnly) params.set("low_stock_only", "true");
+        if (options === null || options === void 0 ? void 0 : options.page) params.set("page", String(options.page));
+        if (options === null || options === void 0 ? void 0 : options.pageSize) params.set("page_size", String(options.pageSize));
+        const query = params.toString();
+        const path = "/api/v1/inventory/items".concat(query ? "?".concat(query) : "");
+        return getAuthJSON(path, tenantId);
+    },
+    create: async (tenantId, payload)=>{
+        const form = new URLSearchParams();
+        form.set("medicine_id", String(payload.medicine_id));
+        form.set("pack_size", String(Math.max(1, payload.pack_size || 1)));
+        if (payload.branch) {
+            form.set("branch", payload.branch);
+        }
+        if (typeof payload.packs_count === "number") {
+            form.set("packs_count", String(Math.max(0, payload.packs_count)));
+        }
+        if (typeof payload.singles_count === "number") {
+            form.set("singles_count", String(Math.max(0, payload.singles_count)));
+        }
+        if (payload.expiry_date) {
+            form.set("expiry_date", payload.expiry_date);
+        }
+        if (payload.lot_number) {
+            form.set("lot_number", payload.lot_number);
+        }
+        if (typeof payload.purchase_price === "number") {
+            form.set("purchase_price", String(payload.purchase_price));
+        }
+        if (typeof payload.sell_price === "number") {
+            form.set("sell_price", String(payload.sell_price));
+        }
+        if (typeof payload.reorder_level === "number") {
+            form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+        }
+        const res = await authFetch("/api/v1/inventory/items", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: form.toString()
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || "Request failed with ".concat(res.status));
+        }
+        return res.json();
+    },
+    update: async (tenantId, itemId, payload)=>{
+        const form = new URLSearchParams();
+        if (typeof payload.quantity === "number") {
+            form.set("quantity", String(payload.quantity));
+        }
+        if (typeof payload.reorder_level === "number") {
+            form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+        }
+        if (typeof payload.sell_price === "number") {
+            form.set("sell_price", String(payload.sell_price));
+        }
+        if (payload.expiry_date !== undefined) {
+            form.set("expiry_date", payload.expiry_date || "");
+        }
+        if (payload.lot_number !== undefined) {
+            form.set("lot_number", payload.lot_number || "");
+        }
+        const res = await authFetch("/api/v1/inventory/items/".concat(itemId), {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: form.toString()
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || "Request failed with ".concat(res.status));
+        }
+        return res.json();
+    },
+    remove: async (tenantId, itemId)=>{
+        const res = await authFetch("/api/v1/inventory/items/".concat(itemId), {
+            method: "DELETE"
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || "Request failed with ".concat(res.status));
+        }
+        return res.json();
+    }
+};
+const MedicinesAPI = {
+    list: (tenantId, options)=>{
+        const query = new URLSearchParams();
+        if (options === null || options === void 0 ? void 0 : options.q) {
+            query.set("q", options.q);
+        }
+        if (options === null || options === void 0 ? void 0 : options.page) {
+            query.set("page", String(options.page));
+        }
+        if (options === null || options === void 0 ? void 0 : options.pageSize) {
+            query.set("page_size", String(Math.min(200, Math.max(1, options.pageSize))));
+        }
+        const path = "/api/v1/medicines".concat(query.toString() ? "?".concat(query.toString()) : "");
+        return getAuthJSON(path, tenantId);
+    }
+};
+const SalesAPI = {
+    pos: (tenantId, payload)=>{
+        const { lines, branch } = payload;
+        const query = branch ? "?branch=".concat(encodeURIComponent(branch)) : "";
+        const path = "/api/v1/sales/pos".concat(query);
+        return postAuthJSON(path, lines, tenantId);
+    }
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";

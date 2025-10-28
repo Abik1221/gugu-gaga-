@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAuthJSON } from "@/utils/api";
+import { AuthAPI } from "@/utils/api";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -60,12 +60,13 @@ export default function DashboardLayout({
   const isAffiliate = roles.includes("affiliate");
 
   useEffect(() => {
-    let active = true;
+    let cancelled = false;
+
     async function check() {
       try {
-        const me = await getAuthJSON<Me>("/auth/me");
-        if (!active) return;
-        setUser(me);
+        const me = await AuthAPI.me();
+        if (cancelled) return;
+        setUser(me as Me);
         // If KYC is pending and user is an owner/staff, keep them on status page only
         const primaryRole = (me?.role || me?.roles?.[0]?.role?.name || "").toLowerCase();
         const roleSet = deriveRoles(me);
@@ -109,11 +110,11 @@ export default function DashboardLayout({
         }
         // One-time referral track removed (handled server-side)
       } catch (e: any) {
-        if (!active) return;
+        if (cancelled) return;
         setError("Unauthorized");
         router.replace(loginPath);
       } finally {
-        if (active) setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
     // If no token, redirect immediately
@@ -124,7 +125,7 @@ export default function DashboardLayout({
     }
     check();
     return () => {
-      active = false;
+      cancelled = true;
     };
   }, [router, pathname, loginPath]);
 
@@ -271,6 +272,7 @@ function Shell({
     } else {
       nav = [
         { href: "/dashboard/owner", label: "Owner Overview" },
+        { href: "/dashboard/owner/agent", label: "AI Assistant" },
         { href: "/dashboard/inventory", label: "Inventory" },
         { href: "/dashboard/owner/settings", label: "Settings" },
         { href: "/dashboard/owner/staff", label: "Staff Management" },

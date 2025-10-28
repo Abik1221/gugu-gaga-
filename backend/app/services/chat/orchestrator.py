@@ -68,6 +68,7 @@ def process_message(
     user_id: int,
     thread_id: int,
     prompt: str,
+    user_role: str = "user",
 ) -> Dict[str, Any]:
     # System prompt establishes assistant behavior in pharmacy domain.
     SYSTEM_PROMPT = (
@@ -80,7 +81,7 @@ def process_message(
         thread_id=thread_id,
         tenant_id=tenant_id,
         user_id=user_id,
-        role="user",
+        role=user_role,
         content=prompt,
     )
     db.add(user_msg)

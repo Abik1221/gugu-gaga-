@@ -3,7 +3,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
-import { AuthAPI, StaffAPI, type AuthProfile } from "@/utils/api";
+import {
+  AuthAPI,
+  StaffAPI,
+  TenantAPI,
+  type AuthProfile,
+  type SessionInfo,
+  type TenantActivityRecord,
+} from "@/utils/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
@@ -64,6 +71,15 @@ export default function OwnerSettingsPage() {
   const [staffLoading, setStaffLoading] = useState(true);
   const [staffError, setStaffError] = useState<string | null>(null);
 
+  const [sessions, setSessions] = useState<SessionInfo[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState(true);
+  const [sessionsError, setSessionsError] = useState<string | null>(null);
+  const [revokingSessionId, setRevokingSessionId] = useState<number | null>(null);
+
+  const [activity, setActivity] = useState<TenantActivityRecord[]>([]);
+  const [activityLoading, setActivityLoading] = useState(true);
+  const [activityError, setActivityError] = useState<string | null>(null);
+
   const [theme, setTheme] = useState<ThemeOption>("system");
   const [themeLoading, setThemeLoading] = useState(true);
   const [notifications, setNotifications] = useState({
@@ -71,6 +87,11 @@ export default function OwnerSettingsPage() {
     inventoryAlerts: true,
     securityEmails: true,
   });
+  const [passwordCurrent, setPasswordCurrent] = useState("");
+  const [passwordNew, setPasswordNew] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [changingPassword, setChangingPassword] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -104,6 +125,10 @@ export default function OwnerSettingsPage() {
     if (!profile?.tenant_id) {
       setStaff([]);
       setStaffLoading(false);
+      setSessions([]);
+      setSessionsLoading(false);
+      setActivity([]);
+      setActivityLoading(false);
       return;
     }
     let active = true;
@@ -121,6 +146,37 @@ export default function OwnerSettingsPage() {
       .finally(() => {
         if (active) setStaffLoading(false);
       });
+
+    setSessionsLoading(true);
+    setSessionsError(null);
+    AuthAPI.sessions()
+      .then((items) => {
+        if (!active) return;
+        setSessions(items);
+      })
+      .catch((err: any) => {
+        if (!active) return;
+        setSessionsError(err?.message || "Unable to load sessions");
+      })
+      .finally(() => {
+        if (active) setSessionsLoading(false);
+      });
+
+    setActivityLoading(true);
+    setActivityError(null);
+    TenantAPI.activity({ limit: 25 })
+      .then((records) => {
+        if (!active) return;
+        setActivity(records);
+      })
+      .catch((err: any) => {
+        if (!active) return;
+        setActivityError(err?.message || "Unable to load activity log");
+      })
+      .finally(() => {
+        if (active) setActivityLoading(false);
+      });
+
     return () => {
       active = false;
     };
@@ -263,12 +319,76 @@ export default function OwnerSettingsPage() {
     });
   };
 
-  const handlePasswordReset = () => {
-    show({
-      variant: "default",
-      title: "Password reset",
-      description: "A secure password reset flow will be available here once the service is connected.",
-    });
+  const refreshSessions = async () => {
+    if (!profile?.tenant_id) return;
+    setSessionsLoading(true);
+    setSessionsError(null);
+    try {
+      const items = await AuthAPI.sessions();
+      setSessions(items);
+    } catch (err: any) {
+      setSessionsError(err?.message || "Unable to refresh sessions");
+    } finally {
+      setSessionsLoading(false);
+    }
+  };
+
+  const handleRevokeSession = async (sessionId: number) => {
+    setRevokingSessionId(sessionId);
+    try {
+      await AuthAPI.revokeSession(sessionId);
+      await refreshSessions();
+      show({
+        variant: "success",
+        title: "Session revoked",
+        description: "The device was disconnected successfully.",
+      });
+    } catch (err: any) {
+      show({ variant: "destructive", title: "Failed to revoke", description: err?.message || "Unable to revoke session" });
+    } finally {
+      setRevokingSessionId(null);
+    }
+  };
+
+  const refreshActivity = async () => {
+    if (!profile?.tenant_id) return;
+    setActivityLoading(true);
+    setActivityError(null);
+    try {
+      const records = await TenantAPI.activity({ limit: 25 });
+      setActivity(records);
+    } catch (err: any) {
+      setActivityError(err?.message || "Unable to load activity log");
+    } finally {
+      setActivityLoading(false);
+    }
+  };
+
+  const handlePasswordChange = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!profile) return;
+    if (!passwordCurrent || !passwordNew || !passwordConfirm) {
+      setPasswordError("Enter current password, new password, and confirmation.");
+      return;
+    }
+    if (passwordNew !== passwordConfirm) {
+      setPasswordError("New password and confirmation do not match.");
+      return;
+    }
+    setPasswordError(null);
+    setChangingPassword(true);
+    try {
+      await AuthAPI.changePassword({ current_password: passwordCurrent, new_password: passwordNew });
+      setPasswordCurrent("");
+      setPasswordNew("");
+      setPasswordConfirm("");
+      show({ variant: "success", title: "Password updated", description: "Other devices have been signed out." });
+      await refreshSessions();
+    } catch (err: any) {
+      setPasswordError(err?.message || "Unable to change password");
+    } finally {
+      setChangingPassword(false);
+    }
   };
 
   return (
@@ -449,7 +569,10 @@ export default function OwnerSettingsPage() {
       <div className="grid gap-6 xl:grid-cols-2">
         <Card className="border border-gray-200 shadow-sm">
           <CardHeader>
-            <CardTitle>Appearance</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Appearance</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => handleThemeChange("system")}>Reset</Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-xs text-gray-500">Choose how the dashboard looks across the app.</p>
@@ -499,24 +622,156 @@ export default function OwnerSettingsPage() {
         </Card>
       </div>
 
-      <Card className="border border-gray-200 shadow-sm">
-        <CardHeader>
-          <CardTitle>Account security</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 text-sm">
-          <p className="text-xs text-gray-500">
-            Change password and active session management will appear here once the security service is wired in. For now, reach out to support for urgent resets.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={handlePasswordReset}>
-              Request password reset
-            </Button>
-            <Button variant="outline" disabled>
-              Manage active sessions (coming soon)
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Card className="border border-gray-200 shadow-sm">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Account security</CardTitle>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={refreshSessions} disabled={sessionsLoading}>
+                  Refresh sessions
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm">
+            <form onSubmit={handlePasswordChange} className="space-y-2">
+              <p className="text-xs text-gray-500">
+                Change your password. All other active sessions will be signed out immediately.
+              </p>
+              <div className="grid gap-2 sm:grid-cols-3">
+                <Input
+                  type="password"
+                  placeholder="Current password"
+                  value={passwordCurrent}
+                  onChange={(e) => setPasswordCurrent(e.target.value)}
+                  required
+                />
+                <Input
+                  type="password"
+                  placeholder="New password"
+                  value={passwordNew}
+                  onChange={(e) => setPasswordNew(e.target.value)}
+                  required
+                />
+                <Input
+                  type="password"
+                  placeholder="Confirm new password"
+                  value={passwordConfirm}
+                  onChange={(e) => setPasswordConfirm(e.target.value)}
+                  required
+                />
+              </div>
+              {passwordError ? <div className="text-xs text-red-600">{passwordError}</div> : null}
+              <div className="flex justify-end">
+                <Button type="submit" disabled={changingPassword}>
+                  {changingPassword ? "Updating…" : "Change password"}
+                </Button>
+              </div>
+            </form>
+            {sessionsLoading ? (
+              <div className="space-y-2">
+                {Array.from({ length: 3 }).map((_, idx) => (
+                  <Skeleton key={`session-${idx}`} className="h-16 w-full" />
+                ))}
+              </div>
+            ) : sessionsError ? (
+              <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">{sessionsError}</div>
+            ) : sessions.length === 0 ? (
+              <div className="rounded border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-500">
+                No active sessions found. Devices will appear here after logging in.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {sessions.map((session) => (
+                  <div
+                    key={session.id}
+                    className={`rounded border px-3 py-3 text-sm ${session.is_current ? "border-emerald-300 bg-emerald-50" : "border-gray-200 bg-white"}`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="font-medium text-gray-900">
+                          {session.user_agent || "Unknown device"}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {session.ip_address ? `IP ${session.ip_address}` : "IP unknown"}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {session.is_current && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700">Current</span>}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={session.is_current || session.is_revoked || revokingSessionId === session.id}
+                          onClick={() => handleRevokeSession(session.id)}
+                        >
+                          {session.is_revoked ? "Revoked" : revokingSessionId === session.id ? "Revoking…" : "Revoke"}
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="mt-2 grid gap-1 text-xs text-gray-500 sm:grid-cols-3">
+                      <span>Created: {new Date(session.created_at).toLocaleString()}</span>
+                      <span>Last seen: {new Date(session.last_seen_at).toLocaleString()}</span>
+                      <span>Expires: {new Date(session.expires_at).toLocaleString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="border border-gray-200 shadow-sm">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Activity log</CardTitle>
+              <Button variant="outline" size="sm" onClick={refreshActivity} disabled={activityLoading}>
+                Refresh
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            <p className="text-xs text-gray-500">
+              Recent sessions, staff updates, and other tenant-level actions are listed here. Use this to monitor how the system is used.
+            </p>
+            {activityLoading ? (
+              <div className="space-y-2">
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <Skeleton key={`activity-${idx}`} className="h-14 w-full" />
+                ))}
+              </div>
+            ) : activityError ? (
+              <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">{activityError}</div>
+            ) : activity.length === 0 ? (
+              <div className="rounded border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-500">
+                No activity recorded yet. Actions such as staff changes or logins will appear here.
+              </div>
+            ) : (
+              <ul className="space-y-3">
+                {activity.map((item) => (
+                  <li key={item.id} className="rounded border border-gray-200 bg-white p-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-xs uppercase tracking-wide text-emerald-700">{item.action}</span>
+                      <span className="text-xs text-gray-500">{new Date(item.created_at).toLocaleString()}</span>
+                    </div>
+                    <div className="mt-1 font-medium text-gray-900">{item.message}</div>
+                    <div className="mt-1 text-xs text-gray-500 space-y-1">
+                      {item.target_type && (
+                        <div>
+                          Target: {item.target_type}
+                          {item.target_id ? ` • ${item.target_id}` : ""}
+                        </div>
+                      )}
+                      {item.actor_user_id ? <div>Actor ID: {item.actor_user_id}</div> : null}
+                      {item.metadata ? <pre className="whitespace-pre-wrap rounded bg-gray-50 p-2 text-[11px] text-gray-600">{JSON.stringify(item.metadata, null, 2)}</pre> : null}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

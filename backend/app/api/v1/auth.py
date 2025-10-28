@@ -1,22 +1,28 @@
-from typing import Optional
+from datetime import datetime
+from typing import List, Optional
 import base64
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.core.roles import Role
-from app.core.security import create_access_token, hash_password, verify_password
+from app.core.security import create_access_token, hash_password, verify_password, decode_token
 from app.db.deps import get_db
 from app.deps.tenant import get_optional_tenant_id
 from app.models.user import User
 from app.models.affiliate import AffiliateProfile, AffiliateReferral
 from app.models.kyc import KYCApplication
 from app.models.user_tenant import UserTenant
+from app.models.session import AuthSession
 from app.services.verification import issue_code, verify_code
 from app.services.notifications.email import send_email
 from app.schemas.auth import (
     Token,
+    TokenWithRefresh,
+    RefreshTokenRequest,
+    PasswordChangeRequest,
+    SessionOut,
     UserLogin,
     UserOut,
     PharmacyRegister,
@@ -27,10 +33,18 @@ from app.schemas.auth import (
     PasswordResetConfirm,
     UserProfileUpdate,
 )
-from app.deps.auth import get_current_user
+from app.deps.auth import get_current_user, oauth2_scheme
 from app.deps.ratelimit import rate_limit
 from app.services.billing.subscriptions import ensure_subscription
 from app.models.subscription import Subscription, PaymentSubmission
+from app.services.sessions import (
+    create_session,
+    rotate_session,
+    get_session_by_token,
+    get_session_by_id,
+    revoke_session as revoke_auth_session,
+)
+from app.services.tenant_activity import log_activity
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -119,6 +133,52 @@ def _user_with_status(db: Session, user: User) -> UserOut:
         subscription_blocked=subscription_blocked,
         subscription_next_due_date=subscription_next_due,
         latest_payment_status=latest_payment_status,
+    )
+
+
+def _client_ip(request: Request) -> Optional[str]:
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        ip = forwarded.split(",")[0].strip()
+        if ip:
+            return ip
+    if request.client:
+        return request.client.host
+    return None
+
+
+def _issue_session_tokens(db: Session, user: User, request: Request) -> TokenWithRefresh:
+    session, refresh_token = create_session(
+        db,
+        user_id=user.id,
+        tenant_id=user.tenant_id,
+        user_agent=request.headers.get("user-agent"),
+        ip_address=_client_ip(request),
+    )
+    access_token = create_access_token(
+        subject=user.email,
+        role=user.role,
+        tenant_id=user.tenant_id,
+        session_id=session.id,
+    )
+    if user.tenant_id:
+        log_activity(
+            db,
+            tenant_id=user.tenant_id,
+            actor_user_id=user.id,
+            action="session.login",
+            message="User logged in",
+            metadata={
+                "session_id": session.id,
+                "ip": _client_ip(request),
+                "user_agent": request.headers.get("user-agent"),
+            },
+        )
+    return TokenWithRefresh(
+        access_token=access_token,
+        token_type="bearer",
+        refresh_token=refresh_token,
+        session_id=session.id,
     )
 
 
@@ -323,8 +383,9 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
     return _user_with_status(db, user)
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=TokenWithRefresh)
 def login(
+    request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
     tenant_id: Optional[str] = Depends(get_optional_tenant_id),
@@ -350,8 +411,8 @@ def login(
         # Enforce tenant match for non-admin users
         if tenant_id and user.tenant_id != tenant_id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
-    token = create_access_token(subject=user.email, role=user.role, tenant_id=user.tenant_id)
-    return Token(access_token=token)
+    tokens = _issue_session_tokens(db, user, request)
+    return tokens
 
 
 @router.put("/me", response_model=UserOut)
@@ -426,9 +487,10 @@ def login_request_code(
     return {"status": "code_sent"}
 
 
-@router.post("/login/verify", response_model=Token)
+@router.post("/login/verify", response_model=TokenWithRefresh)
 def login_verify(
     payload: LoginVerifyRequest,
+    request: Request,
     tenant_id: Optional[str] = Depends(get_optional_tenant_id),
     db: Session = Depends(get_db),
 ):
@@ -447,8 +509,8 @@ def login_verify(
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Awaiting admin approval")
             if sub.blocked:
                 raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked. Submit payment code and await verification.")
-    token = create_access_token(subject=user.email, role=user.role, tenant_id=user.tenant_id)
-    return Token(access_token=token)
+    tokens = _issue_session_tokens(db, user, request)
+    return tokens
 
 
 @router.post("/password/reset/request")
@@ -497,3 +559,141 @@ def me(
     db: Session = Depends(get_db),
 ):
     return _user_with_status(db, current_user)
+
+
+@router.post("/refresh", response_model=TokenWithRefresh)
+def refresh_tokens(payload: RefreshTokenRequest, db: Session = Depends(get_db)):
+    session = get_session_by_token(db, payload.refresh_token)
+    if not session or session.is_revoked:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+    if session.expires_at < datetime.utcnow():
+        revoke_auth_session(db, session)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired refresh token")
+    user = db.query(User).filter(User.id == session.user_id).first()
+    if not user or not user.is_active:
+        revoke_auth_session(db, session)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Inactive user")
+    new_refresh = rotate_session(db, session)
+    if user.tenant_id:
+        log_activity(
+            db,
+            tenant_id=user.tenant_id,
+            actor_user_id=user.id,
+            action="session.refresh",
+            message="Session tokens refreshed",
+            target_type="session",
+            target_id=str(session.id),
+        )
+    access_token = create_access_token(
+        subject=user.email,
+        role=user.role,
+        tenant_id=user.tenant_id,
+        session_id=session.id,
+    )
+    return TokenWithRefresh(
+        access_token=access_token,
+        token_type="bearer",
+        refresh_token=new_refresh,
+        session_id=session.id,
+    )
+
+
+@router.post("/change-password")
+def change_password(
+    payload: PasswordChangeRequest,
+    token: str = Depends(oauth2_scheme),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not verify_password(payload.current_password, current_user.password_hash):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Current password is incorrect")
+
+    try:
+        current_user.password_hash = hash_password(payload.new_password)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+    db.add(current_user)
+    db.commit()
+
+    try:
+        payload_token = decode_token(token)
+        current_sid = payload_token.get("sid")
+    except Exception:
+        current_sid = None
+
+    sessions_query = db.query(AuthSession).filter(AuthSession.user_id == current_user.id, AuthSession.is_revoked == False)
+    if current_sid is not None:
+        sessions_query = sessions_query.filter(AuthSession.id != current_sid)
+    for other_session in sessions_query.all():
+        revoke_auth_session(db, other_session)
+
+    if current_user.tenant_id:
+        log_activity(
+            db,
+            tenant_id=current_user.tenant_id,
+            actor_user_id=current_user.id,
+            action="account.password-change",
+            message="Account password updated",
+            metadata={"session_kept": current_sid},
+        )
+
+    return {"status": "changed"}
+
+
+@router.get("/sessions", response_model=List[SessionOut])
+def list_sessions(
+    token: str = Depends(oauth2_scheme),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    try:
+        payload = decode_token(token)
+        current_sid = payload.get("sid")
+    except Exception:
+        current_sid = None
+    sessions: List[AuthSession] = (
+        db.query(AuthSession)
+        .filter(AuthSession.user_id == current_user.id)
+        .order_by(AuthSession.created_at.desc())
+        .all()
+    )
+    results: List[SessionOut] = []
+    for session in sessions:
+        results.append(
+            SessionOut(
+                id=session.id,
+                created_at=session.created_at,
+                last_seen_at=session.last_seen_at,
+                expires_at=session.expires_at,
+                revoked_at=session.revoked_at,
+                is_revoked=session.is_revoked,
+                user_agent=session.user_agent,
+                ip_address=session.ip_address,
+                is_current=bool(current_sid and session.id == current_sid),
+            )
+        )
+    return results
+
+
+@router.delete("/sessions/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+def revoke_session(
+    session_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    session = get_session_by_id(db, session_id)
+    if not session or session.user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
+    revoke_auth_session(db, session)
+    if current_user.tenant_id:
+        log_activity(
+            db,
+            tenant_id=current_user.tenant_id,
+            actor_user_id=current_user.id,
+            action="session.revoke",
+            message="Session revoked",
+            target_type="session",
+            target_id=str(session.id),
+        )
+    return None
