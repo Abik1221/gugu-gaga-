@@ -49,21 +49,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Force new ECS deployment
-        env:
-          CLUSTER: ${{ secrets.AWS_ECS_CLUSTER }}
-          SERVICE: ${{ secrets.AWS_ECS_SERVICE }}
-        run: |
-          aws ecs update-service --cluster "$CLUSTER" --service "$SERVICE" --force-new-deployment
-          aws ecs wait services-stable --cluster "$CLUSTER" --services "$SERVICE"
-
       - name: Summarize deployment
         run: |
           echo "Image pushed: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }}"
