@@ -3,14 +3,17 @@ FROM python:3.11-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=on
+    PIP_NO_CACHE_DIR=on \
+    PYTHONPATH=/app
 
 WORKDIR /app
 
-# System deps (optional, keep slim)
+# System deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     ca-certificates \
+    curl \
+    libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python deps first (better layer caching)

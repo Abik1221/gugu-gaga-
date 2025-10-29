@@ -17,7 +17,9 @@ services:
       - "6379:6379"
 
   api:
-    build: .
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     depends_on:
       - db
       - redis
@@ -34,6 +36,22 @@ services:
     ports:
       - "8000:8000"
     command: ["/app/entrypoint.sh"]
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./front_end
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    environment:
+      NEXT_PUBLIC_API_BASE: http://api:8000/api/v1
+      NEXT_PUBLIC_TENANT_HEADER: X-Tenant-ID
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front_end:/app
 
 volumes:
   db_data:
