@@ -13,6 +13,8 @@ __turbopack_context__.s([
     ()=>AuthAPI,
     "BillingAPI",
     ()=>BillingAPI,
+    "BranchAPI",
+    ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
     "InventoryAPI",
@@ -410,6 +412,34 @@ const StaffAPI = {
             return res.json();
         })
 };
+const BranchAPI = {
+    list: (tenantId, params)=>{
+        const query = new URLSearchParams();
+        if (params?.q) query.set("q", params.q);
+        if (params?.pharmacy_id !== undefined) query.set("pharmacy_id", String(params.pharmacy_id));
+        if (params?.page) query.set("page", String(params.page));
+        if (params?.page_size) query.set("page_size", String(params.page_size));
+        const path = `/api/v1/branches${query.toString() ? `?${query.toString()}` : ""}`;
+        return getAuthJSON(path, tenantId);
+    },
+    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
+    update: (tenantId, branchId, payload)=>authFetch(`/api/v1/branches/${branchId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        }),
+    remove: (tenantId, branchId)=>authFetch(`/api/v1/branches/${branchId}`, {
+            method: "DELETE"
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        })
+};
 const BillingAPI = {
     submitPaymentCode: (tenantId, code)=>postAuthJSON("/api/v1/owner/billing/payment-code", {
             code
@@ -427,15 +457,22 @@ const KYCAPI = {
     update: (tenantId, body)=>putAuthJSON("/api/v1/owner/kyc/status", body, tenantId)
 };
 const PharmaciesAPI = {
-    list: (page = 1, pageSize = 20, q)=>getAuthJSON(`/api/v1/pharmacies?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
-    get: (id)=>getAuthJSON(`/api/v1/pharmacies/${id}`),
-    update: (id, body)=>authFetch(`/api/v1/pharmacies/${id}`, {
+    list: (tenantId, params)=>{
+        const search = new URLSearchParams();
+        search.set("page", String(params?.page ?? 1));
+        search.set("page_size", String(params?.page_size ?? 20));
+        if (params?.q) search.set("q", params.q);
+        const path = `/api/v1/pharmacies?${search.toString()}`;
+        return getAuthJSON(path, tenantId);
+    },
+    get: (id, tenantId)=>getAuthJSON(`/api/v1/pharmacies/${id}`, tenantId),
+    update: (id, body, tenantId)=>authFetch(`/api/v1/pharmacies/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(body)
-        }).then(async (res)=>{
+        }, true, tenantId).then(async (res)=>{
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         })

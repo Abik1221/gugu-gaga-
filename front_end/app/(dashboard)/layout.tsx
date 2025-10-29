@@ -2,23 +2,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AuthAPI } from "@/utils/api";
+import { AuthAPI, type AuthProfile } from "@/utils/api";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-type Me = {
-  id: string;
-  email: string;
-  username: string;
-  role?: string;
-  tenant_id?: string;
-  roles?: { role: { name: string } }[];
-  kyc_status?: string | null;
-  subscription_status?: string | null;
-  subscription_blocked?: boolean | null;
-  subscription_next_due_date?: string | null;
-  latest_payment_status?: string | null;
+type RoleAssignment = {
+  role?: {
+    name?: string | null;
+  } | null;
+};
+
+type Me = AuthProfile & {
+  username?: string | null;
+  roles?: RoleAssignment[] | null;
 };
 
 function deriveRoles(user: Me | null | undefined): string[] {
@@ -64,9 +61,10 @@ export default function DashboardLayout({
 
     async function check() {
       try {
-        const me = await AuthAPI.me();
+        const response = await AuthAPI.me();
+        const me = response as Me;
         if (cancelled) return;
-        setUser(me as Me);
+        setUser(me);
         // If KYC is pending and user is an owner/staff, keep them on status page only
         const primaryRole = (me?.role || me?.roles?.[0]?.role?.name || "").toLowerCase();
         const roleSet = deriveRoles(me);
@@ -104,6 +102,10 @@ export default function DashboardLayout({
             return;
           }
           if (!needsKyc && !needsPayment && (pathname === ownerKycPath || pathname === ownerPaymentPath)) {
+            router.replace("/dashboard/owner");
+            return;
+          }
+          if (!needsKyc && !needsPayment && (pathname === "/dashboard" || pathname === "/dashboard/overview")) {
             router.replace("/dashboard/owner");
             return;
           }
@@ -273,6 +275,7 @@ function Shell({
       nav = [
         { href: "/dashboard/owner", label: "Owner Overview" },
         { href: "/dashboard/owner/agent", label: "AI Assistant" },
+        { href: "/dashboard/owner/branches", label: "Branches" },
         { href: "/dashboard/inventory", label: "Inventory" },
         { href: "/dashboard/owner/settings", label: "Settings" },
         { href: "/dashboard/owner/staff", label: "Staff Management" },

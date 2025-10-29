@@ -13,6 +13,8 @@ __turbopack_context__.s([
     ()=>AuthAPI,
     "BillingAPI",
     ()=>BillingAPI,
+    "BranchAPI",
+    ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
     "InventoryAPI",
@@ -441,6 +443,34 @@ const StaffAPI = {
             return res.json();
         })
 };
+const BranchAPI = {
+    list: (tenantId, params)=>{
+        const query = new URLSearchParams();
+        if (params === null || params === void 0 ? void 0 : params.q) query.set("q", params.q);
+        if ((params === null || params === void 0 ? void 0 : params.pharmacy_id) !== undefined) query.set("pharmacy_id", String(params.pharmacy_id));
+        if (params === null || params === void 0 ? void 0 : params.page) query.set("page", String(params.page));
+        if (params === null || params === void 0 ? void 0 : params.page_size) query.set("page_size", String(params.page_size));
+        const path = "/api/v1/branches".concat(query.toString() ? "?".concat(query.toString()) : "");
+        return getAuthJSON(path, tenantId);
+    },
+    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
+    update: (tenantId, branchId, payload)=>authFetch("/api/v1/branches/".concat(branchId), {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        }),
+    remove: (tenantId, branchId)=>authFetch("/api/v1/branches/".concat(branchId), {
+            method: "DELETE"
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        })
+};
 const BillingAPI = {
     submitPaymentCode: (tenantId, code)=>postAuthJSON("/api/v1/owner/billing/payment-code", {
             code
@@ -458,18 +488,24 @@ const KYCAPI = {
     update: (tenantId, body)=>putAuthJSON("/api/v1/owner/kyc/status", body, tenantId)
 };
 const PharmaciesAPI = {
-    list: function() {
-        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 ? arguments[2] : void 0;
-        return getAuthJSON("/api/v1/pharmacies?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
+    list: (tenantId, params)=>{
+        const search = new URLSearchParams();
+        var _params_page;
+        search.set("page", String((_params_page = params === null || params === void 0 ? void 0 : params.page) !== null && _params_page !== void 0 ? _params_page : 1));
+        var _params_page_size;
+        search.set("page_size", String((_params_page_size = params === null || params === void 0 ? void 0 : params.page_size) !== null && _params_page_size !== void 0 ? _params_page_size : 20));
+        if (params === null || params === void 0 ? void 0 : params.q) search.set("q", params.q);
+        const path = "/api/v1/pharmacies?".concat(search.toString());
+        return getAuthJSON(path, tenantId);
     },
-    get: (id)=>getAuthJSON("/api/v1/pharmacies/".concat(id)),
-    update: (id, body)=>authFetch("/api/v1/pharmacies/".concat(id), {
+    get: (id, tenantId)=>getAuthJSON("/api/v1/pharmacies/".concat(id), tenantId),
+    update: (id, body, tenantId)=>authFetch("/api/v1/pharmacies/".concat(id), {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(body)
-        }).then(async (res)=>{
+        }, true, tenantId).then(async (res)=>{
             if (!res.ok) throw new Error(await res.text());
             return res.json();
         })

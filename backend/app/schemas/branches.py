@@ -18,3 +18,16 @@ class BranchListResponse(BaseModel):
     page_size: int
     total: int
     items: List[BranchOut]
+
+
+class BranchCreate(BaseModel):
+    pharmacy_id: int
+    name: str
+    address: Optional[str] = None
+    phone: Optional[str] = None
+
+
+class BranchUpdate(BaseModel):
+    name: Optional[str] = None
+    address: Optional[str] = None
+    phone: Optional[str] = None

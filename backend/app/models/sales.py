@@ -13,6 +13,7 @@ class Sale(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     tenant_id: Mapped[str] = mapped_column(String(64), index=True)
     cashier_user_id: Mapped[Optional[int]] = mapped_column(Integer, index=True)
+    customer_id: Mapped[Optional[int]] = mapped_column(Integer, index=True)
     branch: Mapped[Optional[str]] = mapped_column(String(64), index=True)
     total_amount: Mapped[float] = mapped_column(Float, default=0)
     discount_amount: Mapped[float] = mapped_column(Float, default=0)

@@ -421,6 +421,15 @@ def update_me(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    # Allow owners/cashiers to update contact details even if subscription is blocked or payment pending.
+    if current_user.role in {Role.pharmacy_owner.value, Role.cashier.value}:
+        sub = None
+        if current_user.tenant_id:
+            sub = ensure_subscription(db, tenant_id=current_user.tenant_id)
+        if sub and sub.blocked:
+            # Owners should still be able to update contact info to resolve payment blockers; do not raise.
+            pass
+
     updated = False
 
     if payload.username is not None:

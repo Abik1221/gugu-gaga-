@@ -134,22 +134,22 @@ export async function putAuthJSON<T = any>(
   bodyData: any,
   tenantId?: string
 ): Promise<T> {
-  const res = await fetch(resolveApiUrl(path), {
-    method: "PUT",
-    headers: buildHeaders({ "Content-Type": "application/json" }, tenantId),
-    body: JSON.stringify(bodyData),
-  });
+  const res = await authFetch(
+    path,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bodyData),
+    },
+    true,
+    tenantId
+  );
 
   if (!res.ok) {
-    try {
-      const data = await res.json();
-      const msg = data?.error || data?.detail || JSON.stringify(data);
-      throw new Error(msg || `Request failed with ${res.status}`);
-    } catch {
-      const text = await res.text().catch(() => "");
-      throw new Error(text || `Request failed with ${res.status}`);
-    }
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `Request failed with ${res.status}`);
   }
+
   return (await res.json()) as T;
 }
 
@@ -218,7 +218,7 @@ async function refreshTokens(): Promise<boolean> {
   }
 }
 
-async function authFetch(
+async function authFetch<T>(
   path: string,
   init?: RequestInit,
   retry = true,
@@ -521,6 +521,67 @@ export const StaffAPI = {
     ),
 };
 
+// ----------------- BranchAPI -----------------
+export const BranchAPI = {
+  list: (
+    tenantId: string,
+    params?: { q?: string; pharmacy_id?: number; page?: number; page_size?: number }
+  ) => {
+    const query = new URLSearchParams();
+    if (params?.q) query.set("q", params.q);
+    if (params?.pharmacy_id !== undefined)
+      query.set("pharmacy_id", String(params.pharmacy_id));
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.page_size) query.set("page_size", String(params.page_size));
+    const path = `/api/v1/branches${query.toString() ? `?${query.toString()}` : ""}`;
+    return getAuthJSON(path, tenantId);
+  },
+  create: (
+    tenantId: string,
+    payload: { pharmacy_id: number; name: string; address?: string; phone?: string }
+  ) => postAuthJSON("/api/v1/branches", payload, tenantId),
+  update: (
+    tenantId: string,
+    branchId: number,
+    payload: { name?: string; address?: string; phone?: string }
+  ) =>
+    authFetch(
+      `/api/v1/branches/${branchId}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      },
+      true,
+      tenantId
+    ).then(async (res) => {
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    }),
+  remove: (tenantId: string, branchId: number) =>
+    authFetch(`/api/v1/branches/${branchId}`, { method: "DELETE" }, true, tenantId).then(
+      async (res) => {
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      }
+    ),
+};
+
+// ----------------- Pharmacy models -----------------
+export type PharmacyOut = {
+  id: number;
+  tenant_id: string;
+  name: string;
+  address?: string | null;
+};
+
+export type PharmaciesListResponse = {
+  page: number;
+  page_size: number;
+  total: number;
+  items: PharmacyOut[];
+};
+
 // ----------------- BillingAPI -----------------
 export const BillingAPI = {
   submitPaymentCode: (tenantId: string, code: string) =>
@@ -545,21 +606,28 @@ export const KYCAPI = {
 
 // ----------------- PharmaciesAPI -----------------
 export const PharmaciesAPI = {
-  list: (page = 1, pageSize = 20, q?: string) =>
-    getAuthJSON(
-      `/api/v1/pharmacies?page=${page}&page_size=${pageSize}${
-        q ? `&q=${encodeURIComponent(q)}` : ""
-      }`
-    ),
-  get: (id: number) => getAuthJSON(`/api/v1/pharmacies/${id}`),
-  update: (id: number, body: { name?: string; address?: string }) =>
+  list: (
+    tenantId?: string,
+    params?: { page?: number; page_size?: number; q?: string }
+  ): Promise<PharmaciesListResponse> => {
+    const search = new URLSearchParams();
+    search.set("page", String(params?.page ?? 1));
+    search.set("page_size", String(params?.page_size ?? 20));
+    if (params?.q) search.set("q", params.q);
+    const queryString = search.toString();
+    const path = `/api/v1/pharmacies${queryString ? `?${queryString}` : ""}`;
+    return getAuthJSON<PharmaciesListResponse>(path, tenantId);
+  },
+  get: (id: number, tenantId?: string) =>
+    getAuthJSON<PharmacyOut>(`/api/v1/pharmacies/${id}`, tenantId),
+  update: (id: number, body: { name?: string; address?: string }, tenantId?: string) =>
     authFetch(`/api/v1/pharmacies/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-    }).then(async (res) => {
+    }, true, tenantId).then(async (res) => {
       if (!res.ok) throw new Error(await res.text());
-      return res.json();
+      return (await res.json()) as PharmacyOut;
     }),
 };
 

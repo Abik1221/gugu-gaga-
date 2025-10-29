@@ -30,10 +30,12 @@ class Settings(BaseSettings):
     jwt_secret: Optional[str] = Field(default=None, validation_alias=AliasChoices("JWT_SECRET", "jwt_secret"))
     jwt_algorithm: str = Field(default="HS256", validation_alias=AliasChoices("JWT_ALGORITHM", "jwt_algorithm"))
     access_token_expires_minutes: int = Field(
-        default=30, validation_alias=AliasChoices("ACCESS_TOKEN_EXPIRES_MINUTES", "access_token_expires_minutes")
+        default=60 * 24 * 21,  # 21 days
+        validation_alias=AliasChoices("ACCESS_TOKEN_EXPIRES_MINUTES", "access_token_expires_minutes"),
     )
     refresh_token_expires_days: int = Field(
-        default=30, validation_alias=AliasChoices("REFRESH_TOKEN_EXPIRES_DAYS", "refresh_token_expires_days")
+        default=90,
+        validation_alias=AliasChoices("REFRESH_TOKEN_EXPIRES_DAYS", "refresh_token_expires_days"),
     )
 
     # Rate limits

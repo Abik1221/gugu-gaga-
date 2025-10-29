@@ -8,7 +8,7 @@ from app.deps.auth import require_role, get_current_user
 from app.deps.tenant import require_tenant, enforce_user_tenant, enforce_subscription_active
 from app.models.branch import Branch
 from app.models.pharmacy import Pharmacy
-from app.schemas.branches import BranchOut, BranchListResponse
+from app.schemas.branches import BranchOut, BranchListResponse, BranchCreate, BranchUpdate
 from app.schemas.inventory import StatusResponse
 
 router = APIRouter(prefix="/branches", tags=["pharmacy_cms"])
@@ -16,36 +16,55 @@ router = APIRouter(prefix="/branches", tags=["pharmacy_cms"])
 PHONE_RE = re.compile(r"^[0-9+\-()\s]{7,32}$")
 
 
-def _validate_branch_inputs(name: str | None, address: str | None, phone: str | None):
-    if name is not None:
-        if not name.strip():
+def _validate_branch_inputs(
+    name: str | None,
+    address: str | None,
+    phone: str | None,
+    *,
+    require_name: bool = False,
+) -> str | None:
+    cleaned_name: str | None = None
+    if name is None:
+        if require_name:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Name is required")
-        if len(name) > 255:
+    else:
+        cleaned_name = name.strip()
+        if not cleaned_name:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Name is required")
+        if len(cleaned_name) > 255:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Name too long")
     if address is not None and len(address) > 255:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Address too long")
     if phone is not None:
         if len(phone) > 32 or not PHONE_RE.match(phone):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid phone format")
+    return cleaned_name
 
 
 @router.post("", response_model=BranchOut)
 def create_branch(
-    pharmacy_id: int,
-    name: str,
-    address: str | None = None,
-    phone: str | None = None,
+    payload: BranchCreate,
     tenant_id: str = Depends(require_tenant),
     _role=Depends(require_role(Role.admin, Role.pharmacy_owner)),
     db: Session = Depends(get_db),
     _ten=Depends(enforce_user_tenant),
     _sub=Depends(enforce_subscription_active),
 ):
-    _validate_branch_inputs(name, address, phone)
-    ph = db.query(Pharmacy).filter(Pharmacy.id == pharmacy_id, Pharmacy.tenant_id == tenant_id).first()
+    cleaned_name = _validate_branch_inputs(payload.name, payload.address, payload.phone, require_name=True)
+    ph = (
+        db.query(Pharmacy)
+        .filter(Pharmacy.id == payload.pharmacy_id, Pharmacy.tenant_id == tenant_id)
+        .first()
+    )
     if not ph:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pharmacy not found for tenant")
-    br = Branch(tenant_id=tenant_id, pharmacy_id=pharmacy_id, name=name.strip(), address=address, phone=phone)
+    br = Branch(
+        tenant_id=tenant_id,
+        pharmacy_id=payload.pharmacy_id,
+        name=cleaned_name or payload.name.strip(),
+        address=payload.address,
+        phone=payload.phone,
+    )
     db.add(br)
     db.commit()
     db.refresh(br)
@@ -103,30 +122,23 @@ def get_branch(
 @router.patch("/{branch_id}", response_model=BranchOut)
 def update_branch(
     branch_id: int,
-    name: str | None = None,
-    address: str | None = None,
-    phone: str | None = None,
+    payload: BranchUpdate,
     tenant_id: str = Depends(require_tenant),
     _role=Depends(require_role(Role.admin, Role.pharmacy_owner)),
     db: Session = Depends(get_db),
     _ten=Depends(enforce_user_tenant),
     _sub=Depends(enforce_subscription_active),
 ):
-    _validate_branch_inputs(name or "ok", address, phone)  # allow None but validate formats if provided
+    cleaned_name = _validate_branch_inputs(payload.name, payload.address, payload.phone, require_name=False)
     br = db.query(Branch).filter(Branch.id == branch_id, Branch.tenant_id == tenant_id).first()
     if not br:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Branch not found")
-    if name is not None:
-        name = name.strip()
-        if not name:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Name cannot be empty")
-        br.name = name
-    if address is not None:
-        br.address = address
-    if phone is not None:
-        if not PHONE_RE.match(phone):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid phone format")
-        br.phone = phone
+    if payload.name is not None:
+        br.name = cleaned_name or payload.name.strip()
+    if payload.address is not None:
+        br.address = payload.address
+    if payload.phone is not None:
+        br.phone = payload.phone
     db.add(br)
     db.commit()
     db.refresh(br)
