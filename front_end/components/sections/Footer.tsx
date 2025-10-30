@@ -1,127 +1,120 @@
 import Link from "next/link";
+import { Brain, Linkedin, Twitter, Mail } from "lucide-react";
+
+const footerNav = {
+  product: [
+    { href: "/#features", label: "Feature overview" },
+    { href: "/#ai-solutions", label: "AI solutions" },
+    { href: "/#pricing", label: "Pricing" },
+  ],
+  company: [
+    { href: "/#about", label: "About" },
+    { href: "/(marketing)/contact", label: "Contact" },
+    { href: "/register?tab=affiliate", label: "Affiliates" },
+  ],
+  resources: [
+    { href: "/privacy", label: "Privacy policy" },
+    { href: "/terms", label: "Terms of service" },
+    { href: "/auth?tab=signin", label: "Customer login" },
+  ],
+} as const;
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-emerald-700 text-emerald-50 border-t border-emerald-600">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <h3 className="text-lg font-semibold text-white">Zemen Pharma</h3>
-            <p className="mt-3 text-sm text-emerald-50/80">
-              Smart solutions for modern business. Reliable. Scalable. Secure.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wide text-emerald-50">
-              Product
-            </h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <Link
-                  className="transition-colors hover:underline"
-                  href="/(marketing)/products/pos"
-                >
-                  POS
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="transition-colors hover:underline"
-                  href="/(marketing)/products/inventory"
-                >
-                  Inventory
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="transition-colors hover:underline"
-                  href="/(marketing)/products/ai"
-                >
-                  AI Assistant
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="transition-colors hover:underline"
-                  href="/(marketing)/about"
-                >
-                  About
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wide text-emerald-50">
-              Resources
-            </h4>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <Link
-                  className="transition-colors hover:underline"
-                  href="/(auth)/login"
-                >
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="transition-colors hover:underline"
-                  href="/(auth)/register"
-                >
-                  Create Account
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wide text-emerald-50">
-              Stay in touch
-            </h4>
-            <p className="mt-4 text-sm text-emerald-50/80">
-              Get updates about new features and product releases.
-            </p>
-            <form
-              className="mt-4 flex gap-2"
-              onSubmit={(e) => e.preventDefault()}
+    <footer className="mt-16 border-t border-white/10 bg-white/5">
+      <div className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-12 md:grid-cols-5">
+        <div className="space-y-4 md:col-span-2">
+          <Link href="/" className="inline-flex items-center gap-2 text-white">
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-sky-500 shadow-[0_18px_45px_-25px_rgba(16,185,129,0.8)]">
+              <Brain className="h-5 w-5" />
+            </span>
+            <span className="text-lg font-semibold">Zemen Pharma</span>
+          </Link>
+          <p className="max-w-sm text-sm text-emerald-100/70">
+            Multi-tenant, AI-powered management for modern pharmacies. Insightful dashboards, secure workflows, and delightful patient experiences.
+          </p>
+          <div className="flex gap-3 text-emerald-100/70">
+            <a
+              href="https://www.linkedin.com"
+              target="_blank"
+              rel="noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:text-emerald-200"
             >
-              <input
-                type="email"
-                placeholder="you@example.com"
-                className="w-full rounded-md border border-emerald-500 bg-emerald-600/30 px-2 py-1 text-xs text-emerald-50 placeholder:text-emerald-100/60 outline-none focus:ring-1 focus:ring-emerald-400/60"
-              />
-              <button
-                type="submit"
-                className="whitespace-nowrap rounded-md bg-emerald-50 px-2 py-1 text-xs text-emerald-800 transition-colors hover:bg-emerald-100"
-              >
-                Subscribe
-              </button>
-            </form>
+              <Linkedin className="h-4 w-4" />
+            </a>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:text-emerald-200"
+            >
+              <Twitter className="h-4 w-4" />
+            </a>
+            <a
+              href="mailto:hello@zemenpharma.com"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:text-emerald-200"
+            >
+              <Mail className="h-4 w-4" />
+            </a>
           </div>
         </div>
 
-        <div className="mt-10 border-t border-emerald-600 pt-6 flex flex-col items-center justify-center gap-4">
-          <p className="text-xs text-emerald-50/80 text-center">
-            © {year} Zemen Pharma. All rights reserved.
-          </p>
+        <div className="grid gap-8 text-sm text-emerald-100/70 md:col-span-3 md:grid-cols-3">
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-white">Product</h3>
+            <ul className="space-y-2">
+              {footerNav.product.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="transition hover:text-emerald-200">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-white">Company</h3>
+            <ul className="space-y-2">
+              {footerNav.company.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="transition hover:text-emerald-200">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-white">Resources</h3>
+            <ul className="space-y-2">
+              {footerNav.resources.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="transition hover:text-emerald-200">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
 
-          <nav className="flex flex-wrap items-center justify-center gap-4 text-xs text-emerald-50/90">
-            <Link className="transition-colors hover:underline" href="/terms">
-              Terms
-            </Link>
-            <span className="opacity-50">•</span>
-            <Link className="transition-colors hover:underline" href="/privacy">
+      <div className="border-t border-white/10 bg-white/5">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-6 py-6 text-xs text-emerald-100/60 md:flex-row md:items-center md:justify-between">
+          <p>© {year} Zemen Pharma. All rights reserved.</p>
+          <div className="flex gap-4">
+            <Link href="/privacy" className="transition hover:text-emerald-200">
               Privacy
             </Link>
-            <span className="opacity-50">•</span>
-            <Link className="transition-colors hover:underline" href="/status">
-              Status
+            <Link href="/terms" className="transition hover:text-emerald-200">
+              Terms
             </Link>
-          </nav>
+            <Link href="/(marketing)/contact" className="transition hover:text-emerald-200">
+              Support
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

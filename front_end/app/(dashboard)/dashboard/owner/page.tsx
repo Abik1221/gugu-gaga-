@@ -44,8 +44,10 @@ function TrendPill({ delta }: { delta: number | undefined | null }) {
   const positive = delta >= 0;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 text-xs font-medium ${
-        positive ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
+      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold backdrop-blur-sm ${
+        positive
+          ? "bg-emerald-500/15 text-emerald-100"
+          : "bg-red-500/15 text-red-100"
       }`}
     >
       {positive ? "▲" : "▼"} {Math.abs(delta).toFixed(1)}%
@@ -55,9 +57,9 @@ function TrendPill({ delta }: { delta: number | undefined | null }) {
 
 function EmptyState({ title, description }: { title: string; description: string }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 rounded border border-dashed border-gray-200 p-8 text-center text-sm text-muted-foreground">
-      <div className="text-base font-medium text-gray-600">{title}</div>
-      <p className="max-w-sm text-xs leading-relaxed text-gray-500">{description}</p>
+    <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/15 bg-white/5 p-8 text-center text-sm text-emerald-100/80 backdrop-blur">
+      <div className="text-base font-semibold text-white/90">{title}</div>
+      <p className="max-w-sm text-xs leading-relaxed text-emerald-100/70">{description}</p>
     </div>
   );
 }
@@ -198,18 +200,18 @@ export default function OwnerDashboardPage() {
   }, [me]);
 
   return (
-    <div className="space-y-8">
-      <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold text-gray-900">
+    <div className="space-y-10">
+      <header className="flex flex-col gap-6 rounded-3xl border border-white/15 bg-white/10 p-6 shadow-[0_32px_120px_-60px_rgba(16,185,129,0.75)] backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-semibold leading-tight text-white">
             {loadingUser ? "Loading..." : `Welcome back, ${displayName}`}
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="max-w-xl text-sm leading-relaxed text-emerald-100/80">
             Monitor revenue, compare branches, and coach your pharmacy team from a single command center.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex rounded border border-gray-200 bg-white p-1 text-xs shadow-sm">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex rounded-full border border-white/20 bg-white/10 p-1 text-xs text-emerald-100/80 shadow-inner backdrop-blur">
             {HORIZONS.map((item) => {
               const active = horizon === item.value;
               return (
@@ -217,8 +219,10 @@ export default function OwnerDashboardPage() {
                   key={item.value}
                   type="button"
                   onClick={() => handleHorizonChange(item.value)}
-                  className={`rounded px-3 py-1 font-medium transition ${
-                    active ? "bg-emerald-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                  className={`rounded-full px-3 py-1 font-semibold transition ${
+                    active
+                      ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow"
+                      : "text-emerald-100/70 hover:bg-white/10"
                   }`}
                   disabled={analyticsLoading}
                 >
@@ -230,7 +234,7 @@ export default function OwnerDashboardPage() {
           <select
             value={trendWeeks}
             onChange={(event) => handleTrendWeeksChange(Number(event.target.value) || DEFAULT_TREND_WEEKS)}
-            className="rounded border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-700 shadow-sm focus:outline-none focus:ring"
+            className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-emerald-50 shadow-inner backdrop-blur focus-visible:ring-2 focus-visible:ring-emerald-300/70"
             disabled={analyticsLoading}
           >
             <option value={4}>4 weeks</option>
@@ -255,15 +259,18 @@ export default function OwnerDashboardPage() {
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {revenueCards.map((card) => (
-          <Card key={card.label} className="border border-emerald-100 shadow-sm">
+          <Card
+            key={card.label}
+            className="border-white/10 bg-white/10 text-emerald-50 shadow-[0_25px_100px_-50px_rgba(16,185,129,0.65)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_45px_140px_-60px_rgba(16,185,129,0.75)]"
+          >
             <CardHeader className="space-y-2">
-              <CardTitle className="text-xs uppercase tracking-wide text-emerald-700/80">
+              <CardTitle className="text-xs uppercase tracking-[0.4em] text-emerald-100/80">
                 {card.label}
               </CardTitle>
               {loading ? (
                 <Skeleton className="h-8 w-24" />
               ) : (
-                <div className="text-xl font-semibold text-gray-900">{card.value}</div>
+                <div className="text-2xl font-semibold text-white">{card.value}</div>
               )}
               {!loading && <TrendPill delta={card.delta} />}
             </CardHeader>
@@ -272,10 +279,12 @@ export default function OwnerDashboardPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-5">
-        <Card className="lg:col-span-3">
+        <Card className="lg:col-span-3 border-white/10 bg-white/10 text-emerald-50 shadow-[0_25px_100px_-60px_rgba(16,185,129,0.6)]">
           <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-            <CardTitle>Revenue trend</CardTitle>
-            <span className="text-xs text-gray-500">{trendWeeks} week trajectory</span>
+            <CardTitle className="text-white">Revenue trend</CardTitle>
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/80">
+              {trendWeeks} week trajectory
+            </span>
           </CardHeader>
           <CardContent className="h-72">
             {loading ? (
@@ -314,9 +323,9 @@ export default function OwnerDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border-white/10 bg-white/10 text-emerald-50 shadow-[0_25px_100px_-60px_rgba(59,130,246,0.55)]">
           <CardHeader>
-            <CardTitle>Inventory health</CardTitle>
+            <CardTitle className="text-white">Inventory health</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {loading ? (
@@ -328,9 +337,9 @@ export default function OwnerDashboardPage() {
               />
             ) : (
               inventorySlices.map((slice) => (
-                <div key={slice.label} className="flex items-center justify-between rounded border border-gray-100 bg-white px-3 py-2">
-                  <div className="text-sm font-medium text-gray-700">{slice.label}</div>
-                  <span className="text-sm font-semibold text-gray-900">{slice.count}</span>
+                <div key={slice.label} className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/8 px-3 py-2 text-emerald-100/90">
+                  <div className="text-sm font-medium">{slice.label}</div>
+                  <span className="text-sm font-semibold text-white">{slice.count}</span>
                 </div>
               ))
             )}
@@ -339,10 +348,12 @@ export default function OwnerDashboardPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-5">
-        <Card className="lg:col-span-3">
+        <Card className="lg:col-span-3 border-white/10 bg-white/10 text-emerald-50 shadow-[0_25px_100px_-60px_rgba(147,197,253,0.45)]">
           <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-            <CardTitle>Branch comparison</CardTitle>
-            <span className="text-xs text-gray-500">Revenue, transactions, and units sold</span>
+            <CardTitle className="text-white">Branch comparison</CardTitle>
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/80">
+              Revenue, transactions, and units sold
+            </span>
           </CardHeader>
           <CardContent className="space-y-2 overflow-x-auto">
             {loading ? (
@@ -353,22 +364,22 @@ export default function OwnerDashboardPage() {
                 description="Add the branch field when creating sales to see how each site performs."
               />
             ) : (
-              <table className="min-w-full divide-y divide-gray-200 text-sm">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-white/10 text-sm text-emerald-100/80">
+                <thead className="bg-white/5">
                   <tr>
-                    <th className="px-3 py-2 text-left font-semibold text-gray-600">Branch</th>
-                    <th className="px-3 py-2 text-left font-semibold text-gray-600">Revenue</th>
-                    <th className="px-3 py-2 text-left font-semibold text-gray-600">Sales</th>
-                    <th className="px-3 py-2 text-left font-semibold text-gray-600">Units sold</th>
+                    <th className="px-3 py-2 text-left font-semibold uppercase tracking-[0.2em] text-emerald-100">Branch</th>
+                    <th className="px-3 py-2 text-left font-semibold uppercase tracking-[0.2em] text-emerald-100">Revenue</th>
+                    <th className="px-3 py-2 text-left font-semibold uppercase tracking-[0.2em] text-emerald-100">Sales</th>
+                    <th className="px-3 py-2 text-left font-semibold uppercase tracking-[0.2em] text-emerald-100">Units sold</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 bg-white">
+                <tbody className="divide-y divide-white/10 bg-white/5 text-white/90">
                   {branchComparison.map((row) => (
                     <tr key={row.branch ?? "_default"}>
-                      <td className="px-3 py-2 text-gray-700">{row.branch || "Unassigned"}</td>
-                      <td className="px-3 py-2 text-gray-900">{formatCurrency(row.revenue)}</td>
-                      <td className="px-3 py-2 text-gray-700">{row.sale_count.toLocaleString("en-US")}</td>
-                      <td className="px-3 py-2 text-gray-700">{row.units_sold.toLocaleString("en-US")}</td>
+                      <td className="px-3 py-2">{row.branch || "Unassigned"}</td>
+                      <td className="px-3 py-2 text-emerald-100">{formatCurrency(row.revenue)}</td>
+                      <td className="px-3 py-2">{row.sale_count.toLocaleString("en-US")}</td>
+                      <td className="px-3 py-2">{row.units_sold.toLocaleString("en-US")}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -377,10 +388,10 @@ export default function OwnerDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border-white/10 bg-white/10 text-emerald-50 shadow-[0_25px_100px_-60px_rgba(16,185,129,0.55)]">
           <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-            <CardTitle>Staff productivity</CardTitle>
-            <Link href="/dashboard/owner/staff" className="text-xs font-medium text-emerald-600 hover:underline">
+            <CardTitle className="text-white">Staff productivity</CardTitle>
+            <Link href="/dashboard/owner/staff" className="text-xs font-semibold text-emerald-200 hover:text-emerald-100">
               View staff list
             </Link>
           </CardHeader>
@@ -394,20 +405,26 @@ export default function OwnerDashboardPage() {
               />
             ) : (
               <ul className="space-y-2">
-                {productivity.map((item) => (
-                  <li key={item.user_id} className="rounded border border-gray-100 bg-white px-3 py-2">
-                    <div className="flex items-center justify-between text-sm font-medium text-gray-900">
-                      <span>{item.name}</span>
-                      <span>{formatCurrency(item.total_sales)}</span>
-                    </div>
-                    <div className="mt-1 text-xs text-gray-500">
-                      <span>{item.role}</span>
-                      <span>
-                        {item.transactions} transactions · {item.units_sold} units
-                      </span>
-                    </div>
-                  </li>
-                ))}
+                {productivity.map((item) => {
+                  const fallback = item as typeof item & {
+                    transaction_count?: number;
+                    avg_ticket?: number;
+                  };
+                  const transactions = item.transactions ?? fallback.transaction_count ?? 0;
+                  const avgTicketValue = fallback.avg_ticket ?? (transactions ? item.total_sales / transactions : 0);
+
+                  return (
+                    <li key={item.user_id} className="rounded-2xl border border-white/15 bg-white/8 px-3 py-2 text-emerald-50">
+                      <div className="flex items-center justify-between text-sm font-semibold">
+                        <span>{item.name}</span>
+                        <span className="text-emerald-200">{formatCurrency(item.total_sales)}</span>
+                      </div>
+                      <div className="mt-1 text-xs text-emerald-100/70">
+                        {transactions.toLocaleString("en-US")} sales • {formatCurrency(avgTicketValue)} avg ticket
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </CardContent>
@@ -415,10 +432,12 @@ export default function OwnerDashboardPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-5">
-        <Card className="lg:col-span-3">
+        <Card className="lg:col-span-3 border-white/10 bg-white/10 text-emerald-50 shadow-[0_25px_100px_-60px_rgba(16,185,129,0.6)]">
           <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-            <CardTitle>Staff activity</CardTitle>
-            <span className="text-xs text-gray-500">Most recent inventory & POS changes</span>
+            <CardTitle className="text-white">Staff activity</CardTitle>
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/80">
+              Most recent inventory & POS changes
+            </span>
           </CardHeader>
           <CardContent className="space-y-3">
             {loading ? (
@@ -431,21 +450,27 @@ export default function OwnerDashboardPage() {
             ) : (
               <ul className="space-y-2">
                 {activityStream.map((entry) => (
-                  <li key={entry.id} className="rounded border border-gray-100 bg-white p-3 text-sm">
+                  <li key={entry.id} className="rounded-2xl border border-white/15 bg-white/8 p-3 text-sm text-emerald-50">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-800">{entry.action.replace(/_/g, " ")}</span>
-                      <span className="text-xs text-gray-400">
+                      <span className="font-semibold text-white">{entry.action.replace(/_/g, " ")}</span>
+                      <span className="text-xs text-emerald-100/60">
                         {new Date(entry.created_at).toLocaleString()}
                       </span>
                     </div>
-                    <div className="mt-1 text-xs text-gray-500">
-                      {entry.actor_name ? `${entry.actor_name} (${entry.actor_role || "staff"})` : "System"}
+                    <div className="mt-1 text-xs text-emerald-100/70">
+                      {(() => {
+                        const raw = entry as typeof entry & { description?: string };
+                        if (raw.description) return raw.description;
+                        if (entry.metadata) {
+                          try {
+                            return typeof entry.metadata === "string" ? entry.metadata : JSON.stringify(entry.metadata);
+                          } catch (error) {
+                            return String(entry.metadata);
+                          }
+                        }
+                        return "No additional details";
+                      })()}
                     </div>
-                    {entry.metadata && (
-                      <pre className="mt-2 max-h-32 overflow-auto rounded bg-gray-50 p-2 text-xs text-gray-600">
-                        {JSON.stringify(entry.metadata, null, 2)}
-                      </pre>
-                    )}
                   </li>
                 ))}
               </ul>
@@ -453,9 +478,9 @@ export default function OwnerDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border-white/10 bg-white/10 text-emerald-50 shadow-[0_25px_100px_-60px_rgba(16,185,129,0.6)]">
           <CardHeader>
-            <CardTitle>Recent payment activity</CardTitle>
+            <CardTitle className="text-white">Recent payment activity</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {loading ? (
@@ -466,16 +491,28 @@ export default function OwnerDashboardPage() {
                 description="Payment uploads appear here for the owner’s records."
               />
             ) : (
-              <ul className="space-y-2 text-sm">
-                {recentPayments.map((payment) => (
-                  <li key={payment.id} className="rounded border border-gray-100 bg-white px-3 py-2">
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span className="font-medium uppercase text-gray-600">{payment.status_label || payment.status}</span>
-                      <span>{payment.created_at_formatted || new Date(payment.created_at).toLocaleString()}</span>
-                    </div>
-                    <div className="mt-1 text-sm font-semibold text-gray-900">{payment.code || "—"}</div>
-                  </li>
-                ))}
+              <ul className="space-y-2 text-sm text-emerald-50">
+                {recentPayments.map((payment) => {
+                  const raw = payment as typeof payment & {
+                    amount_formatted?: string;
+                    amount?: number;
+                    method?: string;
+                  };
+                  const amountDisplay = raw.amount_formatted ?? (raw.amount != null ? formatCurrency(raw.amount) : "—");
+                  const methodDisplay = raw.method ?? "N/A";
+
+                  return (
+                    <li key={payment.id} className="rounded-2xl border border-white/15 bg-white/8 px-3 py-2">
+                      <div className="flex items-center justify-between text-xs text-emerald-100/60">
+                        <span className="font-semibold uppercase text-emerald-100">{payment.status_label || payment.status}</span>
+                        <span>{payment.created_at_formatted || new Date(payment.created_at).toLocaleString()}</span>
+                      </div>
+                      <div className="mt-1 text-xs text-emerald-100/70">
+                        {amountDisplay} • {methodDisplay}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </CardContent>
@@ -483,10 +520,10 @@ export default function OwnerDashboardPage() {
       </section>
 
       <section className="space-y-3">
-        <Card>
+        <Card className="border-white/10 bg-white/10 text-emerald-50 shadow-[0_25px_100px_-60px_rgba(59,130,246,0.55)]">
           <CardHeader className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-            <CardTitle>Top products</CardTitle>
-            <span className="text-xs text-gray-500">Most recent best sellers</span>
+            <CardTitle className="text-white">Top products</CardTitle>
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/80">Most recent best sellers</span>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -498,20 +535,22 @@ export default function OwnerDashboardPage() {
               />
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 text-sm">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-white/10 text-sm text-emerald-100/80">
+                  <thead className="bg-white/5">
                     <tr>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Product</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Revenue</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Quantity</th>
+                      <th className="px-3 py-2 text-left font-semibold uppercase tracking-[0.2em] text-emerald-100">Product</th>
+                      <th className="px-3 py-2 text-left font-semibold uppercase tracking-[0.2em] text-emerald-100">Revenue</th>
+                      <th className="px-3 py-2 text-left font-semibold uppercase tracking-[0.2em] text-emerald-100">Sales</th>
+                      <th className="px-3 py-2 text-left font-semibold uppercase tracking-[0.2em] text-emerald-100">Quantity</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 bg-white">
+                  <tbody className="divide-y divide-white/10 bg-white/5 text-white/90">
                     {topProducts.map((item) => (
                       <tr key={item.name}>
-                        <td className="px-3 py-2 text-gray-700">{item.name}</td>
-                        <td className="px-3 py-2 text-gray-900">{formatCurrency(item.revenue)}</td>
-                        <td className="px-3 py-2 text-gray-700">{item.quantity.toLocaleString("en-US")}</td>
+                        <td className="px-3 py-2">{item.name}</td>
+                        <td className="px-3 py-2 text-emerald-100">{formatCurrency(item.revenue)}</td>
+                        <td className="px-3 py-2">{item.quantity.toLocaleString("en-US")}</td>
+                        <td className="px-3 py-2">{item.quantity.toLocaleString("en-US")}</td>
                       </tr>
                     ))}
                   </tbody>

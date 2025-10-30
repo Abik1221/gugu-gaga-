@@ -186,22 +186,16 @@ async function postJSON(path, body, tenantId) {
     return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
-    const res = await fetch(resolveApiUrl(path), {
+    const res = await authFetch(path, {
         method: "PUT",
-        headers: buildHeaders({
+        headers: {
             "Content-Type": "application/json"
-        }, tenantId),
+        },
         body: JSON.stringify(bodyData)
-    });
+    }, true, tenantId);
     if (!res.ok) {
-        try {
-            const data = await res.json();
-            const msg = (data === null || data === void 0 ? void 0 : data.error) || (data === null || data === void 0 ? void 0 : data.detail) || JSON.stringify(data);
-            throw new Error(msg || "Request failed with ".concat(res.status));
-        } catch (e) {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || "Request failed with ".concat(res.status));
-        }
+        const text = await res.text().catch(()=>"");
+        throw new Error(text || "Request failed with ".concat(res.status));
     }
     return await res.json();
 }
@@ -528,7 +522,8 @@ const PharmaciesAPI = {
         var _params_page_size;
         search.set("page_size", String((_params_page_size = params === null || params === void 0 ? void 0 : params.page_size) !== null && _params_page_size !== void 0 ? _params_page_size : 20));
         if (params === null || params === void 0 ? void 0 : params.q) search.set("q", params.q);
-        const path = "/api/v1/pharmacies?".concat(search.toString());
+        const queryString = search.toString();
+        const path = "/api/v1/pharmacies".concat(queryString ? "?".concat(queryString) : "");
         return getAuthJSON(path, tenantId);
     },
     get: (id, tenantId)=>getAuthJSON("/api/v1/pharmacies/".concat(id), tenantId),
@@ -540,7 +535,7 @@ const PharmaciesAPI = {
             body: JSON.stringify(body)
         }, true, tenantId).then(async (res)=>{
             if (!res.ok) throw new Error(await res.text());
-            return res.json();
+            return await res.json();
         })
 };
 const ChatAPI = {

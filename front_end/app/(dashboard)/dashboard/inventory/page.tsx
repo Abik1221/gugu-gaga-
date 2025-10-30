@@ -101,7 +101,7 @@ export default function InventoryPage() {
     );
   }
   if (error) {
-    return <div className="text-red-600">{error}</div>;
+    return <div className="rounded-3xl border border-red-400/30 bg-red-500/15 p-4 text-sm text-red-100 backdrop-blur">{error}</div>;
   }
 
   const filtered = items.filter((it) => {
@@ -116,17 +116,17 @@ export default function InventoryPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold">Inventory Management</h1>
+      <div className="flex items-center justify-between gap-3 rounded-3xl border border-white/10 bg-white/10 p-4 shadow-[0_32px_120px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
+        <h1 className="text-xl font-semibold text-white">Inventory Management</h1>
         <div className="flex items-center gap-2">
           <Input
             placeholder="Search name/SKU/category"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-64"
+            className="w-64 rounded-full border border-white/15 bg-white/10 text-sm text-white placeholder:text-emerald-100/60"
           />
           <button
-            className="border rounded px-3 py-2 text-sm hover:bg-gray-50"
+            className="rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/20"
             onClick={() => setCreating((v) => !v)}
           >
             {creating ? "Close" : "Add Item"}
@@ -134,22 +134,22 @@ export default function InventoryPage() {
         </div>
       </div>
       {creating && (
-        <div className="border rounded bg-white p-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Input placeholder="Name" value={form.name} onChange={(e)=>setForm({...form,name:e.target.value})} />
-            <Input placeholder="SKU" value={form.sku} onChange={(e)=>setForm({...form,sku:e.target.value})} />
-            <Input placeholder="Category" value={form.category} onChange={(e)=>setForm({...form,category:e.target.value})} />
-            <Input placeholder="Cost Price" type="number" min="0" step="0.01" value={form.cost_price} onChange={(e)=>setForm({...form,cost_price:e.target.value})} />
-            <Input placeholder="Sale Price" type="number" min="0" step="0.01" value={form.sale_price} onChange={(e)=>setForm({...form,sale_price:e.target.value})} />
-            <Input placeholder="Stock Qty" type="number" min="0" step="0.01" value={form.stock_qty} onChange={(e)=>setForm({...form,stock_qty:e.target.value})} />
-            <Input placeholder="Units (e.g. pcs)" value={form.units} onChange={(e)=>setForm({...form,units:e.target.value})} />
-            <Input placeholder="Barcode (optional)" value={form.barcode} onChange={(e)=>setForm({...form,barcode:e.target.value})} />
-            <Input placeholder="Lot No (optional)" value={form.lot_no} onChange={(e)=>setForm({...form,lot_no:e.target.value})} />
-            <Input placeholder="Expiry Date (YYYY-MM-DD optional)" value={form.expiry_date} onChange={(e)=>setForm({...form,expiry_date:e.target.value})} />
+        <div className="rounded-3xl border border-white/10 bg-white/10 p-4 shadow-[0_32px_120px_-60px_rgba(59,130,246,0.55)] backdrop-blur">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <Input placeholder="Name" value={form.name} onChange={(e)=>setForm({...form,name:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+            <Input placeholder="SKU" value={form.sku} onChange={(e)=>setForm({...form,sku:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+            <Input placeholder="Category" value={form.category} onChange={(e)=>setForm({...form,category:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+            <Input placeholder="Cost Price" type="number" min="0" step="0.01" value={form.cost_price} onChange={(e)=>setForm({...form,cost_price:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+            <Input placeholder="Sale Price" type="number" min="0" step="0.01" value={form.sale_price} onChange={(e)=>setForm({...form,sale_price:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+            <Input placeholder="Stock Qty" type="number" min="0" step="0.01" value={form.stock_qty} onChange={(e)=>setForm({...form,stock_qty:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+            <Input placeholder="Units (e.g. pcs)" value={form.units} onChange={(e)=>setForm({...form,units:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+            <Input placeholder="Barcode (optional)" value={form.barcode} onChange={(e)=>setForm({...form,barcode:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+            <Input placeholder="Lot No (optional)" value={form.lot_no} onChange={(e)=>setForm({...form,lot_no:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+            <Input placeholder="Expiry Date (YYYY-MM-DD optional)" value={form.expiry_date} onChange={(e)=>setForm({...form,expiry_date:e.target.value})} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
           </div>
           <div className="mt-3 flex gap-2">
             <button
-              className="border rounded px-3 py-2 text-sm bg-emerald-600 text-white hover:bg-emerald-700"
+              className="rounded-full border border-emerald-300/40 bg-emerald-500/20 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:bg-emerald-500/30"
               onClick={async () => {
                 try {
                   const payload: any = {
@@ -187,37 +187,37 @@ export default function InventoryPage() {
             >
               Save Item
             </button>
-            <button className="border rounded px-3 py-2 text-sm hover:bg-gray-50" onClick={()=>setCreating(false)}>Cancel</button>
+            <button className="rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/20" onClick={()=>setCreating(false)}>Cancel</button>
           </div>
         </div>
       )}
-      <div className="overflow-x-auto border rounded bg-white">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-50 text-gray-600">
+      <div className="overflow-x-auto rounded-3xl border border-white/10 bg-white/10 shadow-[0_30px_110px_-60px_rgba(147,197,253,0.5)] backdrop-blur-xl">
+        <table className="min-w-full text-sm text-emerald-100/85">
+          <thead className="bg-white/5 text-emerald-100">
             <tr>
-              <th className="text-left px-3 py-2">Name</th>
-              <th className="text-left px-3 py-2">SKU</th>
-              <th className="text-left px-3 py-2">Category</th>
-              <th className="text-right px-3 py-2">Stock</th>
-              <th className="text-right px-3 py-2">Sale Price</th>
-              <th className="text-right px-3 py-2">Cost</th>
-              <th className="text-left px-3 py-2">Expiry</th>
-              <th className="text-left px-3 py-2">Actions</th>
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Name</th>
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">SKU</th>
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Category</th>
+              <th className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-[0.3em]">Stock</th>
+              <th className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-[0.3em]">Sale Price</th>
+              <th className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-[0.3em]">Cost</th>
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Expiry</th>
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map((it) => (
-              <tr key={it.id} className="border-t align-top">
-                <td className="px-3 py-2">{it.name}</td>
-                <td className="px-3 py-2 text-gray-600">{it.sku}</td>
-                <td className="px-3 py-2 text-gray-600">{it.category || "-"}</td>
-                <td className="px-3 py-2 text-right">{it.stock_qty}</td>
-                <td className="px-3 py-2 text-right">{it.sale_price.toFixed(2)}</td>
-                <td className="px-3 py-2 text-right">{it.cost_price.toFixed(2)}</td>
-                <td className="px-3 py-2 text-gray-600">{it.expiry_date || "-"}</td>
+              <tr key={it.id} className="border-t border-white/10 align-top">
+                <td className="px-3 py-2 font-semibold text-white">{it.name}</td>
+                <td className="px-3 py-2 text-emerald-100/70">{it.sku}</td>
+                <td className="px-3 py-2 text-emerald-100/70">{it.category || "-"}</td>
+                <td className="px-3 py-2 text-right text-emerald-100">{it.stock_qty}</td>
+                <td className="px-3 py-2 text-right text-emerald-100">{it.sale_price.toFixed(2)}</td>
+                <td className="px-3 py-2 text-right text-emerald-100">{it.cost_price.toFixed(2)}</td>
+                <td className="px-3 py-2 text-emerald-100/70">{it.expiry_date || "-"}</td>
                 <td className="px-3 py-2">
                   <button
-                    className="text-emerald-700 border border-emerald-200 hover:bg-emerald-50 text-xs rounded px-2 py-1"
+                    className="rounded-full border border-emerald-300/40 bg-emerald-500/15 px-2 py-1 text-xs font-semibold text-emerald-100 transition hover:bg-emerald-500/25"
                     onClick={() => {
                       setAdjustId(it.id);
                       setAdjustDelta("");
@@ -227,12 +227,12 @@ export default function InventoryPage() {
                     Adjust Stock
                   </button>
                   {adjustId === it.id && (
-                    <div className="mt-2 border rounded p-2 bg-gray-50 space-y-2">
+                    <div className="mt-2 space-y-2 rounded-2xl border border-white/15 bg-white/8 p-3 text-emerald-100/80">
                       <div className="flex items-center gap-2">
                         <Input
                           type="number"
                           step="0.01"
-                          className="w-32"
+                          className="w-32 rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60"
                           placeholder="Delta (+/-)"
                           value={adjustDelta}
                           onChange={(e) => setAdjustDelta(e.target.value)}
@@ -241,11 +241,12 @@ export default function InventoryPage() {
                           placeholder="Reason"
                           value={adjustReason}
                           onChange={(e) => setAdjustReason(e.target.value)}
+                          className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60"
                         />
                       </div>
                       <div className="flex gap-2">
                         <button
-                          className="border rounded px-3 py-1 text-xs bg-emerald-600 text-white hover:bg-emerald-700"
+                          className="rounded-full border border-emerald-300/40 bg-emerald-500/25 px-3 py-1 text-xs font-semibold text-emerald-100 transition hover:bg-emerald-500/35"
                           onClick={async () => {
                             const delta = Number(adjustDelta);
                             if (!adjustReason.trim() || isNaN(delta) || delta === 0) {
@@ -280,7 +281,7 @@ export default function InventoryPage() {
                         >
                           Save
                         </button>
-                        <button className="border rounded px-3 py-1 text-xs hover:bg-white" onClick={() => setAdjustId(null)}>
+                        <button className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/20" onClick={() => setAdjustId(null)}>
                           Cancel
                         </button>
                       </div>
@@ -291,7 +292,7 @@ export default function InventoryPage() {
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td className="px-3 py-6 text-center text-gray-500" colSpan={7}>
+                <td className="px-3 py-6 text-center text-emerald-100/70" colSpan={7}>
                   No items yet.
                 </td>
               </tr>

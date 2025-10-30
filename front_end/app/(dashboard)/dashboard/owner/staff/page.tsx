@@ -159,119 +159,132 @@ export default function StaffListPage() {
   const isBusy = loading && !refreshing;
 
   return (
-    <div className="space-y-8">
-      <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold text-gray-900">Team management</h1>
-          <p className="text-sm text-gray-500">
-            Invite new cashiers or managers, monitor access, and deactivate accounts in real time.
+    <div className="space-y-10 text-emerald-50">
+      <header className="rounded-3xl border border-white/10 bg-white/10 px-6 py-6 shadow-[0_36px_140px_-70px_rgba(16,185,129,0.7)] backdrop-blur-xl lg:flex lg:items-center lg:justify-between">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-semibold text-white">Team management</h1>
+          <p className="text-sm text-emerald-100/75">
+            Invite cashiers or managers, grant the right permissions, and keep your operations compliant at all times.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="mt-6 flex flex-wrap items-center gap-3 lg:mt-0">
           <Button
             variant="outline"
             size="sm"
             onClick={() => tenantId && loadStaff(tenantId, { silent: true })}
             disabled={!tenantId || refreshing}
+            className="rounded-full border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/15 hover:text-white"
           >
             {refreshing ? "Refreshing..." : "Refresh"}
           </Button>
-          <Button size="sm" onClick={() => setInviteOpen(true)} disabled={!tenantId}>
+          <Button
+            size="sm"
+            onClick={() => setInviteOpen(true)}
+            disabled={!tenantId}
+            className="rounded-full bg-gradient-to-r from-emerald-500 via-emerald-400 to-sky-500 px-5 py-2 text-sm font-semibold text-white shadow-[0_22px_60px_-30px_rgba(16,185,129,0.75)] transition hover:from-emerald-500/90 hover:to-sky-500/90"
+          >
             Invite staff
           </Button>
         </div>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Card className="border border-emerald-100 shadow-sm">
+        <Card className="border border-white/15 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-wide text-emerald-700/70">
+            <CardTitle className="text-xs uppercase tracking-[0.35em] text-emerald-100/80">
               Total team members
             </CardTitle>
-            {isBusy ? <Skeleton className="h-7 w-12" /> : <div className="text-2xl font-semibold text-gray-900">{stats.total}</div>}
+            {isBusy ? <Skeleton className="h-7 w-12" /> : <div className="text-3xl font-semibold text-white">{stats.total}</div>}
           </CardHeader>
         </Card>
-        <Card className="border border-emerald-100 shadow-sm">
+        <Card className="border border-white/15 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-wide text-emerald-700/70">
+            <CardTitle className="text-xs uppercase tracking-[0.35em] text-emerald-100/80">
               Active
             </CardTitle>
-            {isBusy ? <Skeleton className="h-7 w-12" /> : <div className="text-2xl font-semibold text-gray-900">{stats.active}</div>}
+            {isBusy ? <Skeleton className="h-7 w-12" /> : <div className="text-3xl font-semibold text-white">{stats.active}</div>}
           </CardHeader>
         </Card>
-        <Card className="border border-amber-200 bg-amber-50/60 shadow-sm">
+        <Card className="border border-amber-400/30 bg-amber-500/15 text-amber-50 shadow-[0_28px_110px_-60px_rgba(245,158,11,0.55)] backdrop-blur-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-wide text-amber-700">
+            <CardTitle className="text-xs uppercase tracking-[0.35em] text-amber-200/80">
               Suspended
             </CardTitle>
-            {isBusy ? <Skeleton className="h-7 w-10" /> : <div className="text-2xl font-semibold text-amber-800">{stats.inactive}</div>}
+            {isBusy ? <Skeleton className="h-7 w-10" /> : <div className="text-3xl font-semibold text-amber-100">{stats.inactive}</div>}
           </CardHeader>
         </Card>
       </section>
 
       <section>
-        <Card>
-          <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <CardTitle>Directory</CardTitle>
+        <Card className="border border-white/10 bg-white/10 text-emerald-50 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.55)] backdrop-blur-xl">
+          <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <CardTitle className="text-white">Directory</CardTitle>
+              <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Search, filter, and manage access in seconds</p>
+            </div>
             <div className="flex flex-wrap items-center gap-2">
               <Input
                 placeholder="Search email, phone, role"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                className="w-60"
+                className="w-60 rounded-full border border-white/15 bg-white/10 px-5 text-sm text-white placeholder:text-emerald-100/50 focus-visible:border-emerald-300 focus-visible:ring-emerald-300"
               />
               <select
                 value={statusFilter}
                 onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}
-                className="rounded border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring"
+                className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-emerald-100/80 shadow-[0_14px_45px_-30px_rgba(16,185,129,0.55)] transition focus:outline-none focus:ring focus:ring-emerald-300/40"
               >
-                <option value="all">All statuses</option>
-                <option value="active">Active only</option>
-                <option value="inactive">Suspended only</option>
+                <option className="bg-slate-900 text-emerald-100" value="all">All statuses</option>
+                <option className="bg-slate-900 text-emerald-100" value="active">Active only</option>
+                <option className="bg-slate-900 text-emerald-100" value="inactive">Suspended only</option>
               </select>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
+          <CardContent className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-0">
             {isBusy ? (
               <Skeleton className="h-64 w-full" />
             ) : error ? (
-              <div className="p-6 text-sm text-red-600">{error}</div>
+              <div className="p-6 text-sm text-red-200">{error}</div>
             ) : filteredStaff.length === 0 ? (
-              <div className="p-6 text-sm text-gray-500">
+              <div className="p-6 text-sm text-emerald-100/70">
                 No staff match your filters. Invite a teammate to get started.
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 text-sm">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-white/10 text-sm text-emerald-100/85">
+                  <thead className="bg-white/5 text-emerald-100">
                     <tr>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Email</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Phone</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Role</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Status</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Actions</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Email</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Phone</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Role</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Status</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 bg-white">
+                  <tbody className="divide-y divide-white/10 bg-white/5">
                     {filteredStaff.map((member) => {
                       const active = member.is_active !== false;
                       return (
                         <tr key={member.id}>
-                          <td className="px-3 py-2 text-gray-900">{member.email}</td>
-                          <td className="px-3 py-2 text-gray-600">{member.phone || "—"}</td>
-                          <td className="px-3 py-2 text-gray-600">{member.role}</td>
-                          <td className="px-3 py-2">
-                            <Badge variant={active ? "default" : "secondary"} className={active ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-700"}>
+                          <td className="px-3 py-3 font-semibold text-white">{member.email}</td>
+                          <td className="px-3 py-3 text-emerald-100/70">{member.phone || "—"}</td>
+                          <td className="px-3 py-3 text-emerald-100/70">{member.role}</td>
+                          <td className="px-3 py-3">
+                            <Badge
+                              variant={active ? "default" : "secondary"}
+                              className={active ? "border border-emerald-300/40 bg-emerald-500/15 text-emerald-100" : "border border-white/20 bg-white/10 text-emerald-100"}
+                            >
                               {active ? "Active" : "Suspended"}
                             </Badge>
                           </td>
-                          <td className="px-3 py-2">
+                          <td className="px-3 py-3">
                             <div className="flex flex-wrap items-center gap-2">
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => handleToggleActive(member, !active)}
                                 disabled={mutatingId === member.id}
+                                className="rounded-full border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/20 hover:text-white"
                               >
                                 {active ? "Suspend" : "Activate"}
                               </Button>
@@ -280,6 +293,7 @@ export default function StaffListPage() {
                                 size="sm"
                                 onClick={() => handleRemove(member)}
                                 disabled={mutatingId === member.id}
+                                className="rounded-full border border-red-400/40 bg-red-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-red-100 transition hover:bg-red-500/30"
                               >
                                 Remove
                               </Button>
@@ -293,9 +307,9 @@ export default function StaffListPage() {
               </div>
             )}
           </CardContent>
-          <CardFooter className="justify-between">
-            <div className="text-xs text-gray-500">Showing {filteredStaff.length} of {staff.length} team members</div>
-            <div className="text-xs text-gray-500">Tenant: {profile?.tenant_id || "—"}</div>
+          <CardFooter className="flex flex-col gap-2 border-t border-white/10 bg-white/5 p-4 text-xs text-emerald-100/70 md:flex-row md:items-center md:justify-between">
+            <div>Showing {filteredStaff.length} of {staff.length} team members</div>
+            <div>Tenant: {profile?.tenant_id || "—"}</div>
           </CardFooter>
         </Card>
       </section>
@@ -370,58 +384,88 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
         onOpenChange(next);
       }}
     >
-      <SheetContent side="right" className="max-w-md space-y-4 overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Invite staff member</SheetTitle>
-          <SheetDescription>
-            Create credentials for a cashier or manager. They will be prompted to update their profile on first login.
+      <SheetContent
+        side="right"
+        className="max-w-md space-y-5 overflow-y-auto border border-white/10 bg-gradient-to-br from-slate-950/95 via-slate-900/90 to-slate-950/95 p-6 text-emerald-50 backdrop-blur-2xl shadow-[0_36px_140px_-70px_rgba(16,185,129,0.6)]"
+      >
+        <SheetHeader className="space-y-2 text-left">
+          <SheetTitle className="text-2xl font-semibold text-white">Invite staff member</SheetTitle>
+          <SheetDescription className="text-sm text-emerald-100/70">
+            Create credentials for a cashier or manager. They will update their profile on first login.
           </SheetDescription>
         </SheetHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Tenant ID</label>
-            <Input value={tenantId ?? ""} readOnly disabled />
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Tenant ID</label>
+            <Input
+              value={tenantId ?? ""}
+              readOnly
+              disabled
+              className="rounded-2xl border border-white/10 bg-white/10 text-sm text-emerald-100"
+            />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Email</label>
-            <Input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Email</label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              placeholder="cashier@branch.com"
+              className="rounded-2xl border border-white/10 bg-white/10 text-sm text-white placeholder:text-emerald-100/50 focus-visible:border-emerald-300 focus-visible:ring-emerald-300"
+            />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Temporary password</label>
-            <Input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required />
-            <p className="text-xs text-gray-500">Share this temporary password securely with the staff member.</p>
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Temporary password</label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              placeholder="Min 6 characters with a capital letter"
+              className="rounded-2xl border border-white/10 bg-white/10 text-sm text-white placeholder:text-emerald-100/50 focus-visible:border-emerald-300 focus-visible:ring-emerald-300"
+            />
+            <p className="text-xs text-emerald-100/60">Share securely and remind them to reset on first sign-in.</p>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Phone (optional)</label>
-            <Input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="e.g. +2519..." />
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Phone (optional)</label>
+            <Input
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+              placeholder="e.g. +2519..."
+              className="rounded-2xl border border-white/10 bg-white/10 text-sm text-white placeholder:text-emerald-100/50 focus-visible:border-emerald-300 focus-visible:ring-emerald-300"
+            />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Role</label>
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Role</label>
             <select
               value={role}
               onChange={(event) => setRole(event.target.value)}
-              className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring"
+              className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm text-emerald-100/80 shadow-[0_18px_55px_-35px_rgba(16,185,129,0.5)] focus:outline-none focus:ring focus:ring-emerald-300/40"
             >
-              <option value="cashier">Cashier</option>
-              <option value="manager">Manager</option>
+              <option className="bg-slate-900 text-emerald-100" value="cashier">Cashier</option>
+              <option className="bg-slate-900 text-emerald-100" value="manager">Manager</option>
             </select>
           </div>
-          <SheetFooter>
-            <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-between">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  resetForm();
-                  onOpenChange(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={submitting}>
-                {submitting ? "Sending..." : "Send invite"}
-              </Button>
-            </div>
+          <SheetFooter className="gap-3 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                resetForm();
+                onOpenChange(false);
+              }}
+              className="rounded-full border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/15 hover:text-white"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="rounded-full bg-gradient-to-r from-emerald-500 via-emerald-400 to-sky-500 px-5 py-2 text-sm font-semibold text-white shadow-[0_22px_60px_-30px_rgba(16,185,129,0.75)] transition hover:from-emerald-500/90 hover:to-sky-500/90"
+            >
+              {submitting ? "Sending..." : "Send invite"}
+            </Button>
           </SheetFooter>
         </form>
       </SheetContent>

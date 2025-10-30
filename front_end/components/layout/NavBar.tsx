@@ -14,6 +14,12 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
+type NavItem = {
+  id: string;
+  label: string;
+  href?: string;
+};
+
 export default function NavBar({
   isOpen,
   setIsOpen,
@@ -29,14 +35,14 @@ export default function NavBar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const navItems = [
+  const navItems: readonly NavItem[] = [
     { id: "hero", label: "Home" },
     { id: "features", label: "Features" },
     { id: "ai-solutions", label: "Solutions" },
     { id: "pricing", label: "Pricing" },
-    { id: "cta", label: "Contact" },
+    { id: "cta", label: "Contact", href: "/contact" },
     // { id: "affiliate", label: "Affiliate" },
-  ];
+  ] as const;
 
   const menuVariants = {
     closed: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
@@ -59,11 +65,9 @@ export default function NavBar({
       {/* Desktop Navigation */}
       <motion.div
         className={[
-          "hidden lg:block mx-auto w-fit fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 rounded-xl",
-          isGlass
-            ? "bg-white/40 backdrop-blur-md border border-white/20 shadow-lg"
-            : "bg-white/95 backdrop-blur-sm border border-emerald-200 shadow-lg",
-          scrolled ? "scale-105 shadow-xl" : "",
+          "hidden lg:block mx-auto w-fit fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 rounded-2xl",
+          "bg-white/10 backdrop-blur-xl border border-white/15 shadow-[0_20px_60px_-35px_rgba(59,130,246,0.45)]",
+          scrolled ? "scale-105 shadow-[0_25px_80px_-35px_rgba(16,185,129,0.55)]" : "",
         ].join(" ")}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -76,6 +80,10 @@ export default function NavBar({
                 <NavigationMenuLink asChild>
                   <motion.button
                     onClick={() => {
+                      if (item.href) {
+                        router.push(item.href);
+                        return;
+                      }
                       if (pathname !== "/") {
                         router.push(`/#${item.id}`);
                       } else {
@@ -83,10 +91,8 @@ export default function NavBar({
                       }
                     }}
                     className={[
-                      "px-6 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer relative group/item",
-                      isGlass
-                        ? "text-emerald-800 hover:bg-white/30"
-                        : "text-emerald-700 hover:bg-emerald-50",
+                      "group relative cursor-pointer rounded-lg px-6 py-3 font-medium text-sm uppercase tracking-wide transition-all duration-300",
+                      "text-emerald-100 group-hover:text-white",
                     ].join(" ")}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -96,12 +102,8 @@ export default function NavBar({
                   >
                     <span className="relative z-10">{item.label}</span>
                     <motion.div
-                      className={[
-                        "absolute inset-0 rounded-lg opacity-0 group-hover/item:opacity-100 transition-opacity",
-                        isGlass
-                          ? "bg-white/0 group-hover:bg-white/20"
-                          : "bg-gradient-to-r from-emerald-100 to-green-100",
-                      ].join(" ")}
+                      className="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.55), rgba(59,130,246,0.45))" }}
                       transition={{ duration: 0.3 }}
                     />
                   </motion.button>
@@ -112,10 +114,8 @@ export default function NavBar({
               <NavigationMenuLink asChild>
                 <motion.button
                   className={[
-                    "px-6 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer relative group/item",
-                    isGlass
-                      ? "text-emerald-800 hover:bg-white/30"
-                      : "text-emerald-700 hover:bg-emerald-50",
+                    "group relative rounded-lg px-6 py-3 font-medium text-sm uppercase tracking-wide transition-all duration-300",
+                    "text-emerald-100 group-hover:text-white",
                   ].join(" ")}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -124,15 +124,13 @@ export default function NavBar({
                   transition={{ delay: 5 * 0.1 + 0.3 }}
                 >
                   <span className="relative z-10">
-                    <Link href="/register">Affiliate</Link>
+                    <Link href="/register/affiliate" className="text-white">
+                      Affiliate
+                    </Link>
                   </span>
                   <motion.div
-                    className={[
-                      "absolute inset-0 rounded-lg opacity-0 group-hover/item:opacity-100 transition-opacity",
-                      isGlass
-                        ? "bg-white/0 group-hover:bg-white/20"
-                        : "bg-gradient-to-r from-emerald-100 to-green-100",
-                    ].join(" ")}
+                    className="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.55), rgba(59,130,246,0.45))" }}
                     transition={{ duration: 0.3 }}
                   />
                 </motion.button>
@@ -144,7 +142,7 @@ export default function NavBar({
 
       {/* Mobile Navigation */}
       <motion.div
-        className="lg:hidden fixed top-6 right-6 z-50"
+        className="fixed top-6 right-6 z-50 lg:hidden"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
@@ -154,12 +152,7 @@ export default function NavBar({
             <Button
               variant="outline"
               size="sm"
-              className={[
-                "h-12 w-12 border rounded-xl transition-all duration-300 p-0",
-                isGlass
-                  ? "bg-white/40 backdrop-blur-md border-white/30 hover:bg-white/50 shadow-lg"
-                  : "bg-white/95 backdrop-blur-sm border-emerald-200 hover:bg-emerald-50 shadow-lg",
-              ].join(" ")}
+              className="h-12 w-12 rounded-xl border border-white/20 bg-white/10 p-0 text-white shadow-[0_20px_60px_-35px_rgba(59,130,246,0.45)] transition-all duration-300 hover:border-emerald-300 hover:bg-white/15"
             >
               <motion.div
                 animate={isOpen ? { rotate: 90 } : { rotate: 0 }}
@@ -175,10 +168,10 @@ export default function NavBar({
           </SheetTrigger>
           <SheetContent
             side="right"
-            className="w-80 bg-white/95 backdrop-blur-sm border-l border-emerald-200"
+            className="w-72 border border-white/10 bg-gradient-to-br from-slate-950/95 via-slate-900/90 to-slate-950/95 p-6 text-white backdrop-blur-2xl shadow-[0_35px_120px_-50px_rgba(16,185,129,0.65)]"
           >
             <motion.div
-              className="flex flex-col space-y-6 mt-16"
+              className="mt-6 flex flex-col space-y-4"
               variants={menuVariants}
               initial="closed"
               animate="open"
@@ -187,6 +180,11 @@ export default function NavBar({
                 <motion.button
                   key={item.id}
                   onClick={() => {
+                    if (item.href) {
+                      router.push(item.href);
+                      setIsOpen(false);
+                      return;
+                    }
                     if (pathname !== "/") {
                       router.push(`/#${item.id}`);
                       setIsOpen(false);
@@ -195,34 +193,21 @@ export default function NavBar({
                       setIsOpen(false);
                     }
                   }}
-                  className="text-left px-4 py-4 rounded-xl text-emerald-700 font-semibold text-lg hover:bg-emerald-50 transition-all duration-300 border border-transparent hover:border-emerald-200"
+                  className="cursor-pointer rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left text-sm font-semibold uppercase tracking-wide text-emerald-100 transition-all duration-300 hover:border-emerald-300/60 hover:bg-white/12 hover:text-white hover:shadow-[0_18px_48px_-30px_rgba(16,185,129,0.55)]"
                   variants={itemVariants}
                   whileHover={{
                     scale: 1.02,
                     x: 10,
-                    backgroundColor: "rgba(16, 185, 129, 0.1)",
+                    backgroundColor: "rgba(16, 185, 129, 0.18)",
                   }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <span className="flex items-center">
-                    <motion.div
-                      className="w-2 h-2 bg-emerald-400 rounded-full mr-4"
-                      whileHover={{ scale: 1.5 }}
-                    />
+                    <span className="mr-3 inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                     {item.label}
                   </span>
                 </motion.button>
               ))}
-            </motion.div>
-
-            {/* Decorative Elements */}
-            <motion.div
-              className="absolute bottom-8 left-8 text-emerald-300 text-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-            >
-              Zemen Pharma
             </motion.div>
           </SheetContent>
         </Sheet>

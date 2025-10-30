@@ -6,6 +6,8 @@ import { AuthAPI, type AuthProfile } from "@/utils/api";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { Activity, LogOut, Settings2 } from "lucide-react";
 
 type RoleAssignment = {
   role?: {
@@ -37,7 +39,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/dashboard/admin");
   const loginPath = isAdminRoute
-    ? "/login"
+    ? "/superadin/zemnpharma/login"
     : `/auth?tab=signin&next=${encodeURIComponent(pathname || "/dashboard")}`;
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<Me | null>(null);
@@ -189,11 +191,11 @@ export default function DashboardLayout({
       localStorage.removeItem("refresh_token");
     }
     if (isAffiliate) {
-      router.replace("/auth/affiliate-login");
+      router.replace("/affiliate-login");
       return;
     }
     if (roleName === "admin") {
-      router.replace("/login");
+      router.replace("/superadin/zemnpharma/login");
       return;
     }
     router.replace("/auth?tab=signin");
@@ -201,8 +203,8 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-gray-500">Loading dashboard...</div>
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div className="animate-pulse text-emerald-200/70">Loading dashboard...</div>
       </div>
     );
   }
@@ -214,13 +216,16 @@ export default function DashboardLayout({
   return (
     <Shell user={user} onLogout={logout}>
       {banner && (
-        <div className="mb-4 p-3 border rounded bg-amber-50 text-amber-800 text-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-amber-100 backdrop-blur">
           <div>
-            <div className="font-medium">{banner.title}</div>
-            <div className="text-xs md:text-sm">{banner.description}</div>
+            <div className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-200">{banner.title}</div>
+            <div className="mt-1 text-xs md:text-sm text-amber-100/80">{banner.description}</div>
           </div>
           {banner.actionHref && banner.actionLabel && (
-            <a href={banner.actionHref} className="inline-flex items-center justify-center rounded border border-amber-600 px-3 py-1 text-xs font-medium text-amber-700 hover:bg-amber-100">
+            <a
+              href={banner.actionHref}
+              className="inline-flex items-center justify-center rounded-full border border-amber-300/40 bg-amber-500/15 px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-amber-100 transition hover:border-amber-200/60 hover:bg-amber-500/25"
+            >
               {banner.actionLabel}
             </a>
           )}
@@ -305,60 +310,103 @@ function Shell({
   }
 
   return (
-    <div className="min-h-screen grid grid-cols-12">
-      <aside className="col-span-12 md:col-span-2 border-r p-4 space-y-6 bg-white">
-        <div className="space-y-1">
-          <div className="text-lg font-semibold">
-            {isAffiliate ? "Affiliate Portal" : isAdmin ? "Admin Console" : "Zemen Dashboard"}
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+      <div className="pointer-events-none absolute -top-24 left-[10%] h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute top-1/2 right-[-10%] h-96 w-96 rounded-full bg-sky-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-[-20%] left-[35%] h-80 w-80 rounded-full bg-teal-500/25 blur-3xl" />
+
+      <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-8 lg:flex-row">
+        <motion.aside
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
+          className="sticky top-8 w-full self-start rounded-3xl border border-white/10 bg-white/10 p-6 shadow-[0_40px_120px_-50px_rgba(20,184,166,0.6)] backdrop-blur-2xl lg:w-[280px]"
+        >
+          <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-emerald-100/90">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">
+              <Activity className="h-5 w-5" />
+            </span>
+            <span>{isAffiliate ? "Affiliate Portal" : isAdmin ? "Admin Console" : "Zemen Dashboard"}</span>
           </div>
-          <div className="text-xs text-gray-500">
-            {isAffiliate ? "Track referrals & payouts" : isAdmin ? "Manage platform data" : "Secure area"}
+
+          <div className="mt-6 space-y-2 rounded-2xl border border-white/10 bg-black/30 p-4">
+            {user ? (
+              <>
+                <p className="text-sm font-semibold text-white">{user.username}</p>
+                <p className="text-xs text-emerald-100/70 truncate">{user.email}</p>
+                {primaryRole && (
+                  <span className="inline-flex items-center rounded-full bg-emerald-500/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-200">
+                    {primaryRole}
+                  </span>
+                )}
+              </>
+            ) : (
+              <p className="text-xs text-emerald-100/60">Not authenticated</p>
+            )}
           </div>
-        </div>
 
-        <div className="space-y-1 text-sm">
-          {user ? (
-            <div>
-              <div className="font-medium">{user.username}</div>
-              <div className="text-xs text-gray-500 truncate">{user.email}</div>
-              {primaryRole && <div className="text-2xs uppercase text-gray-400">{primaryRole}</div>}
-            </div>
-          ) : null}
-        </div>
+          <nav className="mt-8 space-y-2">
+            {nav.map((item) => {
+              const active = pathname === item.href || pathname?.startsWith(item.href + "/");
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`group relative block overflow-hidden rounded-2xl border px-4 py-3 text-sm font-medium transition ${
+                    active
+                      ? "border-transparent bg-gradient-to-r from-emerald-500/30 via-emerald-400/20 to-blue-500/30 text-white shadow-lg"
+                      : "border-white/10 bg-white/5 text-emerald-100 hover:border-emerald-200/40 hover:bg-white/10"
+                  }`}
+                >
+                  <span className="flex items-center justify-between gap-2">
+                    {item.label}
+                    <span className="text-xs uppercase tracking-[0.3em] text-emerald-200/70 transition group-hover:translate-x-1">
+                      •
+                    </span>
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
 
-        <nav className="space-y-1">
-          {nav.map((item) => {
-            const active = pathname === item.href || pathname?.startsWith(item.href + "/");
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={
-                  "block rounded px-3 py-2 text-sm " +
-                  (active
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                    : "hover:bg-gray-50 text-gray-700")
-                }
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-emerald-100/70">
+            <p className="font-semibold text-emerald-100">Need help?</p>
+            <p className="mt-1">Explore the resource center or contact support if something feels off.</p>
+            <Link
+              href="/contact"
+              className="mt-3 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-emerald-200 hover:text-emerald-100"
+            >
+              <Settings2 className="h-4 w-4" /> Support
+            </Link>
+          </div>
 
-        <div className="pt-4">
-          <Button variant="outline" onClick={onLogout} className="w-full text-red-600 border-red-200 hover:bg-red-50">
-            Logout
+          <Button
+            onClick={onLogout}
+            variant="outline"
+            className="mt-6 w-full rounded-2xl border-red-400/30 bg-red-500/15 text-sm font-semibold text-red-100 shadow-[0_12px_40px_-25px_rgba(248,113,113,0.6)] transition hover:bg-red-500/25 hover:text-white"
+          >
+            <LogOut className="mr-2 h-4 w-4" /> Sign out
           </Button>
-        </div>
-      </aside>
+        </motion.aside>
 
-      <div className="col-span-12 md:col-span-10 flex flex-col min-h-screen bg-gray-50">
-        <header className="border-b bg-white p-4 flex items-center justify-between">
-          <div className="font-medium">{nav.find(n => pathname?.startsWith(n.href))?.label || "Overview"}</div>
-          {!isAffiliate && !isAdmin && <div className="text-sm text-gray-500">Tenant: {user?.tenant_id || "N/A"}</div>}
-        </header>
-        <main className="p-6 flex-1">{children}</main>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
+          className="flex-1 rounded-3xl border border-white/10 bg-slate-900/70 shadow-[0_40px_120px_-50px_rgba(14,116,144,0.6)] backdrop-blur-2xl"
+        >
+          <header className="flex flex-col gap-3 border-b border-white/10 p-6 text-sm text-emerald-100/80 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-base font-semibold text-white">
+              {nav.find((n) => pathname?.startsWith(n.href))?.label || "Overview"}
+            </span>
+            {!isAffiliate && !isAdmin && (
+              <span className="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] uppercase tracking-[0.3em] text-emerald-200">
+                Tenant: {user?.tenant_id || "N/A"}
+              </span>
+            )}
+          </header>
+          <main className="p-6 text-emerald-50/90">{children}</main>
+        </motion.div>
       </div>
     </div>
   );

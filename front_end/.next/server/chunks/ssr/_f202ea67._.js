@@ -177,22 +177,16 @@ async function postJSON(path, body, tenantId) {
     return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
-    const res = await fetch(resolveApiUrl(path), {
+    const res = await authFetch(path, {
         method: "PUT",
-        headers: buildHeaders({
+        headers: {
             "Content-Type": "application/json"
-        }, tenantId),
+        },
         body: JSON.stringify(bodyData)
-    });
+    }, true, tenantId);
     if (!res.ok) {
-        try {
-            const data = await res.json();
-            const msg = data?.error || data?.detail || JSON.stringify(data);
-            throw new Error(msg || `Request failed with ${res.status}`);
-        } catch  {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || `Request failed with ${res.status}`);
-        }
+        const text = await res.text().catch(()=>"");
+        throw new Error(text || `Request failed with ${res.status}`);
     }
     return await res.json();
 }
@@ -487,7 +481,8 @@ const PharmaciesAPI = {
         search.set("page", String(params?.page ?? 1));
         search.set("page_size", String(params?.page_size ?? 20));
         if (params?.q) search.set("q", params.q);
-        const path = `/api/v1/pharmacies?${search.toString()}`;
+        const queryString = search.toString();
+        const path = `/api/v1/pharmacies${queryString ? `?${queryString}` : ""}`;
         return getAuthJSON(path, tenantId);
     },
     get: (id, tenantId)=>getAuthJSON(`/api/v1/pharmacies/${id}`, tenantId),
@@ -499,7 +494,7 @@ const PharmaciesAPI = {
             body: JSON.stringify(body)
         }, true, tenantId).then(async (res)=>{
             if (!res.ok) throw new Error(await res.text());
-            return res.json();
+            return await res.json();
         })
 };
 const ChatAPI = {

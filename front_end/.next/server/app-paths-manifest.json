@@ -1,10 +1,17 @@
 {
   "/(auth)/auth/page": "app/(auth)/auth/page.js",
-  "/(auth)/register/page": "app/(auth)/register/page.js",
+  "/(auth)/register/affiliate/page": "app/(auth)/register/affiliate/page.js",
+  "/(auth)/register/pharmacy/page": "app/(auth)/register/pharmacy/page.js",
+  "/(dashboard)/dashboard/inventory/page": "app/(dashboard)/dashboard/inventory/page.js",
+  "/(dashboard)/dashboard/owner/agent/page": "app/(dashboard)/dashboard/owner/agent/page.js",
   "/(dashboard)/dashboard/owner/branches/page": "app/(dashboard)/dashboard/owner/branches/page.js",
   "/(dashboard)/dashboard/owner/page": "app/(dashboard)/dashboard/owner/page.js",
   "/(dashboard)/dashboard/owner/settings/page": "app/(dashboard)/dashboard/owner/settings/page.js",
+  "/(dashboard)/dashboard/owner/staff/page": "app/(dashboard)/dashboard/owner/staff/page.js",
   "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
+  "/(marketing)/contact/page": "app/(marketing)/contact/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/privacy/page": "app/privacy/page.js"
 }

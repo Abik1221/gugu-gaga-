@@ -13,18 +13,30 @@ __turbopack_context__.s([
     ()=>AuthAPI,
     "BillingAPI",
     ()=>BillingAPI,
+    "BranchAPI",
+    ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "InventoryAPI",
+    ()=>InventoryAPI,
     "KYCAPI",
     ()=>KYCAPI,
+    "MedicinesAPI",
+    ()=>MedicinesAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
+    "OwnerChatAPI",
+    ()=>OwnerChatAPI,
     "PharmaciesAPI",
     ()=>PharmaciesAPI,
+    "SalesAPI",
+    ()=>SalesAPI,
     "StaffAPI",
     ()=>StaffAPI,
     "TENANT_HEADER",
     ()=>TENANT_HEADER,
+    "TenantAPI",
+    ()=>TenantAPI,
     "UploadAPI",
     ()=>UploadAPI,
     "getAccessToken",
@@ -140,22 +152,16 @@ async function postJSON(path, body, tenantId) {
     return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
-    const res = await fetch(resolveApiUrl(path), {
+    const res = await authFetch(path, {
         method: "PUT",
-        headers: buildHeaders({
+        headers: {
             "Content-Type": "application/json"
-        }, tenantId),
+        },
         body: JSON.stringify(bodyData)
-    });
+    }, true, tenantId);
     if (!res.ok) {
-        try {
-            const data = await res.json();
-            const msg = data?.error || data?.detail || JSON.stringify(data);
-            throw new Error(msg || `Request failed with ${res.status}`);
-        } catch  {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || `Request failed with ${res.status}`);
-        }
+        const text = await res.text().catch(()=>"");
+        throw new Error(text || `Request failed with ${res.status}`);
     }
     return await res.json();
 }
@@ -194,12 +200,18 @@ function getRefreshToken() {
 async function refreshTokens() {
     const rt = getRefreshToken();
     if (!rt) return false;
-    const BASE = "http://localhost:8000";
-    const url = `${BASE}/api/v1/auth/refresh?refresh_token=${encodeURIComponent(rt)}`;
-    const res = await fetch(url, {
-        method: "POST"
+    const res = await fetch(resolveApiUrl("/api/v1/auth/refresh"), {
+        method: "POST",
+        headers: buildHeaders({
+            "Content-Type": "application/json"
+        }),
+        body: JSON.stringify({
+            refresh_token: rt
+        })
     });
-    if (!res.ok) return false;
+    if (!res.ok) {
+        return false;
+    }
     try {
         const data = await res.json();
         if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
@@ -299,7 +311,11 @@ const AuthAPI = {
     login: (email, password, tenantId)=>postForm("/api/v1/auth/login", {
             username: email,
             password
-        }, tenantId),
+        }, tenantId).then((resp)=>{
+            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+            ;
+            return resp;
+        }),
     loginRequestCode: (email, password, tenantId)=>postForm("/api/v1/auth/login/request-code", {
             username: email,
             password
@@ -307,8 +323,40 @@ const AuthAPI = {
     loginVerify: (email, code, tenantId)=>postJSON("/api/v1/auth/login/verify", {
             email,
             code
-        }, tenantId),
-    me: ()=>getAuthJSON("/api/v1/auth/me")
+        }, tenantId).then((resp)=>{
+            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+            ;
+            return resp;
+        }),
+    refresh: (refreshToken)=>postJSON("/api/v1/auth/refresh", {
+            refresh_token: refreshToken
+        }),
+    sessions: ()=>getAuthJSON("/api/v1/auth/sessions"),
+    revokeSession: (sessionId)=>authFetch(`/api/v1/auth/sessions/${sessionId}`, {
+            method: "DELETE"
+        }).then((res)=>{
+            if (!res.ok) throw new Error("Failed to revoke session");
+        }),
+    changePassword: (body)=>postAuthJSON("/api/v1/auth/change-password", body),
+    me: ()=>getAuthJSON("/api/v1/auth/me").then((profile)=>{
+            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+            ;
+            return profile;
+        }),
+    updateProfile: (body)=>putAuthJSON("/api/v1/auth/me", body)
+};
+const TenantAPI = {
+    activity: (params)=>{
+        const searchParams = new URLSearchParams();
+        if (params?.limit) searchParams.set("limit", params.limit.toString());
+        if (params?.offset) searchParams.set("offset", params.offset.toString());
+        if (params?.action) {
+            params.action.forEach((a)=>searchParams.append("action", a));
+        }
+        const qs = searchParams.toString();
+        const path = qs ? `/api/v1/tenant/activity?${qs}` : "/api/v1/tenant/activity";
+        return getAuthJSON(path);
+    }
 };
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
@@ -358,6 +406,34 @@ const StaffAPI = {
             return res.json();
         })
 };
+const BranchAPI = {
+    list: (tenantId, params)=>{
+        const query = new URLSearchParams();
+        if (params?.q) query.set("q", params.q);
+        if (params?.pharmacy_id !== undefined) query.set("pharmacy_id", String(params.pharmacy_id));
+        if (params?.page) query.set("page", String(params.page));
+        if (params?.page_size) query.set("page_size", String(params.page_size));
+        const path = `/api/v1/branches${query.toString() ? `?${query.toString()}` : ""}`;
+        return getAuthJSON(path, tenantId);
+    },
+    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
+    update: (tenantId, branchId, payload)=>authFetch(`/api/v1/branches/${branchId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        }),
+    remove: (tenantId, branchId)=>authFetch(`/api/v1/branches/${branchId}`, {
+            method: "DELETE"
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        })
+};
 const BillingAPI = {
     submitPaymentCode: (tenantId, code)=>postAuthJSON("/api/v1/owner/billing/payment-code", {
             code
@@ -375,17 +451,25 @@ const KYCAPI = {
     update: (tenantId, body)=>putAuthJSON("/api/v1/owner/kyc/status", body, tenantId)
 };
 const PharmaciesAPI = {
-    list: (page = 1, pageSize = 20, q)=>getAuthJSON(`/api/v1/pharmacies?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
-    get: (id)=>getAuthJSON(`/api/v1/pharmacies/${id}`),
-    update: (id, body)=>authFetch(`/api/v1/pharmacies/${id}`, {
+    list: (tenantId, params)=>{
+        const search = new URLSearchParams();
+        search.set("page", String(params?.page ?? 1));
+        search.set("page_size", String(params?.page_size ?? 20));
+        if (params?.q) search.set("q", params.q);
+        const queryString = search.toString();
+        const path = `/api/v1/pharmacies${queryString ? `?${queryString}` : ""}`;
+        return getAuthJSON(path, tenantId);
+    },
+    get: (id, tenantId)=>getAuthJSON(`/api/v1/pharmacies/${id}`, tenantId),
+    update: (id, body, tenantId)=>authFetch(`/api/v1/pharmacies/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(body)
-        }).then(async (res)=>{
+        }, true, tenantId).then(async (res)=>{
             if (!res.ok) throw new Error(await res.text());
-            return res.json();
+            return await res.json();
         })
 };
 const ChatAPI = {
@@ -400,7 +484,142 @@ const ChatAPI = {
     usage: (tenantId, days = 30)=>getAuthJSON(`/api/v1/chat/usage?days=${days}`, tenantId)
 };
 const OwnerAnalyticsAPI = {
-    overview: (tenantId)=>getAuthJSON("/api/v1/owner/analytics/overview", tenantId)
+    overview: (tenantId, options)=>{
+        const params = new URLSearchParams();
+        if (options?.horizon) params.set("horizon", options.horizon);
+        if (options?.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+        const query = params.toString();
+        const path = `/api/v1/owner/analytics/overview${query ? `?${query}` : ""}`;
+        return getAuthJSON(path, tenantId);
+    }
+};
+const OwnerChatAPI = {
+    listThreads: (tenantId)=>getAuthJSON("/api/v1/owner/chat/threads", tenantId),
+    createThread: (tenantId, title)=>postAuthJSON("/api/v1/owner/chat/threads", {
+            title
+        }, tenantId),
+    listMessages: (tenantId, threadId)=>getAuthJSON(`/api/v1/owner/chat/threads/${threadId}/messages`, tenantId),
+    sendMessage: (tenantId, threadId, prompt)=>postAuthJSON(`/api/v1/owner/chat/threads/${threadId}/messages`, {
+            prompt
+        }, tenantId)
+};
+const InventoryAPI = {
+    list: (tenantId, options)=>{
+        const params = new URLSearchParams();
+        if (options?.q) params.set("q", options.q);
+        if (options?.branch) params.set("branch", options.branch);
+        if (typeof options?.expiringInDays === "number") {
+            params.set("expiring_in_days", String(options.expiringInDays));
+        }
+        if (options?.lowStockOnly) params.set("low_stock_only", "true");
+        if (options?.page) params.set("page", String(options.page));
+        if (options?.pageSize) params.set("page_size", String(options.pageSize));
+        const query = params.toString();
+        const path = `/api/v1/inventory/items${query ? `?${query}` : ""}`;
+        return getAuthJSON(path, tenantId);
+    },
+    create: async (tenantId, payload)=>{
+        const form = new URLSearchParams();
+        form.set("medicine_id", String(payload.medicine_id));
+        form.set("pack_size", String(Math.max(1, payload.pack_size || 1)));
+        if (payload.branch) {
+            form.set("branch", payload.branch);
+        }
+        if (typeof payload.packs_count === "number") {
+            form.set("packs_count", String(Math.max(0, payload.packs_count)));
+        }
+        if (typeof payload.singles_count === "number") {
+            form.set("singles_count", String(Math.max(0, payload.singles_count)));
+        }
+        if (payload.expiry_date) {
+            form.set("expiry_date", payload.expiry_date);
+        }
+        if (payload.lot_number) {
+            form.set("lot_number", payload.lot_number);
+        }
+        if (typeof payload.purchase_price === "number") {
+            form.set("purchase_price", String(payload.purchase_price));
+        }
+        if (typeof payload.sell_price === "number") {
+            form.set("sell_price", String(payload.sell_price));
+        }
+        if (typeof payload.reorder_level === "number") {
+            form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+        }
+        const res = await authFetch(`/api/v1/inventory/items`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: form.toString()
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || `Request failed with ${res.status}`);
+        }
+        return res.json();
+    },
+    update: async (tenantId, itemId, payload)=>{
+        const form = new URLSearchParams();
+        if (typeof payload.quantity === "number") {
+            form.set("quantity", String(payload.quantity));
+        }
+        if (typeof payload.reorder_level === "number") {
+            form.set("reorder_level", String(Math.max(0, payload.reorder_level)));
+        }
+        if (typeof payload.sell_price === "number") {
+            form.set("sell_price", String(payload.sell_price));
+        }
+        if (payload.expiry_date !== undefined) {
+            form.set("expiry_date", payload.expiry_date || "");
+        }
+        if (payload.lot_number !== undefined) {
+            form.set("lot_number", payload.lot_number || "");
+        }
+        const res = await authFetch(`/api/v1/inventory/items/${itemId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: form.toString()
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || `Request failed with ${res.status}`);
+        }
+        return res.json();
+    },
+    remove: async (tenantId, itemId)=>{
+        const res = await authFetch(`/api/v1/inventory/items/${itemId}`, {
+            method: "DELETE"
+        }, true, tenantId);
+        if (!res.ok) {
+            throw new Error(await res.text().catch(()=>"") || `Request failed with ${res.status}`);
+        }
+        return res.json();
+    }
+};
+const MedicinesAPI = {
+    list: (tenantId, options)=>{
+        const query = new URLSearchParams();
+        if (options?.q) {
+            query.set("q", options.q);
+        }
+        if (options?.page) {
+            query.set("page", String(options.page));
+        }
+        if (options?.pageSize) {
+            query.set("page_size", String(Math.min(200, Math.max(1, options.pageSize))));
+        }
+        const path = `/api/v1/medicines${query.toString() ? `?${query.toString()}` : ""}`;
+        return getAuthJSON(path, tenantId);
+    }
+};
+const SalesAPI = {
+    pos: (tenantId, payload)=>{
+        const { lines, branch } = payload;
+        const query = branch ? `?branch=${encodeURIComponent(branch)}` : "";
+        const path = `/api/v1/sales/pos${query}`;
+        return postAuthJSON(path, lines, tenantId);
+    }
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
@@ -916,7 +1135,9 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/framer-motion/dist/es/render/components/motion/proxy.mjs [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/utils/api.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/button.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$toast$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/toast.tsx [app-ssr] (ecmascript)");
@@ -929,6 +1150,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e
 ;
 ;
 ;
+;
+;
+const highlights = [
+    "Real-time dashboards across every branch",
+    "AI-powered inventory and demand forecasts",
+    "Secure multi-role access for your entire team"
+];
 function LoginPage() {
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     const { show } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$toast$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useToast"])();
@@ -942,9 +1170,8 @@ function LoginPage() {
         setLoading(true);
         try {
             const data = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthAPI"].login(username, password);
-            localStorage.setItem("access_token", data.access_token);
-            localStorage.setItem("refresh_token", data.refresh_token ?? "");
-            // Determine role and redirect
+            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+            ;
             const me = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthAPI"].me();
             if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
             ;
@@ -958,113 +1185,400 @@ function LoginPage() {
                 description: "Login successful"
             });
         } catch (err) {
-            setError(err.message || "Login failed");
+            const message = err.message || "Login failed";
+            setError(message);
             show({
                 variant: "destructive",
                 title: "Login failed",
-                description: err.message || "Please try again"
+                description: message
             });
         } finally{
             setLoading(false);
         }
     }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "min-h-screen flex items-center justify-center p-6",
-        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
-            onSubmit: onSubmit,
-            className: "w-full max-w-sm space-y-4",
-            children: [
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                    className: "text-2xl font-semibold",
-                    children: "Login to Zemen Pharma"
-                }, void 0, false, {
-                    fileName: "[project]/app/(auth)/login/page.tsx",
-                    lineNumber: 48,
-                    columnNumber: 9
-                }, this),
-                error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                    className: "text-red-600 text-sm",
-                    children: error
-                }, void 0, false, {
-                    fileName: "[project]/app/(auth)/login/page.tsx",
-                    lineNumber: 49,
-                    columnNumber: 19
-                }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "space-y-1",
+        className: "relative flex min-h-screen bg-gradient-to-br from-gray-950 via-black to-slate-900 text-white",
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "absolute inset-0 -z-10",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "absolute top-12 left-20 h-80 w-80 rounded-full bg-emerald-500/15 blur-3xl"
+                    }, void 0, false, {
+                        fileName: "[project]/app/(auth)/login/page.tsx",
+                        lineNumber: 58,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "absolute bottom-10 right-16 h-[24rem] w-[24rem] rounded-full bg-blue-600/20 blur-3xl"
+                    }, void 0, false, {
+                        fileName: "[project]/app/(auth)/login/page.tsx",
+                        lineNumber: 59,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/app/(auth)/login/page.tsx",
+                lineNumber: 57,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "relative hidden w-0 flex-1 flex-col justify-between overflow-hidden bg-gradient-to-br from-emerald-600/60 via-blue-700/70 to-slate-800/60 p-12 lg:flex",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
+                        initial: {
+                            opacity: 0,
+                            y: 30
+                        },
+                        animate: {
+                            opacity: 1,
+                            y: 0
+                        },
+                        transition: {
+                            duration: 0.8
+                        },
+                        className: "max-w-lg",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex items-center gap-3 text-left",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "relative",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-400 to-blue-500 blur opacity-70"
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                                lineNumber: 71,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "relative rounded-xl bg-gradient-to-br from-emerald-400 to-blue-500 p-3",
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                                    xmlns: "http://www.w3.org/2000/svg",
+                                                    viewBox: "0 0 24 24",
+                                                    fill: "none",
+                                                    stroke: "currentColor",
+                                                    strokeWidth: "1.5",
+                                                    className: "h-6 w-6 text-white",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                            d: "M12 3c2.755 0 5 2.175 5 4.857 0 2.143-1.444 3.824-3.556 5.467-1.11.884-.799 2.676-.799 4.43h-1.29c0-1.754.311-3.546-.8-4.43C8.444 11.68 7 9.999 7 7.857 7 5.175 9.245 3 12 3z"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/app/(auth)/login/page.tsx",
+                                                            lineNumber: 81,
+                                                            columnNumber: 19
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                            d: "M6.343 17.657a8 8 0 0 1 11.314 0L12 23l-5.657-5.343z"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/app/(auth)/login/page.tsx",
+                                                            lineNumber: 82,
+                                                            columnNumber: 19
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/app/(auth)/login/page.tsx",
+                                                    lineNumber: 73,
+                                                    columnNumber: 17
+                                                }, this)
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                                lineNumber: 72,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/(auth)/login/page.tsx",
+                                        lineNumber: 70,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "text-2xl font-semibold tracking-wide text-white/90",
+                                        children: "Zemen Pharma Owner Portal"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(auth)/login/page.tsx",
+                                        lineNumber: 86,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                lineNumber: 69,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                className: "mt-10 text-4xl font-bold leading-tight text-white",
+                                children: "Sign in to your command center"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                lineNumber: 91,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                className: "mt-4 text-lg text-emerald-100/85",
+                                children: "Monitor every branch, approve operations, and keep your pharmacy network running effortlessly."
+                            }, void 0, false, {
+                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                lineNumber: 94,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                className: "mt-10 space-y-4 text-emerald-50/70",
+                                children: highlights.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                        className: "flex items-start gap-3",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                className: "mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-white"
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                                lineNumber: 101,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                children: item
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                                lineNumber: 102,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, item, true, {
+                                        fileName: "[project]/app/(auth)/login/page.tsx",
+                                        lineNumber: 100,
+                                        columnNumber: 15
+                                    }, this))
+                            }, void 0, false, {
+                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                lineNumber: 98,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/app/(auth)/login/page.tsx",
+                        lineNumber: 63,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
+                        initial: {
+                            opacity: 0,
+                            y: 30
+                        },
+                        animate: {
+                            opacity: 1,
+                            y: 0
+                        },
+                        transition: {
+                            duration: 1,
+                            delay: 0.2
+                        },
+                        className: "space-y-4 text-sm text-emerald-50/70",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                children: "“The owner dashboard puts every insight at our fingertips. Approvals and branch oversight take minutes now.”"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                lineNumber: 114,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "h-px w-24 bg-white/20"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                lineNumber: 117,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                children: [
+                                    "Need an account? ",
+                                    " ",
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                                        href: "/register/pharmacy",
+                                        className: "text-white hover:underline",
+                                        children: "Start your application"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(auth)/login/page.tsx",
+                                        lineNumber: 120,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/(auth)/login/page.tsx",
+                                lineNumber: 118,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/app/(auth)/login/page.tsx",
+                        lineNumber: 108,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/app/(auth)/login/page.tsx",
+                lineNumber: 62,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "relative flex w-full flex-col justify-center px-4 py-16 sm:px-10 lg:w-[520px] lg:px-12",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].form, {
+                    onSubmit: onSubmit,
+                    initial: {
+                        opacity: 0,
+                        y: 20
+                    },
+                    animate: {
+                        opacity: 1,
+                        y: 0
+                    },
+                    transition: {
+                        duration: 0.6
+                    },
+                    className: "mx-auto w-full max-w-md space-y-6 rounded-3xl border border-white/10 bg-black/65 p-8 shadow-[0_25px_80px_-40px_rgba(16,185,129,0.6)] backdrop-blur",
                     children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                            className: "text-sm",
-                            children: "Username"
-                        }, void 0, false, {
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "text-center",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                    className: "text-3xl font-bold text-white",
+                                    children: "Owner sign in"
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(auth)/login/page.tsx",
+                                    lineNumber: 136,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                    className: "mt-2 text-sm text-emerald-100/70",
+                                    children: "Enter your credentials to access the owner dashboard."
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(auth)/login/page.tsx",
+                                    lineNumber: 137,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
                             fileName: "[project]/app/(auth)/login/page.tsx",
-                            lineNumber: 51,
+                            lineNumber: 135,
                             columnNumber: 11
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
-                            type: "text",
-                            value: username,
-                            onChange: (e)=>setUsername(e.target.value),
-                            required: true,
-                            autoComplete: "username"
+                        error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "rounded-xl border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-100",
+                            children: error
                         }, void 0, false, {
                             fileName: "[project]/app/(auth)/login/page.tsx",
-                            lineNumber: 52,
+                            lineNumber: 143,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "space-y-4",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "block text-xs font-semibold uppercase tracking-wide text-emerald-100/80",
+                                            children: "Username"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(auth)/login/page.tsx",
+                                            lineNumber: 150,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
+                                            type: "text",
+                                            value: username,
+                                            onChange: (e)=>setUsername(e.target.value),
+                                            required: true,
+                                            autoComplete: "username",
+                                            className: "mt-2 border-white/10 bg-white/5 text-white placeholder:text-emerald-100/40 focus:border-emerald-400 focus:ring-emerald-400"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(auth)/login/page.tsx",
+                                            lineNumber: 153,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/(auth)/login/page.tsx",
+                                    lineNumber: 149,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "block text-xs font-semibold uppercase tracking-wide text-emerald-100/80",
+                                            children: "Password"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(auth)/login/page.tsx",
+                                            lineNumber: 163,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
+                                            type: "password",
+                                            value: password,
+                                            onChange: (e)=>setPassword(e.target.value),
+                                            required: true,
+                                            autoComplete: "current-password",
+                                            className: "mt-2 border-white/10 bg-white/5 text-white placeholder:text-emerald-100/40 focus:border-emerald-400 focus:ring-emerald-400"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(auth)/login/page.tsx",
+                                            lineNumber: 166,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/(auth)/login/page.tsx",
+                                    lineNumber: 162,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/app/(auth)/login/page.tsx",
+                            lineNumber: 148,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                            type: "submit",
+                            disabled: loading,
+                            className: "group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition duration-300 hover:scale-[1.01] hover:shadow-emerald-400/40",
+                            children: loading ? "Signing in..." : "Sign in"
+                        }, void 0, false, {
+                            fileName: "[project]/app/(auth)/login/page.tsx",
+                            lineNumber: 177,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "text-center text-xs text-emerald-100/70",
+                            children: [
+                                "Partner or affiliate? ",
+                                " ",
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                                    href: "/register/affiliate",
+                                    className: "font-medium text-white hover:underline",
+                                    children: "Join the affiliate program"
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(auth)/login/page.tsx",
+                                    lineNumber: 187,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/app/(auth)/login/page.tsx",
+                            lineNumber: 185,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(auth)/login/page.tsx",
-                    lineNumber: 50,
-                    columnNumber: 9
-                }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "space-y-1",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                            className: "text-sm",
-                            children: "Password"
-                        }, void 0, false, {
-                            fileName: "[project]/app/(auth)/login/page.tsx",
-                            lineNumber: 61,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
-                            type: "password",
-                            value: password,
-                            onChange: (e)=>setPassword(e.target.value),
-                            required: true,
-                            autoComplete: "current-password"
-                        }, void 0, false, {
-                            fileName: "[project]/app/(auth)/login/page.tsx",
-                            lineNumber: 62,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/app/(auth)/login/page.tsx",
-                    lineNumber: 60,
-                    columnNumber: 9
-                }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                    type: "submit",
-                    disabled: loading,
-                    className: "w-full",
-                    children: loading ? "Signing in..." : "Sign in"
-                }, void 0, false, {
-                    fileName: "[project]/app/(auth)/login/page.tsx",
-                    lineNumber: 70,
+                    lineNumber: 128,
                     columnNumber: 9
                 }, this)
-            ]
-        }, void 0, true, {
-            fileName: "[project]/app/(auth)/login/page.tsx",
-            lineNumber: 47,
-            columnNumber: 7
-        }, this)
-    }, void 0, false, {
+            }, void 0, false, {
+                fileName: "[project]/app/(auth)/login/page.tsx",
+                lineNumber: 127,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
         fileName: "[project]/app/(auth)/login/page.tsx",
-        lineNumber: 46,
+        lineNumber: 56,
         columnNumber: 5
     }, this);
 }

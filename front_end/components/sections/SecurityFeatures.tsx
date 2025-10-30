@@ -60,14 +60,14 @@ const listItemVariants = {
 
 function SecurityFeatures() {
   return (
-    <section className="bg-emerald-50 py-12 px-4">
+    <section className="px-4 py-16">
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
       >
-        <Card className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-8 relative">
+        <Card className="relative mx-auto max-w-5xl rounded-lg border border-white/10 bg-white/5 p-8 text-white shadow-lg">
           {/* Animated Image */}
           <motion.div
             className="absolute -top-12 md:left-1/5 left-4/5 transform -translate-x-1/2"
@@ -82,25 +82,25 @@ function SecurityFeatures() {
 
           {/* Animated Title */}
           <motion.div
-            className="text-2xl font-bold text-emerald-700 mb-12 text-center mt-10"
+            className="mt-12 mb-10 text-center text-2xl font-bold text-emerald-200"
             variants={titleVariants}
           >
             Safe & Secure
           </motion.div>
 
           {/* Animated Card Content */}
-          <div className="grid md:grid-cols-2 gap-10 flex-col lg:flex-row items-center mt-16">
+          <div className="mt-12 grid gap-10 md:grid-cols-2 md:items-start">
             <motion.div
-              className="border-b pb-10 md:border-0 md:border-r border-emerald-200 md:pr-6"
+              className="border-b border-white/10 pb-8 md:border-0 md:border-r md:pr-8"
               custom="left" // Pass direction for slide animation
               variants={cardVariants}
             >
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-emerald-900">
+                <CardTitle className="text-lg font-semibold text-white">
                   Your data stays secure
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 ml-6 mt-4">
+              <CardContent className="ml-6 mt-4 space-y-3 text-sm text-gray-200">
                 {[
                   "Encryption",
                   "Tenant Isolation",
@@ -118,11 +118,11 @@ function SecurityFeatures() {
               variants={cardVariants}
             >
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-emerald-900">
+                <CardTitle className="text-lg font-semibold text-white">
                   You control every decision
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 ml-6 mt-4">
+              <CardContent className="ml-6 mt-4 space-y-3 text-sm text-gray-200">
                 {[
                   "Approval for large purchases",
                   "Set spending limits & alerts",

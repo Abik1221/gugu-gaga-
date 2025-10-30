@@ -31,9 +31,9 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_TONE: Record<string, string> = {
-  user: "bg-emerald-600 text-white",
-  owner: "bg-emerald-600 text-white",
-  assistant: "bg-white border border-gray-200 text-gray-900",
+  user: "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20",
+  owner: "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20",
+  assistant: "bg-white/90 border border-white/40 text-slate-900 backdrop-blur",
 };
 
 function normalizeThreadTitle(thread: ThreadSummary, index: number): string {
@@ -296,10 +296,10 @@ export default function OwnerAgentPage() {
   const isLoadingMessages = messagesLoading || bootstrapLoading;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold text-gray-900">Zemen AI Assistant</h1>
-        <p className="max-w-3xl text-sm text-gray-500">
+    <div className="space-y-8">
+      <div className="flex flex-col gap-3 rounded-3xl border border-white/15 bg-white/10 p-6 shadow-[0_28px_120px_-60px_rgba(16,185,129,0.75)] backdrop-blur-xl">
+        <h1 className="text-3xl font-semibold leading-tight text-white">Zemen AI Assistant</h1>
+        <p className="max-w-3xl text-sm leading-relaxed text-emerald-100/80">
           Ask questions about sales, inventory, and staff performance. The assistant runs read-only
           analytics on your tenant data and summarises the results for quick insight.
         </p>
@@ -311,10 +311,10 @@ export default function OwnerAgentPage() {
         </div>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[320px,1fr]">
-        <div className="flex flex-col gap-4 rounded border border-gray-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-700">Conversations</h2>
+      <div className="grid gap-6 lg:grid-cols-[320px,1fr]">
+        <div className="flex flex-col gap-5 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_24px_90px_-50px_rgba(14,165,233,0.45)] backdrop-blur-xl">
+          <div className="flex items-center justify-between text-emerald-100/80">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-100">Conversations</h2>
             <Button
               size="sm"
               variant="outline"
@@ -342,7 +342,7 @@ export default function OwnerAgentPage() {
               ))}
             </div>
           ) : threads.length === 0 ? (
-            <div className="rounded border border-dashed border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-500">
+            <div className="rounded-2xl border border-white/15 bg-white/5 p-4 text-center text-sm text-emerald-100/80">
               No conversations yet. Start a new one to ask the assistant anything about your pharmacy.
             </div>
           ) : (
@@ -355,14 +355,14 @@ export default function OwnerAgentPage() {
                     key={thread.id}
                     type="button"
                     onClick={() => setSelectedThreadId(thread.id)}
-                    className={`w-full rounded border px-3 py-2 text-left text-sm transition ${
+                    className={`group w-full rounded-2xl border px-3 py-2 text-left text-sm font-medium transition ${
                       isActive
-                        ? "border-emerald-400 bg-emerald-50 text-emerald-700"
-                        : "border-gray-200 hover:border-emerald-200 hover:bg-emerald-50/50"
+                        ? "border-transparent bg-gradient-to-r from-emerald-500/25 via-teal-500/20 to-sky-500/25 text-white shadow-lg"
+                        : "border-white/15 bg-white/5 text-emerald-100/80 hover:border-emerald-200/50 hover:bg-white/10"
                     }`}
                   >
-                    <div className="font-medium">{title}</div>
-                    <div className="text-xs text-gray-500">Thread #{thread.id}</div>
+                    <div className="font-semibold text-white/90">{title}</div>
+                    <div className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Thread #{thread.id}</div>
                   </button>
                 );
               })}
@@ -370,10 +370,10 @@ export default function OwnerAgentPage() {
           )}
         </div>
 
-        <div className="flex flex-col gap-4 rounded border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex flex-col gap-5 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.7)] backdrop-blur-xl">
           <div className="flex flex-col gap-1">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-gray-700">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-100">
                 {selectedThread ? normalizeThreadTitle(selectedThread, 0) : "Conversation"}
               </h2>
               <div className="flex items-center gap-2">
@@ -387,13 +387,13 @@ export default function OwnerAgentPage() {
                 </Button>
               </div>
             </div>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-emerald-100/70">
               The assistant uses safe, read-only queries. Ask for sales summaries, inventory gaps, or staff
               performance insights.
             </p>
           </div>
 
-          <div className="flex-1 overflow-hidden rounded border border-gray-100 bg-gray-50">
+          <div className="flex-1 overflow-hidden rounded-3xl border border-white/15 bg-white/5">
             {isLoadingMessages ? (
               <div className="p-4 space-y-3">
                 {Array.from({ length: 5 }).map((_, index) => (
@@ -401,11 +401,11 @@ export default function OwnerAgentPage() {
                 ))}
               </div>
             ) : !selectedThreadId ? (
-              <div className="flex h-full items-center justify-center p-6 text-sm text-gray-500">
+              <div className="flex h-full items-center justify-center p-6 text-sm text-emerald-100/70">
                 Select a conversation to view messages.
               </div>
             ) : messages.length === 0 ? (
-              <div className="flex h-full items-center justify-center p-6 text-sm text-gray-500">
+              <div className="flex h-full items-center justify-center p-6 text-sm text-emerald-100/70">
                 Ask your first question to begin.
               </div>
             ) : (
@@ -423,7 +423,7 @@ export default function OwnerAgentPage() {
                       }`}
                     >
                       <div
-                        className={`max-w-xl rounded-lg px-3 py-2 text-sm shadow-sm ${roleClass}`}
+                        className={`max-w-xl rounded-2xl px-3 py-2 text-sm shadow ${roleClass}`}
                       >
                         <div className="mb-1 text-xs font-semibold uppercase tracking-wide opacity-70">
                           {label}
@@ -441,7 +441,7 @@ export default function OwnerAgentPage() {
                 })}
                 {assistantThinking && (
                   <div className="flex justify-start">
-                    <div className="max-w-xs rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500 shadow-sm">
+                    <div className="max-w-xs rounded-2xl border border-white/20 bg-white/80 px-3 py-2 text-sm text-emerald-800 shadow">
                       Assistant is analysing your data…
                     </div>
                   </div>
@@ -452,24 +452,24 @@ export default function OwnerAgentPage() {
           </div>
 
           <form
-            className="flex flex-col gap-3 rounded border border-gray-100 bg-white p-3"
+            className="flex flex-col gap-3 rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur-xl"
             onSubmit={(event) => {
               event.preventDefault();
               handleSendMessage();
             }}
           >
-            <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <label className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/80">
               Ask a question
             </label>
             <textarea
-              className="min-h-[120px] w-full resize-y rounded border border-gray-200 p-3 text-sm shadow-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+              className="min-h-[120px] w-full resize-y rounded-2xl border border-white/15 bg-white/10 p-3 text-sm text-emerald-100/90 shadow-inner backdrop-blur focus:border-emerald-300/60 focus:outline-none focus:ring-2 focus:ring-emerald-200/40"
               placeholder="e.g. Show me the top selling medicines this week"
               value={messageDraft}
               onChange={(event) => setMessageDraft(event.target.value)}
               onKeyDown={handleComposerKeyDown}
               disabled={!tenantId || !selectedThreadId || sending}
             />
-            <div className="flex items-center justify-between text-xs text-gray-500">
+            <div className="flex items-center justify-between text-xs text-emerald-100/70">
               <span>Press Enter to send, Shift + Enter for a new line.</span>
               <Button type="submit" disabled={!tenantId || !selectedThreadId || sending}>
                 {sending ? "Sending…" : "Send"}

@@ -116,14 +116,23 @@ export async function postJSON<T = any>(
   });
 
   if (!res.ok) {
+    let parsed: any = null;
+    let message = "";
     try {
-      const data = await res.json();
-      const msg = data?.error || data?.detail || JSON.stringify(data);
-      throw new Error(msg || `Request failed with ${res.status}`);
+      parsed = await res.json();
+      if (typeof parsed === "string") message = parsed;
+      else if (Array.isArray(parsed)) message = parsed.join(", ");
+      else message = parsed?.error || parsed?.detail || parsed?.message || "";
+      if (!message && parsed) message = JSON.stringify(parsed);
     } catch {
-      const text = await res.text().catch(() => "");
-      throw new Error(text || `Request failed with ${res.status}`);
+      parsed = null;
+      message = await res.text().catch(() => "");
     }
+
+    const error: any = new Error(message || `Request failed with ${res.status}`);
+    error.status = res.status;
+    if (parsed !== null) error.body = parsed;
+    throw error;
   }
 
   return (await res.json()) as T;
@@ -418,25 +427,37 @@ export const AuthAPI = {
       }
       return profile;
     }),
-  updateProfile: (body: Partial<Pick<AuthProfile, "username" | "first_name" | "last_name" | "phone">>) =>
-    putAuthJSON<AuthProfile>("/api/v1/auth/me", body),
 };
 
 export const TenantAPI = {
-  activity: (params?: { action?: string[]; limit?: number; offset?: number }) => {
+  activity: async (params?: { action?: string[]; limit?: number; offset?: number }) => {
     const searchParams = new URLSearchParams();
     if (params?.limit) searchParams.set("limit", params.limit.toString());
     if (params?.offset) searchParams.set("offset", params.offset.toString());
-    if (params?.action) {
-      params.action.forEach((a) => searchParams.append("action", a));
-    }
+    params?.action?.forEach((action) => searchParams.append("action", action));
     const qs = searchParams.toString();
-    const path = qs ? `/api/v1/tenant/activity?${qs}` : "/api/v1/tenant/activity";
-    return getAuthJSON<TenantActivityRecord[]>(path);
+    const url = `/api/v1/tenant/activity${qs ? `?${qs}` : ""}`;
+    const tenantId = getTenantId() ?? undefined;
+    const res = await authFetch(url, undefined, true, tenantId);
+    if (res.status === 404 || res.status === 204) {
+      return [];
+    }
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `Request failed with ${res.status}`);
+    }
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      return [];
+    }
+    try {
+      return (await res.json()) as TenantActivityRecord[];
+    } catch {
+      return [];
+    }
   },
 };
 
-// ----------------- AffiliateAPI -----------------
 export const AffiliateAPI = {
   getLinks: () => getAuthJSON("/api/v1/affiliate/register-link"),
   createLink: () => getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
