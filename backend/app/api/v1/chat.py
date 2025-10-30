@@ -9,7 +9,7 @@ from app.deps.tenant import require_tenant, enforce_subscription_active
 from app.db.deps import get_db
 from app.models.chat import ChatThread, ChatMessage
 from app.schemas.chat import ThreadCreate, ThreadOut, MessageCreate, MessageOut
-from app.services.chat.orchestrator import process_message
+from app.services.chat.orchestrator import process_message, ChatQuotaExceededError
 from app.deps.ratelimit import rate_limit_user
 from app.services.ai.usage import get_usage_summary
 
@@ -101,13 +101,16 @@ def send_message(
     if not thread:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Thread not found")
 
-    result = process_message(
-        db,
-        tenant_id=tenant_id,
-        user_id=current_user.id,
-        thread_id=thread_id,
-        prompt=payload.prompt,
-    )
+    try:
+        result = process_message(
+            db,
+            tenant_id=tenant_id,
+            user_id=current_user.id,
+            thread_id=thread_id,
+            prompt=payload.prompt,
+        )
+    except ChatQuotaExceededError as exc:
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(exc))
     return result
 
 
@@ -138,13 +141,17 @@ def send_message_stream(
         # Optional small delay to flush
         yield sse({"event": "processing"})
         # Do the actual processing
-        result = process_message(
-            db,
-            tenant_id=tenant_id,
-            user_id=current_user.id,
-            thread_id=thread_id,
-            prompt=payload.prompt,
-        )
+        try:
+            result = process_message(
+                db,
+                tenant_id=tenant_id,
+                user_id=current_user.id,
+                thread_id=thread_id,
+                prompt=payload.prompt,
+            )
+        except ChatQuotaExceededError as exc:
+            yield sse({"event": "error", "error": str(exc)})
+            return
         yield sse({"event": "final", "data": result})
 
     return StreamingResponse(gen(), media_type="text/event-stream")

@@ -105,6 +105,9 @@ export default function AdminAnalyticsPage() {
             </Button>
           ))}
           <Button variant="outline" onClick={() => location.reload()}>Refresh</Button>
+          <Link href="/dashboard/admin/segments">
+            <Button variant="ghost">View segments</Button>
+          </Link>
         </div>
       </div>
 

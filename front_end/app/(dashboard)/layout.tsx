@@ -258,6 +258,19 @@ function Shell({
   const subscriptionStatus = user?.subscription_status || "active";
   const requiresPayment = isTenantStaff && user?.kyc_status === "approved" && subscriptionStatus !== "active";
   const kycPending = isTenantStaff && user?.kyc_status && user.kyc_status !== "approved";
+  const ownerKycPath = "/dashboard/owner/kyc";
+  const ownerPaymentPath = "/dashboard/owner/payment";
+
+  if (user && isTenantStaff) {
+    if (kycPending && pathname !== ownerKycPath) {
+      router.replace(ownerKycPath);
+      return null;
+    }
+    if (!kycPending && requiresPayment && pathname !== ownerPaymentPath) {
+      router.replace(ownerPaymentPath);
+      return null;
+    }
+  }
 
   let nav: { href: string; label: string }[];
   if (isAffiliate) {
@@ -265,6 +278,7 @@ function Shell({
   } else if (isAdmin) {
     nav = [
       { href: "/dashboard/admin", label: "Admin Overview" },
+      { href: "/dashboard/admin/segments", label: "Pharmacy Segments" },
       { href: "/dashboard/admin/users", label: "Users" },
       { href: "/dashboard/admin/pharmacies", label: "Pharmacies" },
       { href: "/dashboard/admin/affiliates", label: "Affiliates" },

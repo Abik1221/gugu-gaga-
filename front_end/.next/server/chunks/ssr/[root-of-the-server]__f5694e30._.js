@@ -1547,7 +1547,7 @@ const FreePlanCard = ()=>{
                                         lineNumber: 33,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "30-day free trial — cancel anytime"
+                                    "30-day guided free trial with upgrade prompts"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1564,7 +1564,7 @@ const FreePlanCard = ()=>{
                                         lineNumber: 36,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Up to 10 AI assistant messages included"
+                                    "3 AI assistant questions per day (safe read-only insights)"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1581,7 +1581,7 @@ const FreePlanCard = ()=>{
                                         lineNumber: 39,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "2 agents available to configure"
+                                    "Connect one Google Sheets workbook for data import"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1598,7 +1598,7 @@ const FreePlanCard = ()=>{
                                         lineNumber: 42,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Ultimate pharmacy dashboard access"
+                                    'Preview pro dashboards with "Upgrade to unlock" guidance'
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1615,7 +1615,7 @@ const FreePlanCard = ()=>{
                                         lineNumber: 45,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Secure tenant-ready data storage"
+                                    "Single-pharmacy workspace with secure token storage"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1740,7 +1740,7 @@ const ProPlanCard = ()=>{
                                         lineNumber: 79,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Access to all features"
+                                    "Full access to every premium feature"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1757,7 +1757,7 @@ const ProPlanCard = ()=>{
                                         lineNumber: 82,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Unlimited user accounts"
+                                    "20 AI assistant questions per user per day"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1774,7 +1774,7 @@ const ProPlanCard = ()=>{
                                         lineNumber: 85,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Comprehensive reporting tools"
+                                    "Unlimited integrations (Zoho Books, Odoo, Notion, Google Sheets)"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1791,7 +1791,7 @@ const ProPlanCard = ()=>{
                                         lineNumber: 89,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "24/7 customer support"
+                                    "Multi-pharmacy management with admin segments & alerts"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1808,7 +1808,7 @@ const ProPlanCard = ()=>{
                                         lineNumber: 92,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Secure data storage"
+                                    "Priority support & compliance-ready audit history"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",

@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Zemen Pharma Frontend (Next.js 15)
 
-## Getting Started
+Rich PWA dashboard for pharmacy owners, staff, and affiliates with offline sync, AI chat, and third-party integrations.
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- pnpm (recommended) or npm/yarn/bun
+- Backend API running (see `/backend/README.md`)
+
+### Installation & Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
+# open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment variables (`.env.local`)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXT_PUBLIC_API_BASE=http://localhost:8000
+NEXT_PUBLIC_TENANT_HEADER=X-Tenant-ID
+NEXT_PUBLIC_ENABLE_PWA=true
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Optional extras:
 
-## Learn More
+- `NEXT_PUBLIC_LANGSMITH_KEY` for tracing AI conversations.
+- `NEXT_PUBLIC_GTAG_ID` for analytics.
 
-To learn more about Next.js, take a look at the following resources:
+### Key Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Area | Description |
+| --- | --- |
+| **Owner dashboard** | Revenue analytics, branch comparisons, staff productivity, member quick actions. |
+| **Offline support** | Service worker caches routes; `lib/offline/queue.ts` stores authenticated POST requests when offline. |
+| **AI chat** | LangGraph-powered assistant that respects tenant scope. |
+| **Integrations** | Human-driven OAuth flows and manual sync orchestration from the UI. |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Integrations UI workflow
 
-## Deploy on Vercel
+1. Navigate to **Dashboard → Owner → Connect tools** or `/dashboard/owner/integrations`.
+2. Review the curated provider list (Google Sheets, Airtable, Notion, ERPs).
+3. Click **Connect** to launch the OAuth flow. The user completes authentication in the provider window; tokens are encrypted server-side.
+4. Once connected, the page shows available resources. Owners can trigger **Import** (provider → Zemen) or **Push updates** (Zemen → provider).
+5. Sync requests enqueue jobs processed by the backend worker. Latest status and timestamps display inline.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Offline queueing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All authenticated fetch helpers (`utils/api.ts`) fall back to `queueRequest` when offline. Requests persist in IndexedDB until connectivity is restored. Use the browser DevTools > Application > IndexedDB (`zemen-offline`) to inspect or clear the queue.
+
+### Building for production
+
+```bash
+pnpm build
+pnpm start
+```
+
+### Testing
+
+Jest and Playwright suites are scaffolded under `tests/`. Run unit tests:
+
+```bash
+pnpm test
+```
+
+End-to-end smoke tests (optional):
+
+```bash
+pnpm playwright test
+```
+
+### Deployment notes
+
+- Ensure backend CORS allows the frontend origin.
+- Provide the same tenant header constant on both frontend and backend.
+- Register the production OAuth redirect (`/api/v1/integrations/oauth/callback`) with each provider.
+- Enable HTTPS so Google Sheets and other providers accept the redirect.
+
+### Troubleshooting
+
+- **Stuck “Redirecting…” after OAuth**: verify `.env.local` has the correct `NEXT_PUBLIC_API_BASE` and backend env has valid credentials.
+- **Sync errors**: check the backend worker logs (`scripts/run_integration_worker.py`) and ensure Redis/DB are reachable.
+- **Offline queue not replaying**: confirm service worker is registered and IndexedDB is not in private browsing mode.

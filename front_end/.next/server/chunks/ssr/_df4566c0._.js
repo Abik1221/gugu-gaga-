@@ -17,6 +17,8 @@ __turbopack_context__.s([
     ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "IntegrationsAPI",
+    ()=>IntegrationsAPI,
     "InventoryAPI",
     ()=>InventoryAPI,
     "KYCAPI",
@@ -39,6 +41,8 @@ __turbopack_context__.s([
     ()=>TenantAPI,
     "UploadAPI",
     ()=>UploadAPI,
+    "authFetch",
+    ()=>authFetch,
     "getAccessToken",
     ()=>getAccessToken,
     "getAuthJSON",
@@ -132,24 +136,39 @@ async function postForm(path, data, tenantId) {
     return await res.json();
 }
 async function postJSON(path, body, tenantId) {
-    const res = await fetch(resolveApiUrl(path), {
+    const requestInit = {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/json"
         }, tenantId),
         body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-        try {
-            const data = await res.json();
-            const msg = data?.error || data?.detail || JSON.stringify(data);
-            throw new Error(msg || `Request failed with ${res.status}`);
-        } catch  {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || `Request failed with ${res.status}`);
+    };
+    try {
+        const res = await fetch(resolveApiUrl(path), requestInit);
+        if (!res.ok) {
+            let parsed = null;
+            let message = "";
+            try {
+                parsed = await res.json();
+                if (typeof parsed === "string") message = parsed;
+                else if (Array.isArray(parsed)) message = parsed.join(", ");
+                else message = parsed?.error || parsed?.detail || parsed?.message || "";
+                if (!message && parsed) message = JSON.stringify(parsed);
+            } catch  {
+                parsed = null;
+                message = await res.text().catch(()=>"");
+            }
+            const error = new Error(message || `Request failed with ${res.status}`);
+            error.status = res.status;
+            if (parsed !== null) error.body = parsed;
+            throw error;
         }
+        return await res.json();
+    } catch (error) {
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+        throw error;
     }
-    return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
     const res = await authFetch(path, {
@@ -342,21 +361,62 @@ const AuthAPI = {
             if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
             ;
             return profile;
-        }),
-    updateProfile: (body)=>putAuthJSON("/api/v1/auth/me", body)
+        })
 };
 const TenantAPI = {
-    activity: (params)=>{
+    activity: async (params)=>{
         const searchParams = new URLSearchParams();
         if (params?.limit) searchParams.set("limit", params.limit.toString());
         if (params?.offset) searchParams.set("offset", params.offset.toString());
-        if (params?.action) {
-            params.action.forEach((a)=>searchParams.append("action", a));
-        }
+        params?.action?.forEach((action)=>searchParams.append("action", action));
         const qs = searchParams.toString();
-        const path = qs ? `/api/v1/tenant/activity?${qs}` : "/api/v1/tenant/activity";
-        return getAuthJSON(path);
+        const url = `/api/v1/tenant/activity${qs ? `?${qs}` : ""}`;
+        const tenantId = getTenantId() ?? undefined;
+        const res = await authFetch(url, undefined, true, tenantId);
+        if (res.status === 404 || res.status === 204) {
+            return [];
+        }
+        if (!res.ok) {
+            const text = await res.text().catch(()=>"");
+            throw new Error(text || `Request failed with ${res.status}`);
+        }
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+            return [];
+        }
+        try {
+            return await res.json();
+        } catch  {
+            return [];
+        }
     }
+};
+const IntegrationsAPI = {
+    listProviders: ()=>getAuthJSON("/api/v1/integrations/providers"),
+    listConnections: (tenantId)=>getAuthJSON("/api/v1/integrations/connections", tenantId),
+    startOAuth: (tenantId, providerKey, resources)=>postAuthJSON("/api/v1/integrations/oauth/start", {
+            provider_key: providerKey,
+            resources,
+            display_name: undefined
+        }, tenantId),
+    completeOAuth: (code, state, providerKey)=>postJSON("/api/v1/integrations/oauth/callback", {
+            code,
+            state,
+            provider_key: providerKey
+        }),
+    disconnect: (tenantId, connectionId)=>authFetch(`/api/v1/integrations/connections/${connectionId}`, {
+            method: "DELETE"
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || `HTTP ${res.status}`);
+            }
+            return res.json();
+        }),
+    triggerSync: (tenantId, connectionId, resource, direction)=>postAuthJSON(`/api/v1/integrations/connections/${connectionId}/sync`, {
+            resource,
+            direction
+        }, tenantId)
 };
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
@@ -372,8 +432,9 @@ const AffiliateAPI = {
     updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body)
 };
 const AdminAPI = {
-    pharmacies: (page = 1, pageSize = 20, q)=>getAuthJSON(`/api/v1/admin/pharmacies?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
-    affiliates: (page = 1, pageSize = 20, q)=>getAuthJSON(`/api/v1/admin/affiliates?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
+    analyticsOverview: (days = 30)=>getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
+    pharmacySummary: ()=>getAuthJSON(`/api/v1/admin/pharmacies/summary`),
+    pharmacies: (page = 1, pageSize = 20, q = "")=>getAuthJSON(`/api/v1/admin/pharmacies?page=${page}&page_size=${pageSize}&q=${encodeURIComponent(q)}`),
     approvePharmacy: (tenantId, applicationId, body)=>postAuthJSON(`/api/v1/admin/pharmacies/${applicationId}/approve`, body || {}, tenantId),
     rejectPharmacy: (tenantId, applicationId)=>postAuthJSON(`/api/v1/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
     verifyPayment: (tenantId, code)=>postAuthJSON(`/api/v1/admin/payments/verify`, {
@@ -382,7 +443,6 @@ const AdminAPI = {
     rejectPayment: (tenantId, code)=>postAuthJSON(`/api/v1/admin/payments/reject`, {
             code: code || null
         }, tenantId),
-    analyticsOverview: (days = 30)=>getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
     approveAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
     rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {})
 };
@@ -1183,6 +1243,19 @@ function AuthPage() {
         setError(null);
         setLoading(true);
         try {
+            if (!username.trim() || !password.trim()) {
+                const missing = [];
+                if (!username.trim()) missing.push("Email or username");
+                if (!password.trim()) missing.push("Password");
+                const message = `${missing.join(" and ")} required.`;
+                setError(message);
+                show({
+                    variant: "destructive",
+                    title: "Missing information",
+                    description: message
+                });
+                return;
+            }
             const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["postForm"])("/api/v1/auth/login", {
                 username,
                 password
@@ -1196,11 +1269,21 @@ function AuthPage() {
             });
             router.replace(next);
         } catch (err) {
-            setError(err.message || "Login failed");
+            const details = err?.body?.errors || err?.body;
+            let description = err.message || "Login failed";
+            if (Array.isArray(details)) {
+                description = details.join("\n");
+            } else if (details && typeof details === "object") {
+                const entries = Object.entries(details);
+                if (entries.length > 0) {
+                    description = entries.map(([field, value])=>`${field.replace(/_/g, " ")}: ${String(value)}`).join("\n");
+                }
+            }
+            setError(description);
             show({
                 variant: "destructive",
                 title: "Login failed",
-                description: err.message || "Please try again"
+                description
             });
         } finally{
             setLoading(false);
@@ -1213,21 +1296,21 @@ function AuthPage() {
                 className: "pointer-events-none absolute -left-20 top-10 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl"
             }, void 0, false, {
                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                lineNumber: 67,
+                lineNumber: 92,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "pointer-events-none absolute -right-16 bottom-0 h-[26rem] w-[26rem] rounded-full bg-blue-600/25 blur-3xl"
             }, void 0, false, {
                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                lineNumber: 68,
+                lineNumber: 93,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "pointer-events-none absolute inset-x-10 top-1/2 h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent"
             }, void 0, false, {
                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                lineNumber: 69,
+                lineNumber: 94,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1245,7 +1328,7 @@ function AuthPage() {
                                         children: "Unified access"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                        lineNumber: 75,
+                                        lineNumber: 100,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1256,7 +1339,7 @@ function AuthPage() {
                                                 children: "Sign in or launch your Zemen Pharma workspace"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                lineNumber: 79,
+                                                lineNumber: 104,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1264,13 +1347,13 @@ function AuthPage() {
                                                 children: "Manage every branch, empower teams with AI insights, and keep compliance tight—all from a single, secure dashboard experience."
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                lineNumber: 82,
+                                                lineNumber: 107,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                        lineNumber: 78,
+                                        lineNumber: 103,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1283,7 +1366,7 @@ function AuthPage() {
                                                         children: item.title
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 92,
+                                                        lineNumber: 117,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1291,18 +1374,18 @@ function AuthPage() {
                                                         children: item.description
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 93,
+                                                        lineNumber: 118,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, item.title, true, {
                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                lineNumber: 88,
+                                                lineNumber: 113,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                        lineNumber: 86,
+                                        lineNumber: 111,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1315,7 +1398,7 @@ function AuthPage() {
                                                 children: "+251 983 446 134"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                lineNumber: 98,
+                                                lineNumber: 123,
                                                 columnNumber: 33
                                             }, this),
                                             " or email ",
@@ -1325,20 +1408,20 @@ function AuthPage() {
                                                 children: "support@zemenpharma.com"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                lineNumber: 98,
+                                                lineNumber: 123,
                                                 columnNumber: 134
                                             }, this),
                                             "."
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                        lineNumber: 97,
+                                        lineNumber: 122,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                lineNumber: 74,
+                                lineNumber: 99,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1356,7 +1439,7 @@ function AuthPage() {
                                                     children: "Sign in"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                    lineNumber: 105,
+                                                    lineNumber: 130,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1366,13 +1449,13 @@ function AuthPage() {
                                                     children: "Sign up"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                    lineNumber: 116,
+                                                    lineNumber: 141,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/auth/page.tsx",
-                                            lineNumber: 104,
+                                            lineNumber: 129,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1388,7 +1471,7 @@ function AuthPage() {
                                                                 children: "Welcome back"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 133,
+                                                                lineNumber: 158,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1396,13 +1479,13 @@ function AuthPage() {
                                                                 children: "Enter your credentials to access the control center. New pharmacy owners can switch to the Sign up tab."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 134,
+                                                                lineNumber: 159,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 132,
+                                                        lineNumber: 157,
                                                         columnNumber: 23
                                                     }, this),
                                                     error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1410,7 +1493,7 @@ function AuthPage() {
                                                         children: error
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 139,
+                                                        lineNumber: 164,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1421,7 +1504,7 @@ function AuthPage() {
                                                                 children: "Username"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 144,
+                                                                lineNumber: 169,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1429,16 +1512,25 @@ function AuthPage() {
                                                                 onChange: (e)=>setUsername(e.target.value),
                                                                 required: true,
                                                                 autoComplete: "username",
+                                                                placeholder: "owner@pharmacy.com",
                                                                 className: "border-white/20 bg-white/10 text-white placeholder:text-emerald-100/50 focus-visible:border-emerald-300 focus-visible:ring-emerald-300"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 147,
+                                                                lineNumber: 172,
+                                                                columnNumber: 25
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                className: "text-[11px] text-emerald-100/70",
+                                                                children: "Use the email or username linked to your workspace. Input is case-sensitive."
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/(auth)/auth/page.tsx",
+                                                                lineNumber: 180,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 143,
+                                                        lineNumber: 168,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1449,7 +1541,7 @@ function AuthPage() {
                                                                 children: "Password"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 156,
+                                                                lineNumber: 183,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1458,16 +1550,25 @@ function AuthPage() {
                                                                 onChange: (e)=>setPassword(e.target.value),
                                                                 required: true,
                                                                 autoComplete: "current-password",
+                                                                placeholder: "At least 6 characters with a capital letter",
                                                                 className: "border-white/20 bg-white/10 text-white placeholder:text-emerald-100/50 focus-visible:border-emerald-300 focus-visible:ring-emerald-300"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 159,
+                                                                lineNumber: 186,
+                                                                columnNumber: 25
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                className: "text-[11px] text-emerald-100/70",
+                                                                children: "Passwords are case-sensitive. Include at least one capital letter and number."
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/(auth)/auth/page.tsx",
+                                                                lineNumber: 195,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 155,
+                                                        lineNumber: 182,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1477,7 +1578,7 @@ function AuthPage() {
                                                         children: loading ? "Signing in..." : "Sign in"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 168,
+                                                        lineNumber: 197,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1492,19 +1593,19 @@ function AuthPage() {
                                                                 children: "Create a workspace"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 177,
+                                                                lineNumber: 206,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 175,
+                                                        lineNumber: 204,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                lineNumber: 131,
+                                                lineNumber: 156,
                                                 columnNumber: 21
                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "space-y-6 text-left",
@@ -1516,7 +1617,7 @@ function AuthPage() {
                                                                 children: "Create your access"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 189,
+                                                                lineNumber: 218,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1524,13 +1625,13 @@ function AuthPage() {
                                                                 children: "Choose the path that matches your role. You can always return to the Sign in tab once registration is complete."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 190,
+                                                                lineNumber: 219,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 188,
+                                                        lineNumber: 217,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1544,7 +1645,7 @@ function AuthPage() {
                                                                         children: "Pharmacy owners"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                        lineNumber: 196,
+                                                                        lineNumber: 225,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -1552,7 +1653,7 @@ function AuthPage() {
                                                                         children: "Launch registration & KYC"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                        lineNumber: 197,
+                                                                        lineNumber: 226,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1560,7 +1661,7 @@ function AuthPage() {
                                                                         children: "Submit business details, upload compliance documents, and set up your tenant to unlock the full dashboard."
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                        lineNumber: 198,
+                                                                        lineNumber: 227,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1571,18 +1672,18 @@ function AuthPage() {
                                                                             children: "Start owner registration"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                            lineNumber: 202,
+                                                                            lineNumber: 231,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                        lineNumber: 201,
+                                                                        lineNumber: 230,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 195,
+                                                                lineNumber: 224,
                                                                 columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1593,7 +1694,7 @@ function AuthPage() {
                                                                         children: "Affiliates"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                        lineNumber: 206,
+                                                                        lineNumber: 235,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -1601,7 +1702,7 @@ function AuthPage() {
                                                                         children: "Earn by referring pharmacies"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                        lineNumber: 207,
+                                                                        lineNumber: 236,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1613,14 +1714,14 @@ function AuthPage() {
                                                                                 children: "Dashboard → Affiliate → Register"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                                lineNumber: 209,
+                                                                                lineNumber: 238,
                                                                                 columnNumber: 68
                                                                             }, this),
                                                                             " to activate your referral tools."
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                        lineNumber: 208,
+                                                                        lineNumber: 237,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1630,19 +1731,19 @@ function AuthPage() {
                                                                         children: "Return to sign in"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                        lineNumber: 211,
+                                                                        lineNumber: 240,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                                lineNumber: 205,
+                                                                lineNumber: 234,
                                                                 columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 194,
+                                                        lineNumber: 223,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1650,51 +1751,51 @@ function AuthPage() {
                                                         children: "Duplicate emails are blocked for security. If you submitted KYC before, switch back to Sign in and continue from the dashboard."
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                        lineNumber: 220,
+                                                        lineNumber: 249,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                                lineNumber: 187,
+                                                lineNumber: 216,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/auth/page.tsx",
-                                            lineNumber: 129,
+                                            lineNumber: 154,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/auth/page.tsx",
-                                    lineNumber: 103,
+                                    lineNumber: 128,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                                lineNumber: 102,
+                                lineNumber: 127,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(auth)/auth/page.tsx",
-                        lineNumber: 73,
+                        lineNumber: 98,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/(auth)/auth/page.tsx",
-                    lineNumber: 72,
+                    lineNumber: 97,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(auth)/auth/page.tsx",
-                lineNumber: 71,
+                lineNumber: 96,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(auth)/auth/page.tsx",
-        lineNumber: 66,
+        lineNumber: 91,
         columnNumber: 5
     }, this);
 }

@@ -17,6 +17,7 @@ class AffiliateProfile(Base):
     bank_name: Mapped[Optional[str]] = mapped_column(String(255))
     bank_account_name: Mapped[Optional[str]] = mapped_column(String(255))
     bank_account_number: Mapped[Optional[str]] = mapped_column(String(64))
+    iban: Mapped[Optional[str]] = mapped_column(String(64))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
@@ -38,6 +39,7 @@ class AffiliateReferral(Base):
     referred_tenant_id: Mapped[str] = mapped_column(String(64), index=True)
     code: Mapped[str] = mapped_column(String(64), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    activated_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
 
 class CommissionPayout(Base):

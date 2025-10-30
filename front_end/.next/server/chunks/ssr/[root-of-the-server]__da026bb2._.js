@@ -758,87 +758,65 @@ function NavBar({ isOpen, setIsOpen, scrolled, setScrolled, handleScrollToSectio
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sheet$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SheetContent"], {
                             side: "right",
-                            className: "w-80 bg-white/95 backdrop-blur-sm border-l border-emerald-200",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
-                                    className: "mt-16 flex flex-col space-y-6",
-                                    variants: menuVariants,
-                                    initial: "closed",
-                                    animate: "open",
-                                    children: navItems.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].button, {
-                                            onClick: ()=>{
-                                                if (item.href) {
-                                                    router.push(item.href);
-                                                    setIsOpen(false);
-                                                    return;
-                                                }
-                                                if (pathname !== "/") {
-                                                    router.push(`/#${item.id}`);
-                                                    setIsOpen(false);
-                                                } else {
-                                                    handleScrollToSection(item.id);
-                                                    setIsOpen(false);
-                                                }
-                                            },
-                                            className: "cursor-pointer rounded-xl border border-white/10 px-4 py-4 text-left text-sm font-semibold uppercase tracking-wide text-emerald-100 transition-all duration-300 hover:border-emerald-300 hover:bg-white/5 hover:text-white",
-                                            variants: itemVariants,
-                                            whileHover: {
-                                                scale: 1.02,
-                                                x: 10,
-                                                backgroundColor: "rgba(16, 185, 129, 0.12)"
-                                            },
-                                            whileTap: {
-                                                scale: 0.98
-                                            },
-                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "flex items-center",
-                                                children: [
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
-                                                        className: "w-2 h-2 bg-emerald-400 rounded-full mr-4",
-                                                        whileHover: {
-                                                            scale: 1.5
-                                                        }
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/components/layout/NavBar.tsx",
-                                                        lineNumber: 206,
-                                                        columnNumber: 21
-                                                    }, this),
-                                                    item.label
-                                                ]
-                                            }, void 0, true, {
-                                                fileName: "[project]/components/layout/NavBar.tsx",
-                                                lineNumber: 205,
-                                                columnNumber: 19
-                                            }, this)
-                                        }, item.id, false, {
+                            className: "w-72 border border-white/10 bg-gradient-to-br from-slate-950/95 via-slate-900/90 to-slate-950/95 p-6 text-white backdrop-blur-2xl shadow-[0_35px_120px_-50px_rgba(16,185,129,0.65)]",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
+                                className: "mt-6 flex flex-col space-y-4",
+                                variants: menuVariants,
+                                initial: "closed",
+                                animate: "open",
+                                children: navItems.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].button, {
+                                        onClick: ()=>{
+                                            if (item.href) {
+                                                router.push(item.href);
+                                                setIsOpen(false);
+                                                return;
+                                            }
+                                            if (pathname !== "/") {
+                                                router.push(`/#${item.id}`);
+                                                setIsOpen(false);
+                                            } else {
+                                                handleScrollToSection(item.id);
+                                                setIsOpen(false);
+                                            }
+                                        },
+                                        className: "cursor-pointer rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left text-sm font-semibold uppercase tracking-wide text-emerald-100 transition-all duration-300 hover:border-emerald-300/60 hover:bg-white/12 hover:text-white hover:shadow-[0_18px_48px_-30px_rgba(16,185,129,0.55)]",
+                                        variants: itemVariants,
+                                        whileHover: {
+                                            scale: 1.02,
+                                            x: 10,
+                                            backgroundColor: "rgba(16, 185, 129, 0.18)"
+                                        },
+                                        whileTap: {
+                                            scale: 0.98
+                                        },
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                            className: "flex items-center",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "mr-3 inline-flex h-2 w-2 rounded-full bg-emerald-400"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/components/layout/NavBar.tsx",
+                                                    lineNumber: 206,
+                                                    columnNumber: 21
+                                                }, this),
+                                                item.label
+                                            ]
+                                        }, void 0, true, {
                                             fileName: "[project]/components/layout/NavBar.tsx",
-                                            lineNumber: 180,
-                                            columnNumber: 17
-                                        }, this))
-                                }, void 0, false, {
-                                    fileName: "[project]/components/layout/NavBar.tsx",
-                                    lineNumber: 173,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
-                                    className: "absolute bottom-8 left-8 text-emerald-300 text-sm",
-                                    initial: {
-                                        opacity: 0
-                                    },
-                                    animate: {
-                                        opacity: 1
-                                    },
-                                    transition: {
-                                        delay: 0.8
-                                    },
-                                    children: "Zemen Pharma"
-                                }, void 0, false, {
-                                    fileName: "[project]/components/layout/NavBar.tsx",
-                                    lineNumber: 217,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
+                                            lineNumber: 205,
+                                            columnNumber: 19
+                                        }, this)
+                                    }, item.id, false, {
+                                        fileName: "[project]/components/layout/NavBar.tsx",
+                                        lineNumber: 180,
+                                        columnNumber: 17
+                                    }, this))
+                            }, void 0, false, {
+                                fileName: "[project]/components/layout/NavBar.tsx",
+                                lineNumber: 173,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
                             fileName: "[project]/components/layout/NavBar.tsx",
                             lineNumber: 169,
                             columnNumber: 11

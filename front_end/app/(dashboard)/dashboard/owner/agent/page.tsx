@@ -67,6 +67,9 @@ function AssistantContent({ payload }: { payload: any }) {
   const rows = Array.isArray(payload.rows) ? payload.rows : null;
   const hasRows = rows && rows.length > 0;
 
+  const remaining = MAX_PROMPT_LENGTH - messageDraft.length;
+  const isOverLimit = remaining < 0;
+
   return (
     <div className="space-y-3 text-sm">
       {payload.intent && (
@@ -261,10 +264,20 @@ export default function OwnerAgentPage() {
     }
   };
 
+  const MAX_PROMPT_LENGTH = 300;
+
   const handleSendMessage = async () => {
     if (!tenantId || !selectedThreadId) return;
     const prompt = messageDraft.trim();
     if (!prompt) return;
+    if (prompt.length > MAX_PROMPT_LENGTH) {
+      show({
+        variant: "destructive",
+        title: "Prompt too long",
+        description: `Limit is ${MAX_PROMPT_LENGTH} characters. Please shorten your question.`,
+      });
+      return;
+    }
     setMessageDraft("");
     setSending(true);
     setAssistantThinking(true);
@@ -453,28 +466,24 @@ export default function OwnerAgentPage() {
 
           <form
             className="flex flex-col gap-3 rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur-xl"
-            onSubmit={(event) => {
-              event.preventDefault();
-              handleSendMessage();
-            }}
           >
-            <label className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/80">
-              Ask a question
-            </label>
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/80">
+              <span>Ask a question</span>
+              <span className={`tracking-normal ${isOverLimit ? "text-red-300" : "text-emerald-200"}`}>
+                {remaining >= 0 ? `${remaining} characters left` : `${Math.abs(remaining)} over limit`}
+              </span>
+            </div>
             <textarea
               className="min-h-[120px] w-full resize-y rounded-2xl border border-white/15 bg-white/10 p-3 text-sm text-emerald-100/90 shadow-inner backdrop-blur focus:border-emerald-300/60 focus:outline-none focus:ring-2 focus:ring-emerald-200/40"
               placeholder="e.g. Show me the top selling medicines this week"
               value={messageDraft}
+              maxLength={MAX_PROMPT_LENGTH + 100}
               onChange={(event) => setMessageDraft(event.target.value)}
               onKeyDown={handleComposerKeyDown}
-              disabled={!tenantId || !selectedThreadId || sending}
             />
-            <div className="flex items-center justify-between text-xs text-emerald-100/70">
-              <span>Press Enter to send, Shift + Enter for a new line.</span>
-              <Button type="submit" disabled={!tenantId || !selectedThreadId || sending}>
-                {sending ? "Sending…" : "Send"}
-              </Button>
-            </div>
+            <Button onClick={handleSendMessage} disabled={!tenantId || !selectedThreadId || sending || isOverLimit}>
+              {sending ? "Sending…" : "Send"}
+            </Button>
           </form>
         </div>
       </div>

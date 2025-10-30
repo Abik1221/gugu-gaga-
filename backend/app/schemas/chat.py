@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 
 
@@ -12,7 +12,7 @@ class ThreadOut(BaseModel):
 
 
 class MessageCreate(BaseModel):
-    prompt: str
+    prompt: str = Field(..., min_length=1, max_length=300)
 
 
 class MessageOut(BaseModel):

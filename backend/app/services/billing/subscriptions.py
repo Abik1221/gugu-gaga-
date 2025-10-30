@@ -11,18 +11,46 @@ from app.services.notifications.notify import notify_broadcast
 
 
 BILLING_CYCLE_DAYS = 30
+FREE_TRIAL_DAYS = 30
+GRACE_PERIOD_DAYS = 5
 
 
 def ensure_subscription(db: Session, *, tenant_id: str) -> Subscription:
     sub = db.query(Subscription).filter(Subscription.tenant_id == tenant_id).first()
     if sub:
         return sub
-    # Default next due date: today + billing cycle
-    next_due = date.today() + timedelta(days=BILLING_CYCLE_DAYS)
-    sub = Subscription(tenant_id=tenant_id, next_due_date=next_due, blocked=True, notices_sent=0, last_notice_date=None)
+
+    trial_due = date.today() + timedelta(days=FREE_TRIAL_DAYS)
+    sub = Subscription(
+        tenant_id=tenant_id,
+        next_due_date=trial_due,
+        blocked=True,
+        notices_sent=0,
+        last_notice_date=None,
+    )
     db.add(sub)
     db.commit()
     db.refresh(sub)
+    return sub
+
+
+def start_free_trial(db: Session, *, tenant_id: str) -> Subscription:
+    sub = ensure_subscription(db, tenant_id=tenant_id)
+    trial_due = date.today() + timedelta(days=FREE_TRIAL_DAYS)
+    sub.blocked = False
+    sub.next_due_date = trial_due
+    sub.notices_sent = 0
+    sub.last_notice_date = None
+    db.add(sub)
+    db.commit()
+    db.refresh(sub)
+    notify_broadcast(
+        db,
+        tenant_id=tenant_id,
+        type="subscription_trial_started",
+        title="Free trial activated",
+        body=f"Your free trial is active until {trial_due.isoformat()}. Enjoy the platform!",
+    )
     return sub
 
 
@@ -38,35 +66,92 @@ def submit_payment_code(db: Session, *, tenant_id: str, code: str, submitted_by_
 def process_subscription_due(db: Session, *, tenant_id: str) -> None:
     sub = ensure_subscription(db, tenant_id=tenant_id)
     today = date.today()
-    delta_days = (sub.next_due_date - today).days
-    # Only send at most one notice per day
-    if sub.last_notice_date == today:
+    due_date = sub.next_due_date
+
+    if not due_date:
         return
-    if -5 <= delta_days <= 5:
-        # Send notice; increment counter if within or past due date window
-        sub.last_notice_date = today
-        sub.notices_sent = (sub.notices_sent or 0) + 1
+
+    # Days remaining until due (positive means ahead, zero due today, negative past due)
+    days_until_due = (due_date - today).days
+
+    if days_until_due > GRACE_PERIOD_DAYS:
+        # Far from due date; ensure not blocked and exit
+        changed = False
+        if sub.blocked:
+            sub.blocked = False
+            changed = True
+        if changed:
+            db.add(sub)
+            db.commit()
+        return
+
+    if 0 <= days_until_due <= GRACE_PERIOD_DAYS:
+        # Within final trial window, keep unblocked and remind once per day
+        changed = False
+        if sub.blocked:
+            sub.blocked = False
+            changed = True
+        if sub.last_notice_date != today:
+            sub.last_notice_date = today
+            sub.notices_sent = (sub.notices_sent or 0) + 1
+            changed = True
+            days_left = days_until_due
+            notify_broadcast(
+                db,
+                tenant_id=tenant_id,
+                type="subscription_notice",
+                title="Free trial ending soon",
+                body=(
+                    "Your free trial ends today. Please submit your payment code to avoid interruption."
+                    if days_left == 0
+                    else f"Your free trial ends on {due_date.isoformat()} (in {days_left} days). Please plan your payment to avoid interruption."
+                ),
+            )
+        if changed:
+            db.add(sub)
+            db.commit()
+        return
+
+    # Past due
+    days_past_due = -days_until_due
+
+    if days_past_due <= GRACE_PERIOD_DAYS:
+        changed = False
+        if sub.blocked:
+            sub.blocked = False
+            changed = True
+        if sub.last_notice_date != today:
+            sub.last_notice_date = today
+            sub.notices_sent = (sub.notices_sent or 0) + 1
+            changed = True
+            days_remaining = max(0, GRACE_PERIOD_DAYS - days_past_due)
+            notify_broadcast(
+                db,
+                tenant_id=tenant_id,
+                type="subscription_notice",
+                title="Subscription payment pending",
+                body=(
+                    "Your free trial ended today. Please submit your payment code within the next 5 days to continue access."
+                    if days_past_due == 0
+                    else f"Your free trial ended on {due_date.isoformat()}. Submit your payment code within {days_remaining} day(s) to avoid suspension."
+                ),
+            )
+        if changed:
+            db.add(sub)
+            db.commit()
+        return
+
+    if not sub.blocked:
+        sub.blocked = True
         db.add(sub)
         db.commit()
         notify_broadcast(
             db,
             tenant_id=tenant_id,
-            type="subscription_notice",
-            title="Subscription Due",
-            body=f"Your subscription is due on {sub.next_due_date.isoformat()}. Please submit your payment code.",
+            type="subscription_blocked",
+            title="Subscription Blocked",
+            body="Access has been temporarily blocked due to unpaid subscription beyond the grace period. Submit your payment code for admin verification to restore access.",
         )
-        # After 3 notices on/after due date (delta_days <= 0), block
-        if delta_days <= 0 and sub.notices_sent >= 3:
-            sub.blocked = True
-            db.add(sub)
-            db.commit()
-            notify_broadcast(
-                db,
-                tenant_id=tenant_id,
-                type="subscription_blocked",
-                title="Subscription Blocked",
-                body="Access has been temporarily blocked due to non-payment. Submit code and await admin verification to restore access.",
-            )
 
 
 def verify_payment_and_unblock(

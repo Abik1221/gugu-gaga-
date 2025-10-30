@@ -35,6 +35,7 @@ function resolveApiUrl(path: string): string {
   const normalizedPath = path.replace(/^\/+/, "");
   let relativePath = normalizedPath;
 
+  
   if (API_BASE_PATH) {
     const prefix = `${API_BASE_PATH}/`;
     if (relativePath.startsWith(prefix)) {
@@ -109,33 +110,50 @@ export async function postJSON<T = any>(
   body: any,
   tenantId?: string
 ): Promise<T> {
-  const res = await fetch(resolveApiUrl(path), {
+  const requestInit = {
     method: "POST",
     headers: buildHeaders({ "Content-Type": "application/json" }, tenantId),
     body: JSON.stringify(body),
-  });
+  } satisfies RequestInit;
 
-  if (!res.ok) {
-    let parsed: any = null;
-    let message = "";
-    try {
-      parsed = await res.json();
-      if (typeof parsed === "string") message = parsed;
-      else if (Array.isArray(parsed)) message = parsed.join(", ");
-      else message = parsed?.error || parsed?.detail || parsed?.message || "";
-      if (!message && parsed) message = JSON.stringify(parsed);
-    } catch {
-      parsed = null;
-      message = await res.text().catch(() => "");
+  try {
+    const res = await fetch(resolveApiUrl(path), requestInit);
+
+    if (!res.ok) {
+      let parsed: any = null;
+      let message = "";
+      try {
+        parsed = await res.json();
+        if (typeof parsed === "string") message = parsed;
+        else if (Array.isArray(parsed)) message = parsed.join(", ");
+        else message = parsed?.error || parsed?.detail || parsed?.message || "";
+        if (!message && parsed) message = JSON.stringify(parsed);
+      } catch {
+        parsed = null;
+        message = await res.text().catch(() => "");
+      }
+
+      const error: any = new Error(message || `Request failed with ${res.status}`);
+      error.status = res.status;
+      if (parsed !== null) error.body = parsed;
+      throw error;
     }
 
-    const error: any = new Error(message || `Request failed with ${res.status}`);
-    error.status = res.status;
-    if (parsed !== null) error.body = parsed;
+    return (await res.json()) as T;
+  } catch (error: any) {
+    if (typeof window !== "undefined" && !navigator.onLine) {
+      const { queueRequest } = await import("@/lib/offline/queue");
+      await queueRequest(path, requestInit, {
+        tenantId,
+        requiresAuth: true,
+        description: requestInit.body ? `POST ${path}` : undefined,
+      });
+      const offlineError: any = new Error("Request queued until you are back online.");
+      offlineError.offline = true;
+      throw offlineError;
+    }
     throw error;
   }
-
-  return (await res.json()) as T;
 }
 
 export async function putAuthJSON<T = any>(
@@ -227,7 +245,7 @@ async function refreshTokens(): Promise<boolean> {
   }
 }
 
-async function authFetch<T>(
+export async function authFetch<T>(
   path: string,
   init?: RequestInit,
   retry = true,
@@ -458,6 +476,82 @@ export const TenantAPI = {
   },
 };
 
+// ----------------- IntegrationsAPI -----------------
+export type IntegrationProviderOut = {
+  key: string;
+  name: string;
+  category: string;
+  capability: {
+    resources: string[];
+    supports_webhooks: boolean;
+    supports_delta_sync: boolean;
+  };
+  requires_oauth: boolean;
+};
+
+export type IntegrationConnectionOut = {
+  id: number;
+  tenant_id: string;
+  provider_key: string;
+  provider_name: string;
+  display_name: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  last_synced_at?: string | null;
+  resource_scope?: string[] | null;
+};
+
+export type IntegrationOAuthStartResponse = {
+  authorization_url: string;
+  state: string;
+  expires_in_seconds: number;
+};
+
+export type IntegrationSyncJobOut = {
+  id: number;
+  connection_id: number;
+  direction: string;
+  resource: string;
+  status: string;
+  started_at?: string | null;
+  finished_at?: string | null;
+  error_message?: string | null;
+};
+
+export const IntegrationsAPI = {
+  listProviders: () => getAuthJSON<IntegrationProviderOut[]>("/api/v1/integrations/providers"),
+  listConnections: (tenantId: string) =>
+    getAuthJSON<IntegrationConnectionOut[]>("/api/v1/integrations/connections", tenantId),
+  startOAuth: (tenantId: string, providerKey: string, resources?: string[]) =>
+    postAuthJSON<IntegrationOAuthStartResponse>(
+      "/api/v1/integrations/oauth/start",
+      { provider_key: providerKey, resources, display_name: undefined },
+      tenantId
+    ),
+  completeOAuth: (code: string, state: string, providerKey?: string) =>
+    postJSON<IntegrationConnectionOut>(
+      "/api/v1/integrations/oauth/callback",
+      { code, state, provider_key: providerKey }
+    ),
+  disconnect: (tenantId: string, connectionId: number) =>
+    authFetch(`/api/v1/integrations/connections/${connectionId}`, { method: "DELETE" }, true, tenantId).then(
+      async (res) => {
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          throw new Error(text || `HTTP ${res.status}`);
+        }
+        return res.json();
+      }
+    ),
+  triggerSync: (tenantId: string, connectionId: number, resource: string, direction: "incoming" | "outgoing") =>
+    postAuthJSON<IntegrationSyncJobOut>(
+      `/api/v1/integrations/connections/${connectionId}/sync`,
+      { resource, direction },
+      tenantId
+    ),
+};
+
 export const AffiliateAPI = {
   getLinks: () => getAuthJSON("/api/v1/affiliate/register-link"),
   createLink: () => getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
@@ -482,36 +576,23 @@ export const AffiliateAPI = {
 
 // ----------------- AdminAPI -----------------
 export const AdminAPI = {
-  pharmacies: (page = 1, pageSize = 20, q?: string) =>
+  analyticsOverview: (days = 30) =>
+    getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
+  pharmacySummary: () => getAuthJSON(`/api/v1/admin/pharmacies/summary`),
+  pharmacies: (page = 1, pageSize = 20, q = "") =>
     getAuthJSON(
-      `/api/v1/admin/pharmacies?page=${page}&page_size=${pageSize}${
-        q ? `&q=${encodeURIComponent(q)}` : ""
-      }`
-    ),
-  affiliates: (page = 1, pageSize = 20, q?: string) =>
-    getAuthJSON(
-      `/api/v1/admin/affiliates?page=${page}&page_size=${pageSize}${
-        q ? `&q=${encodeURIComponent(q)}` : ""
-      }`
+      `/api/v1/admin/pharmacies?page=${page}&page_size=${pageSize}&q=${encodeURIComponent(q)}`
     ),
   approvePharmacy: (tenantId: string, applicationId: number, body?: any) =>
-    postAuthJSON(
-      `/api/v1/admin/pharmacies/${applicationId}/approve`,
-      body || {},
-      tenantId
-    ),
+    postAuthJSON(`/api/v1/admin/pharmacies/${applicationId}/approve`, body || {}, tenantId),
   rejectPharmacy: (tenantId: string, applicationId: number) =>
     postAuthJSON(`/api/v1/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
   verifyPayment: (tenantId: string, code?: string | null) =>
     postAuthJSON(`/api/v1/admin/payments/verify`, { code: code || null }, tenantId),
   rejectPayment: (tenantId: string, code?: string | null) =>
     postAuthJSON(`/api/v1/admin/payments/reject`, { code: code || null }, tenantId),
-  analyticsOverview: (days = 30) =>
-    getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
-  approveAffiliate: (userId: number) =>
-    postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
-  rejectAffiliate: (userId: number) =>
-    postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {}),
+  approveAffiliate: (userId: number) => postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
+  rejectAffiliate: (userId: number) => postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {}),
 };
 
 // ----------------- StaffAPI -----------------
