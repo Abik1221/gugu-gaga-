@@ -122,7 +122,7 @@ const Card = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$node_
     let { className, ...props } = param;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         ref: ref,
-        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("bg-white rounded-xl shadow p-6", className),
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("rounded-2xl border border-white/20 bg-white/70 p-6 shadow-[0_20px_70px_-40px_rgba(16,185,129,0.65)] backdrop-blur-md", className),
         ...props
     }, void 0, false, {
         fileName: "[project]/components/ui/card.tsx",
@@ -136,7 +136,7 @@ const CardHeader = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f
     let { className, ...props } = param;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         ref: ref,
-        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("mb-2", className),
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("mb-3 flex items-center justify-between gap-4", className),
         ...props
     }, void 0, false, {
         fileName: "[project]/components/ui/card.tsx",
@@ -150,7 +150,7 @@ const CardTitle = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f$
     let { className, ...props } = param;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
         ref: ref,
-        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("text-lg font-semibold text-emerald-700", className),
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("text-lg font-semibold leading-tight text-emerald-900", className),
         ...props
     }, void 0, false, {
         fileName: "[project]/components/ui/card.tsx",
@@ -164,7 +164,7 @@ const CardContent = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2
     let { className, ...props } = param;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         ref: ref,
-        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("text-gray-700", className),
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("text-sm leading-relaxed text-slate-700", className),
         ...props
     }, void 0, false, {
         fileName: "[project]/components/ui/card.tsx",
@@ -666,13 +666,13 @@ function BranchManagementPage() {
         className: "space-y-8",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
-                className: "flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between",
+                className: "flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/10 p-6 shadow-[0_32px_120px_-60px_rgba(16,185,129,0.7)] backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "space-y-1",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                className: "text-2xl font-semibold text-gray-900",
+                                className: "text-2xl font-semibold text-white",
                                 children: "Branch management"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -680,7 +680,7 @@ function BranchManagementPage() {
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "text-sm text-gray-500",
+                                className: "text-sm text-emerald-100/80",
                                 children: "Organise your pharmacy locations, keep contact information up to date, and control where sales are attributed."
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -735,12 +735,12 @@ function BranchManagementPage() {
                 className: "grid gap-4 sm:grid-cols-2 lg:grid-cols-3",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
-                        className: "border border-emerald-100 shadow-sm",
+                        className: "border border-white/10 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
                             className: "space-y-1",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
-                                    className: "text-xs uppercase tracking-wide text-emerald-700/70",
+                                    className: "text-xs uppercase tracking-[0.35em] text-emerald-100/80",
                                     children: "Total branches"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -754,7 +754,7 @@ function BranchManagementPage() {
                                     lineNumber: 211,
                                     columnNumber: 15
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "text-2xl font-semibold text-gray-900",
+                                    className: "text-2xl font-semibold text-white",
                                     children: stats.total
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -773,13 +773,13 @@ function BranchManagementPage() {
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
-                        className: "border border-emerald-100 shadow-sm",
+                        className: "border border-white/10 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
                                 className: "space-y-1",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
-                                        className: "text-xs uppercase tracking-wide text-emerald-700/70",
+                                        className: "text-xs uppercase tracking-[0.35em] text-emerald-100/80",
                                         children: "Contact-ready"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -793,7 +793,7 @@ function BranchManagementPage() {
                                         lineNumber: 223,
                                         columnNumber: 15
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "text-2xl font-semibold text-gray-900",
+                                        className: "text-2xl font-semibold text-white",
                                         children: stats.withPhone
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -807,7 +807,7 @@ function BranchManagementPage() {
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardFooter"], {
-                                className: "pt-0 text-xs text-gray-500",
+                                className: "pt-0 text-xs text-emerald-100/70",
                                 children: "Branches with a phone number recorded"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -828,11 +828,13 @@ function BranchManagementPage() {
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
+                    className: "border border-white/10 bg-white/10 text-emerald-50 shadow-[0_32px_120px_-60px_rgba(59,130,246,0.55)] backdrop-blur-xl",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardHeader"], {
                             className: "flex flex-col gap-3 md:flex-row md:items-center md:justify-between",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CardTitle"], {
+                                    className: "text-white",
                                     children: "Branch directory"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -845,7 +847,7 @@ function BranchManagementPage() {
                                         placeholder: "Search branch name, address, phone",
                                         value: search,
                                         onChange: (event)=>setSearch(event.target.value),
-                                        className: "w-64"
+                                        className: "w-64 rounded-full border border-white/20 bg-white/10 text-sm text-white placeholder:text-emerald-100/60"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
                                         lineNumber: 239,
@@ -871,14 +873,14 @@ function BranchManagementPage() {
                                 lineNumber: 249,
                                 columnNumber: 15
                             }, this) : branchesError ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "p-6 text-sm text-red-600",
+                                className: "p-6 text-sm text-red-200",
                                 children: branchesError
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
                                 lineNumber: 251,
                                 columnNumber: 15
                             }, this) : filteredBranches.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "p-6 text-sm text-gray-500 space-y-2",
+                                className: "space-y-2 p-6 text-sm text-emerald-100/75",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: "No branches yet. Create a branch to start allocating sales across locations."
@@ -888,7 +890,7 @@ function BranchManagementPage() {
                                         columnNumber: 17
                                     }, this),
                                     pharmacies.length === 0 && !pharmacyLoading && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "rounded border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800",
+                                        className: "rounded-2xl border border-amber-400/30 bg-amber-500/15 p-3 text-xs text-amber-100",
                                         children: "We couldn't find a pharmacy record for this tenant. Please complete your pharmacy profile (Settings → Pharmacy) before adding branches."
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -903,14 +905,14 @@ function BranchManagementPage() {
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "overflow-x-auto",
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
-                                    className: "min-w-full divide-y divide-gray-200 text-sm",
+                                    className: "min-w-full divide-y divide-white/10 text-sm text-emerald-100/80",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
-                                            className: "bg-gray-50",
+                                            className: "bg-white/5",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                        className: "px-3 py-2 text-left font-semibold text-gray-600",
+                                                        className: "px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100",
                                                         children: "Name"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -918,7 +920,7 @@ function BranchManagementPage() {
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                        className: "px-3 py-2 text-left font-semibold text-gray-600",
+                                                        className: "px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100",
                                                         children: "Address"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -926,7 +928,7 @@ function BranchManagementPage() {
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                        className: "px-3 py-2 text-left font-semibold text-gray-600",
+                                                        className: "px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100",
                                                         children: "Phone"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -934,7 +936,7 @@ function BranchManagementPage() {
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                        className: "px-3 py-2 text-left font-semibold text-gray-600",
+                                                        className: "px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100",
                                                         children: "Pharmacy"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -942,7 +944,7 @@ function BranchManagementPage() {
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                        className: "px-3 py-2 text-left font-semibold text-gray-600",
+                                                        className: "px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100",
                                                         children: "Actions"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -961,14 +963,14 @@ function BranchManagementPage() {
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
-                                            className: "divide-y divide-gray-100 bg-white",
+                                            className: "divide-y divide-white/10 bg-white/5 text-emerald-50",
                                             children: filteredBranches.map((branch)=>{
                                                 const pharmacy = pharmacies.find((p)=>p.id === branch.pharmacy_id);
                                                 var _pharmacy_name;
                                                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "px-3 py-2 text-gray-900",
+                                                            className: "px-3 py-2 font-semibold text-white",
                                                             children: branch.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -976,7 +978,7 @@ function BranchManagementPage() {
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "px-3 py-2 text-gray-600",
+                                                            className: "px-3 py-2 text-emerald-100/70",
                                                             children: branch.address || "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -984,7 +986,7 @@ function BranchManagementPage() {
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "px-3 py-2 text-gray-600",
+                                                            className: "px-3 py-2 text-emerald-100/70",
                                                             children: branch.phone || "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -992,9 +994,10 @@ function BranchManagementPage() {
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                            className: "px-3 py-2 text-gray-600",
+                                                            className: "px-3 py-2 text-emerald-100/80",
                                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Badge"], {
                                                                 variant: "outline",
+                                                                className: "border-emerald-300/40 bg-emerald-500/10 text-emerald-100",
                                                                 children: (_pharmacy_name = pharmacy === null || pharmacy === void 0 ? void 0 : pharmacy.name) !== null && _pharmacy_name !== void 0 ? _pharmacy_name : "#".concat(branch.pharmacy_id)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
@@ -1018,17 +1021,17 @@ function BranchManagementPage() {
                                                                     children: "Delete"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                                                    lineNumber: 286,
+                                                                    lineNumber: 288,
                                                                     columnNumber: 31
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                                                lineNumber: 285,
+                                                                lineNumber: 287,
                                                                 columnNumber: 29
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                                            lineNumber: 284,
+                                                            lineNumber: 286,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
@@ -1072,7 +1075,7 @@ function BranchManagementPage() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 305,
+                                    lineNumber: 307,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1082,13 +1085,13 @@ function BranchManagementPage() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 306,
+                                    lineNumber: 308,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                            lineNumber: 304,
+                            lineNumber: 306,
                             columnNumber: 11
                         }, this)
                     ]
@@ -1117,7 +1120,7 @@ function BranchManagementPage() {
                     })
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                lineNumber: 311,
+                lineNumber: 313,
                 columnNumber: 7
             }, this)
         ]
@@ -1236,20 +1239,20 @@ function CreateBranchSheet(param) {
                             children: "Create branch"
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                            lineNumber: 414,
+                            lineNumber: 416,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sheet$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SheetDescription"], {
                             children: "Add a new pharmacy location. Branch names appear in POS sales reports and analytics."
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                            lineNumber: 415,
+                            lineNumber: 417,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                    lineNumber: 413,
+                    lineNumber: 415,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1264,7 +1267,7 @@ function CreateBranchSheet(param) {
                                     children: "Pharmacy"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 421,
+                                    lineNumber: 423,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1277,25 +1280,25 @@ function CreateBranchSheet(param) {
                                         children: "No pharmacy found"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                        lineNumber: 429,
+                                        lineNumber: 431,
                                         columnNumber: 17
                                     }, this) : pharmacies.map((pharmacy)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                             value: pharmacy.id,
                                             children: pharmacy.name
                                         }, pharmacy.id, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                            lineNumber: 432,
+                                            lineNumber: 434,
                                             columnNumber: 19
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 422,
+                                    lineNumber: 424,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                            lineNumber: 420,
+                            lineNumber: 422,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1306,7 +1309,7 @@ function CreateBranchSheet(param) {
                                     children: "Branch name"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 440,
+                                    lineNumber: 442,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1316,13 +1319,13 @@ function CreateBranchSheet(param) {
                                     placeholder: "e.g. Bole Branch"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 441,
+                                    lineNumber: 443,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                            lineNumber: 439,
+                            lineNumber: 441,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1333,7 +1336,7 @@ function CreateBranchSheet(param) {
                                     children: "Address (optional)"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 444,
+                                    lineNumber: 446,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1342,13 +1345,13 @@ function CreateBranchSheet(param) {
                                     placeholder: "Street, city"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 445,
+                                    lineNumber: 447,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                            lineNumber: 443,
+                            lineNumber: 445,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1359,7 +1362,7 @@ function CreateBranchSheet(param) {
                                     children: "Phone (optional)"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 448,
+                                    lineNumber: 450,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1368,13 +1371,13 @@ function CreateBranchSheet(param) {
                                     placeholder: "e.g. +251-911-000000"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                    lineNumber: 449,
+                                    lineNumber: 451,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                            lineNumber: 447,
+                            lineNumber: 449,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sheet$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SheetFooter"], {
@@ -1391,7 +1394,7 @@ function CreateBranchSheet(param) {
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                        lineNumber: 453,
+                                        lineNumber: 455,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1400,35 +1403,35 @@ function CreateBranchSheet(param) {
                                         children: submitting ? "Creating..." : "Create branch"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                        lineNumber: 463,
+                                        lineNumber: 465,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                                lineNumber: 452,
+                                lineNumber: 454,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                            lineNumber: 451,
+                            lineNumber: 453,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-                    lineNumber: 419,
+                    lineNumber: 421,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-            lineNumber: 412,
+            lineNumber: 414,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/(dashboard)/dashboard/owner/branches/page.tsx",
-        lineNumber: 405,
+        lineNumber: 407,
         columnNumber: 5
     }, this);
 }

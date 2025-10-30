@@ -53,36 +53,68 @@ export default function HomePage() {
           <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">Run your pharmacy with confidence</h1>
           <p className="mt-4 text-gray-600 text-lg">Zemen Pharma unifies inventory, POS, AI insights, and affiliate growth into one modern platform—designed for speed, accuracy, and scale.</p>
           <div className="mt-6 flex gap-3">
-            <Button asChild><a href="/register">Get Started</a></Button>
+            <Button asChild><a href="/register/pharmacy">Get Started</a></Button>
             <a href="#about" className="text-emerald-700 border border-emerald-200 rounded px-3 py-2 text-sm hover:bg-emerald-50">Learn More</a>
           </div>
         </div>
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FeatureCard title="Inventory & POS" desc="Fast item lookup, stock control, FEFO checks, and streamlined checkout with receipts." />
-          <FeatureCard title="AI Assistance" desc="Ask the agent for sales insights, inventory predictions, and operational guidance." />
-          <FeatureCard title="Affiliate Growth" desc="Register affiliates, share referral links, and track clicks, conversions, and commissions." />
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <FeatureCard
+            title="Multi-pharmacy management"
+            desc="Coordinate stock and sales across every branch with shared catalogs, centralized purchases, and branch-level insights."
+          />
+          <FeatureCard
+            title="AI copilots for growth"
+            desc="Let intelligent assistants forecast demand, flag anomalies, and surface the next best actions for your teams."
+          />
+          <FeatureCard
+            title="Enterprise-grade security"
+            desc="Role-based controls, audit trails, and encrypted data flows keep patient information and revenue streams protected."
+          />
+          <FeatureCard
+            title="Mobile command center"
+            desc="Approve orders, reconcile payouts, and monitor KPIs from your phone—no matter where the day takes you."
+          />
         </div>
       </section>
 
       {/* About */}
       <section id="about" className="scroll-mt-20">
         <div className="max-w-3xl">
-          <h2 className="text-2xl font-semibold">Built for modern pharmacies</h2>
-          <p className="mt-3 text-gray-600">From single-branch shops to multi-branch operations, Zemen Pharma provides the tools to manage stock, process sales, and discover insights in real-time. Our POS is integrated with Inventory and Sales Services, while AI Services help you make smarter decisions. The affiliate program accelerates growth through verified partners.</p>
+          <h2 className="text-2xl font-semibold">Who is Zemen Pharma for?</h2>
+          <p className="mt-3 text-gray-600">Whether you oversee a growing network of pharmacies or lead a single high-performing branch, Zemen Pharma adapts to your workflow. Harness AI copilots, secure infrastructure, and mobile controls to keep every location aligned and profitable.</p>
         </div>
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Bullet title="Real-time stock & FEFO" desc="Validate availability and fulfill with First-Expire-First-Out for safe dispensing." />
-          <Bullet title="Receipts & reports" desc="Generate receipts instantly and analyze sales with clear, actionable data." />
-          <Bullet title="Secure & role-based" desc="Owner, Manager, and Cashier roles keep your data secure and workflows clean." />
-          <Bullet title="Rapid onboarding" desc="Simple setup, intuitive UI, and support to get your team productive fast." />
+          <Bullet title="Branch and network owners" desc="Synchronize purchasing, pricing, and stock visibility across multiple pharmacy locations." />
+          <Bullet title="AI-driven operations" desc="Empower managers with predictive analytics, smart alerts, and guided actions fueled by AI." />
+          <Bullet title="Compliance-focused teams" desc="Protect sensitive data with role-based permissions, audit history, and encryption by default." />
+          <Bullet title="On-the-go executives" desc="Track KPIs, approve payouts, and resolve issues from any device—no tools or laptops required." />
         </div>
       </section>
 
       {/* Contact */}
       <section id="contact" className="scroll-mt-20">
-        <div className="max-w-2xl">
-          <h2 className="text-2xl font-semibold">Contact Us</h2>
-          <p className="text-gray-600 mt-2">Have questions about Zemen Pharma? Send us a message and we’ll respond promptly.</p>
+        <div className="max-w-2xl space-y-6">
+          <div>
+            <h2 className="text-2xl font-semibold">Contact Us</h2>
+            <p className="text-gray-600 mt-2">Have questions about Zemen Pharma? Send us a message and we’ll respond promptly.</p>
+          </div>
+
+          <div className="rounded-3xl border border-emerald-200/60 bg-gradient-to-r from-emerald-500/15 via-white to-blue-500/15 p-5 shadow-[0_18px_55px_-35px_rgba(16,185,129,0.45)]">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-700">Call us directly</p>
+                <p className="mt-1 text-2xl font-bold text-emerald-900">+251 983 446 134</p>
+                <p className="mt-1 text-sm text-emerald-700/80">Available every day • 8:00 – 21:00 GMT+3</p>
+              </div>
+              <a
+                href="tel:+251983446134"
+                className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-[0_15px_45px_-30px_rgba(16,185,129,0.55)] transition hover:scale-[1.02]"
+              >
+                Tap to call now
+              </a>
+            </div>
+          </div>
+
           {success && <div className="mt-4 p-3 bg-emerald-50 text-emerald-800 rounded text-sm">{success}</div>}
           {error && <div className="mt-4 p-3 bg-red-50 text-red-700 rounded text-sm">{error}</div>}
           <form onSubmit={onSubmit} className="mt-4 space-y-4">

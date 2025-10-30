@@ -107,9 +107,9 @@ const ROLE_LABELS = {
     assistant: "Assistant"
 };
 const ROLE_TONE = {
-    user: "bg-emerald-600 text-white",
-    owner: "bg-emerald-600 text-white",
-    assistant: "bg-white border border-gray-200 text-gray-900"
+    user: "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20",
+    owner: "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20",
+    assistant: "bg-white/90 border border-white/40 text-slate-900 backdrop-blur"
 };
 function normalizeThreadTitle(thread, index) {
     const raw = (thread.title || "").trim();
@@ -426,13 +426,13 @@ function OwnerAgentPage() {
     const isLoadingThreads = threadsLoading || bootstrapLoading;
     const isLoadingMessages = messagesLoading || bootstrapLoading;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "space-y-6",
+        className: "space-y-8",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "flex flex-col gap-2",
+                className: "flex flex-col gap-3 rounded-3xl border border-white/15 bg-white/10 p-6 shadow-[0_28px_120px_-60px_rgba(16,185,129,0.75)] backdrop-blur-xl",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                        className: "text-2xl font-semibold text-gray-900",
+                        className: "text-3xl font-semibold leading-tight text-white",
                         children: "Zemen AI Assistant"
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -440,7 +440,7 @@ function OwnerAgentPage() {
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        className: "max-w-3xl text-sm text-gray-500",
+                        className: "max-w-3xl text-sm leading-relaxed text-emerald-100/80",
                         children: "Ask questions about sales, inventory, and staff performance. The assistant runs read-only analytics on your tenant data and summarises the results for quick insight."
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -462,16 +462,16 @@ function OwnerAgentPage() {
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "grid gap-4 lg:grid-cols-[320px,1fr]",
+                className: "grid gap-6 lg:grid-cols-[320px,1fr]",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex flex-col gap-4 rounded border border-gray-200 bg-white p-4 shadow-sm",
+                        className: "flex flex-col gap-5 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_24px_90px_-50px_rgba(14,165,233,0.45)] backdrop-blur-xl",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex items-center justify-between",
+                                className: "flex items-center justify-between text-emerald-100/80",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                        className: "text-sm font-semibold text-gray-700",
+                                        className: "text-sm font-semibold uppercase tracking-[0.3em] text-emerald-100",
                                         children: "Conversations"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -545,7 +545,7 @@ function OwnerAgentPage() {
                                 lineNumber: 339,
                                 columnNumber: 13
                             }, this) : threads.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "rounded border border-dashed border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-500",
+                                className: "rounded-2xl border border-white/15 bg-white/5 p-4 text-center text-sm text-emerald-100/80",
                                 children: "No conversations yet. Start a new one to ask the assistant anything about your pharmacy."
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -559,10 +559,10 @@ function OwnerAgentPage() {
                                     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         type: "button",
                                         onClick: ()=>setSelectedThreadId(thread.id),
-                                        className: `w-full rounded border px-3 py-2 text-left text-sm transition ${isActive ? "border-emerald-400 bg-emerald-50 text-emerald-700" : "border-gray-200 hover:border-emerald-200 hover:bg-emerald-50/50"}`,
+                                        className: `group w-full rounded-2xl border px-3 py-2 text-left text-sm font-medium transition ${isActive ? "border-transparent bg-gradient-to-r from-emerald-500/25 via-teal-500/20 to-sky-500/25 text-white shadow-lg" : "border-white/15 bg-white/5 text-emerald-100/80 hover:border-emerald-200/50 hover:bg-white/10"}`,
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "font-medium",
+                                                className: "font-semibold text-white/90",
                                                 children: title
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -570,7 +570,7 @@ function OwnerAgentPage() {
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "text-xs text-gray-500",
+                                                className: "text-xs uppercase tracking-[0.3em] text-emerald-100/60",
                                                 children: [
                                                     "Thread #",
                                                     thread.id
@@ -599,7 +599,7 @@ function OwnerAgentPage() {
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex flex-col gap-4 rounded border border-gray-200 bg-white p-4 shadow-sm",
+                        className: "flex flex-col gap-5 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.7)] backdrop-blur-xl",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex flex-col gap-1",
@@ -608,7 +608,7 @@ function OwnerAgentPage() {
                                         className: "flex items-center justify-between",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                                className: "text-sm font-semibold text-gray-700",
+                                                className: "text-sm font-semibold uppercase tracking-[0.3em] text-emerald-100",
                                                 children: selectedThread ? normalizeThreadTitle(selectedThread, 0) : "Conversation"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -640,7 +640,7 @@ function OwnerAgentPage() {
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                        className: "text-xs text-gray-500",
+                                        className: "text-xs text-emerald-100/70",
                                         children: "The assistant uses safe, read-only queries. Ask for sales summaries, inventory gaps, or staff performance insights."
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -654,7 +654,7 @@ function OwnerAgentPage() {
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex-1 overflow-hidden rounded border border-gray-100 bg-gray-50",
+                                className: "flex-1 overflow-hidden rounded-3xl border border-white/15 bg-white/5",
                                 children: isLoadingMessages ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "p-4 space-y-3",
                                     children: Array.from({
@@ -671,14 +671,14 @@ function OwnerAgentPage() {
                                     lineNumber: 398,
                                     columnNumber: 15
                                 }, this) : !selectedThreadId ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "flex h-full items-center justify-center p-6 text-sm text-gray-500",
+                                    className: "flex h-full items-center justify-center p-6 text-sm text-emerald-100/70",
                                     children: "Select a conversation to view messages."
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
                                     lineNumber: 404,
                                     columnNumber: 15
                                 }, this) : messages.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "flex h-full items-center justify-center p-6 text-sm text-gray-500",
+                                    className: "flex h-full items-center justify-center p-6 text-sm text-emerald-100/70",
                                     children: "Ask your first question to begin."
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -694,7 +694,7 @@ function OwnerAgentPage() {
                                             return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: `flex ${message.role === "assistant" ? "justify-start" : "justify-end"}`,
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: `max-w-xl rounded-lg px-3 py-2 text-sm shadow-sm ${roleClass}`,
+                                                    className: `max-w-xl rounded-2xl px-3 py-2 text-sm shadow ${roleClass}`,
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "mb-1 text-xs font-semibold uppercase tracking-wide opacity-70",
@@ -733,7 +733,7 @@ function OwnerAgentPage() {
                                         assistantThinking && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "flex justify-start",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "max-w-xs rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500 shadow-sm",
+                                                className: "max-w-xs rounded-2xl border border-white/20 bg-white/80 px-3 py-2 text-sm text-emerald-800 shadow",
                                                 children: "Assistant is analysing your data…"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -764,14 +764,14 @@ function OwnerAgentPage() {
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
-                                className: "flex flex-col gap-3 rounded border border-gray-100 bg-white p-3",
+                                className: "flex flex-col gap-3 rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur-xl",
                                 onSubmit: (event)=>{
                                     event.preventDefault();
                                     handleSendMessage();
                                 },
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-xs font-semibold uppercase tracking-wide text-gray-500",
+                                        className: "text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/80",
                                         children: "Ask a question"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
@@ -779,7 +779,7 @@ function OwnerAgentPage() {
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                        className: "min-h-[120px] w-full resize-y rounded border border-gray-200 p-3 text-sm shadow-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100",
+                                        className: "min-h-[120px] w-full resize-y rounded-2xl border border-white/15 bg-white/10 p-3 text-sm text-emerald-100/90 shadow-inner backdrop-blur focus:border-emerald-300/60 focus:outline-none focus:ring-2 focus:ring-emerald-200/40",
                                         placeholder: "e.g. Show me the top selling medicines this week",
                                         value: messageDraft,
                                         onChange: (event)=>setMessageDraft(event.target.value),
@@ -791,7 +791,7 @@ function OwnerAgentPage() {
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "flex items-center justify-between text-xs text-gray-500",
+                                        className: "flex items-center justify-between text-xs text-emerald-100/70",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Press Enter to send, Shift + Enter for a new line."

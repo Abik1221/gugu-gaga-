@@ -175,10 +175,10 @@ export default function BranchManagementPage() {
 
   return (
     <div className="space-y-8">
-      <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <header className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/10 p-6 shadow-[0_32px_120px_-60px_rgba(16,185,129,0.7)] backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold text-gray-900">Branch management</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-2xl font-semibold text-white">Branch management</h1>
+          <p className="text-sm text-emerald-100/80">
             Organise your pharmacy locations, keep contact information up to date, and control where sales are attributed.
           </p>
         </div>
@@ -202,45 +202,45 @@ export default function BranchManagementPage() {
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Card className="border border-emerald-100 shadow-sm">
+        <Card className="border border-white/10 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-wide text-emerald-700/70">
+            <CardTitle className="text-xs uppercase tracking-[0.35em] text-emerald-100/80">
               Total branches
             </CardTitle>
             {isBusy ? (
               <Skeleton className="h-7 w-12" />
             ) : (
-              <div className="text-2xl font-semibold text-gray-900">{stats.total}</div>
+              <div className="text-2xl font-semibold text-white">{stats.total}</div>
             )}
           </CardHeader>
         </Card>
-        <Card className="border border-emerald-100 shadow-sm">
+        <Card className="border border-white/10 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-wide text-emerald-700/70">
+            <CardTitle className="text-xs uppercase tracking-[0.35em] text-emerald-100/80">
               Contact-ready
             </CardTitle>
             {isBusy ? (
               <Skeleton className="h-7 w-12" />
             ) : (
-              <div className="text-2xl font-semibold text-gray-900">{stats.withPhone}</div>
+              <div className="text-2xl font-semibold text-white">{stats.withPhone}</div>
             )}
           </CardHeader>
-          <CardFooter className="pt-0 text-xs text-gray-500">
+          <CardFooter className="pt-0 text-xs text-emerald-100/70">
             Branches with a phone number recorded
           </CardFooter>
         </Card>
       </section>
 
       <section>
-        <Card>
+        <Card className="border border-white/10 bg-white/10 text-emerald-50 shadow-[0_32px_120px_-60px_rgba(59,130,246,0.55)] backdrop-blur-xl">
           <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <CardTitle>Branch directory</CardTitle>
+            <CardTitle className="text-white">Branch directory</CardTitle>
             <div className="flex flex-wrap items-center gap-2">
               <Input
                 placeholder="Search branch name, address, phone"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                className="w-64"
+                className="w-64 rounded-full border border-white/20 bg-white/10 text-sm text-white placeholder:text-emerald-100/60"
               />
             </div>
           </CardHeader>
@@ -248,38 +248,40 @@ export default function BranchManagementPage() {
             {isBusy ? (
               <Skeleton className="h-64 w-full" />
             ) : branchesError ? (
-              <div className="p-6 text-sm text-red-600">{branchesError}</div>
+              <div className="p-6 text-sm text-red-200">{branchesError}</div>
             ) : filteredBranches.length === 0 ? (
-              <div className="p-6 text-sm text-gray-500 space-y-2">
+              <div className="space-y-2 p-6 text-sm text-emerald-100/75">
                 <p>No branches yet. Create a branch to start allocating sales across locations.</p>
                 {pharmacies.length === 0 && !pharmacyLoading && (
-                  <div className="rounded border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+                  <div className="rounded-2xl border border-amber-400/30 bg-amber-500/15 p-3 text-xs text-amber-100">
                     We couldn't find a pharmacy record for this tenant. Please complete your pharmacy profile (Settings → Pharmacy) before adding branches.
                   </div>
                 )}
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200 text-sm">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-white/10 text-sm text-emerald-100/80">
+                  <thead className="bg-white/5">
                     <tr>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Name</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Address</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Phone</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Pharmacy</th>
-                      <th className="px-3 py-2 text-left font-semibold text-gray-600">Actions</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Name</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Address</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Phone</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Pharmacy</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 bg-white">
+                  <tbody className="divide-y divide-white/10 bg-white/5 text-emerald-50">
                     {filteredBranches.map((branch) => {
                       const pharmacy = pharmacies.find((p) => p.id === branch.pharmacy_id);
                       return (
                         <tr key={branch.id}>
-                          <td className="px-3 py-2 text-gray-900">{branch.name}</td>
-                          <td className="px-3 py-2 text-gray-600">{branch.address || "—"}</td>
-                          <td className="px-3 py-2 text-gray-600">{branch.phone || "—"}</td>
-                          <td className="px-3 py-2 text-gray-600">
-                            <Badge variant="outline">{pharmacy?.name ?? `#${branch.pharmacy_id}`}</Badge>
+                          <td className="px-3 py-2 font-semibold text-white">{branch.name}</td>
+                          <td className="px-3 py-2 text-emerald-100/70">{branch.address || "—"}</td>
+                          <td className="px-3 py-2 text-emerald-100/70">{branch.phone || "—"}</td>
+                          <td className="px-3 py-2 text-emerald-100/80">
+                            <Badge variant="outline" className="border-emerald-300/40 bg-emerald-500/10 text-emerald-100">
+                              {pharmacy?.name ?? `#${branch.pharmacy_id}`}
+                            </Badge>
                           </td>
                           <td className="px-3 py-2">
                             <div className="flex flex-wrap items-center gap-2">

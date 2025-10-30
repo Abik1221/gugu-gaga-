@@ -47,9 +47,9 @@ function sanitizePayloadValue(value: string) {
 
 function ProfileField({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-1 rounded border border-gray-200 bg-white/80 p-3">
-      <span className="text-xs uppercase tracking-wide text-gray-500">{label}</span>
-      <span className="text-sm font-medium text-gray-900 break-words">{value}</span>
+    <div className="flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/10 p-3 text-emerald-50 backdrop-blur">
+      <span className="text-[11px] uppercase tracking-[0.35em] text-emerald-100/70">{label}</span>
+      <span className="break-words text-sm font-semibold text-white">{value}</span>
     </div>
   );
 }
@@ -92,6 +92,8 @@ export default function OwnerSettingsPage() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [changingPassword, setChangingPassword] = useState(false);
+  const [showSessionDetails, setShowSessionDetails] = useState(false);
+  const [showActivityDetails, setShowActivityDetails] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -252,6 +254,13 @@ export default function OwnerSettingsPage() {
 
   const topStaff = useMemo(() => staff.slice(0, 5), [staff]);
 
+  const currentSession = useMemo(() => {
+    if (sessions.length === 0) return null;
+    return sessions.find((session) => session.is_current) ?? sessions[0];
+  }, [sessions]);
+
+  const latestActivity = useMemo(() => (activity.length > 0 ? activity[0] : null), [activity]);
+
   const handleChange = (key: keyof EditableFields) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -392,82 +401,82 @@ export default function OwnerSettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Owner settings</h1>
-        <p className="text-gray-600">Control profile details, monitor your team, and keep subscription data in one place.</p>
+    <div className="space-y-6 text-emerald-50">
+      <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-[0_36px_140px_-70px_rgba(16,185,129,0.75)] backdrop-blur-xl">
+        <h1 className="text-2xl font-bold text-white">Owner settings</h1>
+        <p className="mt-1 text-sm text-emerald-100/80">Control profile details, monitor your team, and keep subscription data in one place.</p>
       </div>
 
       {loading ? (
-        <Card className="border border-emerald-100 shadow-sm">
+        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.6)] backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Loading profile…</CardTitle>
+            <CardTitle className="text-white">Loading profile…</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-3 md:grid-cols-2">
               {Array.from({ length: 4 }).map((_, idx) => (
-                <Skeleton key={`form-${idx}`} className="h-16 w-full" />
+                <Skeleton key={`form-${idx}`} className="h-16 w-full rounded-2xl bg-white/10" />
               ))}
             </div>
             <div className="grid gap-3 md:grid-cols-2">
               {Array.from({ length: 4 }).map((_, idx) => (
-                <Skeleton key={`summary-${idx}`} className="h-16 w-full" />
+                <Skeleton key={`summary-${idx}`} className="h-16 w-full rounded-2xl bg-white/10" />
               ))}
             </div>
           </CardContent>
         </Card>
       ) : error ? (
-        <Card className="border border-red-200 bg-red-50 shadow-sm">
+        <Card className="rounded-3xl border border-red-400/30 bg-red-500/15 shadow-[0_30px_120px_-70px_rgba(248,113,113,0.6)] backdrop-blur">
           <CardHeader>
-            <CardTitle className="text-red-700">Unable to load profile</CardTitle>
+            <CardTitle className="text-red-100">Unable to load profile</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-sm text-red-700">{error}</div>
+            <div className="text-sm text-red-100">{error}</div>
           </CardContent>
         </Card>
       ) : !profile ? (
-        <Card className="border border-gray-200 shadow-sm">
+        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(16,185,129,0.6)] backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>No profile data</CardTitle>
+            <CardTitle className="text-white">No profile data</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-sm text-gray-500">We could not retrieve your owner profile. Please refresh or contact support.</div>
+            <div className="text-sm text-emerald-100/80">We could not retrieve your owner profile. Please refresh or contact support.</div>
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-6 xl:grid-cols-2">
-          <Card className="border border-emerald-100 shadow-sm">
+          <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(16,185,129,0.7)] backdrop-blur-xl">
             <CardHeader>
-              <CardTitle>Edit owner profile</CardTitle>
+              <CardTitle className="text-white">Edit owner profile</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-emerald-100/70">
                   Update how your name and contact information appear across every pharmacy tool. Leave a field blank to clear it.
                 </p>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-600">Username</label>
-                    <Input value={form.username} onChange={handleChange("username")} placeholder="Preferred username" maxLength={64} />
+                    <label className="text-xs font-medium uppercase tracking-[0.3em] text-emerald-100/70">Username</label>
+                    <Input value={form.username} onChange={handleChange("username")} placeholder="Preferred username" maxLength={64} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-600">First name</label>
-                    <Input value={form.first_name} onChange={handleChange("first_name")} placeholder="e.g. Alex" maxLength={120} />
+                    <label className="text-xs font-medium uppercase tracking-[0.3em] text-emerald-100/70">First name</label>
+                    <Input value={form.first_name} onChange={handleChange("first_name")} placeholder="e.g. Alex" maxLength={120} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-600">Last name</label>
-                    <Input value={form.last_name} onChange={handleChange("last_name")} placeholder="e.g. Bekele" maxLength={120} />
+                    <label className="text-xs font-medium uppercase tracking-[0.3em] text-emerald-100/70">Last name</label>
+                    <Input value={form.last_name} onChange={handleChange("last_name")} placeholder="e.g. Bekele" maxLength={120} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-600">Phone</label>
-                    <Input value={form.phone} onChange={handleChange("phone")} placeholder="e.g. +2519…" maxLength={32} />
+                    <label className="text-xs font-medium uppercase tracking-[0.3em] text-emerald-100/70">Phone</label>
+                    <Input value={form.phone} onChange={handleChange("phone")} placeholder="e.g. +2519…" maxLength={32} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={resetForm} disabled={!isDirty || saving}>
+                  <Button type="button" variant="outline" onClick={resetForm} disabled={!isDirty || saving} className="rounded-full border-white/25 bg-white/10 text-emerald-100 hover:border-emerald-300/40 hover:bg-white/20">
                     Reset
                   </Button>
-                  <Button type="submit" disabled={!isDirty || saving}>
+                  <Button type="submit" disabled={!isDirty || saving} className="rounded-full bg-emerald-500/80 text-white shadow-[0_20px_60px_-30px_rgba(16,185,129,0.7)] transition hover:bg-emerald-500">
                     {saving ? "Saving..." : "Save changes"}
                   </Button>
                 </div>
@@ -475,9 +484,9 @@ export default function OwnerSettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="border border-gray-200 shadow-sm">
+          <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.6)] backdrop-blur-xl">
             <CardHeader>
-              <CardTitle>Tenant & subscription overview</CardTitle>
+              <CardTitle className="text-white">Tenant & subscription overview</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-3">
               {summaryFields.map((item) => (
@@ -485,7 +494,7 @@ export default function OwnerSettingsPage() {
               ))}
               <Link
                 href="/dashboard/owner/payment"
-                className="inline-flex items-center justify-center rounded border border-emerald-200 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+                className="inline-flex items-center justify-center rounded-full border border-emerald-300/40 bg-emerald-500/20 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:bg-emerald-500/30"
               >
                 Review subscription & payments
               </Link>
@@ -494,21 +503,21 @@ export default function OwnerSettingsPage() {
         </div>
       )}
 
-      <Card className="border border-gray-200 shadow-sm">
+      <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.55)] backdrop-blur-xl">
         <CardHeader>
-          <CardTitle>Team insights</CardTitle>
+          <CardTitle className="text-white">Team insights</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 text-sm text-emerald-50/85">
           {staffLoading ? (
             <div className="grid gap-3 md:grid-cols-3">
               {Array.from({ length: 3 }).map((_, idx) => (
-                <Skeleton key={`staff-${idx}`} className="h-20 w-full" />
+                <Skeleton key={`staff-${idx}`} className="h-20 w-full rounded-2xl bg-white/10" />
               ))}
             </div>
           ) : staffError ? (
-            <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">{staffError}</div>
+            <div className="rounded-2xl border border-red-400/30 bg-red-500/15 p-3 text-sm text-red-100">{staffError}</div>
           ) : staff.length === 0 ? (
-            <div className="rounded border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-500">
+            <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-4 text-sm text-emerald-100/70">
               No staff members found for this tenant yet. Invite your first cashier or manager to get started.
             </div>
           ) : (
@@ -519,20 +528,22 @@ export default function OwnerSettingsPage() {
                 <ProfileField label="Inactive" value={staffStats.inactive} />
               </div>
               <div className="space-y-2">
-                <div className="text-xs font-semibold uppercase text-gray-500">Recent members</div>
+                <div className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/70">Recent members</div>
                 <div className="space-y-2">
                   {topStaff.map((member) => (
                     <div
                       key={member.id}
-                      className="flex flex-col gap-1 rounded border border-gray-200 bg-white px-3 py-2 text-sm md:flex-row md:items-center md:justify-between"
+                      className="flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/10 px-3 py-2 text-sm text-emerald-100/80 backdrop-blur md:flex-row md:items-center md:justify-between"
                     >
                       <div>
-                        <div className="font-medium text-gray-900">{member.email}</div>
-                        <div className="text-xs text-gray-500 capitalize">{member.role || "staff"}</div>
+                        <div className="font-semibold text-white">{member.email}</div>
+                        <div className="text-xs uppercase tracking-[0.25em] text-emerald-100/60">{(member.role || "staff").toLowerCase()}</div>
                       </div>
                       <span
                         className={`inline-flex h-6 items-center justify-center rounded-full px-3 text-xs font-medium ${
-                          member.is_active === false ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-700"
+                          member.is_active === false
+                            ? "border border-red-400/40 bg-red-500/20 text-red-100"
+                            : "border border-emerald-300/40 bg-emerald-500/15 text-emerald-100"
                         }`}
                       >
                         {member.is_active === false ? "Suspended" : "Active"}
@@ -546,19 +557,19 @@ export default function OwnerSettingsPage() {
           <div className="flex flex-wrap gap-2">
             <Link
               href="/dashboard/owner/staff"
-              className="inline-flex items-center justify-center rounded border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/20"
             >
               Manage staff access
             </Link>
             <Link
               href="/dashboard/owner/staff/new"
-              className="inline-flex items-center justify-center rounded border border-emerald-200 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+              className="inline-flex items-center justify-center rounded-full border border-emerald-300/40 bg-emerald-500/20 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:bg-emerald-500/30"
             >
               Invite new member
             </Link>
             <Link
               href="/dashboard/inventory"
-              className="inline-flex items-center justify-center rounded border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/20"
             >
               Review inventory settings
             </Link>
@@ -567,15 +578,17 @@ export default function OwnerSettingsPage() {
       </Card>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="border border-gray-200 shadow-sm">
+        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(14,116,144,0.65)] backdrop-blur-xl">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Appearance</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => handleThemeChange("system")}>Reset</Button>
+              <CardTitle className="text-white">Appearance</CardTitle>
+              <Button variant="ghost" size="sm" className="rounded-full text-emerald-100 hover:bg-white/10" onClick={() => handleThemeChange("system")}>
+                Reset
+              </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-xs text-gray-500">Choose how the dashboard looks across the app.</p>
+          <CardContent className="space-y-4 text-sm text-emerald-100/75">
+            <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Choose how the dashboard looks across the app.</p>
             <div className="grid gap-3 sm:grid-cols-3">
               {[
                 { value: "light", label: "Light" },
@@ -588,8 +601,10 @@ export default function OwnerSettingsPage() {
                     key={option.value}
                     type="button"
                     onClick={() => handleThemeChange(option.value as ThemeOption)}
-                    className={`rounded border px-3 py-2 text-sm font-medium transition ${
-                      active ? "border-emerald-400 bg-emerald-50 text-emerald-700" : "border-gray-200 hover:bg-gray-50"
+                    className={`rounded-2xl border px-3 py-2 text-sm font-semibold uppercase tracking-[0.2em] transition ${
+                      active
+                        ? "border-emerald-300/50 bg-emerald-500/20 text-white shadow-[0_20px_60px_-30px_rgba(16,185,129,0.7)]"
+                        : "border-white/15 bg-white/5 text-emerald-100/80 hover:border-emerald-300/40 hover:bg-white/15"
                     }`}
                   >
                     {option.label}
@@ -600,43 +615,49 @@ export default function OwnerSettingsPage() {
           </CardContent>
         </Card>
 
-        <Card className="border border-gray-200 shadow-sm">
+        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.6)] backdrop-blur-xl">
           <CardHeader>
-            <CardTitle>Notifications</CardTitle>
+            <CardTitle className="text-white">Notifications</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <p className="text-xs text-gray-500">These preferences are stored in your browser for now. Backend delivery will be wired soon.</p>
-            <label className="flex items-center justify-between rounded border border-gray-200 bg-white px-3 py-2">
+          <CardContent className="space-y-3 text-sm text-emerald-100/80">
+            <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Preferences are stored locally while backend delivery is in progress.</p>
+            <label className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/8 px-3 py-2 backdrop-blur">
               <span>Product updates</span>
-              <input type="checkbox" checked={notifications.productUpdates} onChange={() => handleNotificationToggle("productUpdates")} />
+              <input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={notifications.productUpdates} onChange={() => handleNotificationToggle("productUpdates")} />
             </label>
-            <label className="flex items-center justify-between rounded border border-gray-200 bg-white px-3 py-2">
+            <label className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/8 px-3 py-2 backdrop-blur">
               <span>Inventory alerts</span>
-              <input type="checkbox" checked={notifications.inventoryAlerts} onChange={() => handleNotificationToggle("inventoryAlerts")} />
+              <input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={notifications.inventoryAlerts} onChange={() => handleNotificationToggle("inventoryAlerts")} />
             </label>
-            <label className="flex items-center justify-between rounded border border-gray-200 bg-white px-3 py-2">
+            <label className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/8 px-3 py-2 backdrop-blur">
               <span>Security emails</span>
-              <input type="checkbox" checked={notifications.securityEmails} onChange={() => handleNotificationToggle("securityEmails")} />
+              <input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={notifications.securityEmails} onChange={() => handleNotificationToggle("securityEmails")} />
             </label>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="border border-gray-200 shadow-sm">
+        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(14,116,144,0.7)] backdrop-blur-xl">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Account security</CardTitle>
+              <CardTitle className="text-white">Account security</CardTitle>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={refreshSessions} disabled={sessionsLoading}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={refreshSessions}
+                  disabled={sessionsLoading}
+                  className="rounded-full border-white/25 bg-white/10 text-emerald-100 hover:border-emerald-300/40 hover:bg-white/20"
+                >
                   Refresh sessions
                 </Button>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4 text-sm">
+          <CardContent className="space-y-4 text-sm text-emerald-100/80">
             <form onSubmit={handlePasswordChange} className="space-y-2">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">
                 Change your password. All other active sessions will be signed out immediately.
               </p>
               <div className="grid gap-2 sm:grid-cols-3">
@@ -646,6 +667,7 @@ export default function OwnerSettingsPage() {
                   value={passwordCurrent}
                   onChange={(e) => setPasswordCurrent(e.target.value)}
                   required
+                  className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60"
                 />
                 <Input
                   type="password"
@@ -653,6 +675,7 @@ export default function OwnerSettingsPage() {
                   value={passwordNew}
                   onChange={(e) => setPasswordNew(e.target.value)}
                   required
+                  className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60"
                 />
                 <Input
                   type="password"
@@ -660,114 +683,216 @@ export default function OwnerSettingsPage() {
                   value={passwordConfirm}
                   onChange={(e) => setPasswordConfirm(e.target.value)}
                   required
+                  className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60"
                 />
               </div>
-              {passwordError ? <div className="text-xs text-red-600">{passwordError}</div> : null}
+              {passwordError ? <div className="text-xs text-red-200">{passwordError}</div> : null}
               <div className="flex justify-end">
-                <Button type="submit" disabled={changingPassword}>
+                <Button
+                  type="submit"
+                  disabled={changingPassword}
+                  className="rounded-full bg-emerald-500/80 text-white shadow-[0_20px_60px_-30px_rgba(16,185,129,0.7)] transition hover:bg-emerald-500"
+                >
                   {changingPassword ? "Updating…" : "Change password"}
                 </Button>
               </div>
             </form>
-            {sessionsLoading ? (
-              <div className="space-y-2">
-                {Array.from({ length: 3 }).map((_, idx) => (
-                  <Skeleton key={`session-${idx}`} className="h-16 w-full" />
-                ))}
-              </div>
-            ) : sessionsError ? (
-              <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">{sessionsError}</div>
-            ) : sessions.length === 0 ? (
-              <div className="rounded border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-500">
-                No active sessions found. Devices will appear here after logging in.
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {sessions.map((session) => (
-                  <div
-                    key={session.id}
-                    className={`rounded border px-3 py-3 text-sm ${session.is_current ? "border-emerald-300 bg-emerald-50" : "border-gray-200 bg-white"}`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="font-medium text-gray-900">
-                          {session.user_agent || "Unknown device"}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {session.ip_address ? `IP ${session.ip_address}` : "IP unknown"}
-                        </div>
+            <div className="space-y-3">
+              {sessionsLoading ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 2 }).map((_, idx) => (
+                    <Skeleton key={`session-${idx}`} className="h-16 w-full rounded-2xl bg-white/10" />
+                  ))}
+                </div>
+              ) : sessionsError ? (
+                <div className="rounded-2xl border border-red-400/30 bg-red-500/15 p-3 text-sm text-red-100">{sessionsError}</div>
+              ) : sessions.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-4 text-sm text-emerald-100/70">
+                  No active sessions found. Devices will appear here after logging in.
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-white/15 bg-white/8 p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Active session</p>
+                      <div className="mt-1 text-sm font-semibold text-white">
+                        {currentSession?.user_agent || "Unknown device"}
                       </div>
-                      <div className="flex items-center gap-2">
-                        {session.is_current && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700">Current</span>}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          disabled={session.is_current || session.is_revoked || revokingSessionId === session.id}
-                          onClick={() => handleRevokeSession(session.id)}
-                        >
-                          {session.is_revoked ? "Revoked" : revokingSessionId === session.id ? "Revoking…" : "Revoke"}
-                        </Button>
+                      <div className="text-xs text-emerald-100/60">
+                        {currentSession?.ip_address ? `IP ${currentSession.ip_address}` : "IP unknown"}
                       </div>
                     </div>
-                    <div className="mt-2 grid gap-1 text-xs text-gray-500 sm:grid-cols-3">
-                      <span>Created: {new Date(session.created_at).toLocaleString()}</span>
-                      <span>Last seen: {new Date(session.last_seen_at).toLocaleString()}</span>
-                      <span>Expires: {new Date(session.expires_at).toLocaleString()}</span>
+                    <div className="flex items-center gap-2">
+                      {currentSession?.is_current && (
+                        <span className="rounded-full border border-emerald-300/40 bg-emerald-500/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-100">
+                          Current
+                        </span>
+                      )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={currentSession?.is_current || !currentSession || currentSession.is_revoked || revokingSessionId === currentSession.id}
+                        onClick={() => currentSession && handleRevokeSession(currentSession.id)}
+                        className="rounded-full border-white/25 bg-white/10 text-emerald-100 hover:border-emerald-300/40 hover:bg-white/20"
+                      >
+                        {currentSession?.is_revoked
+                          ? "Revoked"
+                          : revokingSessionId === currentSession?.id
+                          ? "Revoking…"
+                          : "Sign out"}
+                      </Button>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                  {currentSession ? (
+                    <div className="mt-3 grid gap-2 text-[11px] text-emerald-100/70 sm:grid-cols-3">
+                      <span>Created: {new Date(currentSession.created_at).toLocaleString()}</span>
+                      <span>Last seen: {new Date(currentSession.last_seen_at).toLocaleString()}</span>
+                      <span>Expires: {new Date(currentSession.expires_at).toLocaleString()}</span>
+                    </div>
+                  ) : null}
+                  {sessions.length > 1 && (
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">
+                        {sessions.length - 1} other session{sessions.length - 1 === 1 ? "" : "s"}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowSessionDetails((prev) => !prev)}
+                        className="rounded-full text-emerald-100 hover:bg-white/10"
+                      >
+                        {showSessionDetails ? "Hide details" : "View details"}
+                      </Button>
+                    </div>
+                  )}
+                  {showSessionDetails && (
+                    <div className="mt-4 space-y-3">
+                      {sessions.map((session) => (
+                        <div
+                          key={session.id}
+                          className={`rounded-2xl border px-3 py-3 text-sm backdrop-blur ${
+                            session.is_current
+                              ? "border-emerald-300/40 bg-emerald-500/15"
+                              : "border-white/12 bg-white/5"
+                          }`}
+                        >
+                          <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                              <div className="font-semibold text-white">{session.user_agent || "Unknown device"}</div>
+                              <div className="text-xs text-emerald-100/60">
+                                {session.ip_address ? `IP ${session.ip_address}` : "IP unknown"}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {session.is_current && (
+                                <span className="rounded-full border border-emerald-300/40 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-100">
+                                  Current
+                                </span>
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                disabled={session.is_current || session.is_revoked || revokingSessionId === session.id}
+                                onClick={() => handleRevokeSession(session.id)}
+                                className="rounded-full text-emerald-100 hover:bg-white/10"
+                              >
+                                {session.is_revoked ? "Revoked" : revokingSessionId === session.id ? "Revoking…" : "Revoke"}
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="mt-2 grid gap-1 text-[11px] text-emerald-100/60 sm:grid-cols-3">
+                            <span>Created: {new Date(session.created_at).toLocaleString()}</span>
+                            <span>Last seen: {new Date(session.last_seen_at).toLocaleString()}</span>
+                            <span>Expires: {new Date(session.expires_at).toLocaleString()}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-gray-200 shadow-sm">
+        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.6)] backdrop-blur-xl">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Activity log</CardTitle>
-              <Button variant="outline" size="sm" onClick={refreshActivity} disabled={activityLoading}>
+              <CardTitle className="text-white">Activity log</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={refreshActivity}
+                disabled={activityLoading}
+                className="rounded-full border-white/25 bg-white/10 text-emerald-100 hover:border-emerald-300/40 hover:bg-white/20"
+              >
                 Refresh
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <p className="text-xs text-gray-500">
-              Recent sessions, staff updates, and other tenant-level actions are listed here. Use this to monitor how the system is used.
+          <CardContent className="space-y-3 text-sm text-emerald-100/80">
+            <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">
+              Monitor recent sessions, staff updates, and tenant-level actions.
             </p>
             {activityLoading ? (
               <div className="space-y-2">
-                {Array.from({ length: 5 }).map((_, idx) => (
-                  <Skeleton key={`activity-${idx}`} className="h-14 w-full" />
+                {Array.from({ length: 4 }).map((_, idx) => (
+                  <Skeleton key={`activity-${idx}`} className="h-14 w-full rounded-2xl bg-white/10" />
                 ))}
               </div>
             ) : activityError ? (
-              <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">{activityError}</div>
+              <div className="rounded-2xl border border-red-400/30 bg-red-500/15 p-3 text-sm text-red-100">{activityError}</div>
             ) : activity.length === 0 ? (
-              <div className="rounded border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-500">
+              <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-4 text-sm text-emerald-100/70">
                 No activity recorded yet. Actions such as staff changes or logins will appear here.
               </div>
             ) : (
-              <ul className="space-y-3">
-                {activity.map((item) => (
-                  <li key={item.id} className="rounded border border-gray-200 bg-white p-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="text-xs uppercase tracking-wide text-emerald-700">{item.action}</span>
-                      <span className="text-xs text-gray-500">{new Date(item.created_at).toLocaleString()}</span>
+              <div className="rounded-2xl border border-white/15 bg-white/8 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Latest event</p>
+                    <div className="mt-1 text-sm font-semibold text-white">{latestActivity?.message}</div>
+                    <div className="text-xs text-emerald-100/60">
+                      {latestActivity?.action} • {latestActivity ? new Date(latestActivity.created_at).toLocaleString() : ""}
                     </div>
-                    <div className="mt-1 font-medium text-gray-900">{item.message}</div>
-                    <div className="mt-1 text-xs text-gray-500 space-y-1">
-                      {item.target_type && (
-                        <div>
-                          Target: {item.target_type}
-                          {item.target_id ? ` • ${item.target_id}` : ""}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowActivityDetails((prev) => !prev)}
+                    className="rounded-full text-emerald-100 hover:bg-white/10"
+                  >
+                    {showActivityDetails ? "Hide log" : "View log"}
+                  </Button>
+                </div>
+                {showActivityDetails && (
+                  <ul className="mt-4 space-y-3">
+                    {activity.map((item) => (
+                      <li key={item.id} className="rounded-2xl border border-white/12 bg-white/5 p-3 text-sm text-emerald-100/80 backdrop-blur">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-[11px] uppercase tracking-[0.35em] text-emerald-100">{item.action}</span>
+                          <span className="text-xs text-emerald-100/60">{new Date(item.created_at).toLocaleString()}</span>
                         </div>
-                      )}
-                      {item.actor_user_id ? <div>Actor ID: {item.actor_user_id}</div> : null}
-                      {item.metadata ? <pre className="whitespace-pre-wrap rounded bg-gray-50 p-2 text-[11px] text-gray-600">{JSON.stringify(item.metadata, null, 2)}</pre> : null}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                        <div className="mt-1 font-semibold text-white">{item.message}</div>
+                        <div className="mt-1 space-y-1 text-[11px] text-emerald-100/60">
+                          {item.target_type && (
+                            <div>
+                              Target: {item.target_type}
+                              {item.target_id ? ` • ${item.target_id}` : ""}
+                            </div>
+                          )}
+                          {item.actor_user_id ? <div>Actor ID: {item.actor_user_id}</div> : null}
+                          {item.metadata ? (
+                            <pre className="whitespace-pre-wrap rounded-2xl border border-white/10 bg-white/8 p-2 text-[10px] text-emerald-100/70">
+                              {JSON.stringify(item.metadata, null, 2)}
+                            </pre>
+                          ) : null}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             )}
           </CardContent>
         </Card>

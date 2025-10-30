@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from .auth import router as auth_router
+from .public import router as public_router
 from .pharmacy import router as pharmacy_router
 from .sales import router as sales_router
 from .inventory import router as inventory_router
@@ -33,6 +34,7 @@ def api_health():
 
 # Mount feature routers
 api_router.include_router(auth_router)
+api_router.include_router(public_router)
 api_router.include_router(pharmacy_router)
 api_router.include_router(sales_router)
 api_router.include_router(inventory_router)

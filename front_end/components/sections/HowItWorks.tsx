@@ -45,7 +45,7 @@ export default function HowItWorks() {
   return (
     <motion.section
       id="how-it-works"
-      className="md:h-screen py-30 flex flex-col justify-center max-w-4xl mx-auto"
+      className="mx-auto flex max-w-5xl flex-col justify-center py-16"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
@@ -53,24 +53,24 @@ export default function HowItWorks() {
     >
       {/* Animated Title */}
       <motion.h3
-        className="text-2xl font-bold text-emerald-700 mb-12 text-center"
+        className="mb-10 text-center text-2xl font-bold text-emerald-200"
         variants={titleVariants}
       >
         How Zemen Pharma Works
       </motion.h3>
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid gap-8 md:grid-cols-3">
         {/* Step 1 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
-            className="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10"
             variants={circleVariants}
           >
-            <span className="text-2xl font-bold text-emerald-700">1</span>
+            <span className="text-2xl font-bold text-white">1</span>
           </motion.div>
-          <h4 className="text-xl font-semibold text-emerald-900 mb-3">
+          <h4 className="mb-3 text-xl font-semibold text-white">
             Setup & Integration
           </h4>
-          <p className="text-gray-700">
+          <p className="text-gray-300">
             Quick setup with your existing pharmacy data. Integrate with your
             suppliers and payment systems seamlessly.
           </p>
@@ -79,15 +79,15 @@ export default function HowItWorks() {
         {/* Step 2 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
-            className="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10"
             variants={circleVariants}
           >
-            <span className="text-2xl font-bold text-emerald-700">2</span>
+            <span className="text-2xl font-bold text-white">2</span>
           </motion.div>
-          <h4 className="text-xl font-semibold text-emerald-900 mb-3">
+          <h4 className="mb-3 text-xl font-semibold text-white">
             AI Optimization
           </h4>
-          <p className="text-gray-700">
+          <p className="text-gray-300">
             Our AI analyzes your operations and starts providing insights,
             predictions, and automated recommendations.
           </p>
@@ -96,15 +96,15 @@ export default function HowItWorks() {
         {/* Step 3 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
-            className="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10"
             variants={circleVariants}
           >
-            <span className="text-2xl font-bold text-emerald-700">3</span>
+            <span className="text-2xl font-bold text-white">3</span>
           </motion.div>
-          <h4 className="text-xl font-semibold text-emerald-900 mb-3">
+          <h4 className="mb-3 text-xl font-semibold text-white">
             Grow & Scale
           </h4>
-          <p className="text-gray-700">
+          <p className="text-gray-300">
             Expand your business with confidence using real-time data,
             multi-branch support, and continuous AI improvements.
           </p>

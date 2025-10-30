@@ -10,100 +10,95 @@ import { Card, CardContent } from "@/components/ui/card";
 import Autoplay from "embla-carousel-autoplay";
 export default function WhoIsZemenPharma() {
   return (
-    <section className="md:h-screen flex flex-col justify-center max-w-5xl mx-auto">
-      <h3 className="text-2xl font-bold text-emerald-700 mb-12 text-center">
-        Who is Zemen Pharma for?
-      </h3>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="w-full"
-      >
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          plugins={[
-            Autoplay({
-              delay: 2000,
-              stopOnInteraction: false,
-              stopOnMouseEnter: true,
-            }),
-          ]}
+    <section className="mx-auto flex max-w-6xl flex-col justify-center py-20">
+      <div className="rounded-3xl border border-white/10 bg-white/5 p-10 shadow-[0_25px_80px_-35px_rgba(59,130,246,0.45)] backdrop-blur">
+        <h3 className="mb-8 text-center text-3xl font-bold text-emerald-200">
+          Who is Zemen Pharma for?
+        </h3>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
           className="w-full"
         >
-          <CarouselContent className="gap-6">
-            {" "}
-            {/* adds space between cards */}
-            {/* 1. Pharmacy Owners */}
-            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-              <Card className="h-full flex flex-col bg-white">
-                <CardContent className="text-left p-6">
-                  <h3 className="text-xl font-semibold mb-2 text-emerald-900">
-                    For Pharmacy Owners
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    Zemen Pharma helps you stay in control of your entire
-                    operation — from inventory and branch performance to
-                    supplier management — all powered by AI-driven dashboards
-                    and real-time forecasting.
-                  </p>
-                </CardContent>
-              </Card>
-            </CarouselItem>
-            {/* 2. Cashiers & Sales Staff */}
-            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-              <Card className="h-full flex flex-col bg-white">
-                <CardContent className="text-left p-6">
-                  <h3 className="text-xl font-semibold mb-2 text-emerald-900">
-                    For Cashiers & Sales Staff
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    Process daily transactions effortlessly using our intuitive
-                    POS system — complete with support for cash, card, and
-                    digital payments, plus automatic receipts and end-of-day
-                    reporting.
-                  </p>
-                </CardContent>
-              </Card>
-            </CarouselItem>
-            {/* 3. Customers */}
-            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-              <Card className="h-full flex flex-col bg-white">
-                <CardContent className="text-left p-6">
-                  <h3 className="text-xl font-semibold mb-2 text-emerald-900">
-                    For Customers
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    Customers can easily browse and order medicines online,
-                    discover nearby pharmacies, and track deliveries — creating
-                    a seamless and accessible healthcare shopping experience.
-                  </p>
-                </CardContent>
-              </Card>
-            </CarouselItem>
-            {/* 4. Managers & Executives */}
-            <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-              <Card className="h-full flex flex-col bg-white">
-                <CardContent className="text-left p-6">
-                  <h3 className="text-xl font-semibold mb-2 text-emerald-900">
-                    For Managers & Executives
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    Gain complete business insight through AI-powered analytics
-                    that predict stock shortages, identify sales trends, and
-                    enhance decision-making across all branches and departments.
-                  </p>
-                </CardContent>
-              </Card>
-            </CarouselItem>
-          </CarouselContent>
-          {/* Optional: Navigation arrows */}
-          <CarouselPrevious className="hidden lg:block" />
-          <CarouselNext className="hidden lg:block" />
-        </Carousel>
-      </motion.div>
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: 2500,
+                stopOnInteraction: false,
+                stopOnMouseEnter: true,
+              }),
+            ]}
+            className="w-full"
+          >
+            <CarouselContent className="gap-6">
+              {/* 1. Pharmacy Owners */}
+              <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+                <Card className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_20px_60px_-35px_rgba(16,185,129,0.45)] backdrop-blur">
+                  <CardContent className="space-y-3 p-0 text-left">
+                    <h4 className="text-lg font-semibold text-emerald-100">
+                      For Pharmacy Owners
+                    </h4>
+                    <p className="text-sm leading-relaxed text-gray-200">
+                      Stay in control of multi-branch operations with AI-driven dashboards,
+                      predictive restocking, and centralized governance.
+                    </p>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+              {/* 2. Operations Leaders */}
+              <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+                <Card className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_20px_60px_-35px_rgba(16,185,129,0.45)] backdrop-blur">
+                  <CardContent className="space-y-3 p-0 text-left">
+                    <h4 className="text-lg font-semibold text-emerald-100">
+                      For Operations Leaders
+                    </h4>
+                    <p className="text-sm leading-relaxed text-gray-200">
+                      Activate AI copilots that surface demand forecasts, smart alerts, and
+                      workflow recommendations to keep every branch in sync.
+                    </p>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+              {/* 3. Security & Compliance */}
+              <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+                <Card className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_20px_60px_-35px_rgba(16,185,129,0.45)] backdrop-blur">
+                  <CardContent className="space-y-3 p-0 text-left">
+                    <h4 className="text-lg font-semibold text-emerald-100">
+                      For Security & Compliance Teams
+                    </h4>
+                    <p className="text-sm leading-relaxed text-gray-200">
+                      Enforce role-based access, maintain audit trails, and safeguard sensitive
+                      patient data with encryption-first architecture.
+                    </p>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+              {/* 4. Mobile Executives */}
+              <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+                <Card className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_20px_60px_-35px_rgba(16,185,129,0.45)] backdrop-blur">
+                  <CardContent className="space-y-3 p-0 text-left">
+                    <h4 className="text-lg font-semibold text-emerald-100">
+                      For Mobile Executives
+                    </h4>
+                    <p className="text-sm leading-relaxed text-gray-200">
+                      Approve payouts, resolve issues, and track KPIs from any device with a
+                      mobile-first command center.
+                    </p>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            </CarouselContent>
+            <CarouselPrevious className="hidden h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/10 text-emerald-100 shadow-[0_18px_55px_-30px_rgba(16,185,129,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400 hover:bg-gradient-to-br hover:from-emerald-500/40 hover:to-blue-500/40 hover:text-white hover:shadow-[0_28px_85px_-30px_rgba(16,185,129,0.7)] lg:flex" />
+            <CarouselNext className="hidden h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/10 text-emerald-100 shadow-[0_18px_55px_-30px_rgba(59,130,246,0.6)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400 hover:bg-gradient-to-br hover:from-emerald-500/40 hover:to-blue-500/40 hover:text-white hover:shadow-[0_28px_85px_-30px_rgba(59,130,246,0.7)] lg:flex" />
+          </Carousel>
+        </motion.div>
+      </div>
     </section>
   );
 }

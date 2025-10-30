@@ -18,14 +18,23 @@ export function StatCard({
   className?: string;
 }) {
   return (
-    <Card className={cn("border border-emerald-100/60 bg-white/85 shadow-md transition hover:-translate-y-0.5 hover:shadow-lg", className)}>
+    <Card
+      className={cn(
+        "border border-white/10 bg-gradient-to-br from-emerald-500/10 via-slate-950/70 to-blue-600/10 text-white shadow-[0_18px_55px_-35px_rgba(16,185,129,0.55)] transition hover:-translate-y-1 hover:shadow-[0_28px_85px_-40px_rgba(56,189,248,0.55)] backdrop-blur-xl",
+        className
+      )}
+    >
       <CardContent className="flex items-start justify-between gap-3 p-5">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-500">{title}</p>
-          <p className="mt-3 text-2xl font-semibold text-emerald-900">{value}</p>
-          {description && <p className="mt-3 text-xs text-emerald-700/80">{description}</p>}
+          <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-emerald-200">{title}</p>
+          <p className="mt-3 text-2xl font-semibold text-white">{value}</p>
+          {description && <p className="mt-3 text-xs text-emerald-100/70">{description}</p>}
         </div>
-        {icon && <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">{icon}</span>}
+        {icon && (
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-emerald-200 shadow-inner shadow-emerald-500/10">
+            {icon}
+          </span>
+        )}
       </CardContent>
     </Card>
   );
@@ -33,10 +42,10 @@ export function StatCard({
 
 export function MiniStat({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <Card className="border border-emerald-100/60 bg-white/80 shadow-sm">
-      <CardContent className="p-4">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-emerald-500">{label}</p>
-        <p className="mt-2 text-lg font-semibold text-emerald-900">{value}</p>
+    <Card className="border border-white/10 bg-gradient-to-br from-slate-900/70 via-emerald-600/10 to-blue-600/10 text-white shadow-[0_12px_45px_-30px_rgba(59,130,246,0.45)]">
+      <CardContent className="space-y-2 p-4">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-emerald-200/80">{label}</p>
+        <div className="text-xl font-semibold leading-tight text-white break-words">{value}</div>
       </CardContent>
     </Card>
   );
@@ -53,12 +62,12 @@ export function HighlightPill({
 }) {
   const classes =
     tone === "warning"
-      ? "border-amber-100 bg-amber-50 text-amber-700"
-      : "border-emerald-100 bg-emerald-50 text-emerald-700";
+      ? "border-amber-300/40 bg-amber-500/10 text-amber-100"
+      : "border-emerald-300/30 bg-emerald-500/10 text-emerald-100";
   return (
-    <div className={`rounded-2xl border px-4 py-3 shadow-sm ${classes}`}>
-      <p className="text-[11px] uppercase tracking-widest opacity-80">{label}</p>
-      <p className="mt-2 text-lg font-semibold">{value}</p>
+    <div className={`rounded-2xl border px-4 py-3 shadow-[0_14px_40px_-30px_rgba(16,185,129,0.7)] ${classes}`}>
+      <p className="text-[10px] uppercase tracking-[0.35em] text-white/70">{label}</p>
+      <p className="mt-2 text-lg font-semibold text-white">{value}</p>
     </div>
   );
 }
@@ -73,10 +82,10 @@ export function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="border border-emerald-100/60 bg-white/85 shadow-md backdrop-blur">
+    <Card className="border border-white/10 bg-gradient-to-br from-slate-950/80 via-emerald-700/15 to-blue-800/10 text-white shadow-[0_20px_60px_-35px_rgba(16,185,129,0.6)] backdrop-blur-xl">
       <CardHeader className="mb-0 space-y-1 pb-0">
-        <CardTitle className="text-lg text-emerald-900">{title}</CardTitle>
-        {description && <p className="text-xs text-emerald-700/80">{description}</p>}
+        <CardTitle className="text-lg text-white">{title}</CardTitle>
+        {description && <p className="text-xs text-emerald-100/70">{description}</p>}
       </CardHeader>
       <CardContent className="pt-5">{children}</CardContent>
     </Card>

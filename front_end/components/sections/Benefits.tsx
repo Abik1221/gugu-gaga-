@@ -41,7 +41,7 @@ export default function Benefits() {
   return (
     <motion.section
       id="benefits"
-      className="lg:h-screen flex flex-col justify-center max-w-5xl mx-auto"
+      className="mx-auto flex max-w-5xl flex-col justify-center py-16"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
@@ -49,25 +49,25 @@ export default function Benefits() {
     >
       {/* Animated Title */}
       <motion.h3
-        className="text-2xl font-bold text-emerald-700 mb-12 text-center"
+        className="mb-10 text-center text-2xl font-bold text-emerald-200"
         variants={titleVariants}
       >
         Why Choose Zemen Pharma?
       </motion.h3>
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid gap-6 md:grid-cols-2">
         {/* Card 1: Increased Efficiency */}
         <motion.div
           custom={0} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="bg-white border-l-4 border-l-emerald-500">
+          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
             <CardHeader>
-              <CardTitle className="text-lg text-emerald-900">
+              <CardTitle className="text-lg text-white">
                 Increased Efficiency
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700">
+              <p className="text-gray-200">
                 Automate routine tasks, reduce manual errors, and streamline
                 operations across all your pharmacy locations.
               </p>
@@ -80,14 +80,14 @@ export default function Benefits() {
           custom={1} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="bg-white border-l-4 border-l-emerald-500">
+          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
             <CardHeader>
-              <CardTitle className="text-lg text-emerald-900">
+              <CardTitle className="text-lg text-white">
                 Better Decision Making
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700">
+              <p className="text-gray-200">
                 Make informed decisions with AI-powered insights and real-time
                 data about your business performance.
               </p>
@@ -100,14 +100,14 @@ export default function Benefits() {
           custom={2} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="bg-white border-l-4 border-l-emerald-500">
+          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
             <CardHeader>
-              <CardTitle className="text-lg text-emerald-900">
+              <CardTitle className="text-lg text-white">
                 Enhanced Customer Experience
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700">
+              <p className="text-gray-200">
                 Provide seamless shopping experiences with online ordering,
                 medicine search, and delivery tracking.
               </p>
@@ -120,14 +120,14 @@ export default function Benefits() {
           custom={3} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="bg-white border-l-4 border-l-emerald-500">
+          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
             <CardHeader>
-              <CardTitle className="text-lg text-emerald-900">
+              <CardTitle className="text-lg text-white">
                 Cost Savings
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700">
+              <p className="text-gray-200">
                 Reduce waste with smart inventory management and optimize
                 staffing with sales pattern analysis.
               </p>

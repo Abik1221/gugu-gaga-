@@ -33,6 +33,13 @@ export default function RootLayout({
           {children}
           <Toaster />
         </ToastProvider>
+        <footer className="mt-12">
+          <p className="text-xs text-muted-foreground"> {new Date().getFullYear()} Zemen Pharma. All rights reserved.</p>
+          <nav className="flex items-center gap-4 text-xs text-muted-foreground">
+            <a className="hover:text-foreground" href="/terms">Terms of service</a>
+            <a className="hover:text-foreground" href="/privacy">Privacy policy</a>
+          </nav>
+        </footer>
       </body>
     </html>
   );
