@@ -101,3 +101,48 @@ class AnalyticsOverviewResponse(BaseModel):
     ai_usage_daily: List[Dict[str, Any]]
     top_pharmacies: List[AnalyticsPharmacyUsage]
     branch_distribution: List[AnalyticsBranchRow]
+
+
+class PharmacySummaryItem(BaseModel):
+    tenant_id: str
+    name: Optional[str] = None
+    status: str
+    status_label: str
+    branch_count: int
+    user_count: int
+    trial_ends_at: Optional[str] = None
+    last_payment_verified_at: Optional[str] = None
+    pending_payment_submitted_at: Optional[str] = None
+
+
+class PharmacySummaryTotals(BaseModel):
+    total: int
+    paid: int
+    free_trial: int
+    payment_pending: int
+    blocked: int
+    onboarding: int
+    unpaid: int
+
+
+class PharmacySummaryResponse(BaseModel):
+    totals: PharmacySummaryTotals
+    items: List[PharmacySummaryItem]
+
+
+class IntegrationUsageItem(BaseModel):
+    tenant_id: str
+    tenant_name: Optional[str] = None
+    provider_key: str
+    provider_name: str
+    display_name: str
+    status: str
+    connected_at: Optional[str] = None
+    last_sync_at: Optional[str] = None
+    last_sync_status: Optional[str] = None
+    last_sync_direction: Optional[str] = None
+    last_sync_resource: Optional[str] = None
+
+
+class IntegrationUsageResponse(BaseModel):
+    items: List[IntegrationUsageItem]

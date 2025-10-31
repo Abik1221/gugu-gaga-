@@ -1,7 +1,7 @@
 import io
 import secrets
 import string
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import json
 from pathlib import Path
 from typing import List, Optional
@@ -22,11 +22,16 @@ from app.models.user_tenant import UserTenant
 from app.services.notifications.in_app import create_notification
 from app.services.notifications.email import send_email
 from app.deps.ratelimit import rate_limit_user
-from app.services.billing.subscriptions import verify_payment_and_unblock, reject_payment_submission, ensure_subscription
+from app.services.billing.subscriptions import verify_payment_and_unblock, reject_payment_submission, ensure_subscription, start_free_trial
 from app.models.affiliate import CommissionPayout, AffiliateProfile, AffiliateReferral
 from app.models.subscription import Subscription, PaymentSubmission
 from app.models.pharmacy import Pharmacy
 from app.models.branch import Branch
+from app.models.integration import (
+    IntegrationConnection,
+    IntegrationProvider,
+    IntegrationSyncJob,
+)
 from app.schemas.admin import (
     PharmaciesAdminListResponse,
     AffiliatesAdminListResponse,
@@ -34,6 +39,11 @@ from app.schemas.admin import (
     AnalyticsTotals,
     AnalyticsPharmacyUsage,
     AnalyticsBranchRow,
+    PharmacySummaryResponse,
+    PharmacySummaryTotals,
+    PharmacySummaryItem,
+    IntegrationUsageResponse,
+    IntegrationUsageItem,
 )
 from app.deps.ratelimit import rate_limit_user
 from sqlalchemy import func
@@ -162,9 +172,11 @@ def approve_pharmacy(
             db.add(link)
     # Ensure a subscription record exists and remains blocked until payment is verified
     sub = ensure_subscription(db, tenant_id=tenant_id)
-    if not sub.blocked:
-        sub.blocked = True
-        db.add(sub)
+    if sub.next_due_date is None:
+        sub = start_free_trial(db, tenant_id=tenant_id)
+    elif sub.next_due_date <= date.today():
+        sub = start_free_trial(db, tenant_id=tenant_id)
+    db.add(sub)
     db.add(app)
     db.commit()
     log_event(
@@ -214,6 +226,7 @@ def download_pharmacy_license(
     application_id: int,
     current_user=Depends(require_role(Role.admin)),
     db: Session = Depends(get_db),
+    download: bool = False,
 ):
     kyc = db.query(KYCApplication).filter(KYCApplication.id == application_id).first()
     if not kyc:
@@ -256,8 +269,9 @@ def download_pharmacy_license(
         metadata={"filename": filename},
     )
 
+    disposition = "attachment" if download else "inline"
     headers = {
-        "Content-Disposition": f"attachment; filename=\"{safe_filename}\"; filename*=UTF-8''{encoded_filename}",
+        "Content-Disposition": f"{disposition}; filename=\"{safe_filename}\"; filename*=UTF-8''{encoded_filename}",
     }
     return StreamingResponse(io.BytesIO(data), media_type=media_type, headers=headers)
 
@@ -606,6 +620,33 @@ def list_audit_events(
     ]
 
 
+def _determine_pharmacy_status(
+    *,
+    kyc_status: Optional[str],
+    subscription: Optional[Subscription],
+    latest_verified: Optional[PaymentSubmission],
+    pending_submission: Optional[PaymentSubmission],
+) -> tuple[str, str]:
+    today = date.today()
+
+    if kyc_status != "approved":
+        return "onboarding", "Onboarding"
+
+    if subscription and subscription.blocked:
+        return "blocked", "Blocked (Payment Required)"
+
+    if latest_verified:
+        return "paid", "Active (Paid)"
+
+    if subscription and subscription.next_due_date and subscription.next_due_date >= today:
+        return "free_trial", "Free Trial"
+
+    if pending_submission:
+        return "payment_pending", "Payment Under Review"
+
+    return "unpaid", "Awaiting Payment"
+
+
 @router.post("/affiliate/payouts/{payout_id}/mark-paid")
 def mark_affiliate_payout_paid(
     payout_id: int,
@@ -759,6 +800,160 @@ def analytics_overview(
     return response
 
 
+@router.get("/pharmacies/summary", response_model=PharmacySummaryResponse)
+def pharmacy_summary(
+    _=Depends(require_role(Role.admin)),
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit_user("admin_pharmacy_summary")),
+):
+    pharmacies = db.query(Pharmacy).all()
+    tenant_ids = [ph.tenant_id for ph in pharmacies]
+
+    branch_counts = {
+        row.tenant_id: int(row.count or 0)
+        for row in (
+            db.query(Branch.tenant_id, func.count(Branch.id).label("count"))
+            .filter(Branch.tenant_id.in_(tenant_ids))
+            .group_by(Branch.tenant_id)
+            .all()
+        )
+    }
+
+    user_counts = {
+        row.tenant_id: int(row.count or 0)
+        for row in (
+            db.query(User.tenant_id, func.count(User.id).label("count"))
+            .filter(User.tenant_id.in_(tenant_ids))
+            .group_by(User.tenant_id)
+            .all()
+        )
+    }
+
+    subscriptions = {
+        sub.tenant_id: sub
+        for sub in db.query(Subscription).filter(Subscription.tenant_id.in_(tenant_ids)).all()
+    }
+
+    latest_verified_map: dict[str, PaymentSubmission] = {
+        row.tenant_id: row
+        for row in (
+            db.query(PaymentSubmission)
+            .filter(PaymentSubmission.status == "verified", PaymentSubmission.tenant_id.in_(tenant_ids))
+            .order_by(PaymentSubmission.tenant_id, PaymentSubmission.verified_at.desc().nullslast(), PaymentSubmission.id.desc())
+            .all()
+        )
+    }
+
+    latest_pending_map: dict[str, PaymentSubmission] = {
+        row.tenant_id: row
+        for row in (
+            db.query(PaymentSubmission)
+            .filter(PaymentSubmission.status == "pending", PaymentSubmission.tenant_id.in_(tenant_ids))
+            .order_by(PaymentSubmission.tenant_id, PaymentSubmission.created_at.desc(), PaymentSubmission.id.desc())
+            .all()
+        )
+    }
+
+    latest_kyc_sub = (
+        db.query(
+            KYCApplication.tenant_id.label("tenant_id"),
+            func.max(KYCApplication.id).label("max_id"),
+        )
+        .filter(KYCApplication.tenant_id.in_(tenant_ids))
+        .group_by(KYCApplication.tenant_id)
+        .subquery()
+    )
+
+    kyc_map = {
+        row.tenant_id: row
+        for row in (
+            db.query(KYCApplication)
+            .join(
+                latest_kyc_sub,
+                (KYCApplication.tenant_id == latest_kyc_sub.c.tenant_id)
+                & (KYCApplication.id == latest_kyc_sub.c.max_id),
+            )
+            .all()
+        )
+    }
+
+    items: list[PharmacySummaryItem] = []
+
+    counters = {
+        "paid": 0,
+        "free_trial": 0,
+        "payment_pending": 0,
+        "blocked": 0,
+        "onboarding": 0,
+        "unpaid": 0,
+    }
+
+    for pharmacy in pharmacies:
+        tenant_id = pharmacy.tenant_id
+        kyc = kyc_map.get(tenant_id)
+        sub = subscriptions.get(tenant_id)
+        latest_verified = latest_verified_map.get(tenant_id)
+        pending_submission = latest_pending_map.get(tenant_id)
+
+        status_key, status_label = _determine_pharmacy_status(
+            kyc_status=kyc.status if kyc else None,
+            subscription=sub,
+            latest_verified=latest_verified,
+            pending_submission=pending_submission,
+        )
+
+        if status_key in counters:
+            counters[status_key] += 1
+
+        branch_count = branch_counts.get(tenant_id, 0)
+        user_count = user_counts.get(tenant_id, 0)
+
+        trial_ends_at = (
+            sub.next_due_date.isoformat()
+            if sub and sub.next_due_date
+            else None
+        )
+        last_payment_verified_at = (
+            latest_verified.verified_at.isoformat()
+            if latest_verified and latest_verified.verified_at
+            else None
+        )
+        pending_payment_submitted_at = (
+            pending_submission.created_at.isoformat()
+            if pending_submission and pending_submission.created_at
+            else None
+        )
+
+        items.append(
+            PharmacySummaryItem(
+                tenant_id=tenant_id,
+                name=getattr(pharmacy, "name", None),
+                status=status_key,
+                status_label=status_label,
+                branch_count=branch_count,
+                user_count=user_count,
+                trial_ends_at=trial_ends_at,
+                last_payment_verified_at=last_payment_verified_at,
+                pending_payment_submitted_at=pending_payment_submitted_at,
+            )
+        )
+
+    totals = PharmacySummaryTotals(
+        total=len(items),
+        paid=counters["paid"],
+        free_trial=counters["free_trial"],
+        payment_pending=counters["payment_pending"],
+        blocked=counters["blocked"],
+        onboarding=counters["onboarding"],
+        unpaid=counters["unpaid"],
+    )
+
+    return PharmacySummaryResponse(
+        totals=totals,
+        items=items,
+    )
+
+
 @router.post("/affiliate/payouts/{payout_id}/approve")
 def approve_affiliate_payout(
     payout_id: int,
@@ -879,6 +1074,8 @@ def list_pharmacies_admin(
                 "license_document_name": kyc.license_document_name,
                 "license_document_mime": kyc.license_document_mime,
                 "license_document_available": license_available,
+                "license_preview_url": f"/admin/pharmacies/{kyc.id}/license",
+                "license_download_url": f"/admin/pharmacies/{kyc.id}/license?download=true",
                 "notes": kyc.notes,
                 "submitted_at": kyc.created_at.isoformat() if kyc.created_at else None,
                 "pharmacy_name": kyc.pharmacy_name,

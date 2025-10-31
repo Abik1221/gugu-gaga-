@@ -17,6 +17,8 @@ __turbopack_context__.s([
     ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "IntegrationsAPI",
+    ()=>IntegrationsAPI,
     "InventoryAPI",
     ()=>InventoryAPI,
     "KYCAPI",
@@ -39,6 +41,8 @@ __turbopack_context__.s([
     ()=>TenantAPI,
     "UploadAPI",
     ()=>UploadAPI,
+    "authFetch",
+    ()=>authFetch,
     "getAccessToken",
     ()=>getAccessToken,
     "getAuthJSON",
@@ -133,32 +137,48 @@ async function postForm(path, data, tenantId) {
     return await res.json();
 }
 async function postJSON(path, body, tenantId) {
-    const res = await fetch(resolveApiUrl(path), {
+    const requestInit = {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/json"
         }, tenantId),
         body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-        let parsed = null;
-        let message = "";
-        try {
-            parsed = await res.json();
-            if (typeof parsed === "string") message = parsed;
-            else if (Array.isArray(parsed)) message = parsed.join(", ");
-            else message = (parsed === null || parsed === void 0 ? void 0 : parsed.error) || (parsed === null || parsed === void 0 ? void 0 : parsed.detail) || (parsed === null || parsed === void 0 ? void 0 : parsed.message) || "";
-            if (!message && parsed) message = JSON.stringify(parsed);
-        } catch (e) {
-            parsed = null;
-            message = await res.text().catch(()=>"");
+    };
+    try {
+        const res = await fetch(resolveApiUrl(path), requestInit);
+        if (!res.ok) {
+            let parsed = null;
+            let message = "";
+            try {
+                parsed = await res.json();
+                if (typeof parsed === "string") message = parsed;
+                else if (Array.isArray(parsed)) message = parsed.join(", ");
+                else message = (parsed === null || parsed === void 0 ? void 0 : parsed.error) || (parsed === null || parsed === void 0 ? void 0 : parsed.detail) || (parsed === null || parsed === void 0 ? void 0 : parsed.message) || "";
+                if (!message && parsed) message = JSON.stringify(parsed);
+            } catch (e) {
+                parsed = null;
+                message = await res.text().catch(()=>"");
+            }
+            const error = new Error(message || "Request failed with ".concat(res.status));
+            error.status = res.status;
+            if (parsed !== null) error.body = parsed;
+            throw error;
         }
-        const error = new Error(message || "Request failed with ".concat(res.status));
-        error.status = res.status;
-        if (parsed !== null) error.body = parsed;
+        return await res.json();
+    } catch (error) {
+        if ("object" !== "undefined" && !navigator.onLine) {
+            const { queueRequest } = await __turbopack_context__.A("[project]/lib/offline/queue.ts [app-client] (ecmascript, async loader)");
+            await queueRequest(path, requestInit, {
+                tenantId,
+                requiresAuth: true,
+                description: requestInit.body ? "POST ".concat(path) : undefined
+            });
+            const offlineError = new Error("Request queued until you are back online.");
+            offlineError.offline = true;
+            throw offlineError;
+        }
         throw error;
     }
-    return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
     const res = await authFetch(path, {
@@ -401,6 +421,33 @@ const TenantAPI = {
         }
     }
 };
+const IntegrationsAPI = {
+    listProviders: ()=>getAuthJSON("/api/v1/integrations/providers"),
+    listConnections: (tenantId)=>getAuthJSON("/api/v1/integrations/connections", tenantId),
+    startOAuth: (tenantId, providerKey, resources)=>postAuthJSON("/api/v1/integrations/oauth/start", {
+            provider_key: providerKey,
+            resources,
+            display_name: undefined
+        }, tenantId),
+    completeOAuth: (code, state, providerKey)=>postJSON("/api/v1/integrations/oauth/callback", {
+            code,
+            state,
+            provider_key: providerKey
+        }),
+    disconnect: (tenantId, connectionId)=>authFetch("/api/v1/integrations/connections/".concat(connectionId), {
+            method: "DELETE"
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || "HTTP ".concat(res.status));
+            }
+            return res.json();
+        }),
+    triggerSync: (tenantId, connectionId, resource, direction)=>postAuthJSON("/api/v1/integrations/connections/".concat(connectionId, "/sync"), {
+            resource,
+            direction
+        }, tenantId)
+};
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
     createLink: ()=>getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
@@ -418,13 +465,14 @@ const AffiliateAPI = {
     updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body)
 };
 const AdminAPI = {
-    pharmacies: function() {
-        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 ? arguments[2] : void 0;
-        return getAuthJSON("/api/v1/admin/pharmacies?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
+    analyticsOverview: function() {
+        let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 30;
+        return getAuthJSON("/api/v1/admin/analytics/overview?days=".concat(days));
     },
-    affiliates: function() {
-        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 ? arguments[2] : void 0;
-        return getAuthJSON("/api/v1/admin/affiliates?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
+    pharmacySummary: ()=>getAuthJSON("/api/v1/admin/pharmacies/summary"),
+    pharmacies: function() {
+        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "";
+        return getAuthJSON("/api/v1/admin/pharmacies?page=".concat(page, "&page_size=").concat(pageSize, "&q=").concat(encodeURIComponent(q)));
     },
     approvePharmacy: (tenantId, applicationId, body)=>postAuthJSON("/api/v1/admin/pharmacies/".concat(applicationId, "/approve"), body || {}, tenantId),
     rejectPharmacy: (tenantId, applicationId)=>postAuthJSON("/api/v1/admin/pharmacies/".concat(applicationId, "/reject"), {}, tenantId),
@@ -434,10 +482,6 @@ const AdminAPI = {
     rejectPayment: (tenantId, code)=>postAuthJSON("/api/v1/admin/payments/reject", {
             code: code || null
         }, tenantId),
-    analyticsOverview: function() {
-        let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 30;
-        return getAuthJSON("/api/v1/admin/analytics/overview?days=".concat(days));
-    },
     approveAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/approve"), {}),
     rejectAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/reject"), {})
 };
@@ -1575,6 +1619,10 @@ function Shell(param) {
                 label: "Admin Overview"
             },
             {
+                href: "/dashboard/admin/segments",
+                label: "Pharmacy Segments"
+            },
+            {
                 href: "/dashboard/admin/users",
                 label: "Users"
             },
@@ -1704,21 +1752,21 @@ function Shell(param) {
                 className: "pointer-events-none absolute -top-24 left-[10%] h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl"
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 314,
+                lineNumber: 315,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "pointer-events-none absolute top-1/2 right-[-10%] h-96 w-96 rounded-full bg-sky-500/20 blur-3xl"
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 315,
+                lineNumber: 316,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "pointer-events-none absolute bottom-[-20%] left-[35%] h-80 w-80 rounded-full bg-teal-500/25 blur-3xl"
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 316,
+                lineNumber: 317,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1748,25 +1796,25 @@ function Shell(param) {
                                             className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 327,
+                                            lineNumber: 328,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 326,
+                                        lineNumber: 327,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: isAffiliate ? "Affiliate Portal" : isAdmin ? "Admin Console" : "Zemen Dashboard"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 329,
+                                        lineNumber: 330,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 325,
+                                lineNumber: 326,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1778,7 +1826,7 @@ function Shell(param) {
                                             children: user.username
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 335,
+                                            lineNumber: 336,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1786,7 +1834,7 @@ function Shell(param) {
                                             children: user.email
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 336,
+                                            lineNumber: 337,
                                             columnNumber: 17
                                         }, this),
                                         primaryRole && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1794,7 +1842,7 @@ function Shell(param) {
                                             children: primaryRole
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 338,
+                                            lineNumber: 339,
                                             columnNumber: 19
                                         }, this)
                                     ]
@@ -1803,12 +1851,12 @@ function Shell(param) {
                                     children: "Not authenticated"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                    lineNumber: 344,
+                                    lineNumber: 345,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 332,
+                                lineNumber: 333,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -1827,24 +1875,24 @@ function Shell(param) {
                                                     children: "•"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                                    lineNumber: 363,
+                                                    lineNumber: 364,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 361,
+                                            lineNumber: 362,
                                             columnNumber: 19
                                         }, this)
                                     }, item.href, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 352,
+                                        lineNumber: 353,
                                         columnNumber: 17
                                     }, this);
                                 })
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 348,
+                                lineNumber: 349,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1855,7 +1903,7 @@ function Shell(param) {
                                         children: "Need help?"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 373,
+                                        lineNumber: 374,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1863,7 +1911,7 @@ function Shell(param) {
                                         children: "Explore the resource center or contact support if something feels off."
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 374,
+                                        lineNumber: 375,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1874,20 +1922,20 @@ function Shell(param) {
                                                 className: "h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                                lineNumber: 379,
+                                                lineNumber: 380,
                                                 columnNumber: 15
                                             }, this),
                                             " Support"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 375,
+                                        lineNumber: 376,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 372,
+                                lineNumber: 373,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1899,20 +1947,20 @@ function Shell(param) {
                                         className: "mr-2 h-4 w-4"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 388,
+                                        lineNumber: 389,
                                         columnNumber: 13
                                     }, this),
                                     " Sign out"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 383,
+                                lineNumber: 384,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 319,
+                        lineNumber: 320,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -1938,7 +1986,7 @@ function Shell(param) {
                                         children: ((_nav_find = nav.find((n)=>pathname === null || pathname === void 0 ? void 0 : pathname.startsWith(n.href))) === null || _nav_find === void 0 ? void 0 : _nav_find.label) || "Overview"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 399,
+                                        lineNumber: 400,
                                         columnNumber: 13
                                     }, this),
                                     !isAffiliate && !isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1949,13 +1997,13 @@ function Shell(param) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 403,
+                                        lineNumber: 404,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 398,
+                                lineNumber: 399,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -1963,25 +2011,25 @@ function Shell(param) {
                                 children: children
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 408,
+                                lineNumber: 409,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 392,
+                        lineNumber: 393,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 318,
+                lineNumber: 319,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/layout.tsx",
-        lineNumber: 313,
+        lineNumber: 314,
         columnNumber: 5
     }, this);
 }

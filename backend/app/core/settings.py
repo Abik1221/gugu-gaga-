@@ -30,11 +30,11 @@ class Settings(BaseSettings):
     jwt_secret: Optional[str] = Field(default=None, validation_alias=AliasChoices("JWT_SECRET", "jwt_secret"))
     jwt_algorithm: str = Field(default="HS256", validation_alias=AliasChoices("JWT_ALGORITHM", "jwt_algorithm"))
     access_token_expires_minutes: int = Field(
-        default=60 * 24 * 21,  # 21 days
+        default=60 * 24 * 14,  # 14 days
         validation_alias=AliasChoices("ACCESS_TOKEN_EXPIRES_MINUTES", "access_token_expires_minutes"),
     )
     refresh_token_expires_days: int = Field(
-        default=90,
+        default=14,
         validation_alias=AliasChoices("REFRESH_TOKEN_EXPIRES_DAYS", "refresh_token_expires_days"),
     )
 
@@ -54,6 +54,20 @@ class Settings(BaseSettings):
     smtp_password: Optional[str] = Field(default=None, validation_alias=AliasChoices("SMTP_PASSWORD", "smtp_password"))
     smtp_use_tls: bool = Field(default=True, validation_alias=AliasChoices("SMTP_USE_TLS", "smtp_use_tls"))
     email_from: Optional[str] = Field(default=None, validation_alias=AliasChoices("EMAIL_FROM", "email_from"))
+
+    # Integrations
+    integration_encryption_key: Optional[str] = Field(
+        default=None,
+        validation_alias=AliasChoices("INTEGRATION_ENCRYPTION_KEY", "integration_encryption_key"),
+    )
+    integration_oauth_redirect_uri: Optional[str] = Field(
+        default=None,
+        validation_alias=AliasChoices("INTEGRATION_OAUTH_REDIRECT_URI", "integration_oauth_redirect_uri"),
+    )
+    integration_state_ttl_seconds: int = Field(
+        default=600,
+        validation_alias=AliasChoices("INTEGRATION_STATE_TTL_SECONDS", "integration_state_ttl_seconds"),
+    )
 
 
 settings = Settings()

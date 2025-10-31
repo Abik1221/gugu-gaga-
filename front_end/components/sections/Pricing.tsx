@@ -30,19 +30,19 @@ const FreePlanCard = () => {
         <p className="pt-10 mb-5 font-bold text-emerald-200">Features</p>
         <ul className="list-none space-y-2 text-gray-200">
           <li>
-            <span className="pr-5">✔</span>30-day free trial — cancel anytime
+            <span className="pr-5">✔</span>30-day guided free trial with upgrade prompts
           </li>
           <li>
-            <span className="pr-5">✔</span>Up to 10 AI assistant messages included
+            <span className="pr-5">✔</span>3 AI assistant questions per day (safe read-only insights)
           </li>
           <li>
-            <span className="pr-5">✔</span>2 agents available to configure
+            <span className="pr-5">✔</span>Connect one Google Sheets workbook for data import
           </li>
           <li>
-            <span className="pr-5">✔</span>Ultimate pharmacy dashboard access
+            <span className="pr-5">✔</span>Preview pro dashboards with "Upgrade to unlock" guidance
           </li>
           <li>
-            <span className="pr-5">✔</span>Secure tenant-ready data storage
+            <span className="pr-5">✔</span>Single-pharmacy workspace with secure token storage
           </li>
         </ul>
       </CardContent>
@@ -76,20 +76,20 @@ const ProPlanCard = () => {
         <p className="pt-10 mb-5 font-bold text-emerald-100">Features</p>
         <ul className="list-none space-y-2 text-gray-100">
           <li>
-            <span className="pr-5">✔</span>Access to all features
+            <span className="pr-5">✔</span>Full access to every premium feature
           </li>
           <li>
-            <span className="pr-5">✔</span>Unlimited user accounts
+            <span className="pr-5">✔</span>20 AI assistant questions per user per day
           </li>
           <li>
             <span className="pr-5">✔</span>
-            Comprehensive reporting tools
+            Unlimited integrations (Zoho Books, Odoo, Notion, Google Sheets)
           </li>
           <li>
-            <span className="pr-5">✔</span>24/7 customer support
+            <span className="pr-5">✔</span>Multi-pharmacy management with admin segments & alerts
           </li>
           <li>
-            <span className="pr-5">✔</span>Secure data storage
+            <span className="pr-5">✔</span>Priority support & compliance-ready audit history
           </li>
         </ul>
       </CardContent>

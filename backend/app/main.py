@@ -11,6 +11,7 @@ import asyncio
 from typing import List
 from .services.notifications.triggers import notify_low_stock, notify_subscription_expiring
 from .services.billing.subscriptions import process_subscription_due
+from .services.integrations.monitoring import warn_expiring_tokens
 
 tags_metadata = [
     {"name": "auth", "description": "Authentication, registration, JWT tokens"},
@@ -67,6 +68,7 @@ def on_startup():
                                     notify_low_stock(db, tenant_id=t)
                                     notify_subscription_expiring(db, tenant_id=t)
                                     process_subscription_due(db, tenant_id=t)
+                                    warn_expiring_tokens(db, tenant_id=t)
                                 finally:
                                     db.close()
                             except Exception:

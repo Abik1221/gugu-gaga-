@@ -17,6 +17,8 @@ __turbopack_context__.s([
     ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "IntegrationsAPI",
+    ()=>IntegrationsAPI,
     "InventoryAPI",
     ()=>InventoryAPI,
     "KYCAPI",
@@ -39,6 +41,8 @@ __turbopack_context__.s([
     ()=>TenantAPI,
     "UploadAPI",
     ()=>UploadAPI,
+    "authFetch",
+    ()=>authFetch,
     "getAccessToken",
     ()=>getAccessToken,
     "getAuthJSON",
@@ -133,24 +137,48 @@ async function postForm(path, data, tenantId) {
     return await res.json();
 }
 async function postJSON(path, body, tenantId) {
-    const res = await fetch(resolveApiUrl(path), {
+    const requestInit = {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/json"
         }, tenantId),
         body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-        try {
-            const data = await res.json();
-            const msg = (data === null || data === void 0 ? void 0 : data.error) || (data === null || data === void 0 ? void 0 : data.detail) || JSON.stringify(data);
-            throw new Error(msg || "Request failed with ".concat(res.status));
-        } catch (e) {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || "Request failed with ".concat(res.status));
+    };
+    try {
+        const res = await fetch(resolveApiUrl(path), requestInit);
+        if (!res.ok) {
+            let parsed = null;
+            let message = "";
+            try {
+                parsed = await res.json();
+                if (typeof parsed === "string") message = parsed;
+                else if (Array.isArray(parsed)) message = parsed.join(", ");
+                else message = (parsed === null || parsed === void 0 ? void 0 : parsed.error) || (parsed === null || parsed === void 0 ? void 0 : parsed.detail) || (parsed === null || parsed === void 0 ? void 0 : parsed.message) || "";
+                if (!message && parsed) message = JSON.stringify(parsed);
+            } catch (e) {
+                parsed = null;
+                message = await res.text().catch(()=>"");
+            }
+            const error = new Error(message || "Request failed with ".concat(res.status));
+            error.status = res.status;
+            if (parsed !== null) error.body = parsed;
+            throw error;
         }
+        return await res.json();
+    } catch (error) {
+        if ("object" !== "undefined" && !navigator.onLine) {
+            const { queueRequest } = await __turbopack_context__.A("[project]/lib/offline/queue.ts [app-client] (ecmascript, async loader)");
+            await queueRequest(path, requestInit, {
+                tenantId,
+                requiresAuth: true,
+                description: requestInit.body ? "POST ".concat(path) : undefined
+            });
+            const offlineError = new Error("Request queued until you are back online.");
+            offlineError.offline = true;
+            throw offlineError;
+        }
+        throw error;
     }
-    return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
     const res = await authFetch(path, {
@@ -361,21 +389,64 @@ const AuthAPI = {
                 }
             }
             return profile;
-        }),
-    updateProfile: (body)=>putAuthJSON("/api/v1/auth/me", body)
+        })
 };
 const TenantAPI = {
-    activity: (params)=>{
+    activity: async (params)=>{
+        var _params_action;
         const searchParams = new URLSearchParams();
         if (params === null || params === void 0 ? void 0 : params.limit) searchParams.set("limit", params.limit.toString());
         if (params === null || params === void 0 ? void 0 : params.offset) searchParams.set("offset", params.offset.toString());
-        if (params === null || params === void 0 ? void 0 : params.action) {
-            params.action.forEach((a)=>searchParams.append("action", a));
-        }
+        params === null || params === void 0 ? void 0 : (_params_action = params.action) === null || _params_action === void 0 ? void 0 : _params_action.forEach((action)=>searchParams.append("action", action));
         const qs = searchParams.toString();
-        const path = qs ? "/api/v1/tenant/activity?".concat(qs) : "/api/v1/tenant/activity";
-        return getAuthJSON(path);
+        const url = "/api/v1/tenant/activity".concat(qs ? "?".concat(qs) : "");
+        var _getTenantId;
+        const tenantId = (_getTenantId = getTenantId()) !== null && _getTenantId !== void 0 ? _getTenantId : undefined;
+        const res = await authFetch(url, undefined, true, tenantId);
+        if (res.status === 404 || res.status === 204) {
+            return [];
+        }
+        if (!res.ok) {
+            const text = await res.text().catch(()=>"");
+            throw new Error(text || "Request failed with ".concat(res.status));
+        }
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+            return [];
+        }
+        try {
+            return await res.json();
+        } catch (e) {
+            return [];
+        }
     }
+};
+const IntegrationsAPI = {
+    listProviders: ()=>getAuthJSON("/api/v1/integrations/providers"),
+    listConnections: (tenantId)=>getAuthJSON("/api/v1/integrations/connections", tenantId),
+    startOAuth: (tenantId, providerKey, resources)=>postAuthJSON("/api/v1/integrations/oauth/start", {
+            provider_key: providerKey,
+            resources,
+            display_name: undefined
+        }, tenantId),
+    completeOAuth: (code, state, providerKey)=>postJSON("/api/v1/integrations/oauth/callback", {
+            code,
+            state,
+            provider_key: providerKey
+        }),
+    disconnect: (tenantId, connectionId)=>authFetch("/api/v1/integrations/connections/".concat(connectionId), {
+            method: "DELETE"
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || "HTTP ".concat(res.status));
+            }
+            return res.json();
+        }),
+    triggerSync: (tenantId, connectionId, resource, direction)=>postAuthJSON("/api/v1/integrations/connections/".concat(connectionId, "/sync"), {
+            resource,
+            direction
+        }, tenantId)
 };
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
@@ -394,13 +465,14 @@ const AffiliateAPI = {
     updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body)
 };
 const AdminAPI = {
-    pharmacies: function() {
-        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 ? arguments[2] : void 0;
-        return getAuthJSON("/api/v1/admin/pharmacies?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
+    analyticsOverview: function() {
+        let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 30;
+        return getAuthJSON("/api/v1/admin/analytics/overview?days=".concat(days));
     },
-    affiliates: function() {
-        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 ? arguments[2] : void 0;
-        return getAuthJSON("/api/v1/admin/affiliates?page=".concat(page, "&page_size=").concat(pageSize).concat(q ? "&q=".concat(encodeURIComponent(q)) : ""));
+    pharmacySummary: ()=>getAuthJSON("/api/v1/admin/pharmacies/summary"),
+    pharmacies: function() {
+        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "";
+        return getAuthJSON("/api/v1/admin/pharmacies?page=".concat(page, "&page_size=").concat(pageSize, "&q=").concat(encodeURIComponent(q)));
     },
     approvePharmacy: (tenantId, applicationId, body)=>postAuthJSON("/api/v1/admin/pharmacies/".concat(applicationId, "/approve"), body || {}, tenantId),
     rejectPharmacy: (tenantId, applicationId)=>postAuthJSON("/api/v1/admin/pharmacies/".concat(applicationId, "/reject"), {}, tenantId),
@@ -410,10 +482,6 @@ const AdminAPI = {
     rejectPayment: (tenantId, code)=>postAuthJSON("/api/v1/admin/payments/reject", {
             code: code || null
         }, tenantId),
-    analyticsOverview: function() {
-        let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 30;
-        return getAuthJSON("/api/v1/admin/analytics/overview?days=".concat(days));
-    },
     approveAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/approve"), {}),
     rejectAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/reject"), {})
 };

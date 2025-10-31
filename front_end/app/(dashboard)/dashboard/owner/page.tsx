@@ -245,6 +245,11 @@ export default function OwnerDashboardPage() {
           <Button variant="outline" size="sm" onClick={handleRefresh} disabled={analyticsLoading || !tenantId}>
             Refresh
           </Button>
+          <Link href="/dashboard/owner/integrations">
+            <Button variant="outline" size="sm">
+              Connect tools
+            </Button>
+          </Link>
           <Link href="/dashboard/owner/staff/new">
             <Button size="sm">Invite staff</Button>
           </Link>

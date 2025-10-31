@@ -42,6 +42,8 @@ __turbopack_context__.s([
     ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "IntegrationsAPI",
+    ()=>IntegrationsAPI,
     "InventoryAPI",
     ()=>InventoryAPI,
     "KYCAPI",
@@ -64,6 +66,8 @@ __turbopack_context__.s([
     ()=>TenantAPI,
     "UploadAPI",
     ()=>UploadAPI,
+    "authFetch",
+    ()=>authFetch,
     "getAccessToken",
     ()=>getAccessToken,
     "getAuthJSON",
@@ -157,32 +161,39 @@ async function postForm(path, data, tenantId) {
     return await res.json();
 }
 async function postJSON(path, body, tenantId) {
-    const res = await fetch(resolveApiUrl(path), {
+    const requestInit = {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/json"
         }, tenantId),
         body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-        let parsed = null;
-        let message = "";
-        try {
-            parsed = await res.json();
-            if (typeof parsed === "string") message = parsed;
-            else if (Array.isArray(parsed)) message = parsed.join(", ");
-            else message = parsed?.error || parsed?.detail || parsed?.message || "";
-            if (!message && parsed) message = JSON.stringify(parsed);
-        } catch  {
-            parsed = null;
-            message = await res.text().catch(()=>"");
+    };
+    try {
+        const res = await fetch(resolveApiUrl(path), requestInit);
+        if (!res.ok) {
+            let parsed = null;
+            let message = "";
+            try {
+                parsed = await res.json();
+                if (typeof parsed === "string") message = parsed;
+                else if (Array.isArray(parsed)) message = parsed.join(", ");
+                else message = parsed?.error || parsed?.detail || parsed?.message || "";
+                if (!message && parsed) message = JSON.stringify(parsed);
+            } catch  {
+                parsed = null;
+                message = await res.text().catch(()=>"");
+            }
+            const error = new Error(message || `Request failed with ${res.status}`);
+            error.status = res.status;
+            if (parsed !== null) error.body = parsed;
+            throw error;
         }
-        const error = new Error(message || `Request failed with ${res.status}`);
-        error.status = res.status;
-        if (parsed !== null) error.body = parsed;
+        return await res.json();
+    } catch (error) {
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
         throw error;
     }
-    return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
     const res = await authFetch(path, {
@@ -405,6 +416,33 @@ const TenantAPI = {
         }
     }
 };
+const IntegrationsAPI = {
+    listProviders: ()=>getAuthJSON("/api/v1/integrations/providers"),
+    listConnections: (tenantId)=>getAuthJSON("/api/v1/integrations/connections", tenantId),
+    startOAuth: (tenantId, providerKey, resources)=>postAuthJSON("/api/v1/integrations/oauth/start", {
+            provider_key: providerKey,
+            resources,
+            display_name: undefined
+        }, tenantId),
+    completeOAuth: (code, state, providerKey)=>postJSON("/api/v1/integrations/oauth/callback", {
+            code,
+            state,
+            provider_key: providerKey
+        }),
+    disconnect: (tenantId, connectionId)=>authFetch(`/api/v1/integrations/connections/${connectionId}`, {
+            method: "DELETE"
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || `HTTP ${res.status}`);
+            }
+            return res.json();
+        }),
+    triggerSync: (tenantId, connectionId, resource, direction)=>postAuthJSON(`/api/v1/integrations/connections/${connectionId}/sync`, {
+            resource,
+            direction
+        }, tenantId)
+};
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
     createLink: ()=>getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
@@ -419,8 +457,9 @@ const AffiliateAPI = {
     updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body)
 };
 const AdminAPI = {
-    pharmacies: (page = 1, pageSize = 20, q)=>getAuthJSON(`/api/v1/admin/pharmacies?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
-    affiliates: (page = 1, pageSize = 20, q)=>getAuthJSON(`/api/v1/admin/affiliates?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
+    analyticsOverview: (days = 30)=>getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
+    pharmacySummary: ()=>getAuthJSON(`/api/v1/admin/pharmacies/summary`),
+    pharmacies: (page = 1, pageSize = 20, q = "")=>getAuthJSON(`/api/v1/admin/pharmacies?page=${page}&page_size=${pageSize}&q=${encodeURIComponent(q)}`),
     approvePharmacy: (tenantId, applicationId, body)=>postAuthJSON(`/api/v1/admin/pharmacies/${applicationId}/approve`, body || {}, tenantId),
     rejectPharmacy: (tenantId, applicationId)=>postAuthJSON(`/api/v1/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
     verifyPayment: (tenantId, code)=>postAuthJSON(`/api/v1/admin/payments/verify`, {
@@ -429,7 +468,6 @@ const AdminAPI = {
     rejectPayment: (tenantId, code)=>postAuthJSON(`/api/v1/admin/payments/reject`, {
             code: code || null
         }, tenantId),
-    analyticsOverview: (days = 30)=>getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
     approveAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
     rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {})
 };
