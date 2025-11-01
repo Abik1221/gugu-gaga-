@@ -199,10 +199,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$providers$2f$s
 ;
 const metadata = {
     title: {
-        default: "Zemen Pharma",
-        template: "%s | Zemen Pharma"
+        default: "Zemen Inventory",
+        template: "%s | Zemen Inventory"
     },
-    description: "Zemen Pharma platform for managing pharmacy operations and subscriptions.",
+    description: "Zemen Inventory platform for managing multi-branch stock, sales, and subscriptions.",
     manifest: "/manifest.webmanifest",
     icons: {
         icon: [
@@ -225,7 +225,7 @@ const metadata = {
         "mobile-web-app-capable": "yes",
         "apple-mobile-web-app-capable": "yes",
         "apple-mobile-web-app-status-bar-style": "black-translucent",
-        "apple-mobile-web-app-title": "Zemen Pharma"
+        "apple-mobile-web-app-title": "Zemen Inventory"
     }
 };
 const viewport = {

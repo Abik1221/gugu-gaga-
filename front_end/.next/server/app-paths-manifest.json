@@ -1,8 +1,9 @@
 {
+  "/(auth)/auth/page": "app/(auth)/auth/page.js",
   "/(auth)/register/pharmacy/page": "app/(auth)/register/pharmacy/page.js",
-  "/(dashboard)/dashboard/admin/pharmacies/page": "app/(dashboard)/dashboard/admin/pharmacies/page.js",
-  "/(dashboard)/dashboard/owner/kyc/page": "app/(dashboard)/dashboard/owner/kyc/page.js",
+  "/(dashboard)/dashboard/owner/agent/page": "app/(dashboard)/dashboard/owner/agent/page.js",
   "/(dashboard)/dashboard/owner/page": "app/(dashboard)/dashboard/owner/page.js",
+  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
   "/page": "app/page.js"

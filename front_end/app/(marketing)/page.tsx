@@ -50,8 +50,8 @@ export default function HomePage() {
       {/* Hero */}
       <section className="pt-10 pb-8">
         <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">Run your pharmacy with confidence</h1>
-          <p className="mt-4 text-gray-600 text-lg">Zemen Pharma unifies inventory, POS, AI insights, and affiliate growth into one modern platform—designed for speed, accuracy, and scale.</p>
+          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">Run your inventory operations with confidence</h1>
+          <p className="mt-4 text-gray-600 text-lg">Zemen Inventory unifies stock control, POS, AI insights, and affiliate growth into one modern platform—designed for speed, accuracy, and scale.</p>
           <div className="mt-6 flex gap-3">
             <Button asChild><a href="/register/pharmacy">Get Started</a></Button>
             <a href="#about" className="text-emerald-700 border border-emerald-200 rounded px-3 py-2 text-sm hover:bg-emerald-50">Learn More</a>
@@ -59,8 +59,8 @@ export default function HomePage() {
         </div>
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           <FeatureCard
-            title="Multi-pharmacy management"
-            desc="Coordinate stock and sales across every branch with shared catalogs, centralized purchases, and branch-level insights."
+            title="Multi-location management"
+            desc="Coordinate stock and sales across every branch with shared catalogs, centralized purchases, and location-level insights."
           />
           <FeatureCard
             title="AI copilots for growth"
@@ -80,11 +80,11 @@ export default function HomePage() {
       {/* About */}
       <section id="about" className="scroll-mt-20">
         <div className="max-w-3xl">
-          <h2 className="text-2xl font-semibold">Who is Zemen Pharma for?</h2>
-          <p className="mt-3 text-gray-600">Whether you oversee a growing network of pharmacies or lead a single high-performing branch, Zemen Pharma adapts to your workflow. Harness AI copilots, secure infrastructure, and mobile controls to keep every location aligned and profitable.</p>
+          <h2 className="text-2xl font-semibold">Who is Zemen Inventory for?</h2>
+          <p className="mt-3 text-gray-600">Whether you oversee a growing retail network or lead a single high-performing operation, Zemen Inventory adapts to your workflow. Harness AI copilots, secure infrastructure, and mobile controls to keep every location aligned and profitable.</p>
         </div>
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Bullet title="Branch and network owners" desc="Synchronize purchasing, pricing, and stock visibility across multiple pharmacy locations." />
+          <Bullet title="Branch and network owners" desc="Synchronize purchasing, pricing, and stock visibility across multiple locations." />
           <Bullet title="AI-driven operations" desc="Empower managers with predictive analytics, smart alerts, and guided actions fueled by AI." />
           <Bullet title="Compliance-focused teams" desc="Protect sensitive data with role-based permissions, audit history, and encryption by default." />
           <Bullet title="On-the-go executives" desc="Track KPIs, approve payouts, and resolve issues from any device—no tools or laptops required." />
@@ -96,7 +96,7 @@ export default function HomePage() {
         <div className="max-w-2xl space-y-6">
           <div>
             <h2 className="text-2xl font-semibold">Contact Us</h2>
-            <p className="text-gray-600 mt-2">Have questions about Zemen Pharma? Send us a message and we’ll respond promptly.</p>
+            <p className="text-gray-600 mt-2">Have questions about Zemen Inventory? Send us a message and we’ll respond promptly.</p>
           </div>
 
           <div className="rounded-3xl border border-emerald-200/60 bg-gradient-to-r from-emerald-500/15 via-white to-blue-500/15 p-5 shadow-[0_18px_55px_-35px_rgba(16,185,129,0.45)]">

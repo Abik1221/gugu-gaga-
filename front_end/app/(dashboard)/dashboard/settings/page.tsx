@@ -269,7 +269,7 @@ export default function DashboardSettingsPage() {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <p className="text-xs text-gray-500">
-                  Update how your name and contact information appear across the pharmacy tools. Leave a field blank to clear it.
+                  Update how your name and contact information appear across the inventory tools. Leave a field blank to clear it.
                 </p>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-1">

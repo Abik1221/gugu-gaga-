@@ -67,9 +67,6 @@ function AssistantContent({ payload }: { payload: any }) {
   const rows = Array.isArray(payload.rows) ? payload.rows : null;
   const hasRows = rows && rows.length > 0;
 
-  const remaining = MAX_PROMPT_LENGTH - messageDraft.length;
-  const isOverLimit = remaining < 0;
-
   return (
     <div className="space-y-3 text-sm">
       {payload.intent && (

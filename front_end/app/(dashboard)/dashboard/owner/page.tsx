@@ -222,7 +222,7 @@ export default function OwnerDashboardPage() {
             {loadingUser ? "Loading..." : `Welcome back, ${displayName}`}
           </h1>
           <p className="max-w-xl text-sm leading-relaxed text-emerald-100/80">
-            Monitor revenue, compare branches, and coach your pharmacy team from a single command center.
+            Monitor revenue, compare branches, and coach your inventory teams from a single command center.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">

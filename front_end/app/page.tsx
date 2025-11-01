@@ -31,13 +31,13 @@ const heroFeatures: FeatureHighlight[] = [
     icon: BarChart3,
     title: "Real-time Dashboards",
     description:
-      "Monitor your pharmacy performance with live analytics, sales tracking, and branch management tools.",
+      "Monitor your locations with live analytics, sales tracking, and branch management tools.",
   },
   {
     icon: Search,
-    title: "Smart Medicine Search",
+    title: "Smart Product Search",
     description:
-      "Advanced search capabilities for staff and customers to find medicines quickly and efficiently.",
+      "Advanced search capabilities for staff and customers to find products quickly and efficiently.",
   },
   {
     icon: CreditCard,
@@ -75,11 +75,11 @@ function LandingHero({
               End-to-End AI-Powered
             </span>
             <br />
-            <span className="text-white">Pharmacy Management</span>
+            <span className="text-white">Inventory Management</span>
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-300 md:text-xl lg:mx-0">
-            Multi-tenant CMS and management system for pharmacies. AI-powered insights,
-            real-time dashboards, and seamless medicine search for owners, staff, and customers.
+            Multi-tenant CMS and management system for inventory-led businesses. AI-powered insights,
+            real-time dashboards, and seamless product search for owners, staff, and customers.
           </p>
           <div className="flex flex-col items-center gap-4 sm:-mt-2 sm:flex-row sm:justify-center lg:-mt-4 lg:justify-start">
             <Link
@@ -117,7 +117,7 @@ function LandingHero({
           <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur">
             <Image
               src="/hero.jpg"
-              alt="Secure Cloud-Based Pharmacy Management System"
+              alt="Secure Cloud-Based Inventory Management System"
               width={720}
               height={540}
               priority
@@ -157,9 +157,9 @@ function FeatureHighlights() {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <h2 className="text-3xl font-bold md:text-4xl">Everything You Need to Run Your Pharmacy</h2>
+          <h2 className="text-3xl font-bold md:text-4xl">Everything You Need to Run Your Inventory Operations</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-300">
-            Comprehensive tools designed specifically for modern pharmacy operations.
+            Comprehensive tools designed specifically for modern inventory operations.
           </p>
         </motion.div>
 

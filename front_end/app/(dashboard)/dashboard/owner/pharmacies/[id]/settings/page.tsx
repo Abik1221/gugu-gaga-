@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { PharmaciesAPI } from "@/utils/api";
 
-export default function PharmacySettingsPage() {
+export default function BusinessLocationSettingsPage() {
   const { show } = useToast();
   const params = useParams();
   const id = Number(params?.id);
@@ -45,7 +45,7 @@ export default function PharmacySettingsPage() {
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <h1 className="text-xl font-semibold">Pharmacy Settings</h1>
+      <h1 className="text-xl font-semibold">Location Settings</h1>
       {loading ? (<Skeleton className="h-64" />) : error ? (<div className="text-sm text-red-600">{error}</div>) : (
         <div className="space-y-4">
           <div>

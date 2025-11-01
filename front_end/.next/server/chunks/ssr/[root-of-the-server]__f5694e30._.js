@@ -870,7 +870,12 @@ const titleVariants = {
         y: 0,
         transition: {
             duration: 0.6,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -885,7 +890,12 @@ const cardVariants = {
         y: 0,
         transition: {
             duration: 0.6,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -900,7 +910,12 @@ const circleVariants = {
         scale: 1,
         transition: {
             duration: 0.5,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -919,7 +934,7 @@ function HowItWorks() {
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].h3, {
                 className: "mb-10 text-center text-2xl font-bold text-emerald-200",
                 variants: titleVariants,
-                children: "How Zemen Pharma Works"
+                children: "How Zemen Inventory Works"
             }, void 0, false, {
                 fileName: "[project]/components/sections/HowItWorks.tsx",
                 lineNumber: 55,
@@ -958,7 +973,7 @@ function HowItWorks() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-gray-300",
-                                children: "Quick setup with your existing pharmacy data. Integrate with your suppliers and payment systems seamlessly."
+                                children: "Quick setup with your existing inventory data. Integrate with your suppliers and payment systems seamlessly."
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
                                 lineNumber: 73,
@@ -1615,7 +1630,7 @@ const FreePlanCard = ()=>{
                                         lineNumber: 45,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Single-pharmacy workspace with secure token storage"
+                                    "Single-business workspace with secure token storage"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1791,7 +1806,7 @@ const ProPlanCard = ()=>{
                                         lineNumber: 89,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Multi-pharmacy management with admin segments & alerts"
+                                    "Multi-location management with admin segments & alerts"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1998,7 +2013,7 @@ function Solutions() {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                             className: "mb-6 text-center text-2xl font-bold text-emerald-200",
-                            children: "AI-Powered Solutions"
+                            children: "AI-Powered Inventory Solutions"
                         }, void 0, false, {
                             fileName: "[project]/components/sections/Solutions.jsx",
                             lineNumber: 51,
@@ -2006,7 +2021,7 @@ function Solutions() {
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "text-base leading-relaxed text-white",
-                            children: "Zemen Pharma is an AI-powered pharmacy management system designed to streamline operations, enhance efficiency, and provide real-time insights for pharmacy owners, staff, and customers."
+                            children: "Zemen Inventory is an AI-powered operations platform designed to streamline stock control, enhance efficiency, and provide real-time insights for owners, staff, and partners across every location."
                         }, void 0, false, {
                             fileName: "[project]/components/sections/Solutions.jsx",
                             lineNumber: 54,
@@ -2067,7 +2082,12 @@ const titleVariants = {
         y: 0,
         transition: {
             duration: 0.6,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -2084,7 +2104,12 @@ const cardVariants = {
         y: 0,
         transition: {
             duration: 0.6,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -2103,7 +2128,7 @@ function Benefits() {
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].h3, {
                 className: "mb-10 text-center text-2xl font-bold text-emerald-200",
                 variants: titleVariants,
-                children: "Why Choose Zemen Pharma?"
+                children: "Why Choose Zemen Inventory?"
             }, void 0, false, {
                 fileName: "[project]/components/sections/Benefits.tsx",
                 lineNumber: 51,
@@ -2135,7 +2160,7 @@ function Benefits() {
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-gray-200",
-                                        children: "Automate routine tasks, reduce manual errors, and streamline operations across all your pharmacy locations."
+                                        children: "Automate routine tasks, reduce manual errors, and streamline operations across every branch and warehouse."
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Benefits.tsx",
                                         lineNumber: 70,
@@ -2225,7 +2250,7 @@ function Benefits() {
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-gray-200",
-                                        children: "Provide seamless shopping experiences with online ordering, medicine search, and delivery tracking."
+                                        children: "Provide seamless customer experiences with online ordering, smart product search, and delivery tracking."
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Benefits.tsx",
                                         lineNumber: 110,
@@ -2342,7 +2367,7 @@ function CTA() {
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                     className: "mb-4 text-3xl font-bold text-emerald-200",
-                    children: "Ready to Transform Your Pharmacy?"
+                    children: "Ready to Transform Your Inventory Operations?"
                 }, void 0, false, {
                     fileName: "[project]/components/sections/Cta.tsx",
                     lineNumber: 20,
@@ -2350,7 +2375,7 @@ function CTA() {
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                     className: "mb-8 text-lg text-gray-200",
-                    children: "Join the future of pharmacy management with Zemen Pharma's AI-powered platform. Schedule a demo to see how we can help your business grow."
+                    children: "Join the future of inventory management with Zemen Inventory's AI-powered platform. Schedule a demo to see how we can help your business grow."
                 }, void 0, false, {
                     fileName: "[project]/components/sections/Cta.tsx",
                     lineNumber: 23,
@@ -2656,7 +2681,7 @@ function WhoIsZemenPharma() {
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                     className: "mb-8 text-center text-3xl font-bold text-emerald-200",
-                    children: "Who is Zemen Pharma for?"
+                    children: "Who is Zemen Inventory for?"
                 }, void 0, false, {
                     fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                     lineNumber: 15,
@@ -2705,7 +2730,7 @@ function WhoIsZemenPharma() {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
                                                         className: "text-lg font-semibold text-emerald-100",
-                                                        children: "For Pharmacy Owners"
+                                                        children: "For Inventory Operators"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                                                         lineNumber: 44,
@@ -2713,7 +2738,7 @@ function WhoIsZemenPharma() {
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         className: "text-sm leading-relaxed text-gray-200",
-                                                        children: "Stay in control of multi-branch operations with AI-driven dashboards, predictive restocking, and centralized governance."
+                                                        children: "Stay in control of multi-location operations with AI-driven dashboards, predictive restocking, and centralized governance."
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                                                         lineNumber: 47,
@@ -2752,7 +2777,7 @@ function WhoIsZemenPharma() {
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         className: "text-sm leading-relaxed text-gray-200",
-                                                        children: "Activate AI copilots that surface demand forecasts, smart alerts, and workflow recommendations to keep every branch in sync."
+                                                        children: "Activate AI copilots that surface demand forecasts, smart alerts, and workflow recommendations to keep every location in sync."
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                                                         lineNumber: 61,
@@ -2791,7 +2816,7 @@ function WhoIsZemenPharma() {
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         className: "text-sm leading-relaxed text-gray-200",
-                                                        children: "Enforce role-based access, maintain audit trails, and safeguard sensitive patient data with encryption-first architecture."
+                                                        children: "Enforce role-based access, maintain audit trails, and safeguard sensitive business data with encryption-first architecture."
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                                                         lineNumber: 75,
@@ -3325,12 +3350,12 @@ const heroFeatures = [
     {
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chart$2d$column$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__BarChart3$3e$__["BarChart3"],
         title: "Real-time Dashboards",
-        description: "Monitor your pharmacy performance with live analytics, sales tracking, and branch management tools."
+        description: "Monitor your locations with live analytics, sales tracking, and branch management tools."
     },
     {
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Search$3e$__["Search"],
-        title: "Smart Medicine Search",
-        description: "Advanced search capabilities for staff and customers to find medicines quickly and efficiently."
+        title: "Smart Product Search",
+        description: "Advanced search capabilities for staff and customers to find products quickly and efficiently."
     },
     {
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"],
@@ -3408,7 +3433,7 @@ function LandingHero({ onScrollToFeatures }) {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-white",
-                                        children: "Pharmacy Management"
+                                        children: "Inventory Management"
                                     }, void 0, false, {
                                         fileName: "[project]/app/page.tsx",
                                         lineNumber: 78,
@@ -3422,7 +3447,7 @@ function LandingHero({ onScrollToFeatures }) {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "mx-auto mb-8 max-w-2xl text-lg text-gray-300 md:text-xl lg:mx-0",
-                                children: "Multi-tenant CMS and management system for pharmacies. AI-powered insights, real-time dashboards, and seamless medicine search for owners, staff, and customers."
+                                children: "Multi-tenant CMS and management system for inventory-led businesses. AI-powered insights, real-time dashboards, and seamless product search for owners, staff, and customers."
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
                                 lineNumber: 80,
@@ -3515,7 +3540,7 @@ function LandingHero({ onScrollToFeatures }) {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                     src: "/hero.jpg",
-                                    alt: "Secure Cloud-Based Pharmacy Management System",
+                                    alt: "Secure Cloud-Based Inventory Management System",
                                     width: 720,
                                     height: 540,
                                     priority: true,
@@ -3632,7 +3657,7 @@ function FeatureHighlights() {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                             className: "text-3xl font-bold md:text-4xl",
-                            children: "Everything You Need to Run Your Pharmacy"
+                            children: "Everything You Need to Run Your Inventory Operations"
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
                             lineNumber: 160,
@@ -3640,7 +3665,7 @@ function FeatureHighlights() {
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                             className: "mx-auto mt-4 max-w-2xl text-lg text-gray-300",
-                            children: "Comprehensive tools designed specifically for modern pharmacy operations."
+                            children: "Comprehensive tools designed specifically for modern inventory operations."
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
                             lineNumber: 161,

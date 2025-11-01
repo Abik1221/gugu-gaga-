@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Zemen Pharma",
-    template: "%s | Zemen Pharma",
+    default: "Zemen Inventory",
+    template: "%s | Zemen Inventory",
   },
   description:
-    "Zemen Pharma platform for managing pharmacy operations and subscriptions.",
+    "Zemen Inventory platform for managing multi-branch stock, sales, and subscriptions.",
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "black-translucent",
-    "apple-mobile-web-app-title": "Zemen Pharma",
+    "apple-mobile-web-app-title": "Zemen Inventory",
   },
 };
 

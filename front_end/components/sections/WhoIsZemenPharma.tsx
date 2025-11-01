@@ -13,7 +13,7 @@ export default function WhoIsZemenPharma() {
     <section className="mx-auto flex max-w-6xl flex-col justify-center py-20">
       <div className="rounded-3xl border border-white/10 bg-white/5 p-10 shadow-[0_25px_80px_-35px_rgba(59,130,246,0.45)] backdrop-blur">
         <h3 className="mb-8 text-center text-3xl font-bold text-emerald-200">
-          Who is Zemen Pharma for?
+          Who is Zemen Inventory for?
         </h3>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -37,15 +37,15 @@ export default function WhoIsZemenPharma() {
             className="w-full"
           >
             <CarouselContent className="gap-6">
-              {/* 1. Pharmacy Owners */}
+              {/* 1. Inventory Operators */}
               <CarouselItem className="md:basis-1/2 lg:basis-1/3">
                 <Card className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_20px_60px_-35px_rgba(16,185,129,0.45)] backdrop-blur">
                   <CardContent className="space-y-3 p-0 text-left">
                     <h4 className="text-lg font-semibold text-emerald-100">
-                      For Pharmacy Owners
+                      For Inventory Operators
                     </h4>
                     <p className="text-sm leading-relaxed text-gray-200">
-                      Stay in control of multi-branch operations with AI-driven dashboards,
+                      Stay in control of multi-location operations with AI-driven dashboards,
                       predictive restocking, and centralized governance.
                     </p>
                   </CardContent>
@@ -60,7 +60,7 @@ export default function WhoIsZemenPharma() {
                     </h4>
                     <p className="text-sm leading-relaxed text-gray-200">
                       Activate AI copilots that surface demand forecasts, smart alerts, and
-                      workflow recommendations to keep every branch in sync.
+                      workflow recommendations to keep every location in sync.
                     </p>
                   </CardContent>
                 </Card>
@@ -74,7 +74,7 @@ export default function WhoIsZemenPharma() {
                     </h4>
                     <p className="text-sm leading-relaxed text-gray-200">
                       Enforce role-based access, maintain audit trails, and safeguard sensitive
-                      patient data with encryption-first architecture.
+                      business data with encryption-first architecture.
                     </p>
                   </CardContent>
                 </Card>

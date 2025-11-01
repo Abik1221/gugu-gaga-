@@ -1,6 +1,6 @@
-## Zemen Pharma Frontend (Next.js 15)
+## Zemen Inventory Frontend (Next.js 15)
 
-Rich PWA dashboard for pharmacy owners, staff, and affiliates with offline sync, AI chat, and third-party integrations.
+Rich PWA dashboard for inventory-led businesses—owners, staff, and affiliates—with offline sync, AI chat, and third-party integrations.
 
 ### Prerequisites
 

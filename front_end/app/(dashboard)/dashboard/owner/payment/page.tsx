@@ -113,7 +113,7 @@ export default function OwnerPaymentPage() {
   const copies: Record<string, { title: string; description: string; variant: "info" | "warning" | "success" }> = {
     awaiting_payment: {
       title: "Subscription payment required",
-      description: "Your pharmacy has been approved. Please enter the payment code provided by the admin desk so we can activate your tools.",
+      description: "Your business has been approved. Please enter the payment code provided by the admin desk so we can activate your tools.",
       variant: "info",
     },
     pending_verification: {

@@ -8,13 +8,13 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     # App
-    app_name: str = Field(default="Zemen Pharma", validation_alias=AliasChoices("APP_NAME", "app_name"))
+    app_name: str = Field(default="Zemen Inventory", validation_alias=AliasChoices("APP_NAME", "app_name"))
     environment: Literal["development", "staging", "production"] = Field(
         default="development", validation_alias=AliasChoices("ENVIRONMENT", "environment")
     )
     debug: bool = Field(default=True, validation_alias=AliasChoices("DEBUG", "debug"))
     cors_origins: Optional[str] = Field(default=None, validation_alias=AliasChoices("CORS_ORIGINS", "cors_origins"))
-    use_langgraph: bool = Field(default=False, validation_alias=AliasChoices("USE_LANGGRAPH", "use_langgraph"))
+    use_langgraph: bool = Field(default=True, validation_alias=AliasChoices("USE_LANGGRAPH", "use_langgraph"))
     enable_scheduler: bool = Field(default=False, validation_alias=AliasChoices("ENABLE_SCHEDULER", "enable_scheduler"))
     scheduler_tenants: Optional[str] = Field(default=None, validation_alias=AliasChoices("SCHEDULER_TENANTS", "scheduler_tenants"))
     scheduler_interval_seconds: int = Field(default=600, validation_alias=AliasChoices("SCHEDULER_INTERVAL_SECONDS", "scheduler_interval_seconds"))

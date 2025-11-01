@@ -59,9 +59,9 @@ __turbopack_context__.s([
 ]);
 function manifest() {
     return {
-        name: "Zemen Pharma",
+        name: "Zemen Inventory",
         short_name: "Zemen",
-        description: "Zemen Pharma platform for managing pharmacy operations and subscriptions.",
+        description: "Zemen Inventory platform for managing multi-location stock, sales, and subscriptions.",
         id: "/",
         start_url: "/",
         scope: "/",

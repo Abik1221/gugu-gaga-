@@ -159,7 +159,7 @@ export default function Features() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.45, ease: "easeOut" },
+      transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] as const },
     },
   };
 
@@ -191,7 +191,7 @@ export default function Features() {
               <p className="text-gray-700">
                 Connect Google Sheets, Zoho Books, Odoo ERP, and Notion in a few
                 clicks. OAuth onboarding, token rotation, and staged sync jobs keep
-                every data source in lockstep with your pharmacy operations.
+                every data source in lockstep with your inventory operations.
               </p>
             </CardContent>
           </Card>
@@ -201,7 +201,7 @@ export default function Features() {
           <Card className="bg-white">
             <CardHeader>
               <CardTitle className="text-lg text-emerald-900">
-                AI Pharmacy Analyst
+                AI Inventory Analyst
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -223,7 +223,7 @@ export default function Features() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-700">
-                Segment pharmacies by free trial, payment pending, blocked, or
+                Segment businesses by free trial, payment pending, blocked, or
                 active. Track tool usage, branches, and users per tenant so your
                 back office can intervene before issues become outages.
               </p>
@@ -240,7 +240,7 @@ export default function Features() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-700">
-                Trial pharmacies can explore every pro feature, while upgrade
+                Trial businesses can explore every pro feature, while upgrade
                 prompts lead them straight to payment-code approval. Owners feel the
                 value early, and monetisation stays in your control.
               </p>

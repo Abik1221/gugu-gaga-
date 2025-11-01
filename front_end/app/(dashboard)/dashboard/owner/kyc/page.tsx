@@ -191,7 +191,7 @@ export default function OwnerKycPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">Your application is under review</h1>
         <p className="text-sm text-muted-foreground">
-          Thank you for submitting your pharmacy details. Our admin team is reviewing your information and will respond within 24 hours.
+          Thank you for submitting your business details. Our admin team is reviewing your information and will respond within 24 hours.
         </p>
         {tenantStatus === "rejected" && (
           <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
@@ -217,11 +217,11 @@ export default function OwnerKycPage() {
           <form onSubmit={handleSave} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm text-muted-foreground">Pharmacy name</label>
+                <label className="text-sm text-muted-foreground">Business name</label>
                 <Input value={pendingForm.pharmacy_name} onChange={(e) => handleFieldChange("pharmacy_name", e.target.value)} required />
               </div>
               <div>
-                <label className="text-sm text-muted-foreground">Pharmacy address</label>
+                <label className="text-sm text-muted-foreground">Business address</label>
                 <Input value={pendingForm.pharmacy_address} onChange={(e) => handleFieldChange("pharmacy_address", e.target.value)} />
               </div>
               <div>
@@ -233,7 +233,7 @@ export default function OwnerKycPage() {
                 <Input value={pendingForm.id_number} onChange={(e) => handleFieldChange("id_number", e.target.value)} required />
               </div>
               <div>
-                <label className="text-sm text-muted-foreground">Pharmacy license number</label>
+                <label className="text-sm text-muted-foreground">Business license number</label>
                 <Input value={pendingForm.pharmacy_license_number} onChange={(e) => handleFieldChange("pharmacy_license_number", e.target.value)} required />
               </div>
               <div className="md:col-span-2">
@@ -246,7 +246,7 @@ export default function OwnerKycPage() {
                 />
               </div>
               <div className="md:col-span-2 space-y-2">
-                <label className="text-sm text-muted-foreground">Upload license document (PNG/JPG/PDF)</label>
+                <label className="text-sm text-muted-foreground">Upload business license document (PNG/JPG/PDF)</label>
                 <input type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={(e) => setKycFile(e.target.files?.[0] || null)} />
                 <div className="text-xs text-muted-foreground">
                   {kycFile
@@ -289,13 +289,13 @@ export default function OwnerKycPage() {
         ) : (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <Detail label="Pharmacy name" value={kyc?.pharmacy_name || "—"} />
+              <Detail label="Business name" value={kyc?.pharmacy_name || "—"} />
               <Detail label="Address" value={kyc?.pharmacy_address || "—"} />
               <Detail label="Owner phone" value={kyc?.owner_phone || "—"} />
               <Detail label="National / company ID" value={kyc?.id_number || "—"} />
-              <Detail label="License number" value={kyc?.pharmacy_license_number || "—"} />
+              <Detail label="Business license number" value={kyc?.pharmacy_license_number || "—"} />
               <Detail label="Notes" value={kyc?.notes || "No notes"} />
-              <Detail label="License document" value={kyc?.license_document_name || kyc?.pharmacy_license_document_path || "Not uploaded"} />
+              <Detail label="Business license document" value={kyc?.license_document_name || kyc?.pharmacy_license_document_path || "Not uploaded"} />
             </div>
             <div className="flex flex-wrap gap-3">
               <Button onClick={() => { setEditing(true); setKycFile(null); }}>

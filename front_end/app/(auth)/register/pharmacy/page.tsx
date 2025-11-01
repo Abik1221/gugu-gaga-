@@ -28,7 +28,7 @@ const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
   ownerPhone: null,
 });
 
-export default function PharmacyRegisterPage() {
+export default function BusinessRegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const affiliateToken = searchParams.get("token") || searchParams.get("ref") || undefined;
@@ -39,7 +39,7 @@ export default function PharmacyRegisterPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<FieldKey, string | null>>(() => createEmptyFieldErrors());
 
-  const [pharmacyName, setPharmacyName] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [address, setAddress] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
   const [ownerPhone, setOwnerPhone] = useState("");
@@ -56,13 +56,13 @@ export default function PharmacyRegisterPage() {
       [key]: null,
     }));
 
-  async function submitPharmacy(e: React.FormEvent) {
+  async function submitBusiness(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setSuccess(null);
     setFieldErrors(createEmptyFieldErrors());
 
-    const trimmedPharmacyName = pharmacyName.trim();
+    const trimmedBusinessName = businessName.trim();
     const trimmedOwnerEmail = ownerEmail.trim();
     const trimmedOwnerPhone = ownerPhone.trim();
     const trimmedId = idNumber.trim();
@@ -72,11 +72,11 @@ export default function PharmacyRegisterPage() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^\+?[0-9]{7,15}$/;
 
-    if (!trimmedPharmacyName) {
-      validationErrors.pharmacyName = "Enter the registered pharmacy name.";
+    if (!trimmedBusinessName) {
+      validationErrors.pharmacyName = "Enter the registered business name.";
     }
     if (!trimmedOwnerEmail || !emailRegex.test(trimmedOwnerEmail)) {
-      validationErrors.ownerEmail = "Enter a valid email like owner@pharmacy.com.";
+      validationErrors.ownerEmail = "Enter a valid email like owner@business.com.";
     }
     if (!ownerPassword || ownerPassword.length < 6) {
       validationErrors.ownerPassword = "Password must be at least 6 characters.";
@@ -85,7 +85,7 @@ export default function PharmacyRegisterPage() {
       validationErrors.idNumber = "Provide a government or company ID number.";
     }
     if (!trimmedLicense) {
-      validationErrors.licenseNumber = "Include the official pharmacy license number.";
+      validationErrors.licenseNumber = "Include the official business license or permit number.";
     }
     if (!kycFile) {
       validationErrors.kycFile = "Attach a JPG or PNG scan of the license.";
@@ -119,7 +119,7 @@ export default function PharmacyRegisterPage() {
       }
 
       const registerRes = await AuthAPI.registerPharmacy({
-        pharmacy_name: trimmedPharmacyName,
+        pharmacy_name: trimmedBusinessName,
         address: address.trim() || undefined,
         owner_email: trimmedOwnerEmail,
         owner_phone: trimmedOwnerPhone || undefined,
@@ -197,16 +197,16 @@ export default function PharmacyRegisterPage() {
               </div>
             </div>
             <span className="text-2xl font-semibold tracking-wide text-white/90">
-              Zemen Pharma
+              Zemen Inventory
             </span>
           </div>
 
           <h1 className="mt-10 text-4xl font-bold leading-tight text-white">
-            Build a future-ready pharmacy
+            Build a future-ready inventory operation
           </h1>
           <p className="mt-4 text-lg text-emerald-100/90">
-            Join a network of modern pharmacies using AI-driven workflows to automate operations and deliver
-            world-class patient experiences.
+            Join a network of modern inventory-led businesses using AI-driven workflows to automate operations and deliver
+            world-class customer experiences.
           </p>
 
           <ul className="mt-10 space-y-4 text-emerald-50/80">
@@ -226,8 +226,8 @@ export default function PharmacyRegisterPage() {
           className="space-y-4 text-sm text-emerald-50/70"
         >
           <p>
-            “The onboarding experience with Zemen Pharma is seamless. Their KYC process and centralized dashboards
-            transformed how we run our branches.”
+            “The onboarding experience with Zemen Inventory is seamless. Their KYC process and centralized dashboards
+            transformed how we run our locations.”
           </p>
           <div className="h-px w-24 bg-white/20" />
           <p>
@@ -244,7 +244,7 @@ export default function PharmacyRegisterPage() {
           className="mx-auto w-full max-w-md rounded-3xl border border-white/10 bg-black/60 p-8 shadow-[0_25px_80px_-40px_rgba(16,185,129,0.65)] backdrop-blur"
         >
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-white">Register your pharmacy</h2>
+            <h2 className="text-3xl font-bold text-white">Register your business</h2>
             <p className="mt-2 text-sm text-emerald-100/80">
               Start with a full-featured trial. No credit card required.
             </p>
@@ -261,17 +261,17 @@ export default function PharmacyRegisterPage() {
             </div>
           )}
 
-          <form onSubmit={submitPharmacy} className="space-y-5">
+          <form onSubmit={submitBusiness} className="space-y-5">
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
-                  Pharmacy name*
+                  Business name*
                 </label>
                 <Input
-                  value={pharmacyName}
+                  value={businessName}
                   onChange={(e) => {
                     clearFieldError("pharmacyName");
-                    setPharmacyName(e.target.value);
+                    setBusinessName(e.target.value);
                   }}
                   className={`mt-2 border bg-white/5 text-white placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${
                     fieldErrors.pharmacyName
@@ -279,7 +279,7 @@ export default function PharmacyRegisterPage() {
                       : "border-white/10 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
                   }`}
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">Use the exact legal name that appears on your pharmacy license.</p>
+                <p className="mt-1 text-xs text-emerald-100/60">Use the exact legal name that appears on your business license.</p>
                 {fieldErrors.pharmacyName ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.pharmacyName}</p>
                 ) : null}
@@ -312,7 +312,7 @@ export default function PharmacyRegisterPage() {
                       : "border-white/10 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
                   }`}
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">We’ll send onboarding updates here (example: owner@pharmacy.com).</p>
+                <p className="mt-1 text-xs text-emerald-100/60">We’ll send onboarding updates here (example: owner@business.com).</p>
                 {fieldErrors.ownerEmail ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.ownerEmail}</p>
                 ) : null}
@@ -384,7 +384,7 @@ export default function PharmacyRegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
-                  Pharmacy license number*
+                  Business license number*
                 </label>
                 <Input
                   value={licenseNumber}
@@ -426,7 +426,7 @@ export default function PharmacyRegisterPage() {
                   />
                   <span className="text-xs uppercase tracking-wide text-emerald-200/70">Browse</span>
                 </label>
-                <p className="mt-1 text-xs text-emerald-100/60">Upload a clear scan or photo of the valid pharmacy license (JPG or PNG).</p>
+                <p className="mt-1 text-xs text-emerald-100/60">Upload a clear scan or photo of the valid business license (JPG or PNG).</p>
                 {fieldErrors.kycFile ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.kycFile}</p>
                 ) : null}

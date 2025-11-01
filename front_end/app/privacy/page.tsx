@@ -4,15 +4,15 @@ import MarketingLayout from "@/app/(marketing)/layout";
 const sections = [
   {
     heading: "1. Overview",
-    body: `Zemen Pharma respects your privacy and is committed to safeguarding personal data processed through our platform. This Privacy Policy explains the information we collect, how it is used, and the choices you have.`,
+    body: `Zemen Inventory respects your privacy and is committed to safeguarding personal data processed through our platform. This Privacy Policy explains the information we collect, how it is used, and the choices you have.`,
   },
   {
     heading: "2. Information we collect",
-    body: `We collect information that you voluntarily provide during onboarding (such as contact details, pharmacy documents, and financial data) and data generated automatically while using the platform (such as access logs, device metadata, and transactions).`,
+    body: `We collect information that you voluntarily provide during onboarding (such as contact details, business documents, and financial data) and data generated automatically while using the platform (such as access logs, device metadata, and transactions).`,
   },
   {
     heading: "3. Patient information",
-    body: `Patient information entered into the platform is protected health data. We act as a processor on behalf of tenant pharmacies, and we only process patient information to deliver contracted services. Tenants are responsible for obtaining necessary consents and complying with applicable healthcare regulations.`,
+    body: `Customer information entered into the platform is sensitive data. We act as a processor on behalf of tenant businesses, and we only process customer information to deliver contracted services. Tenants are responsible for obtaining necessary consents and complying with applicable regulations.`,
   },
   {
     heading: "4. Use of information",
@@ -20,11 +20,11 @@ const sections = [
   },
   {
     heading: "5. Legal bases",
-    body: `We process personal data based on tenant contracts, legal obligations, vital interests of patients or staff, and Zemen Pharma's legitimate interests in maintaining secure, compliant services.`,
+    body: `We process personal data based on tenant contracts, legal obligations, vital interests of customers or staff, and Zemen Inventory's legitimate interests in maintaining secure, compliant services.`,
   },
   {
     heading: "6. Sharing of information",
-    body: `We share information with trusted service providers (such as hosting, analytics, and payment partners) under strict confidentiality agreements. We may disclose information if required by law or to defend our legal rights. Zemen Pharma does not sell personal data.`,
+    body: `We share information with trusted service providers (such as hosting, analytics, and payment partners) under strict confidentiality agreements. We may disclose information if required by law or to defend our legal rights. Zemen Inventory does not sell personal data.`,
   },
   {
     heading: "7. International transfers",
@@ -40,7 +40,7 @@ const sections = [
   },
   {
     heading: "10. Data subject rights",
-    body: `Individuals may request access, correction, deletion, or restriction of their personal data, subject to verification and legal limitations. Requests can be made through the tenant administrator or by contacting privacy@zemenpharma.com.`,
+    body: `Individuals may request access, correction, deletion, or restriction of their personal data, subject to verification and legal limitations. Requests can be made through the tenant administrator or by contacting privacy@zemeninventory.com.`,
   },
   {
     heading: "11. Cookies and tracking",
@@ -48,7 +48,7 @@ const sections = [
   },
   {
     heading: "12. Children",
-    body: `The platform is not intended for individuals under 18 unless they are registered as staff by an authorized tenant. We do not knowingly collect personal data from minors outside legitimate pharmacy operations.`,
+    body: `The platform is not intended for individuals under 18 unless they are registered as staff by an authorized tenant. We do not knowingly collect personal data from minors outside legitimate business operations.`,
   },
   {
     heading: "13. Policy changes",
@@ -56,13 +56,13 @@ const sections = [
   },
   {
     heading: "14. Contact us",
-    body: `If you have questions or concerns about this Privacy Policy, contact privacy@zemenpharma.com or write to Zemen Pharma Privacy Office, Bole, Addis Ababa, Ethiopia.`,
+    body: `If you have questions or concerns about this Privacy Policy, contact privacy@zemeninventory.com or write to Zemen Inventory Privacy Office, Bole, Addis Ababa, Ethiopia.`,
   },
 ];
 
 export const metadata = {
-  title: "Privacy Policy | Zemen Pharma",
-  description: "Understand how Zemen Pharma collects, uses, and protects your personal data.",
+  title: "Privacy Policy | Zemen Inventory",
+  description: "Understand how Zemen Inventory collects, uses, and protects your personal data.",
 };
 
 function PrivacyContent() {
@@ -72,7 +72,7 @@ function PrivacyContent() {
       <header className="relative space-y-4">
         <h1 className="text-4xl font-bold text-white">Privacy Policy</h1>
         <p className="text-sm text-emerald-100/80">
-          This Privacy Policy describes how Zemen Pharma collects, uses, discloses, and safeguards personal data when you engage with our platform and services.
+          This Privacy Policy describes how Zemen Inventory collects, uses, discloses, and safeguards personal data when you engage with our platform and services.
         </p>
         <p className="text-xs text-emerald-100/60">Last updated: {new Date().toLocaleDateString()}</p>
       </header>

@@ -1454,10 +1454,6 @@
     height: calc(var(--spacing) * 32);
   }
 
-  .h-36 {
-    height: calc(var(--spacing) * 36);
-  }
-
   .h-40 {
     height: calc(var(--spacing) * 40);
   }
@@ -6981,12 +6977,6 @@
   @media (min-width: 40rem) {
     .sm\:justify-center {
       justify-content: center;
-    }
-  }
-
-  @media (min-width: 40rem) {
-    .sm\:justify-end {
-      justify-content: flex-end;
     }
   }
 

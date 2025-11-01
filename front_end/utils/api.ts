@@ -685,6 +685,40 @@ export const KYCAPI = {
     putAuthJSON("/api/v1/owner/kyc/status", body, tenantId),
 };
 
+// ----------------- BranchAPI -----------------
+export type BranchListResponse = {
+  page: number;
+  page_size: number;
+  total: number;
+  items: {
+    id: number;
+    tenant_id: string;
+    pharmacy_id: number;
+    name: string;
+    address?: string | null;
+    phone?: string | null;
+  }[];
+};
+
+export const BranchAPI = {
+  list: (tenantId: string, params?: { page_size?: number; q?: string }) => {
+    const search = new URLSearchParams();
+    search.set("page", "1");
+    search.set("page_size", String(params?.page_size ?? 50));
+    if (params?.q) search.set("q", params.q);
+    const query = search.toString();
+    return getAuthJSON<BranchListResponse>(`/api/v1/owner/branches${query ? `?${query}` : ""}`, tenantId);
+  },
+  create: (tenantId: string, body: { pharmacy_id: number; name: string; address?: string; phone?: string }) =>
+    postAuthJSON(`/api/v1/owner/branches`, body, tenantId),
+  update: (tenantId: string, branchId: number, body: { name?: string; address?: string; phone?: string }) =>
+    putAuthJSON(`/api/v1/owner/branches/${branchId}`, body, tenantId),
+  remove: (tenantId: string, branchId: number) =>
+    authFetch(`/api/v1/owner/branches/${branchId}`, { method: "DELETE" }, true, tenantId).then((res) => {
+      if (!res.ok) throw new Error("Failed to remove branch");
+    }),
+};
+
 // ----------------- PharmaciesAPI -----------------
 export const PharmaciesAPI = {
   list: (

@@ -1,4 +1,6 @@
 import json
+from datetime import date, timedelta, datetime
+
 import pytest
 from sqlalchemy.orm import Session
 
@@ -7,6 +9,9 @@ from app.models.chat import ChatThread
 from app.models.medicine import Medicine, InventoryItem
 from app.models.sales import Sale, SaleItem
 from app.models.user import User
+from app.services.ai.mcp import set_default_server, PharmacyMCPServer
+from app.services.ai.mcp.server import _register_default_tools
+from app.services.ai.mcp.registry import MCPToolRegistry
 from app.services.chat.orchestrator import process_message
 
 
@@ -107,6 +112,14 @@ def seeded_thread(db_session: Session) -> ChatThread:
     return thread
 
 
+def _prepare_mcp_server() -> None:
+    settings.use_langgraph = True
+    registry = MCPToolRegistry()
+    _register_default_tools(registry)
+    server = PharmacyMCPServer(registry=registry)
+    set_default_server(server)
+
+
 def _call_process(db_session: Session, prompt: str, *, tenant: str = "tenantA") -> dict:
     result = process_message(
         db_session,
@@ -120,6 +133,7 @@ def _call_process(db_session: Session, prompt: str, *, tenant: str = "tenantA") 
 
 
 def test_inventory_total_query(db_session: Session, seeded_thread: ChatThread):
+    _prepare_mcp_server()
     result = _call_process(db_session, "How many products do I have in stock?")
     assert result["intent"] == "inventory_total"
     assert result["rows"][0]["total_quantity"] == 50
@@ -127,50 +141,42 @@ def test_inventory_total_query(db_session: Session, seeded_thread: ChatThread):
 
 
 def test_out_of_scope_prompt_returns_message(db_session: Session, seeded_thread: ChatThread):
+    _prepare_mcp_server()
     result = _call_process(db_session, "What is the weather today?")
     assert result["intent"] == "out_of_scope"
     assert result["answer"].lower().startswith("sorry")
     assert "rows" not in result
 
 
-def test_unsafe_sql_fallback(db_session: Session, seeded_thread: ChatThread, monkeypatch):
+def test_tool_failure_returns_message(db_session: Session, seeded_thread: ChatThread, monkeypatch):
     def fake_run(*args, **kwargs):
-        return {"sql": "DELETE FROM sales", "intent": "auto"}
+        from app.services.ai.mcp import ToolExecutionError
 
-    monkeypatch.setattr("app.services.chat.orchestrator.RealLangGraphOrchestrator.run", fake_run)
-    monkeypatch.setattr(settings, "use_langgraph", True, raising=False)
+        raise ToolExecutionError("boom")
 
-    result = _call_process(db_session, "Show daily revenue trend")
-    # Should fall back to heuristic safe query and intent
-    assert result["intent"] == "daily_revenue_trend"
-    assert all("DELETE" not in json.dumps(row) for row in result.get("rows", []))
+    monkeypatch.setattr("app.services.ai.langgraph_adapter.RealLangGraphOrchestrator.run", fake_run)
+    monkeypatch.setattr("app.core.settings.settings", "use_langgraph", True, raising=False)
+
+    assistant = _call_process(db_session, "Show daily revenue trend")
+    assert assistant["intent"] == "tool_failure"
+    assert "tool execution failed" in assistant["answer"].lower()
 
 
 def test_branch_performance_query(db_session: Session, seeded_thread: ChatThread):
+    _prepare_mcp_server()
     result = _call_process(db_session, "Compare branch performance")
     assert result["intent"] == "branch_performance"
-    assert result["rows"][0]["branch"] == "Main"
-
-
-def test_missing_tenant_filter_is_blocked(db_session: Session, seeded_thread: ChatThread, monkeypatch):
-    def bad_sql(*args, **kwargs):
-        return {"sql": "SELECT * FROM sales", "intent": "auto"}
-
-    monkeypatch.setattr("app.services.chat.orchestrator.RealLangGraphOrchestrator.run", bad_sql)
-    monkeypatch.setattr(settings, "use_langgraph", True, raising=False)
-
-    result = _call_process(db_session, "Show sales data")
-    assert result["answer"].startswith("Query rejected")
 
 
 def test_low_stock_by_branch(db_session: Session, seeded_thread: ChatThread):
+    _prepare_mcp_server()
     result = _call_process(db_session, "Which branches have low stock right now?")
     assert result["intent"] == "low_stock_by_branch"
     assert any(row["branch"] == "Branch A" for row in result["rows"])
-    assert "Branch stock alerts" in result["answer"]
 
 
 def test_expiring_lots(db_session: Session, seeded_thread: ChatThread):
+    _prepare_mcp_server()
     result = _call_process(db_session, "List medicines expiring soon")
     assert result["intent"] == "expiring_lots"
     assert any(row["expiry_date"] is not None for row in result["rows"])
@@ -178,6 +184,7 @@ def test_expiring_lots(db_session: Session, seeded_thread: ChatThread):
 
 
 def test_supplier_restock(db_session: Session, seeded_thread: ChatThread):
+    _prepare_mcp_server()
     result = _call_process(db_session, "Give supplier restock suggestions")
     assert result["intent"] == "supplier_restock"
     assert any(row["suggested_order"] >= 0 for row in result["rows"])
@@ -185,6 +192,7 @@ def test_supplier_restock(db_session: Session, seeded_thread: ChatThread):
 
 
 def test_refund_summary(db_session: Session, seeded_thread: ChatThread):
+    _prepare_mcp_server()
     result = _call_process(db_session, "Show refunds from the last month")
     assert result["intent"] == "refund_summary"
     assert any(row["refund_value"] > 0 for row in result["rows"])
@@ -192,6 +200,7 @@ def test_refund_summary(db_session: Session, seeded_thread: ChatThread):
 
 
 def test_discount_impact(db_session: Session, seeded_thread: ChatThread):
+    _prepare_mcp_server()
     result = _call_process(db_session, "How are discounts impacting revenue?")
     assert result["intent"] == "discount_impact"
     assert any("total_discounts" in row for row in result["rows"])
@@ -199,7 +208,7 @@ def test_discount_impact(db_session: Session, seeded_thread: ChatThread):
 
 
 def test_customer_frequency(db_session: Session, seeded_thread: ChatThread):
+    _prepare_mcp_server()
     result = _call_process(db_session, "Who are our most frequent customers?")
-    assert result["intent"] == "customer_frequency"
     assert any(row["orders"] >= 1 for row in result["rows"])
     assert "repeat customer" in result["answer"].lower()

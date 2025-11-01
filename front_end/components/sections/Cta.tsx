@@ -18,10 +18,10 @@ export default function CTA() {
         className="rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur shadow-[0_20px_60px_-25px_rgba(16,185,129,0.45)]"
       >
         <h3 className="mb-4 text-3xl font-bold text-emerald-200">
-          Ready to Transform Your Pharmacy?
+          Ready to Transform Your Inventory Operations?
         </h3>
         <p className="mb-8 text-lg text-gray-200">
-          Join the future of pharmacy management with Zemen Pharma's AI-powered
+          Join the future of inventory management with Zemen Inventory's AI-powered
           platform. Schedule a demo to see how we can help your business grow.
         </p>
         <div className="flex flex-col justify-center gap-4 sm:flex-row">

@@ -1168,7 +1168,7 @@ const SalesAPI = {
 
 __turbopack_context__.s([
     "default",
-    ()=>PharmacyRegisterPage
+    ()=>BusinessRegisterPage
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
@@ -1198,7 +1198,7 @@ const createEmptyFieldErrors = ()=>({
         kycFile: null,
         ownerPhone: null
     });
-function PharmacyRegisterPage() {
+function BusinessRegisterPage() {
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     const searchParams = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useSearchParams"])();
     const affiliateToken = searchParams.get("token") || searchParams.get("ref") || undefined;
@@ -1207,7 +1207,7 @@ function PharmacyRegisterPage() {
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [success, setSuccess] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [fieldErrors, setFieldErrors] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(()=>createEmptyFieldErrors());
-    const [pharmacyName, setPharmacyName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
+    const [businessName, setBusinessName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [address, setAddress] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [ownerEmail, setOwnerEmail] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [ownerPhone, setOwnerPhone] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
@@ -1221,12 +1221,12 @@ function PharmacyRegisterPage() {
                 ...prev,
                 [key]: null
             }));
-    async function submitPharmacy(e) {
+    async function submitBusiness(e) {
         e.preventDefault();
         setError(null);
         setSuccess(null);
         setFieldErrors(createEmptyFieldErrors());
-        const trimmedPharmacyName = pharmacyName.trim();
+        const trimmedBusinessName = businessName.trim();
         const trimmedOwnerEmail = ownerEmail.trim();
         const trimmedOwnerPhone = ownerPhone.trim();
         const trimmedId = idNumber.trim();
@@ -1234,11 +1234,11 @@ function PharmacyRegisterPage() {
         const validationErrors = {};
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneRegex = /^\+?[0-9]{7,15}$/;
-        if (!trimmedPharmacyName) {
-            validationErrors.pharmacyName = "Enter the registered pharmacy name.";
+        if (!trimmedBusinessName) {
+            validationErrors.pharmacyName = "Enter the registered business name.";
         }
         if (!trimmedOwnerEmail || !emailRegex.test(trimmedOwnerEmail)) {
-            validationErrors.ownerEmail = "Enter a valid email like owner@pharmacy.com.";
+            validationErrors.ownerEmail = "Enter a valid email like owner@business.com.";
         }
         if (!ownerPassword || ownerPassword.length < 6) {
             validationErrors.ownerPassword = "Password must be at least 6 characters.";
@@ -1247,7 +1247,7 @@ function PharmacyRegisterPage() {
             validationErrors.idNumber = "Provide a government or company ID number.";
         }
         if (!trimmedLicense) {
-            validationErrors.licenseNumber = "Include the official pharmacy license number.";
+            validationErrors.licenseNumber = "Include the official business license or permit number.";
         }
         if (!kycFile) {
             validationErrors.kycFile = "Attach a JPG or PNG scan of the license.";
@@ -1282,7 +1282,7 @@ function PharmacyRegisterPage() {
                 setKycUploadPath(upload.path);
             }
             const registerRes = await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthAPI"].registerPharmacy({
-                pharmacy_name: trimmedPharmacyName,
+                pharmacy_name: trimmedBusinessName,
                 address: address.trim() || undefined,
                 owner_email: trimmedOwnerEmail,
                 owner_phone: trimmedOwnerPhone || undefined,
@@ -1423,7 +1423,7 @@ function PharmacyRegisterPage() {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-2xl font-semibold tracking-wide text-white/90",
-                                        children: "Zemen Pharma"
+                                        children: "Zemen Inventory"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                         lineNumber: 199,
@@ -1437,7 +1437,7 @@ function PharmacyRegisterPage() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
                                 className: "mt-10 text-4xl font-bold leading-tight text-white",
-                                children: "Build a future-ready pharmacy"
+                                children: "Build a future-ready inventory operation"
                             }, void 0, false, {
                                 fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                 lineNumber: 204,
@@ -1445,7 +1445,7 @@ function PharmacyRegisterPage() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "mt-4 text-lg text-emerald-100/90",
-                                children: "Join a network of modern pharmacies using AI-driven workflows to automate operations and deliver world-class patient experiences."
+                                children: "Join a network of modern inventory-led businesses using AI-driven workflows to automate operations and deliver world-class customer experiences."
                             }, void 0, false, {
                                 fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                 lineNumber: 207,
@@ -1503,7 +1503,7 @@ function PharmacyRegisterPage() {
                         className: "space-y-4 text-sm text-emerald-50/70",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                children: "“The onboarding experience with Zemen Pharma is seamless. Their KYC process and centralized dashboards transformed how we run our branches.”"
+                                children: "“The onboarding experience with Zemen Inventory is seamless. Their KYC process and centralized dashboards transformed how we run our locations.”"
                             }, void 0, false, {
                                 fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                 lineNumber: 228,
@@ -1567,7 +1567,7 @@ function PharmacyRegisterPage() {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                                     className: "text-3xl font-bold text-white",
-                                    children: "Register your pharmacy"
+                                    children: "Register your business"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                     lineNumber: 247,
@@ -1604,7 +1604,7 @@ function PharmacyRegisterPage() {
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
-                            onSubmit: submitPharmacy,
+                            onSubmit: submitBusiness,
                             className: "space-y-5",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1614,17 +1614,17 @@ function PharmacyRegisterPage() {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                     className: "block text-xs font-semibold uppercase tracking-wide text-emerald-200/80",
-                                                    children: "Pharmacy name*"
+                                                    children: "Business name*"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                                     lineNumber: 267,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
-                                                    value: pharmacyName,
+                                                    value: businessName,
                                                     onChange: (e)=>{
                                                         clearFieldError("pharmacyName");
-                                                        setPharmacyName(e.target.value);
+                                                        setBusinessName(e.target.value);
                                                     },
                                                     className: `mt-2 border bg-white/5 text-white placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${fieldErrors.pharmacyName ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60" : "border-white/10 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"}`
                                                 }, void 0, false, {
@@ -1634,7 +1634,7 @@ function PharmacyRegisterPage() {
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                     className: "mt-1 text-xs text-emerald-100/60",
-                                                    children: "Use the exact legal name that appears on your pharmacy license."
+                                                    children: "Use the exact legal name that appears on your business license."
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                                     lineNumber: 282,
@@ -1712,7 +1712,7 @@ function PharmacyRegisterPage() {
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                     className: "mt-1 text-xs text-emerald-100/60",
-                                                    children: "We’ll send onboarding updates here (example: owner@pharmacy.com)."
+                                                    children: "We’ll send onboarding updates here (example: owner@business.com)."
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                                     lineNumber: 315,
@@ -1870,7 +1870,7 @@ function PharmacyRegisterPage() {
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                     className: "block text-xs font-semibold uppercase tracking-wide text-emerald-200/80",
-                                                    children: "Pharmacy license number*"
+                                                    children: "Business license number*"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                                     lineNumber: 386,
@@ -1959,7 +1959,7 @@ function PharmacyRegisterPage() {
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                     className: "mt-1 text-xs text-emerald-100/60",
-                                                    children: "Upload a clear scan or photo of the valid pharmacy license (JPG or PNG)."
+                                                    children: "Upload a clear scan or photo of the valid business license (JPG or PNG)."
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/pharmacy/page.tsx",
                                                     lineNumber: 429,

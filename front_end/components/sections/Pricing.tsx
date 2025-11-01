@@ -42,7 +42,7 @@ const FreePlanCard = () => {
             <span className="pr-5">✔</span>Preview pro dashboards with "Upgrade to unlock" guidance
           </li>
           <li>
-            <span className="pr-5">✔</span>Single-pharmacy workspace with secure token storage
+            <span className="pr-5">✔</span>Single-business workspace with secure token storage
           </li>
         </ul>
       </CardContent>
@@ -86,7 +86,7 @@ const ProPlanCard = () => {
             Unlimited integrations (Zoho Books, Odoo, Notion, Google Sheets)
           </li>
           <li>
-            <span className="pr-5">✔</span>Multi-pharmacy management with admin segments & alerts
+            <span className="pr-5">✔</span>Multi-location management with admin segments & alerts
           </li>
           <li>
             <span className="pr-5">✔</span>Priority support & compliance-ready audit history

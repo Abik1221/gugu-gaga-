@@ -179,7 +179,7 @@ export default function BranchManagementPage() {
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold text-white">Branch management</h1>
           <p className="text-sm text-emerald-100/80">
-            Organise your pharmacy locations, keep contact information up to date, and control where sales are attributed.
+            Organise your locations, keep contact information up to date, and control where sales are attributed.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -254,7 +254,7 @@ export default function BranchManagementPage() {
                 <p>No branches yet. Create a branch to start allocating sales across locations.</p>
                 {pharmacies.length === 0 && !pharmacyLoading && (
                   <div className="rounded-2xl border border-amber-400/30 bg-amber-500/15 p-3 text-xs text-amber-100">
-                    We couldn't find a pharmacy record for this tenant. Please complete your pharmacy profile (Settings → Pharmacy) before adding branches.
+                    We couldn't find a primary location record for this tenant. Please complete your business profile (Settings → Locations) before adding branches.
                   </div>
                 )}
               </div>
@@ -266,7 +266,7 @@ export default function BranchManagementPage() {
                       <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Name</th>
                       <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Address</th>
                       <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Phone</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Pharmacy</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Primary location</th>
                       <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Actions</th>
                     </tr>
                   </thead>
@@ -415,12 +415,12 @@ function CreateBranchSheet({
         <SheetHeader>
           <SheetTitle>Create branch</SheetTitle>
           <SheetDescription>
-            Add a new pharmacy location. Branch names appear in POS sales reports and analytics.
+            Add a new location. Branch names appear in POS sales reports and analytics.
           </SheetDescription>
         </SheetHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Pharmacy</label>
+            <label className="text-xs font-medium text-gray-600">Primary location</label>
             <select
               value={pharmacyId ?? ""}
               onChange={(event) => setPharmacyId(Number(event.target.value) || null)}
@@ -428,7 +428,7 @@ function CreateBranchSheet({
               className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring"
             >
               {pharmacies.length === 0 ? (
-                <option value="">No pharmacy found</option>
+                <option value="">No locations found</option>
               ) : (
                 pharmacies.map((pharmacy) => (
                   <option key={pharmacy.id} value={pharmacy.id}>

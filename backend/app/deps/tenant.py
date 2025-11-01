@@ -1,5 +1,7 @@
 from typing import Optional
 
+from datetime import date
+
 from fastapi import Depends, HTTPException, status
 
 from app.middleware.tenant import get_current_tenant_id
@@ -9,7 +11,7 @@ from app.deps.auth import get_current_user
 from app.core.roles import Role
 from app.models.user_tenant import UserTenant
 from app.models.user import User
-from app.models.subscription import Subscription
+from app.models.subscription import Subscription, PaymentSubmission
 from app.models.kyc import KYCApplication
 
 
@@ -80,6 +82,34 @@ def enforce_subscription_active(
                 detail="Pharmacy KYC pending approval",
             )
     sub = db.query(Subscription).filter(Subscription.tenant_id == tenant_id).first()
-    if sub and sub.blocked:
+    if not sub:
+        return True
+    if current_user and current_user.role == Role.affiliate.value:
+        if sub.blocked:
+            raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked: payment required")
+        return True
+
+    has_verified_payment = (
+        db.query(PaymentSubmission)
+        .filter(
+            PaymentSubmission.tenant_id == tenant_id,
+            PaymentSubmission.status == "verified",
+        )
+        .order_by(PaymentSubmission.verified_at.desc())
+        .first()
+        is not None
+    )
+
+    if not has_verified_payment and sub.next_due_date and date.today() > sub.next_due_date:
+        if not sub.blocked:
+            sub.blocked = True
+            db.add(sub)
+            db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_402_PAYMENT_REQUIRED,
+            detail="Free trial ended — upgrade to continue accessing the dashboard.",
+        )
+
+    if sub.blocked:
         raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked: payment required")
     return True

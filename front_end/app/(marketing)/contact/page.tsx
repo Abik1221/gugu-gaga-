@@ -17,9 +17,9 @@ const contactChannels: ContactChannel[] = [
   {
     icon: Mail,
     label: "Support",
-    value: "support@zemenpharma.com",
+    value: "support@zemeninventory.com",
     description: "For product questions or onboarding assistance.",
-    href: "mailto:support@zemenpharma.com",
+    href: "mailto:support@zemeninventory.com",
   },
   {
     icon: Phone,
@@ -102,7 +102,7 @@ export default function ContactPage() {
             Contact
           </span>
           <h1 className="mt-6 text-4xl font-semibold leading-tight md:text-5xl">
-            Let's build the future of pharmacy operations together
+            Let's build the future of inventory operations together
           </h1>
           <p className="mt-4 text-base text-emerald-100/80">
             Talk with our team about pilots, integrations, or partnership opportunities. We’ll respond within one business day.
@@ -180,7 +180,7 @@ export default function ContactPage() {
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Share a bit about your pharmacy operations or goals..."
+                  placeholder="Share a bit about your inventory operations or goals..."
                   required
                   className="min-h-[180px] w-full resize-y rounded-2xl border border-white/15 bg-white/10 p-4 text-sm text-white placeholder:text-emerald-100/60 shadow-inner focus:border-emerald-300/60 focus:outline-none focus:ring-2 focus:ring-emerald-200/40"
                 />

@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Zemen Pharma",
+    name: "Zemen Inventory",
     short_name: "Zemen",
     description:
-      "Zemen Pharma platform for managing pharmacy operations and subscriptions.",
+      "Zemen Inventory platform for managing multi-location stock, sales, and subscriptions.",
     id: "/",
     start_url: "/",
     scope: "/",

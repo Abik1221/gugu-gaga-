@@ -17,7 +17,7 @@ const titleVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -27,7 +27,7 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -37,7 +37,7 @@ const circleVariants = {
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -56,7 +56,7 @@ export default function HowItWorks() {
         className="mb-10 text-center text-2xl font-bold text-emerald-200"
         variants={titleVariants}
       >
-        How Zemen Pharma Works
+        How Zemen Inventory Works
       </motion.h3>
       <div className="grid gap-8 md:grid-cols-3">
         {/* Step 1 */}
@@ -71,7 +71,7 @@ export default function HowItWorks() {
             Setup & Integration
           </h4>
           <p className="text-gray-300">
-            Quick setup with your existing pharmacy data. Integrate with your
+            Quick setup with your existing inventory data. Integrate with your
             suppliers and payment systems seamlessly.
           </p>
         </motion.div>

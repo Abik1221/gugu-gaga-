@@ -108,6 +108,7 @@ def send_message(
             user_id=current_user.id,
             thread_id=thread_id,
             prompt=payload.prompt,
+            user_role=current_user.role if hasattr(current_user, "role") else "user",
         )
     except ChatQuotaExceededError as exc:
         raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(exc))
@@ -148,6 +149,7 @@ def send_message_stream(
                 user_id=current_user.id,
                 thread_id=thread_id,
                 prompt=payload.prompt,
+                user_role=current_user.role if hasattr(current_user, "role") else "user",
             )
         except ChatQuotaExceededError as exc:
             yield sse({"event": "error", "error": str(exc)})

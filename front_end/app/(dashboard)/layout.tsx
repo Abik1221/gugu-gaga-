@@ -39,7 +39,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/dashboard/admin");
   const loginPath = isAdminRoute
-    ? "/superadin/zemnpharma/login"
+    ? "/superadin/zemeninventory/login"
     : `/auth?tab=signin&next=${encodeURIComponent(pathname || "/dashboard")}`;
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<Me | null>(null);
@@ -70,7 +70,7 @@ export default function DashboardLayout({
         // If KYC is pending and user is an owner/staff, keep them on status page only
         const primaryRole = (me?.role || me?.roles?.[0]?.role?.name || "").toLowerCase();
         const roleSet = deriveRoles(me);
-        const isOwnerRole = roleSet.includes("pharmacy_owner") || roleSet.includes("owner");
+        const isOwnerRole = roleSet.includes("owner_inventory") || roleSet.includes("owner");
         const isCashierRole = roleSet.includes("cashier");
         const isManagerRole = roleSet.includes("manager");
         const isStaffRole = isCashierRole || isManagerRole;
@@ -90,7 +90,7 @@ export default function DashboardLayout({
           router.replace("/dashboard/owner");
           return;
         }
-        if (["pharmacy_owner", "owner", "cashier", "manager"].includes(primaryRole)) {
+        if (["owner_inventory", "owner", "cashier", "manager"].includes(primaryRole)) {
           const needsKyc = me?.kyc_status !== "approved";
           const needsPayment = me?.kyc_status === "approved" && me?.subscription_status && me.subscription_status !== "active";
           const ownerKycPath = "/dashboard/owner/kyc";
@@ -139,7 +139,7 @@ export default function DashboardLayout({
       return;
     }
     const userRoles = deriveRoles(user);
-    const isOwner = userRoles.includes("pharmacy_owner") || userRoles.includes("owner");
+    const isOwner = userRoles.includes("owner_inventory") || userRoles.includes("owner");
     const isCashier = userRoles.includes("cashier");
     if (!(isOwner || isCashier)) {
       setBanner(null);
@@ -195,7 +195,7 @@ export default function DashboardLayout({
       return;
     }
     if (roleName === "admin") {
-      router.replace("/superadin/zemnpharma/login");
+      router.replace("/superadin/zemeninventory/login");
       return;
     }
     router.replace("/auth?tab=signin");
@@ -250,7 +250,7 @@ function Shell({
   const roles = deriveRoles(user);
   const baseRole = (user?.role || "").toLowerCase();
   const primaryRole = baseRole || roles[0] || "";
-  const isOwner = baseRole === "pharmacy_owner" || baseRole === "owner" || roles.includes("pharmacy_owner") || roles.includes("owner");
+  const isOwner = baseRole === "owner_inventory" || baseRole === "owner" || roles.includes("owner_inventory") || roles.includes("owner");
   const isCashier = baseRole === "cashier" || roles.includes("cashier");
   const isManager = baseRole === "manager" || roles.includes("manager");
   const isAffiliate = baseRole === "affiliate" || roles.includes("affiliate");
@@ -279,9 +279,9 @@ function Shell({
   } else if (isAdmin) {
     nav = [
       { href: "/dashboard/admin", label: "Admin Overview" },
-      { href: "/dashboard/admin/segments", label: "Pharmacy Segments" },
+      { href: "/dashboard/admin/segments", label: "Business Segments" },
       { href: "/dashboard/admin/users", label: "Users" },
-      { href: "/dashboard/admin/pharmacies", label: "Pharmacies" },
+      { href: "/dashboard/admin/pharmacies", label: "Businesses" },
       { href: "/dashboard/admin/affiliates", label: "Affiliates" },
       { href: "/dashboard/admin/payouts", label: "Payouts" },
       { href: "/dashboard/admin/audit", label: "Audit Log" },
