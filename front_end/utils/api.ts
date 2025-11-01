@@ -398,7 +398,15 @@ export const AuthAPI = {
   verifyRegistration: (email: string, code: string) =>
     postForm("/api/v1/auth/register/verify", { email, code }),
   login: (email: string, password: string, tenantId?: string) =>
-    postForm<AuthTokenResponse>("/api/v1/auth/login", { username: email, password }, tenantId).then(
+    postForm<AuthTokenResponse>(
+      "/api/v1/auth/login",
+      {
+        username: email,
+        password,
+        grant_type: "password",
+      },
+      tenantId
+    ).then(
       (resp) => {
         if (typeof window !== "undefined") {
           localStorage.setItem("access_token", resp.access_token);
@@ -413,7 +421,7 @@ export const AuthAPI = {
   loginRequestCode: (email: string, password: string, tenantId?: string) =>
     postForm(
       "/api/v1/auth/login/request-code",
-      { username: email, password },
+      { username: email, password, grant_type: "password" },
       tenantId
     ),
   loginVerify: (email: string, code: string, tenantId?: string) =>
@@ -597,8 +605,16 @@ export const AdminAPI = {
 
 // ----------------- StaffAPI -----------------
 export const StaffAPI = {
-  createCashier: (tenantId: string, body: any) =>
-    postAuthJSON("/api/v1/staff", body, tenantId),
+  createCashier: (
+    tenantId: string,
+    body: {
+      email: string;
+      password: string;
+      phone?: string;
+      role?: string;
+      assigned_branch_id?: number | null;
+    }
+  ) => postAuthJSON("/api/v1/staff", body, tenantId),
   list: (tenantId: string) => getAuthJSON("/api/v1/staff", tenantId),
   update: (tenantId: string, userId: number, body: { is_active?: boolean }) =>
     authFetch(
@@ -736,8 +752,12 @@ export const PharmaciesAPI = {
 // ----------------- ChatAPI -----------------
 export const ChatAPI = {
   listThreads: (tenantId: string) => getAuthJSON(`/api/v1/chat/threads`, tenantId),
-  createThread: (tenantId: string, title: string) =>
-    postAuthJSON(`/api/v1/chat/threads`, { title }, tenantId),
+  createThread: (tenantId: string, title?: string) =>
+    postAuthJSON(
+      `/api/v1/chat/threads`,
+      title ? { title } : {},
+      tenantId
+    ),
   listMessages: (tenantId: string, threadId: number) =>
     getAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, tenantId),
   sendMessage: (tenantId: string, threadId: number, prompt: string) =>

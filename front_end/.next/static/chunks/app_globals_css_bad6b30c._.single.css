@@ -1562,10 +1562,6 @@
     max-height: calc(100vh - 140px);
   }
 
-  .min-h-\[60vh\] {
-    min-height: 60vh;
-  }
-
   .min-h-\[120px\] {
     min-height: 120px;
   }
@@ -1777,10 +1773,6 @@
 
   .max-w-md {
     max-width: var(--container-md);
-  }
-
-  .max-w-prose {
-    max-width: 65ch;
   }
 
   .max-w-sm {
@@ -6327,12 +6319,6 @@
   @media (hover: hover) {
     .hover\:text-emerald-700:hover {
       color: var(--color-emerald-700);
-    }
-  }
-
-  @media (hover: hover) {
-    .hover\:text-foreground:hover {
-      color: var(--foreground);
     }
   }
 

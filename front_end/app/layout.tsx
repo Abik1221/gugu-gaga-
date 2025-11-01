@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/toast";
@@ -23,7 +23,6 @@ export const metadata: Metadata = {
   description:
     "Zemen Pharma platform for managing pharmacy operations and subscriptions.",
   manifest: "/manifest.webmanifest",
-  themeColor: "#0f172a",
   icons: {
     icon: [
       { url: "/icons/icon-192x192.jpg", sizes: "192x192" },
@@ -37,6 +36,10 @@ export const metadata: Metadata = {
     "apple-mobile-web-app-status-bar-style": "black-translucent",
     "apple-mobile-web-app-title": "Zemen Pharma",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0f172a",
 };
 
 export default function RootLayout({

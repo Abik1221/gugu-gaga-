@@ -329,7 +329,8 @@ const AuthAPI = {
         }),
     login: (email, password, tenantId)=>postForm("/api/v1/auth/login", {
             username: email,
-            password
+            password,
+            grant_type: "password"
         }, tenantId).then((resp)=>{
             if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
             ;
@@ -337,7 +338,8 @@ const AuthAPI = {
         }),
     loginRequestCode: (email, password, tenantId)=>postForm("/api/v1/auth/login/request-code", {
             username: email,
-            password
+            password,
+            grant_type: "password"
         }, tenantId),
     loginVerify: (email, code, tenantId)=>postJSON("/api/v1/auth/login/verify", {
             email,
@@ -534,9 +536,9 @@ const PharmaciesAPI = {
 };
 const ChatAPI = {
     listThreads: (tenantId)=>getAuthJSON(`/api/v1/chat/threads`, tenantId),
-    createThread: (tenantId, title)=>postAuthJSON(`/api/v1/chat/threads`, {
+    createThread: (tenantId, title)=>postAuthJSON(`/api/v1/chat/threads`, title ? {
             title
-        }, tenantId),
+        } : {}, tenantId),
     listMessages: (tenantId, threadId)=>getAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, tenantId),
     sendMessage: (tenantId, threadId, prompt)=>postAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, {
             prompt

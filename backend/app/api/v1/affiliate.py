@@ -177,12 +177,18 @@ def request_payout(
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid month format, expected YYYY-MM")
     summary = compute_monthly_commission(db, affiliate_user_id=user.id, year=year, month=mon, percent=percent)
+    amount = float(summary.get("amount", 0.0) or 0.0)
+    if amount <= 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You must earn commission for the selected period before requesting a payout.",
+        )
     payout = CommissionPayout(
         affiliate_user_id=user.id,
         tenant_id="GLOBAL",
         month=month,
         percent=percent,
-        amount=summary.get("amount", 0.0),
+        amount=amount,
         status="pending",
     )
     db.add(payout)

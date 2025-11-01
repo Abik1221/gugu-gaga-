@@ -8,6 +8,7 @@ class StaffCreate(BaseModel):
     password: str
     phone: Optional[str] = None
     role: str = "cashier"  # cashier or staff
+    assigned_branch_id: Optional[int] = None
 
     @field_validator("password")
     @classmethod
@@ -29,3 +30,10 @@ class StaffOut(BaseModel):
     id: int
     email: EmailStr
     role: str
+    phone: Optional[str] = None
+    assigned_branch_id: Optional[int] = None
+    assigned_branch_name: Optional[str] = None
+    is_active: bool = True
+
+    class Config:
+        from_attributes = True

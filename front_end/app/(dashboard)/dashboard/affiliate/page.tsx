@@ -119,6 +119,8 @@ export default function AffiliateOverviewPage() {
 
   const createLinkLabel = canCreateMore ? "Generate referral link" : "Link limit reached";
   const tenantsCount = dash?.tenants?.length ?? 0;
+  const canRequestPayout = (dash?.amount ?? 0) > 0;
+  const payoutGuardMessage = "You haven't earned any commission yet. Share your referral link to start earning before requesting a payout.";
 
   async function onCreateLink() {
     try {
@@ -170,6 +172,10 @@ export default function AffiliateOverviewPage() {
   async function onRequestPayout() {
     if (!payoutMonth) {
       show({ variant: "destructive", title: "Missing month", description: "Select a month to request payment for." });
+      return;
+    }
+    if (!canRequestPayout) {
+      show({ variant: "default", title: "No earnings yet", description: payoutGuardMessage });
       return;
     }
     setRequestingPayout(true);
@@ -412,11 +418,16 @@ export default function AffiliateOverviewPage() {
             </div>
             <Button
               onClick={onRequestPayout}
-              disabled={requestingPayout}
+              disabled={requestingPayout || !canRequestPayout}
               className="mt-6 h-11 w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-500 text-sm font-semibold text-white shadow-[0_15px_45px_-25px_rgba(16,185,129,0.65)] transition-transform hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {requestingPayout ? "Submitting..." : "Submit payout request"}
             </Button>
+            {!canRequestPayout && (
+              <p className="mt-3 text-xs font-medium text-emerald-600/80">
+                {payoutGuardMessage}
+              </p>
+            )}
           </SectionCard>
         </motion.div>
       </div>

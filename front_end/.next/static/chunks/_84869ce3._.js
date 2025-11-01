@@ -158,6 +158,8 @@ function AssistantContent(param) {
     }
     const rows = Array.isArray(payload.rows) ? payload.rows : null;
     const hasRows = rows && rows.length > 0;
+    const remaining = MAX_PROMPT_LENGTH - messageDraft.length;
+    const isOverLimit = remaining < 0;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "space-y-3 text-sm",
         children: [
@@ -169,7 +171,7 @@ function AssistantContent(param) {
                         children: "Intent"
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                        lineNumber: 74,
+                        lineNumber: 77,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -177,13 +179,13 @@ function AssistantContent(param) {
                         children: String(payload.intent)
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                        lineNumber: 75,
+                        lineNumber: 78,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                lineNumber: 73,
+                lineNumber: 76,
                 columnNumber: 9
             }, this),
             payload.error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -195,7 +197,7 @@ function AssistantContent(param) {
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                lineNumber: 79,
+                lineNumber: 82,
                 columnNumber: 9
             }, this),
             payload.answer && typeof payload.answer === "string" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -203,7 +205,7 @@ function AssistantContent(param) {
                 children: payload.answer
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                lineNumber: 84,
+                lineNumber: 87,
                 columnNumber: 9
             }, this),
             hasRows ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -219,17 +221,17 @@ function AssistantContent(param) {
                                         children: key
                                     }, key, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 92,
+                                        lineNumber: 95,
                                         columnNumber: 19
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 90,
+                                lineNumber: 93,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                            lineNumber: 89,
+                            lineNumber: 92,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -240,28 +242,28 @@ function AssistantContent(param) {
                                             children: row[key] === null || row[key] === undefined ? "—" : typeof row[key] === "number" ? row[key].toLocaleString("en-US") : String(row[key])
                                         }, key, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                            lineNumber: 105,
+                                            lineNumber: 108,
                                             columnNumber: 21
                                         }, this))
                                 }, idx, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                    lineNumber: 103,
+                                    lineNumber: 106,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                            lineNumber: 101,
+                            lineNumber: 104,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                    lineNumber: 88,
+                    lineNumber: 91,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                lineNumber: 87,
+                lineNumber: 90,
                 columnNumber: 9
             }, this) : null,
             !payload.error && rows && rows.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -269,13 +271,13 @@ function AssistantContent(param) {
                 children: "The query completed but returned no rows."
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                lineNumber: 120,
+                lineNumber: 123,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-        lineNumber: 71,
+        lineNumber: 74,
         columnNumber: 5
     }, this);
 }
@@ -289,7 +291,7 @@ function OwnerAgentPage() {
     const [selectedThreadId, setSelectedThreadId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [messages, setMessages] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [messagesLoading, setMessagesLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [messageDraft, setMessageDraft] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [messageDraft1, setMessageDraft] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [creatingThread, setCreatingThread] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [newThreadTitle, setNewThreadTitle] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [sending, setSending] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -438,10 +440,21 @@ function OwnerAgentPage() {
             setCreatingThread(false);
         }
     };
+    const MAX_PROMPT_LENGTH1 = 300;
+    const remaining = MAX_PROMPT_LENGTH1 - messageDraft1.length;
+    const isOverLimit = remaining < 0;
     const handleSendMessage = async ()=>{
         if (!tenantId || !selectedThreadId) return;
-        const prompt = messageDraft.trim();
+        const prompt = messageDraft1.trim();
         if (!prompt) return;
+        if (prompt.length > MAX_PROMPT_LENGTH1) {
+            show({
+                variant: "destructive",
+                title: "Prompt too long",
+                description: "Limit is ".concat(MAX_PROMPT_LENGTH1, " characters. Please shorten your question.")
+            });
+            return;
+        }
         setMessageDraft("");
         setSending(true);
         setAssistantThinking(true);
@@ -480,7 +493,7 @@ function OwnerAgentPage() {
                         children: "Zemen AI Assistant"
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                        lineNumber: 301,
+                        lineNumber: 316,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -488,13 +501,13 @@ function OwnerAgentPage() {
                         children: "Ask questions about sales, inventory, and staff performance. The assistant runs read-only analytics on your tenant data and summarises the results for quick insight."
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                        lineNumber: 302,
+                        lineNumber: 317,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                lineNumber: 300,
+                lineNumber: 315,
                 columnNumber: 7
             }, this),
             globalError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -502,7 +515,7 @@ function OwnerAgentPage() {
                 children: globalError
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                lineNumber: 309,
+                lineNumber: 324,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -519,7 +532,7 @@ function OwnerAgentPage() {
                                         children: "Conversations"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 317,
+                                        lineNumber: 332,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -530,13 +543,13 @@ function OwnerAgentPage() {
                                         children: "Refresh"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 318,
+                                        lineNumber: 333,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 316,
+                                lineNumber: 331,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -548,7 +561,7 @@ function OwnerAgentPage() {
                                         onChange: (event)=>setNewThreadTitle(event.target.value)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 328,
+                                        lineNumber: 343,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -557,20 +570,20 @@ function OwnerAgentPage() {
                                         children: creatingThread ? "Creating…" : "Start new conversation"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 333,
+                                        lineNumber: 348,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 327,
+                                lineNumber: 342,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "h-px w-full bg-gray-100"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 337,
+                                lineNumber: 352,
                                 columnNumber: 11
                             }, this),
                             isLoadingThreads ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -581,19 +594,19 @@ function OwnerAgentPage() {
                                         className: "h-12 w-full"
                                     }, index, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 341,
+                                        lineNumber: 356,
                                         columnNumber: 17
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 339,
+                                lineNumber: 354,
                                 columnNumber: 13
                             }, this) : threads.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "rounded-2xl border border-white/15 bg-white/5 p-4 text-center text-sm text-emerald-100/80",
                                 children: "No conversations yet. Start a new one to ask the assistant anything about your pharmacy."
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 345,
+                                lineNumber: 360,
                                 columnNumber: 13
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "space-y-2",
@@ -610,7 +623,7 @@ function OwnerAgentPage() {
                                                 children: title
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                lineNumber: 364,
+                                                lineNumber: 379,
                                                 columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -621,25 +634,25 @@ function OwnerAgentPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                lineNumber: 365,
+                                                lineNumber: 380,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, thread.id, true, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 354,
+                                        lineNumber: 369,
                                         columnNumber: 19
                                     }, this);
                                 })
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 349,
+                                lineNumber: 364,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                        lineNumber: 315,
+                        lineNumber: 330,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -656,7 +669,7 @@ function OwnerAgentPage() {
                                                 children: selectedThread ? normalizeThreadTitle(selectedThread, 0) : "Conversation"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                lineNumber: 376,
+                                                lineNumber: 391,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -669,18 +682,18 @@ function OwnerAgentPage() {
                                                     children: "Refresh"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                    lineNumber: 380,
+                                                    lineNumber: 395,
                                                     columnNumber: 17
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                lineNumber: 379,
+                                                lineNumber: 394,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 375,
+                                        lineNumber: 390,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -688,13 +701,13 @@ function OwnerAgentPage() {
                                         children: "The assistant uses safe, read-only queries. Ask for sales summaries, inventory gaps, or staff performance insights."
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 390,
+                                        lineNumber: 405,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 374,
+                                lineNumber: 389,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -707,26 +720,26 @@ function OwnerAgentPage() {
                                             className: "h-16 w-full"
                                         }, index, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                            lineNumber: 400,
+                                            lineNumber: 415,
                                             columnNumber: 19
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                    lineNumber: 398,
+                                    lineNumber: 413,
                                     columnNumber: 15
                                 }, this) : !selectedThreadId ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "flex h-full items-center justify-center p-6 text-sm text-emerald-100/70",
                                     children: "Select a conversation to view messages."
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                    lineNumber: 404,
+                                    lineNumber: 419,
                                     columnNumber: 15
                                 }, this) : messages.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "flex h-full items-center justify-center p-6 text-sm text-emerald-100/70",
                                     children: "Ask your first question to begin."
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                    lineNumber: 408,
+                                    lineNumber: 423,
                                     columnNumber: 15
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "flex h-[55vh] flex-col gap-3 overflow-y-auto p-4 pr-6",
@@ -745,32 +758,32 @@ function OwnerAgentPage() {
                                                             children: label
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                            lineNumber: 428,
+                                                            lineNumber: 443,
                                                             columnNumber: 25
                                                         }, this),
                                                         assistantPayload ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(AssistantContent, {
                                                             payload: assistantPayload
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                            lineNumber: 432,
+                                                            lineNumber: 447,
                                                             columnNumber: 27
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                             className: "whitespace-pre-wrap leading-relaxed",
                                                             children: message.content
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                            lineNumber: 434,
+                                                            lineNumber: 449,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                    lineNumber: 425,
+                                                    lineNumber: 440,
                                                     columnNumber: 23
                                                 }, this)
                                             }, message.id, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                lineNumber: 419,
+                                                lineNumber: 434,
                                                 columnNumber: 21
                                             }, this);
                                         }),
@@ -781,73 +794,48 @@ function OwnerAgentPage() {
                                                 children: "Assistant is analysing your data…"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                                lineNumber: 444,
+                                                lineNumber: 459,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                            lineNumber: 443,
+                                            lineNumber: 458,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             ref: messagesEndRef
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                            lineNumber: 449,
+                                            lineNumber: 464,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                    lineNumber: 412,
+                                    lineNumber: 427,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 396,
+                                lineNumber: 411,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                                 className: "flex flex-col gap-3 rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur-xl",
-                                onSubmit: (event)=>{
-                                    event.preventDefault();
-                                    handleSendMessage();
-                                },
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/80",
-                                        children: "Ask a question"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 461,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                        className: "min-h-[120px] w-full resize-y rounded-2xl border border-white/15 bg-white/10 p-3 text-sm text-emerald-100/90 shadow-inner backdrop-blur focus:border-emerald-300/60 focus:outline-none focus:ring-2 focus:ring-emerald-200/40",
-                                        placeholder: "e.g. Show me the top selling medicines this week",
-                                        value: messageDraft,
-                                        onChange: (event)=>setMessageDraft(event.target.value),
-                                        onKeyDown: handleComposerKeyDown,
-                                        disabled: !tenantId || !selectedThreadId || sending
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                        lineNumber: 464,
-                                        columnNumber: 13
-                                    }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "flex items-center justify-between text-xs text-emerald-100/70",
+                                        className: "flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/80",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                children: "Press Enter to send, Shift + Enter for a new line."
+                                                children: "Ask a question"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
                                                 lineNumber: 473,
                                                 columnNumber: 15
                                             }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
-                                                type: "submit",
-                                                disabled: !tenantId || !selectedThreadId || sending,
-                                                children: sending ? "Sending…" : "Send"
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                className: "tracking-normal ".concat(isOverLimit ? "text-red-300" : "text-emerald-200"),
+                                                children: remaining >= 0 ? "".concat(remaining, " characters left") : "".concat(Math.abs(remaining), " over limit")
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
                                                 lineNumber: 474,
@@ -858,29 +846,50 @@ function OwnerAgentPage() {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
                                         lineNumber: 472,
                                         columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                        className: "min-h-[120px] w-full resize-y rounded-2xl border border-white/15 bg-white/10 p-3 text-sm text-emerald-100/90 shadow-inner backdrop-blur focus:border-emerald-300/60 focus:outline-none focus:ring-2 focus:ring-emerald-200/40",
+                                        placeholder: "e.g. Show me the top selling medicines this week",
+                                        value: messageDraft1,
+                                        maxLength: MAX_PROMPT_LENGTH1 + 100,
+                                        onChange: (event)=>setMessageDraft(event.target.value),
+                                        onKeyDown: handleComposerKeyDown
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
+                                        lineNumber: 478,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                                        onClick: handleSendMessage,
+                                        disabled: !tenantId || !selectedThreadId || sending || isOverLimit,
+                                        children: sending ? "Sending…" : "Send"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
+                                        lineNumber: 486,
+                                        columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                                lineNumber: 454,
+                                lineNumber: 469,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                        lineNumber: 373,
+                        lineNumber: 388,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-                lineNumber: 314,
+                lineNumber: 329,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/dashboard/owner/agent/page.tsx",
-        lineNumber: 299,
+        lineNumber: 314,
         columnNumber: 5
     }, this);
 }

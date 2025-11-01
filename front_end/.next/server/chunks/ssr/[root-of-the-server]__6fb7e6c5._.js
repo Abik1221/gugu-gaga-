@@ -347,7 +347,8 @@ const AuthAPI = {
         }),
     login: (email, password, tenantId)=>postForm("/api/v1/auth/login", {
             username: email,
-            password
+            password,
+            grant_type: "password"
         }, tenantId).then((resp)=>{
             if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
             ;
@@ -355,7 +356,8 @@ const AuthAPI = {
         }),
     loginRequestCode: (email, password, tenantId)=>postForm("/api/v1/auth/login/request-code", {
             username: email,
-            password
+            password,
+            grant_type: "password"
         }, tenantId),
     loginVerify: (email, code, tenantId)=>postJSON("/api/v1/auth/login/verify", {
             email,
@@ -552,9 +554,9 @@ const PharmaciesAPI = {
 };
 const ChatAPI = {
     listThreads: (tenantId)=>getAuthJSON(`/api/v1/chat/threads`, tenantId),
-    createThread: (tenantId, title)=>postAuthJSON(`/api/v1/chat/threads`, {
+    createThread: (tenantId, title)=>postAuthJSON(`/api/v1/chat/threads`, title ? {
             title
-        }, tenantId),
+        } : {}, tenantId),
     listMessages: (tenantId, threadId)=>getAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, tenantId),
     sendMessage: (tenantId, threadId, prompt)=>postAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, {
             prompt
@@ -1522,6 +1524,7 @@ function DashboardLayout({ children }) {
     }, this);
 }
 function Shell({ user, onLogout, children }) {
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["usePathname"])();
     const roles = deriveRoles(user);
     const baseRole = (user?.role || "").toLowerCase();
@@ -1535,6 +1538,18 @@ function Shell({ user, onLogout, children }) {
     const subscriptionStatus = user?.subscription_status || "active";
     const requiresPayment = isTenantStaff && user?.kyc_status === "approved" && subscriptionStatus !== "active";
     const kycPending = isTenantStaff && user?.kyc_status && user.kyc_status !== "approved";
+    const ownerKycPath = "/dashboard/owner/kyc";
+    const ownerPaymentPath = "/dashboard/owner/payment";
+    if (user && isTenantStaff) {
+        if (kycPending && pathname !== ownerKycPath) {
+            router.replace(ownerKycPath);
+            return null;
+        }
+        if (!kycPending && requiresPayment && pathname !== ownerPaymentPath) {
+            router.replace(ownerPaymentPath);
+            return null;
+        }
+    }
     let nav;
     if (isAffiliate) {
         nav = [
@@ -1683,21 +1698,21 @@ function Shell({ user, onLogout, children }) {
                 className: "pointer-events-none absolute -top-24 left-[10%] h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl"
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 315,
+                lineNumber: 329,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "pointer-events-none absolute top-1/2 right-[-10%] h-96 w-96 rounded-full bg-sky-500/20 blur-3xl"
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 316,
+                lineNumber: 330,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "pointer-events-none absolute bottom-[-20%] left-[35%] h-80 w-80 rounded-full bg-teal-500/25 blur-3xl"
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 317,
+                lineNumber: 331,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1727,25 +1742,25 @@ function Shell({ user, onLogout, children }) {
                                             className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 328,
+                                            lineNumber: 342,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 327,
+                                        lineNumber: 341,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: isAffiliate ? "Affiliate Portal" : isAdmin ? "Admin Console" : "Zemen Dashboard"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 330,
+                                        lineNumber: 344,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 326,
+                                lineNumber: 340,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1757,7 +1772,7 @@ function Shell({ user, onLogout, children }) {
                                             children: user.username
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 336,
+                                            lineNumber: 350,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1765,7 +1780,7 @@ function Shell({ user, onLogout, children }) {
                                             children: user.email
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 337,
+                                            lineNumber: 351,
                                             columnNumber: 17
                                         }, this),
                                         primaryRole && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1773,7 +1788,7 @@ function Shell({ user, onLogout, children }) {
                                             children: primaryRole
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 339,
+                                            lineNumber: 353,
                                             columnNumber: 19
                                         }, this)
                                     ]
@@ -1782,12 +1797,12 @@ function Shell({ user, onLogout, children }) {
                                     children: "Not authenticated"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                    lineNumber: 345,
+                                    lineNumber: 359,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 333,
+                                lineNumber: 347,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -1806,24 +1821,24 @@ function Shell({ user, onLogout, children }) {
                                                     children: "•"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/layout.tsx",
-                                                    lineNumber: 364,
+                                                    lineNumber: 378,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/layout.tsx",
-                                            lineNumber: 362,
+                                            lineNumber: 376,
                                             columnNumber: 19
                                         }, this)
                                     }, item.href, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 353,
+                                        lineNumber: 367,
                                         columnNumber: 17
                                     }, this);
                                 })
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 349,
+                                lineNumber: 363,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1834,7 +1849,7 @@ function Shell({ user, onLogout, children }) {
                                         children: "Need help?"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 374,
+                                        lineNumber: 388,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1842,7 +1857,7 @@ function Shell({ user, onLogout, children }) {
                                         children: "Explore the resource center or contact support if something feels off."
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 375,
+                                        lineNumber: 389,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -1853,20 +1868,20 @@ function Shell({ user, onLogout, children }) {
                                                 className: "h-4 w-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                                lineNumber: 380,
+                                                lineNumber: 394,
                                                 columnNumber: 15
                                             }, this),
                                             " Support"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 376,
+                                        lineNumber: 390,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 373,
+                                lineNumber: 387,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1878,20 +1893,20 @@ function Shell({ user, onLogout, children }) {
                                         className: "mr-2 h-4 w-4"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 389,
+                                        lineNumber: 403,
                                         columnNumber: 13
                                     }, this),
                                     " Sign out"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 384,
+                                lineNumber: 398,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 320,
+                        lineNumber: 334,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -1917,7 +1932,7 @@ function Shell({ user, onLogout, children }) {
                                         children: nav.find((n)=>pathname?.startsWith(n.href))?.label || "Overview"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 400,
+                                        lineNumber: 414,
                                         columnNumber: 13
                                     }, this),
                                     !isAffiliate && !isAdmin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1928,13 +1943,13 @@ function Shell({ user, onLogout, children }) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                                        lineNumber: 404,
+                                        lineNumber: 418,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 399,
+                                lineNumber: 413,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -1942,25 +1957,25 @@ function Shell({ user, onLogout, children }) {
                                 children: children
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                                lineNumber: 409,
+                                lineNumber: 423,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/layout.tsx",
-                        lineNumber: 393,
+                        lineNumber: 407,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/layout.tsx",
-                lineNumber: 319,
+                lineNumber: 333,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/layout.tsx",
-        lineNumber: 314,
+        lineNumber: 328,
         columnNumber: 5
     }, this);
 }

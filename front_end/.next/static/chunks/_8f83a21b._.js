@@ -3,178 +3,130 @@
 "use strict";
 
 __turbopack_context__.s([
-    "addOfflineRequest",
-    ()=>addOfflineRequest,
-    "clearOfflineRequests",
-    ()=>clearOfflineRequests,
-    "getOfflineQueueSummary",
-    ()=>getOfflineQueueSummary,
-    "listOfflineRequests",
-    ()=>listOfflineRequests,
+    "flushQueuedRequests",
+    ()=>flushQueuedRequests,
+    "getQueuedRequests",
+    ()=>getQueuedRequests,
     "queueRequest",
-    ()=>queueRequest,
-    "removeOfflineRequest",
-    ()=>removeOfflineRequest,
-    "subscribeToOfflineQueue",
-    ()=>subscribeToOfflineQueue,
-    "updateOfflineRequest",
-    ()=>updateOfflineRequest
+    ()=>queueRequest
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$idb$2f$build$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/idb/build/index.js [app-client] (ecmascript)");
 ;
 const DB_NAME = "zemen-offline";
-const STORE_NAME = "pending_requests";
-async function queueRequest(path) {
-    let init = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, options = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
-    const headersArray = init.headers ? Array.from(new Headers(init.headers).entries()) : undefined;
-    const body = typeof init.body === "string" ? init.body : null;
-    var _options_requiresAuth, _options_tenantId, _options_description;
-    return addOfflineRequest({
-        path,
-        method: (init.method || "GET").toUpperCase(),
-        body,
-        headers: headersArray !== null && headersArray !== void 0 ? headersArray : null,
-        requiresAuth: (_options_requiresAuth = options.requiresAuth) !== null && _options_requiresAuth !== void 0 ? _options_requiresAuth : false,
-        tenantId: (_options_tenantId = options.tenantId) !== null && _options_tenantId !== void 0 ? _options_tenantId : null,
-        description: (_options_description = options.description) !== null && _options_description !== void 0 ? _options_description : null
-    });
-}
+const DB_VERSION = 1;
+const STORE_NAME = "request-queue";
 let dbPromise = null;
+function ensureClient() {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+}
 async function getDb() {
-    if ("object" === "undefined" || !("indexedDB" in window)) {
-        throw new Error("IndexedDB is not available in this environment");
-    }
+    ensureClient();
     if (!dbPromise) {
-        dbPromise = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$idb$2f$build$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["openDB"])(DB_NAME, 1, {
-            upgrade (db) {
+        dbPromise = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$idb$2f$build$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["openDB"])(DB_NAME, DB_VERSION, {
+            upgrade: (db)=>{
                 if (!db.objectStoreNames.contains(STORE_NAME)) {
-                    const store = db.createObjectStore(STORE_NAME, {
+                    db.createObjectStore(STORE_NAME, {
                         keyPath: "id"
                     });
-                    store.createIndex("by-createdAt", "createdAt");
                 }
             }
         });
     }
     return dbPromise;
 }
-function getEventTarget() {
-    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-    ;
-    if (!("CustomEvent" in window)) return null;
-    return queueEventTarget;
+function serializeHeaders(headers) {
+    if (!headers) {
+        return undefined;
+    }
+    const normalized = {};
+    if (headers instanceof Headers) {
+        headers.forEach((value, key)=>{
+            normalized[key] = value;
+        });
+    } else if (Array.isArray(headers)) {
+        headers.forEach((param)=>{
+            let [key, value] = param;
+            normalized[key] = value;
+        });
+    } else {
+        Object.entries(headers).forEach((param)=>{
+            let [key, value] = param;
+            normalized[key] = String(value);
+        });
+    }
+    return Object.keys(normalized).length ? normalized : undefined;
 }
-const queueEventTarget = ("TURBOPACK compile-time truthy", 1) ? new EventTarget() : "TURBOPACK unreachable";
-function safeRandomId() {
-    if (typeof crypto !== "undefined" && crypto.randomUUID) {
+function serializeBody(body) {
+    if (!body) {
+        return undefined;
+    }
+    if (typeof body === "string") {
+        return body;
+    }
+    if (body instanceof URLSearchParams) {
+        return body.toString();
+    }
+    if (typeof FormData !== "undefined" && body instanceof FormData) {
+        const entries = {};
+        for (const [key, value] of body.entries()){
+            entries[key] = typeof value === "string" ? value : "";
+        }
+        return JSON.stringify({
+            __formData: entries
+        });
+    }
+    try {
+        return JSON.stringify(body);
+    } catch (e) {
+        return undefined;
+    }
+}
+function createQueueId() {
+    if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
         return crypto.randomUUID();
     }
-    return "".concat(Date.now(), "-").concat(Math.random().toString(16).slice(2));
+    return "queued-".concat(Date.now(), "-").concat(Math.random().toString(16).slice(2));
 }
-async function emitQueueChange() {
-    const target = getEventTarget();
-    if (!target) return;
-    try {
-        const summary = await getOfflineQueueSummary();
-        target.dispatchEvent(new CustomEvent("change", {
-            detail: summary
-        }));
-    } catch (e) {
-        target.dispatchEvent(new CustomEvent("change", {
-            detail: {
-                pending: 0
-            }
-        }));
-    }
-}
-async function addOfflineRequest(data) {
+async function queueRequest(path) {
+    let init = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, metadata = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+    const db = await getDb();
+    const serialized = {
+        method: init.method,
+        headers: serializeHeaders(init.headers),
+        body: serializeBody(init.body),
+        credentials: init.credentials,
+        cache: init.cache,
+        mode: init.mode
+    };
     const record = {
-        id: safeRandomId(),
-        createdAt: Date.now(),
-        attempts: 0,
-        lastError: null,
-        ...data
+        id: createQueueId(),
+        path,
+        request: serialized,
+        enqueuedAt: Date.now(),
+        ...metadata
     };
-    try {
-        const db = await getDb();
-        await db.put(STORE_NAME, record);
-        await emitQueueChange();
-    } catch (error) {
-        console.error("Failed to add offline request", error);
-    }
-    return record;
+    await db.put(STORE_NAME, record);
+    return record.id;
 }
-async function listOfflineRequests() {
-    try {
-        const db = await getDb();
-        const items = await db.getAllFromIndex(STORE_NAME, "by-createdAt");
-        return items.sort((a, b)=>a.createdAt - b.createdAt);
-    } catch (error) {
-        console.error("Failed to list offline requests", error);
-        return [];
-    }
+async function getQueuedRequests() {
+    const db = await getDb();
+    return await db.getAll(STORE_NAME);
 }
-async function removeOfflineRequest(id) {
-    try {
-        const db = await getDb();
-        await db.delete(STORE_NAME, id);
-        await emitQueueChange();
-    } catch (error) {
-        console.error("Failed to remove offline request", error);
+async function flushQueuedRequests(handler) {
+    const db = await getDb();
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+    const records = await store.getAll();
+    for (const record of records){
+        try {
+            await handler(record);
+            await store.delete(record.id);
+        } catch (error) {
+            console.error("Failed to process queued request", record, error);
+        }
     }
-}
-async function updateOfflineRequest(record) {
-    try {
-        const db = await getDb();
-        await db.put(STORE_NAME, record);
-        await emitQueueChange();
-    } catch (error) {
-        console.error("Failed to update offline request", error);
-    }
-}
-async function clearOfflineRequests() {
-    try {
-        const db = await getDb();
-        const tx = db.transaction(STORE_NAME, "readwrite");
-        await tx.store.clear();
-        await tx.done;
-        await emitQueueChange();
-    } catch (error) {
-        console.error("Failed to clear offline requests", error);
-    }
-}
-async function getOfflineQueueSummary() {
-    try {
-        const db = await getDb();
-        const pending = await db.count(STORE_NAME);
-        return {
-            pending
-        };
-    } catch (e) {
-        return {
-            pending: 0
-        };
-    }
-}
-function subscribeToOfflineQueue(callback) {
-    const target = getEventTarget();
-    if (!target) {
-        callback({
-            pending: 0
-        });
-        return ()=>undefined;
-    }
-    const handler = (event)=>{
-        const detail = event.detail;
-        callback(detail);
-    };
-    target.addEventListener("change", handler);
-    void getOfflineQueueSummary().then(callback).catch(()=>callback({
-            pending: 0
-        }));
-    return ()=>{
-        target.removeEventListener("change", handler);
-    };
+    await tx.done;
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);

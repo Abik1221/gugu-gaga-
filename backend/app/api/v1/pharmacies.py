@@ -46,23 +46,36 @@ def list_pharmacies(
 ):
     page = max(1, page)
     page_size = max(1, min(100, page_size))
-    q = db.query(Pharmacy)
+
+    query = db.query(Pharmacy)
+
     if user.role != Role.admin.value:
         # Restrict owners to their linked tenants
         tenant_ids = [r.tenant_id for r in db.query(UserTenant).filter(UserTenant.user_id == user.id).all()]
         if not tenant_ids:
-            return []
-        q = q.filter(Pharmacy.tenant_id.in_(tenant_ids))
+            return {"page": page, "page_size": page_size, "total": 0, "items": []}
+        query = query.filter(Pharmacy.tenant_id.in_(tenant_ids))
+
     if q:
-        like = f"%{q}%"
-        q = q.filter(Pharmacy.name.ilike(like))
-    total = q.count()
-    items = q.order_by(Pharmacy.id.desc()).offset((page - 1) * page_size).limit(page_size).all()
+        like = f"%{q.strip()}%"
+        query = query.filter(Pharmacy.name.ilike(like))
+
+    total = query.count()
+    items = (
+        query.order_by(Pharmacy.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+        .all()
+    )
+
     return {
         "page": page,
         "page_size": page_size,
         "total": total,
-        "items": [{"id": p.id, "tenant_id": p.tenant_id, "name": p.name, "address": getattr(p, "address", None)} for p in items],
+        "items": [
+            {"id": p.id, "tenant_id": p.tenant_id, "name": p.name, "address": getattr(p, "address", None)}
+            for p in items
+        ],
     }
 
 

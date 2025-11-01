@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { AuthAPI, StaffAPI } from "@/utils/api";
+import { AuthAPI, StaffAPI, BranchAPI } from "@/utils/api";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,8 @@ type StaffMember = {
   role: string;
   is_active?: boolean;
   created_at?: string;
+  assigned_branch_id?: number | null;
+  assigned_branch_name?: string | null;
 };
 
 export default function StaffListPage() {
@@ -106,7 +108,8 @@ export default function StaffListPage() {
         return (
           member.email?.toLowerCase().includes(query) ||
           member.phone?.toLowerCase().includes(query) ||
-          member.role?.toLowerCase().includes(query)
+          member.role?.toLowerCase().includes(query) ||
+          member.assigned_branch_name?.toLowerCase().includes(query)
         );
       })
       .sort((a, b) => a.email.localeCompare(b.email));
@@ -257,6 +260,7 @@ export default function StaffListPage() {
                       <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Email</th>
                       <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Phone</th>
                       <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Role</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Branch</th>
                       <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Status</th>
                       <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Actions</th>
                     </tr>
@@ -269,6 +273,9 @@ export default function StaffListPage() {
                           <td className="px-3 py-3 font-semibold text-white">{member.email}</td>
                           <td className="px-3 py-3 text-emerald-100/70">{member.phone || "—"}</td>
                           <td className="px-3 py-3 text-emerald-100/70">{member.role}</td>
+                          <td className="px-3 py-3 text-emerald-100/70">
+                            {member.assigned_branch_name || (member.assigned_branch_id ? `#${member.assigned_branch_id}` : "—")}
+                          </td>
                           <td className="px-3 py-3">
                             <Badge
                               variant={active ? "default" : "secondary"}
@@ -337,15 +344,39 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRole] = useState("cashier");
+  const [role] = useState<"staff">("staff");
+  const [branches, setBranches] = useState<{ id: number; name: string }[]>([]);
+  const [branchId, setBranchId] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
 
   const resetForm = () => {
     setEmail("");
     setPassword("");
     setPhone("");
-    setRole("cashier");
+    setBranchId("");
   };
+
+  useEffect(() => {
+    if (!open || !tenantId) return;
+    let active = true;
+    BranchAPI.list(tenantId, { page_size: 100 })
+      .then((res: any) => {
+        if (!active) return;
+        const items = Array.isArray(res?.items)
+          ? res.items.map((it: any) => ({ id: Number(it.id), name: String(it.name) }))
+          : Array.isArray(res)
+          ? res.map((it: any) => ({ id: Number(it.id), name: String(it.name) }))
+          : [];
+        setBranches(items);
+      })
+      .catch(() => {
+        if (!active) return;
+        setBranches([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, [open, tenantId]);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -364,6 +395,7 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
         password,
         phone: phone || undefined,
         role,
+        assigned_branch_id: branchId ? Number(branchId) : undefined,
       });
       show({ variant: "success", title: "Invitation sent", description: email });
       resetForm();
@@ -438,14 +470,31 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
           </div>
           <div className="space-y-1">
             <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Role</label>
+            <div className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm text-emerald-100/80 shadow-[0_18px_55px_-35px_rgba(16,185,129,0.5)]">
+              Staff
+            </div>
+          </div>
+          <div className="space-y-1">
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Assign to branch</label>
             <select
-              value={role}
-              onChange={(event) => setRole(event.target.value)}
+              value={branchId}
+              onChange={(event) => setBranchId(event.target.value)}
               className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm text-emerald-100/80 shadow-[0_18px_55px_-35px_rgba(16,185,129,0.5)] focus:outline-none focus:ring focus:ring-emerald-300/40"
             >
-              <option className="bg-slate-900 text-emerald-100" value="cashier">Cashier</option>
-              <option className="bg-slate-900 text-emerald-100" value="manager">Manager</option>
+              <option className="bg-slate-900 text-emerald-100" value="">
+                Unassigned (all branches)
+              </option>
+              {branches.map((branch) => (
+                <option key={branch.id} value={branch.id} className="bg-slate-900 text-emerald-100">
+                  {branch.name}
+                </option>
+              ))}
             </select>
+            {branches.length === 0 && (
+              <p className="text-xs text-emerald-100/60">
+                No branches found for this tenant yet. Create one first to tie staff to a location.
+              </p>
+            )}
           </div>
           <SheetFooter className="gap-3 pt-2">
             <Button

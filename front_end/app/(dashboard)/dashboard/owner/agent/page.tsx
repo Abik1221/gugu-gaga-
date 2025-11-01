@@ -139,11 +139,11 @@ export default function OwnerAgentPage() {
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [messageDraft, setMessageDraft] = useState("");
   const [creatingThread, setCreatingThread] = useState(false);
-  const [newThreadTitle, setNewThreadTitle] = useState("");
   const [sending, setSending] = useState(false);
   const [assistantThinking, setAssistantThinking] = useState(false);
   const [bootstrapLoading, setBootstrapLoading] = useState(true);
   const [globalError, setGlobalError] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -153,7 +153,7 @@ export default function OwnerAgentPage() {
   );
 
   const loadThreads = useCallback(
-    async (tid: string) => {
+    async (tid: string): Promise<ThreadSummary[]> => {
       setThreadsLoading(true);
       try {
         const data = await ChatAPI.listThreads(tid);
@@ -163,8 +163,12 @@ export default function OwnerAgentPage() {
           setSelectedThreadId(null);
         }
         setGlobalError(null);
+        return safe;
       } catch (error: any) {
+        setThreads([]);
+        setSelectedThreadId(null);
         setGlobalError(error?.message || "Unable to load conversations");
+        return [];
       } finally {
         setThreadsLoading(false);
       }
@@ -243,11 +247,9 @@ export default function OwnerAgentPage() {
 
   const handleCreateThread = async () => {
     if (!tenantId) return;
-    const title = newThreadTitle.trim();
     setCreatingThread(true);
     try {
-      const created = await ChatAPI.createThread(tenantId, title || "Owner conversation");
-      setNewThreadTitle("");
+      const created = await ChatAPI.createThread(tenantId);
       await loadThreads(tenantId);
       if (created?.id) {
         setSelectedThreadId(created.id);
@@ -265,9 +267,11 @@ export default function OwnerAgentPage() {
   };
 
   const MAX_PROMPT_LENGTH = 300;
+  const remaining = MAX_PROMPT_LENGTH - messageDraft.length;
+  const isOverLimit = remaining < 0;
 
   const handleSendMessage = async () => {
-    if (!tenantId || !selectedThreadId) return;
+    if (!tenantId) return;
     const prompt = messageDraft.trim();
     if (!prompt) return;
     if (prompt.length > MAX_PROMPT_LENGTH) {
@@ -282,8 +286,23 @@ export default function OwnerAgentPage() {
     setSending(true);
     setAssistantThinking(true);
     try {
-      await ChatAPI.sendMessage(tenantId, selectedThreadId, prompt);
-      await loadMessages(tenantId, selectedThreadId);
+      let threadIdToUse = selectedThreadId;
+      if (!threadIdToUse) {
+        const created = await ChatAPI.createThread(tenantId);
+        const refreshed = await loadThreads(tenantId);
+        threadIdToUse =
+          (created && typeof created.id === "number" ? created.id : undefined) ??
+          (refreshed.length > 0 ? refreshed[0].id : undefined);
+        if (threadIdToUse) {
+          setSelectedThreadId(threadIdToUse);
+        }
+      }
+      if (!threadIdToUse) {
+        throw new Error("Unable to start a new conversation");
+      }
+
+      await ChatAPI.sendMessage(tenantId, threadIdToUse, prompt);
+      await loadMessages(tenantId, threadIdToUse);
       await loadThreads(tenantId);
     } catch (error: any) {
       show({
@@ -328,57 +347,69 @@ export default function OwnerAgentPage() {
         <div className="flex flex-col gap-5 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_24px_90px_-50px_rgba(14,165,233,0.45)] backdrop-blur-xl">
           <div className="flex items-center justify-between text-emerald-100/80">
             <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-100">Conversations</h2>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => tenantId && loadThreads(tenantId)}
-              disabled={!tenantId || isLoadingThreads}
-            >
-              Refresh
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowHistory((prev) => !prev)}
+              >
+                {showHistory ? "Hide history" : "Show history"}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => tenantId && loadThreads(tenantId)}
+                disabled={!tenantId || isLoadingThreads}
+              >
+                Refresh
+              </Button>
+            </div>
           </div>
           <div className="space-y-3">
-            <Input
-              placeholder="Conversation title"
-              value={newThreadTitle}
-              onChange={(event) => setNewThreadTitle(event.target.value)}
-            />
             <Button onClick={handleCreateThread} disabled={!tenantId || creatingThread}>
               {creatingThread ? "Creating…" : "Start new conversation"}
             </Button>
           </div>
-          <div className="h-px w-full bg-gray-100" />
-          {isLoadingThreads ? (
-            <div className="space-y-2">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <Skeleton key={index} className="h-12 w-full" />
-              ))}
-            </div>
-          ) : threads.length === 0 ? (
-            <div className="rounded-2xl border border-white/15 bg-white/5 p-4 text-center text-sm text-emerald-100/80">
-              No conversations yet. Start a new one to ask the assistant anything about your pharmacy.
-            </div>
+          {showHistory ? (
+            <>
+              <div className="h-px w-full bg-gray-100" />
+              {isLoadingThreads ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <Skeleton key={index} className="h-12 w-full" />
+                  ))}
+                </div>
+              ) : threads.length === 0 ? (
+                <div className="rounded-2xl border border-white/15 bg-white/5 p-4 text-center text-sm text-emerald-100/80">
+                  No conversations yet. Start a new one to ask the assistant anything about your pharmacy.
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {threads.map((thread, index) => {
+                    const title = normalizeThreadTitle(thread, index);
+                    const isActive = thread.id === selectedThreadId;
+                    return (
+                      <button
+                        key={thread.id}
+                        type="button"
+                        onClick={() => setSelectedThreadId(thread.id)}
+                        className={`group w-full rounded-2xl border px-3 py-2 text-left text-sm font-medium transition ${
+                          isActive
+                            ? "border-transparent bg-gradient-to-r from-emerald-500/25 via-teal-500/20 to-sky-500/25 text-white shadow-lg"
+                            : "border-white/15 bg-white/5 text-emerald-100/80 hover:border-emerald-200/50 hover:bg-white/10"
+                        }`}
+                      >
+                        <div className="font-semibold text-white/90">{title}</div>
+                        <div className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Thread #{thread.id}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </>
           ) : (
-            <div className="space-y-2">
-              {threads.map((thread, index) => {
-                const title = normalizeThreadTitle(thread, index);
-                const isActive = thread.id === selectedThreadId;
-                return (
-                  <button
-                    key={thread.id}
-                    type="button"
-                    onClick={() => setSelectedThreadId(thread.id)}
-                    className={`group w-full rounded-2xl border px-3 py-2 text-left text-sm font-medium transition ${
-                      isActive
-                        ? "border-transparent bg-gradient-to-r from-emerald-500/25 via-teal-500/20 to-sky-500/25 text-white shadow-lg"
-                        : "border-white/15 bg-white/5 text-emerald-100/80 hover:border-emerald-200/50 hover:bg-white/10"
-                    }`}
-                  >
-                    <div className="font-semibold text-white/90">{title}</div>
-                    <div className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Thread #{thread.id}</div>
-                  </button>
-                );
-              })}
+            <div className="rounded-2xl border border-white/15 bg-white/5 p-4 text-center text-sm text-emerald-100/80">
+              Tap “Show history” to browse your previous conversations.
             </div>
           )}
         </div>

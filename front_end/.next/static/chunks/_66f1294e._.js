@@ -344,7 +344,8 @@ const AuthAPI = {
         }),
     login: (email, password, tenantId)=>postForm("/api/v1/auth/login", {
             username: email,
-            password
+            password,
+            grant_type: "password"
         }, tenantId).then((resp)=>{
             if ("TURBOPACK compile-time truthy", 1) {
                 localStorage.setItem("access_token", resp.access_token);
@@ -357,7 +358,8 @@ const AuthAPI = {
         }),
     loginRequestCode: (email, password, tenantId)=>postForm("/api/v1/auth/login/request-code", {
             username: email,
-            password
+            password,
+            grant_type: "password"
         }, tenantId),
     loginVerify: (email, code, tenantId)=>postJSON("/api/v1/auth/login/verify", {
             email,

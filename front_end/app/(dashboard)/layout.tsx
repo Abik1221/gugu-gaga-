@@ -245,6 +245,7 @@ function Shell({
   onLogout: () => void;
   children: React.ReactNode;
 }) {
+  const router = useRouter();
   const pathname = usePathname();
   const roles = deriveRoles(user);
   const baseRole = (user?.role || "").toLowerCase();

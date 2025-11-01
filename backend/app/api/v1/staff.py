@@ -7,11 +7,25 @@ from app.db.deps import get_db
 from app.deps.tenant import require_tenant, enforce_user_tenant
 from app.deps.auth import require_role
 from app.models.user import User
+from app.models.branch import Branch
 from app.schemas.staff import StaffCreate, StaffOut
 from app.deps.ratelimit import rate_limit_user
 from app.services.billing.subscriptions import ensure_subscription
 
 router = APIRouter(prefix="/staff", tags=["pharmacy_cms"])
+
+
+def _serialize_staff(user: User, branch: Branch | None = None) -> StaffOut:
+    assigned_branch = branch or getattr(user, "assigned_branch", None)
+    return StaffOut(
+        id=user.id,
+        email=user.email,
+        role=user.role,
+        phone=user.phone,
+        assigned_branch_id=user.assigned_branch_id,
+        assigned_branch_name=getattr(assigned_branch, "name", None) if assigned_branch else None,
+        is_active=user.is_active,
+    )
 
 
 @router.post("", response_model=StaffOut)
@@ -39,31 +53,46 @@ def create_staff(
     existing = db.query(User).filter(User.email == payload.email).first()
     if existing:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already exists")
+    assigned_branch: Branch | None = None
+    if payload.assigned_branch_id is not None:
+        assigned_branch = (
+            db.query(Branch)
+            .filter(Branch.id == payload.assigned_branch_id, Branch.tenant_id == tenant_id)
+            .first()
+        )
+        if not assigned_branch:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Branch not found for tenant")
     staff = User(
         email=payload.email,
         phone=payload.phone,
-        role=payload.role if payload.role in {Role.cashier.value} else Role.cashier.value,
+        role=payload.role if payload.role in {Role.cashier.value, "staff"} else Role.cashier.value,
         tenant_id=tenant_id,
         password_hash=hash_password(payload.password),
         is_active=True,
         is_approved=True,
+        assigned_branch_id=payload.assigned_branch_id,
     )
     db.add(staff)
     db.commit()
     db.refresh(staff)
-    return {"id": staff.id, "email": staff.email, "role": staff.role}
+    return _serialize_staff(staff, branch=assigned_branch)
 
 
-@router.get("")
+@router.get("", response_model=list[StaffOut])
 def list_staff(
     tenant_id: str = Depends(require_tenant),
     user=Depends(require_role(Role.admin, Role.pharmacy_owner)),
     db: Session = Depends(get_db),
     _ten=Depends(enforce_user_tenant),
 ):
-    q = db.query(User).filter(User.tenant_id == tenant_id, User.role.in_([Role.cashier.value]))
-    rows = q.order_by(User.id.desc()).all()
-    return [{"id": u.id, "email": u.email, "phone": u.phone, "role": u.role} for u in rows]
+    rows = (
+        db.query(User, Branch)
+        .outerjoin(Branch, Branch.id == User.assigned_branch_id)
+        .filter(User.tenant_id == tenant_id, User.role.in_([Role.cashier.value, "staff"]))
+        .order_by(User.id.desc())
+        .all()
+    )
+    return [_serialize_staff(user, branch) for user, branch in rows]
 
 
 @router.patch("/{user_id}")
@@ -75,7 +104,7 @@ def update_staff(
     db: Session = Depends(get_db),
     _ten=Depends(enforce_user_tenant),
 ):
-    staff = db.query(User).filter(User.id == user_id, User.tenant_id == tenant_id, User.role == Role.cashier.value).first()
+    staff = db.query(User).filter(User.id == user_id, User.tenant_id == tenant_id, User.role.in_([Role.cashier.value, "staff"])).first()
     if not staff:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Staff not found")
     if is_active is not None:
@@ -83,7 +112,7 @@ def update_staff(
     db.add(staff)
     db.commit()
     db.refresh(staff)
-    return {"id": staff.id, "email": staff.email, "role": staff.role, "is_active": staff.is_active}
+    return _serialize_staff(staff)
 
 
 @router.delete("/{user_id}")
