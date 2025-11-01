@@ -8,6 +8,7 @@ from app.models.pharmacy import Pharmacy  # noqa: F401
 from app.models.branch import Branch  # noqa: F401
 from app.models.medicine import Medicine, InventoryItem  # noqa: F401
 from app.models.sales import Sale, SaleItem  # noqa: F401
+from app.models.customer import Customer  # noqa: F401
 from app.models.affiliate import AffiliateProfile, AffiliateReferral, AffiliateLink, CommissionPayout  # noqa: F401
 from app.models.notification_pref import NotificationPreference  # noqa: F401
 from app.models.chat import ChatThread, ChatMessage  # noqa: F401

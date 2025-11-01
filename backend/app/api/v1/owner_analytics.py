@@ -23,6 +23,7 @@ from app.schemas.owner_analytics import (
 from app.services.owner_analytics import (
     get_active_cashiers,
     get_branch_comparison,
+    get_customer_summary,
     get_inventory_health,
     get_period_bounds,
     get_revenue_summary,
@@ -80,6 +81,7 @@ def owner_analytics_overview(
     average_ticket_previous = total_revenue_previous / sale_count_previous if sale_count_previous > 0 else 0.0
 
     active_cashiers = get_active_cashiers(db, tenant_id=tenant_id)
+    customer_summary = get_customer_summary(db, tenant_id=tenant_id)
 
     totals = OwnerAnalyticsTotals(
         total_revenue=total_revenue_current,
@@ -87,6 +89,9 @@ def owner_analytics_overview(
         units_sold=units_current,
         sale_count=sale_count_current,
         active_cashiers=active_cashiers,
+        total_customers=customer_summary["total"],
+        active_customers=customer_summary["active"],
+        upcoming_refills=customer_summary["upcoming"],
     )
 
     deltas = OwnerAnalyticsDeltas(

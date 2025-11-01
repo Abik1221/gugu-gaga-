@@ -12,6 +12,9 @@ class OwnerAnalyticsTotals(BaseModel):
     units_sold: int
     sale_count: int
     active_cashiers: int
+    total_customers: int
+    active_customers: int
+    upcoming_refills: int
 
 
 class OwnerAnalyticsDeltas(BaseModel):

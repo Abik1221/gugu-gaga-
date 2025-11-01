@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.core.roles import Role
 from app.models.medicine import InventoryItem, Medicine
 from app.models.sales import Sale, SaleItem
+from app.models.customer import Customer
 from app.models.user import User
 from app.models.audit import AuditLog
 
@@ -62,6 +63,42 @@ def get_period_bounds(period: str, now: Optional[datetime] = None) -> tuple[date
     else:
         start = now - timedelta(days=30)
     return start, now
+
+
+def get_revenue_summary(
+    db: Session,
+    *,
+    tenant_id: str,
+    since: datetime,
+    until: Optional[datetime] = None,
+) -> Dict[str, float | int]:
+    until = until or datetime.utcnow()
+    filters = [
+        Sale.tenant_id == tenant_id,
+        Sale.created_at >= since,
+    ]
+    if until:
+        filters.append(Sale.created_at < until)
+
+    result = (
+        db.query(
+            func.coalesce(func.sum(Sale.total_amount), 0.0).label("total_revenue"),
+            func.count(func.distinct(Sale.id)).label("sale_count"),
+            func.coalesce(func.sum(SaleItem.quantity), 0).label("units_sold"),
+        )
+        .outerjoin(SaleItem, SaleItem.sale_id == Sale.id)
+        .filter(*filters)
+        .first()
+    )
+
+    if not result:
+        return {"total_revenue": 0.0, "sale_count": 0, "units_sold": 0}
+
+    return {
+        "total_revenue": round(float(result.total_revenue or 0.0), 2),
+        "sale_count": int(result.sale_count or 0),
+        "units_sold": int(result.units_sold or 0),
+    }
 
 
 def get_revenue_trend(
@@ -310,29 +347,31 @@ def get_active_cashiers(
     )
 
 
-def get_revenue_summary(
+def get_customer_summary(
     db: Session,
     *,
     tenant_id: str,
-    since: datetime,
-    until: datetime,
-) -> Dict[str, float]:
-    revenue, sale_count, units_sold = (
-        db.query(
-            func.coalesce(func.sum(Sale.total_amount), 0.0),
-            func.count(func.distinct(Sale.id)),
-            func.coalesce(func.sum(SaleItem.quantity), 0),
-        )
-        .join(SaleItem, SaleItem.sale_id == Sale.id)
+) -> dict[str, int]:
+    total = db.query(func.count(Customer.id)).filter(Customer.tenant_id == tenant_id).scalar() or 0
+    active = (
+        db.query(func.count(Customer.id))
+        .filter(Customer.tenant_id == tenant_id, Customer.is_active.is_(True))
+        .scalar()
+        or 0
+    )
+    upcoming_cutoff = datetime.utcnow().date() + timedelta(days=7)
+    upcoming = (
+        db.query(func.count(Customer.id))
         .filter(
-            Sale.tenant_id == tenant_id,
-            Sale.created_at >= since,
-            Sale.created_at <= until,
+            Customer.tenant_id == tenant_id,
+            Customer.next_refill_date.is_not(None),
+            Customer.next_refill_date <= upcoming_cutoff,
         )
-        .first()
+        .scalar()
+        or 0
     )
     return {
-        "total_revenue": round(float(revenue or 0.0), 2),
-        "sale_count": int(sale_count or 0),
-        "units_sold": int(units_sold or 0),
+        "total": int(total),
+        "active": int(active),
+        "upcoming": int(upcoming),
     }

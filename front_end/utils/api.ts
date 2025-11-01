@@ -627,62 +627,25 @@ export const StaffAPI = {
       true,
       tenantId
     ).then(async (res) => {
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || `Request failed with ${res.status}`);
+      }
       return res.json();
     }),
   remove: (tenantId: string, userId: number) =>
-    authFetch(`/api/v1/staff/${userId}`, { method: "DELETE" }, true, tenantId).then(
-      async (res) => {
-        if (!res.ok) throw new Error(await res.text());
-        return res.json();
-      }
-    ),
-};
-
-// ----------------- BranchAPI -----------------
-export const BranchAPI = {
-  list: (
-    tenantId: string,
-    params?: { q?: string; pharmacy_id?: number; page?: number; page_size?: number }
-  ) => {
-    const query = new URLSearchParams();
-    if (params?.q) query.set("q", params.q);
-    if (params?.pharmacy_id !== undefined)
-      query.set("pharmacy_id", String(params.pharmacy_id));
-    if (params?.page) query.set("page", String(params.page));
-    if (params?.page_size) query.set("page_size", String(params.page_size));
-    const path = `/api/v1/branches${query.toString() ? `?${query.toString()}` : ""}`;
-    return getAuthJSON(path, tenantId);
-  },
-  create: (
-    tenantId: string,
-    payload: { pharmacy_id: number; name: string; address?: string; phone?: string }
-  ) => postAuthJSON("/api/v1/branches", payload, tenantId),
-  update: (
-    tenantId: string,
-    branchId: number,
-    payload: { name?: string; address?: string; phone?: string }
-  ) =>
     authFetch(
-      `/api/v1/branches/${branchId}`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      },
+      `/api/v1/staff/${userId}`,
+      { method: "DELETE" },
       true,
       tenantId
     ).then(async (res) => {
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || `Request failed with ${res.status}`);
+      }
       return res.json();
     }),
-  remove: (tenantId: string, branchId: number) =>
-    authFetch(`/api/v1/branches/${branchId}`, { method: "DELETE" }, true, tenantId).then(
-      async (res) => {
-        if (!res.ok) throw new Error(await res.text());
-        return res.json();
-      }
-    ),
 };
 
 // ----------------- Pharmacy models -----------------
@@ -774,6 +737,9 @@ export type OwnerAnalyticsResponse = {
     units_sold: number;
     sale_count: number;
     active_cashiers: number;
+    total_customers: number;
+    active_customers: number;
+    upcoming_refills: number;
   };
   deltas: {
     revenue_vs_last_period: number;

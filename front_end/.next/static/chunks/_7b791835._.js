@@ -46,8 +46,6 @@ __turbopack_context__.s([
     ()=>AuthAPI,
     "BillingAPI",
     ()=>BillingAPI,
-    "BranchAPI",
-    ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
     "IntegrationsAPI",
@@ -530,41 +528,19 @@ const StaffAPI = {
             },
             body: JSON.stringify(body)
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || "Request failed with ".concat(res.status));
+            }
             return res.json();
         }),
     remove: (tenantId, userId)=>authFetch("/api/v1/staff/".concat(userId), {
             method: "DELETE"
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        })
-};
-const BranchAPI = {
-    list: (tenantId, params)=>{
-        const query = new URLSearchParams();
-        if (params === null || params === void 0 ? void 0 : params.q) query.set("q", params.q);
-        if ((params === null || params === void 0 ? void 0 : params.pharmacy_id) !== undefined) query.set("pharmacy_id", String(params.pharmacy_id));
-        if (params === null || params === void 0 ? void 0 : params.page) query.set("page", String(params.page));
-        if (params === null || params === void 0 ? void 0 : params.page_size) query.set("page_size", String(params.page_size));
-        const path = "/api/v1/branches".concat(query.toString() ? "?".concat(query.toString()) : "");
-        return getAuthJSON(path, tenantId);
-    },
-    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
-    update: (tenantId, branchId, payload)=>authFetch("/api/v1/branches/".concat(branchId), {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        }),
-    remove: (tenantId, branchId)=>authFetch("/api/v1/branches/".concat(branchId), {
-            method: "DELETE"
-        }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || "Request failed with ".concat(res.status));
+            }
             return res.json();
         })
 };

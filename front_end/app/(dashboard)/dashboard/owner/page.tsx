@@ -176,6 +176,21 @@ export default function OwnerDashboardPage() {
         value: (totals?.active_cashiers ?? 0).toLocaleString("en-US"),
         delta: undefined,
       },
+      {
+        label: "Customers on file",
+        value: (totals?.total_customers ?? 0).toLocaleString("en-US"),
+        delta: undefined,
+      },
+      {
+        label: "Active customers",
+        value: (totals?.active_customers ?? 0).toLocaleString("en-US"),
+        delta: undefined,
+      },
+      {
+        label: "Upcoming refills (7d)",
+        value: (totals?.upcoming_refills ?? 0).toLocaleString("en-US"),
+        delta: undefined,
+      },
     ];
   }, [analytics]);
 
