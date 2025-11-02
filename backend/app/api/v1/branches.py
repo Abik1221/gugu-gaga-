@@ -6,6 +6,8 @@ from app.core.roles import Role
 from app.db.deps import get_db
 from app.deps.auth import require_role, get_current_user
 from app.deps.tenant import require_tenant, enforce_user_tenant, enforce_subscription_active
+from datetime import date
+
 from app.models.branch import Branch
 from app.models.pharmacy import Pharmacy
 from app.schemas.branches import BranchOut, BranchListResponse, BranchCreate, BranchUpdate
@@ -51,6 +53,26 @@ def create_branch(
     _sub=Depends(enforce_subscription_active),
 ):
     cleaned_name = _validate_branch_inputs(payload.name, payload.address, payload.phone, require_name=True)
+    sub = db.query(Subscription).filter(Subscription.tenant_id == tenant_id).first()
+    has_verified_payment = (
+        db.query(PaymentSubmission)
+        .filter(
+            PaymentSubmission.tenant_id == tenant_id,
+            PaymentSubmission.status == "verified",
+        )
+        .order_by(PaymentSubmission.verified_at.desc())
+        .first()
+        is not None
+    )
+    if sub and not has_verified_payment:
+        today = date.today()
+        if not sub.next_due_date or today <= sub.next_due_date:
+            existing_count = db.query(Branch).filter(Branch.tenant_id == tenant_id).count()
+            if existing_count >= 1:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Free trial plan supports only one location. Upgrade to add more branches.",
+                )
     ph = (
         db.query(Pharmacy)
         .filter(Pharmacy.id == payload.pharmacy_id, Pharmacy.tenant_id == tenant_id)

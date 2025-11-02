@@ -815,7 +815,7 @@ def _enforce_daily_quota(db: Session, *, tenant_id: str, user_id: int) -> None:
     if sub is None:
         max_queries = 3
     elif paid_submission is None:
-        max_queries = 3
+        max_queries = 2
     else:
         max_queries = 20
 

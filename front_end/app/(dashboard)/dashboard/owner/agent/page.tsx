@@ -141,6 +141,7 @@ export default function OwnerAgentPage() {
   const [bootstrapLoading, setBootstrapLoading] = useState(true);
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [usageLimitMessage, setUsageLimitMessage] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -282,6 +283,7 @@ export default function OwnerAgentPage() {
     setMessageDraft("");
     setSending(true);
     setAssistantThinking(true);
+    setUsageLimitMessage(null);
     try {
       let threadIdToUse = selectedThreadId;
       if (!threadIdToUse) {
@@ -302,12 +304,27 @@ export default function OwnerAgentPage() {
       await loadMessages(tenantId, threadIdToUse);
       await loadThreads(tenantId);
     } catch (error: any) {
-      show({
-        variant: "destructive",
-        title: "Message failed",
-        description: error?.message || "Unable to send message.",
-      });
-      setMessageDraft(prompt);
+      const rawMessage: string = error?.message || "";
+      const isQuotaError = /daily agent question limit/i.test(rawMessage);
+      if (isQuotaError) {
+        const friendly =
+          "You've hit the free trial limit of 2 agent questions today. Upgrade to keep the assistant chatting.";
+        setUsageLimitMessage(friendly);
+        show({
+          variant: "warning",
+          title: "Daily limit reached",
+          description: friendly,
+        });
+        setMessageDraft(" ");
+        setTimeout(() => setMessageDraft(""), 0);
+      } else {
+        show({
+          variant: "destructive",
+          title: "Message failed",
+          description: rawMessage || "Unable to send message.",
+        });
+        setMessageDraft(prompt);
+      }
     } finally {
       setSending(false);
       setAssistantThinking(false);
@@ -501,6 +518,11 @@ export default function OwnerAgentPage() {
                 {remaining >= 0 ? `${remaining} characters left` : `${Math.abs(remaining)} over limit`}
               </span>
             </div>
+            {usageLimitMessage && (
+              <div className="rounded-2xl border border-amber-300/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-100">
+                {usageLimitMessage}
+              </div>
+            )}
             <textarea
               className="min-h-[120px] w-full resize-y rounded-2xl border border-white/15 bg-white/10 p-3 text-sm text-emerald-100/90 shadow-inner backdrop-blur focus:border-emerald-300/60 focus:outline-none focus:ring-2 focus:ring-emerald-200/40"
               placeholder="e.g. Show me the top selling medicines this week"

@@ -50,6 +50,7 @@ export default function BranchManagementPage() {
   const [mutatingId, setMutatingId] = useState<number | null>(null);
 
   const [createOpen, setCreateOpen] = useState(false);
+  const [trialLimitMessage, setTrialLimitMessage] = useState<string | null>(null);
 
   const filteredBranches = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -201,6 +202,13 @@ export default function BranchManagementPage() {
         </div>
       </header>
 
+      {trialLimitMessage && (
+        <div className="rounded-3xl border border-amber-300/40 bg-amber-500/15 p-4 text-sm text-amber-100">
+          <div className="font-semibold uppercase tracking-[0.25em] text-amber-200">Free trial notice</div>
+          <p className="mt-2 text-amber-50/90">{trialLimitMessage}</p>
+        </div>
+      )}
+
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card className="border border-white/10 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
           <CardHeader className="space-y-1">
@@ -321,6 +329,9 @@ export default function BranchManagementPage() {
         loadingPharmacies={pharmacyLoading}
         disabled={!tenantId || pharmacyLoading || pharmacies.length === 0}
         onCreated={async () => tenantId && loadBranches(tenantId, { silent: true })}
+        trialLimitMessage={trialLimitMessage}
+        onTrialLimit={(message) => setTrialLimitMessage(message)}
+        onTrialCleared={() => setTrialLimitMessage(null)}
       />
     </div>
   );
@@ -334,6 +345,9 @@ type CreateBranchSheetProps = {
   loadingPharmacies: boolean;
   disabled?: boolean;
   onCreated: () => void;
+  trialLimitMessage?: string | null;
+  onTrialLimit?: (message: string) => void;
+  onTrialCleared?: () => void;
 };
 
 function CreateBranchSheet({
@@ -344,6 +358,9 @@ function CreateBranchSheet({
   loadingPharmacies,
   disabled,
   onCreated,
+  trialLimitMessage,
+  onTrialLimit,
+  onTrialCleared,
 }: CreateBranchSheetProps) {
   const { show } = useToast();
 
@@ -396,8 +413,17 @@ function CreateBranchSheet({
       resetForm();
       onOpenChange(false);
       onCreated();
+      onTrialCleared?.();
     } catch (error: any) {
-      show({ variant: "destructive", title: "Failed to create branch", description: error?.message || "Please try again." });
+      const rawMessage: string = error?.message || "";
+      const isTrialLimit = /free trial plan supports only one location/i.test(rawMessage);
+      if (isTrialLimit) {
+        const friendly = "Free trial plan supports only one location. Upgrade to add additional branches.";
+        onTrialLimit?.(friendly);
+        show({ variant: "warning", title: "Upgrade required", description: friendly });
+      } else {
+        show({ variant: "destructive", title: "Failed to create branch", description: rawMessage || "Please try again." });
+      }
     } finally {
       setSubmitting(false);
     }
@@ -418,13 +444,18 @@ function CreateBranchSheet({
             Add a new location. Branch names appear in POS sales reports and analytics.
           </SheetDescription>
         </SheetHeader>
+        {trialLimitMessage && (
+          <div className="rounded-2xl border border-amber-300/40 bg-amber-500/10 p-3 text-xs text-amber-100">
+            {trialLimitMessage}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-600">Primary location</label>
             <select
               value={pharmacyId ?? ""}
               onChange={(event) => setPharmacyId(Number(event.target.value) || null)}
-              disabled={loadingPharmacies || pharmacies.length === 0}
+              disabled={loadingPharmacies || pharmacies.length === 0 || Boolean(trialLimitMessage)}
               className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring"
             >
               {pharmacies.length === 0 ? (
@@ -440,15 +471,15 @@ function CreateBranchSheet({
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-600">Branch name</label>
-            <Input value={name} onChange={(event) => setName(event.target.value)} required placeholder="e.g. Bole Branch" />
+            <Input value={name} onChange={(event) => setName(event.target.value)} required placeholder="e.g. Bole Branch" disabled={Boolean(trialLimitMessage)} />
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-600">Address (optional)</label>
-            <Input value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street, city" />
+            <Input value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street, city" disabled={Boolean(trialLimitMessage)} />
           </div>
           <div className="space-y-1">
             <label className="text-xs font-medium text-gray-600">Phone (optional)</label>
-            <Input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="e.g. +251-911-000000" />
+            <Input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="e.g. +251-911-000000" disabled={Boolean(trialLimitMessage)} />
           </div>
           <SheetFooter>
             <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-between">
@@ -462,7 +493,7 @@ function CreateBranchSheet({
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={submitting || disabled}>
+              <Button type="submit" disabled={submitting || disabled || Boolean(trialLimitMessage)}>
                 {submitting ? "Creating..." : "Create branch"}
               </Button>
             </div>
