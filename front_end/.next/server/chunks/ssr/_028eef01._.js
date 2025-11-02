@@ -17,6 +17,8 @@ __turbopack_context__.s([
     ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
+    "IntegrationsAPI",
+    ()=>IntegrationsAPI,
     "InventoryAPI",
     ()=>InventoryAPI,
     "KYCAPI",
@@ -39,6 +41,8 @@ __turbopack_context__.s([
     ()=>TenantAPI,
     "UploadAPI",
     ()=>UploadAPI,
+    "authFetch",
+    ()=>authFetch,
     "getAccessToken",
     ()=>getAccessToken,
     "getAuthJSON",
@@ -132,24 +136,39 @@ async function postForm(path, data, tenantId) {
     return await res.json();
 }
 async function postJSON(path, body, tenantId) {
-    const res = await fetch(resolveApiUrl(path), {
+    const requestInit = {
         method: "POST",
         headers: buildHeaders({
             "Content-Type": "application/json"
         }, tenantId),
         body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-        try {
-            const data = await res.json();
-            const msg = data?.error || data?.detail || JSON.stringify(data);
-            throw new Error(msg || `Request failed with ${res.status}`);
-        } catch  {
-            const text = await res.text().catch(()=>"");
-            throw new Error(text || `Request failed with ${res.status}`);
+    };
+    try {
+        const res = await fetch(resolveApiUrl(path), requestInit);
+        if (!res.ok) {
+            let parsed = null;
+            let message = "";
+            try {
+                parsed = await res.json();
+                if (typeof parsed === "string") message = parsed;
+                else if (Array.isArray(parsed)) message = parsed.join(", ");
+                else message = parsed?.error || parsed?.detail || parsed?.message || "";
+                if (!message && parsed) message = JSON.stringify(parsed);
+            } catch  {
+                parsed = null;
+                message = await res.text().catch(()=>"");
+            }
+            const error = new Error(message || `Request failed with ${res.status}`);
+            error.status = res.status;
+            if (parsed !== null) error.body = parsed;
+            throw error;
         }
+        return await res.json();
+    } catch (error) {
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+        throw error;
     }
-    return await res.json();
 }
 async function putAuthJSON(path, bodyData, tenantId) {
     const res = await authFetch(path, {
@@ -310,7 +329,8 @@ const AuthAPI = {
         }),
     login: (email, password, tenantId)=>postForm("/api/v1/auth/login", {
             username: email,
-            password
+            password,
+            grant_type: "password"
         }, tenantId).then((resp)=>{
             if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
             ;
@@ -318,7 +338,8 @@ const AuthAPI = {
         }),
     loginRequestCode: (email, password, tenantId)=>postForm("/api/v1/auth/login/request-code", {
             username: email,
-            password
+            password,
+            grant_type: "password"
         }, tenantId),
     loginVerify: (email, code, tenantId)=>postJSON("/api/v1/auth/login/verify", {
             email,
@@ -342,21 +363,62 @@ const AuthAPI = {
             if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
             ;
             return profile;
-        }),
-    updateProfile: (body)=>putAuthJSON("/api/v1/auth/me", body)
+        })
 };
 const TenantAPI = {
-    activity: (params)=>{
+    activity: async (params)=>{
         const searchParams = new URLSearchParams();
         if (params?.limit) searchParams.set("limit", params.limit.toString());
         if (params?.offset) searchParams.set("offset", params.offset.toString());
-        if (params?.action) {
-            params.action.forEach((a)=>searchParams.append("action", a));
-        }
+        params?.action?.forEach((action)=>searchParams.append("action", action));
         const qs = searchParams.toString();
-        const path = qs ? `/api/v1/tenant/activity?${qs}` : "/api/v1/tenant/activity";
-        return getAuthJSON(path);
+        const url = `/api/v1/tenant/activity${qs ? `?${qs}` : ""}`;
+        const tenantId = getTenantId() ?? undefined;
+        const res = await authFetch(url, undefined, true, tenantId);
+        if (res.status === 404 || res.status === 204) {
+            return [];
+        }
+        if (!res.ok) {
+            const text = await res.text().catch(()=>"");
+            throw new Error(text || `Request failed with ${res.status}`);
+        }
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+            return [];
+        }
+        try {
+            return await res.json();
+        } catch  {
+            return [];
+        }
     }
+};
+const IntegrationsAPI = {
+    listProviders: ()=>getAuthJSON("/api/v1/integrations/providers"),
+    listConnections: (tenantId)=>getAuthJSON("/api/v1/integrations/connections", tenantId),
+    startOAuth: (tenantId, providerKey, resources)=>postAuthJSON("/api/v1/integrations/oauth/start", {
+            provider_key: providerKey,
+            resources,
+            display_name: undefined
+        }, tenantId),
+    completeOAuth: (code, state, providerKey)=>postJSON("/api/v1/integrations/oauth/callback", {
+            code,
+            state,
+            provider_key: providerKey
+        }),
+    disconnect: (tenantId, connectionId)=>authFetch(`/api/v1/integrations/connections/${connectionId}`, {
+            method: "DELETE"
+        }, true, tenantId).then(async (res)=>{
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || `HTTP ${res.status}`);
+            }
+            return res.json();
+        }),
+    triggerSync: (tenantId, connectionId, resource, direction)=>postAuthJSON(`/api/v1/integrations/connections/${connectionId}/sync`, {
+            resource,
+            direction
+        }, tenantId)
 };
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
@@ -372,8 +434,9 @@ const AffiliateAPI = {
     updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body)
 };
 const AdminAPI = {
-    pharmacies: (page = 1, pageSize = 20, q)=>getAuthJSON(`/api/v1/admin/pharmacies?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
-    affiliates: (page = 1, pageSize = 20, q)=>getAuthJSON(`/api/v1/admin/affiliates?page=${page}&page_size=${pageSize}${q ? `&q=${encodeURIComponent(q)}` : ""}`),
+    analyticsOverview: (days = 30)=>getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
+    pharmacySummary: ()=>getAuthJSON(`/api/v1/admin/pharmacies/summary`),
+    pharmacies: (page = 1, pageSize = 20, q = "")=>getAuthJSON(`/api/v1/admin/pharmacies?page=${page}&page_size=${pageSize}&q=${encodeURIComponent(q)}`),
     approvePharmacy: (tenantId, applicationId, body)=>postAuthJSON(`/api/v1/admin/pharmacies/${applicationId}/approve`, body || {}, tenantId),
     rejectPharmacy: (tenantId, applicationId)=>postAuthJSON(`/api/v1/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
     verifyPayment: (tenantId, code)=>postAuthJSON(`/api/v1/admin/payments/verify`, {
@@ -382,7 +445,6 @@ const AdminAPI = {
     rejectPayment: (tenantId, code)=>postAuthJSON(`/api/v1/admin/payments/reject`, {
             code: code || null
         }, tenantId),
-    analyticsOverview: (days = 30)=>getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
     approveAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
     rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {})
 };
@@ -396,41 +458,19 @@ const StaffAPI = {
             },
             body: JSON.stringify(body)
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || `Request failed with ${res.status}`);
+            }
             return res.json();
         }),
     remove: (tenantId, userId)=>authFetch(`/api/v1/staff/${userId}`, {
             method: "DELETE"
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        })
-};
-const BranchAPI = {
-    list: (tenantId, params)=>{
-        const query = new URLSearchParams();
-        if (params?.q) query.set("q", params.q);
-        if (params?.pharmacy_id !== undefined) query.set("pharmacy_id", String(params.pharmacy_id));
-        if (params?.page) query.set("page", String(params.page));
-        if (params?.page_size) query.set("page_size", String(params.page_size));
-        const path = `/api/v1/branches${query.toString() ? `?${query.toString()}` : ""}`;
-        return getAuthJSON(path, tenantId);
-    },
-    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
-    update: (tenantId, branchId, payload)=>authFetch(`/api/v1/branches/${branchId}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        }),
-    remove: (tenantId, branchId)=>authFetch(`/api/v1/branches/${branchId}`, {
-            method: "DELETE"
-        }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || `Request failed with ${res.status}`);
+            }
             return res.json();
         })
 };
@@ -449,6 +489,23 @@ const UploadAPI = {
 const KYCAPI = {
     status: (tenantId)=>getAuthJSON("/api/v1/owner/kyc/status", tenantId),
     update: (tenantId, body)=>putAuthJSON("/api/v1/owner/kyc/status", body, tenantId)
+};
+const BranchAPI = {
+    list: (tenantId, params)=>{
+        const search = new URLSearchParams();
+        search.set("page", "1");
+        search.set("page_size", String(params?.page_size ?? 50));
+        if (params?.q) search.set("q", params.q);
+        const query = search.toString();
+        return getAuthJSON(`/api/v1/owner/branches${query ? `?${query}` : ""}`, tenantId);
+    },
+    create: (tenantId, body)=>postAuthJSON(`/api/v1/owner/branches`, body, tenantId),
+    update: (tenantId, branchId, body)=>putAuthJSON(`/api/v1/owner/branches/${branchId}`, body, tenantId),
+    remove: (tenantId, branchId)=>authFetch(`/api/v1/owner/branches/${branchId}`, {
+            method: "DELETE"
+        }, true, tenantId).then((res)=>{
+            if (!res.ok) throw new Error("Failed to remove branch");
+        })
 };
 const PharmaciesAPI = {
     list: (tenantId, params)=>{
@@ -474,9 +531,9 @@ const PharmaciesAPI = {
 };
 const ChatAPI = {
     listThreads: (tenantId)=>getAuthJSON(`/api/v1/chat/threads`, tenantId),
-    createThread: (tenantId, title)=>postAuthJSON(`/api/v1/chat/threads`, {
+    createThread: (tenantId, title)=>postAuthJSON(`/api/v1/chat/threads`, title ? {
             title
-        }, tenantId),
+        } : {}, tenantId),
     listMessages: (tenantId, threadId)=>getAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, tenantId),
     sendMessage: (tenantId, threadId, prompt)=>postAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, {
             prompt
@@ -1193,7 +1250,7 @@ function Button({ className, variant, size, asChild = false, ...props }) {
         ...props
     }, void 0, false, {
         fileName: "[project]/components/ui/button.tsx",
-        lineNumber: 53,
+        lineNumber: 52,
         columnNumber: 5
     }, this);
 }
@@ -1226,9 +1283,9 @@ const contactChannels = [
     {
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$mail$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Mail$3e$__["Mail"],
         label: "Support",
-        value: "support@zemenpharma.com",
+        value: "support@zemeninventory.com",
         description: "For product questions or onboarding assistance.",
-        href: "mailto:support@zemenpharma.com"
+        href: "mailto:support@zemeninventory.com"
     },
     {
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$phone$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Phone$3e$__["Phone"],
@@ -1333,7 +1390,7 @@ function ContactPage() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
                                 className: "mt-6 text-4xl font-semibold leading-tight md:text-5xl",
-                                children: "Let's build the future of pharmacy operations together"
+                                children: "Let's build the future of inventory operations together"
                             }, void 0, false, {
                                 fileName: "[project]/app/(marketing)/contact/page.tsx",
                                 lineNumber: 104,
@@ -1542,7 +1599,7 @@ function ContactPage() {
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
                                                     value: message,
                                                     onChange: (e)=>setMessage(e.target.value),
-                                                    placeholder: "Share a bit about your pharmacy operations or goals...",
+                                                    placeholder: "Share a bit about your inventory operations or goals...",
                                                     required: true,
                                                     className: "min-h-[180px] w-full resize-y rounded-2xl border border-white/15 bg-white/10 p-4 text-sm text-white placeholder:text-emerald-100/60 shadow-inner focus:border-emerald-300/60 focus:outline-none focus:ring-2 focus:ring-emerald-200/40"
                                                 }, void 0, false, {

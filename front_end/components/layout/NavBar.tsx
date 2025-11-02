@@ -67,76 +67,82 @@ export default function NavBar({
         className={[
           "hidden lg:block mx-auto w-fit fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 rounded-2xl",
           "bg-white/10 backdrop-blur-xl border border-white/15 shadow-[0_20px_60px_-35px_rgba(59,130,246,0.45)]",
-          scrolled ? "scale-105 shadow-[0_25px_80px_-35px_rgba(16,185,129,0.55)]" : "",
+          scrolled
+            ? "scale-105 shadow-[0_25px_80px_-35px_rgba(16,185,129,0.55)]"
+            : "",
         ].join(" ")}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <NavigationMenu viewport={false}>
-          <NavigationMenuList className="flex gap-1 px-4 py-2">
-            {navItems.map((item, index) => (
-              <NavigationMenuItem key={item.id}>
-                <NavigationMenuLink asChild>
-                  <motion.button
-                    onClick={() => {
-                      if (item.href) {
-                        router.push(item.href);
-                        return;
-                      }
-                      if (pathname !== "/") {
-                        router.push(`/#${item.id}`);
-                      } else {
-                        handleScrollToSection(item.id);
-                      }
-                    }}
-                    className={[
-                      "group relative cursor-pointer rounded-lg px-6 py-3 font-medium text-sm uppercase tracking-wide transition-all duration-300",
-                      "text-emerald-100 group-hover:text-white",
-                    ].join(" ")}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 + 0.3 }}
-                  >
-                    <span className="relative z-10">{item.label}</span>
-                    <motion.div
-                      className="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                      style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.55), rgba(59,130,246,0.45))" }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </motion.button>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            ))}
-            <NavigationMenuItem>
+          {navItems.map((item, index) => (
+            <NavigationMenuItem className="list-none" key={item.id}>
               <NavigationMenuLink asChild>
                 <motion.button
+                  onClick={() => {
+                    if (item.href) {
+                      router.push(item.href);
+                      return;
+                    }
+                    if (pathname !== "/") {
+                      router.push(`/#${item.id}`);
+                    } else {
+                      handleScrollToSection(item.id);
+                    }
+                  }}
                   className={[
-                    "group relative rounded-lg px-6 py-3 font-medium text-sm uppercase tracking-wide transition-all duration-300",
+                    "group relative cursor-pointer rounded-lg px-6 py-3 font-medium text-sm uppercase tracking-wide transition-all duration-300",
                     "text-emerald-100 group-hover:text-white",
                   ].join(" ")}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 5 * 0.1 + 0.3 }}
+                  transition={{ delay: index * 0.1 + 0.3 }}
                 >
-                  <span className="relative z-10">
-                    <Link href="/register/affiliate" className="text-white">
-                      Affiliate
-                    </Link>
-                  </span>
+                  <span className="relative z-10">{item.label}</span>
                   <motion.div
                     className="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                    style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.55), rgba(59,130,246,0.45))" }}
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(16,185,129,0.55), rgba(59,130,246,0.45))",
+                    }}
                     transition={{ duration: 0.3 }}
                   />
                 </motion.button>
               </NavigationMenuLink>
             </NavigationMenuItem>
-          </NavigationMenuList>
+          ))}
+          <NavigationMenuItem className="list-none">
+            <NavigationMenuLink asChild>
+              <motion.button
+                className={[
+                  "group relative rounded-lg px-6 py-3 font-medium text-sm uppercase tracking-wide transition-all duration-300",
+                  "text-emerald-100 ",
+                ].join(" ")}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 5 * 0.1 + 0.3 }}
+              >
+                <span className="relative z-10">
+                  <Link href="/register/affiliate" className="text-white">
+                    Affiliate
+                  </Link>
+                </span>
+                {/* <motion.div
+                  className="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(16,185,129,0.55), rgba(59,130,246,0.45))",
+                  }}
+                  transition={{ duration: 0.3 }}
+                /> */}
+              </motion.button>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
         </NavigationMenu>
       </motion.div>
 

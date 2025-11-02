@@ -58,6 +58,8 @@ __turbopack_context__.s([
     ()=>KYCAPI,
     "MedicinesAPI",
     ()=>MedicinesAPI,
+    "NotificationAPI",
+    ()=>NotificationAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
     "OwnerChatAPI",
@@ -486,18 +488,22 @@ const IntegrationsAPI = {
 const AffiliateAPI = {
     getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
     createLink: ()=>getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
-    deactivate: (token)=>postAuthJSON("/api/v1/affiliate/links/".concat(encodeURIComponent(token), "/deactivate"), {}),
-    rotate: (token)=>postAuthJSON("/api/v1/affiliate/links/".concat(encodeURIComponent(token), "/rotate"), {}),
+    deactivate: (token)=>getAuthJSON("/api/v1/affiliate/register-link?deactivate=".concat(encodeURIComponent(token))),
+    rotate: (token)=>getAuthJSON("/api/v1/affiliate/register-link?rotate=".concat(encodeURIComponent(token))),
     dashboard: ()=>getAuthJSON("/api/v1/affiliate/dashboard"),
-    payouts: (status)=>getAuthJSON("/api/v1/affiliate/payouts".concat(status ? "?status_filter=".concat(encodeURIComponent(status)) : "")),
-    requestPayout: function(month) {
-        let percent = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 5;
-        return postAuthJSON("/api/v1/affiliate/payouts/request", {
+    payouts: (status)=>getAuthJSON("/api/v1/affiliate/payouts".concat(status ? "?status=".concat(encodeURIComponent(status)) : "")),
+    requestPayout: (month, percent)=>postAuthJSON("/api/v1/affiliate/payouts", {
             month,
             percent
-        });
-    },
+        }),
     updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body)
+};
+const NotificationAPI = {
+    list: ()=>getAuthJSON("/api/v1/notifications"),
+    markRead: (id)=>postAuthJSON("/api/v1/notifications/".concat(id, "/read"), {}),
+    delete: (id)=>authFetch("/api/v1/notifications/".concat(id), {
+            method: "DELETE"
+        })
 };
 const AdminAPI = {
     analyticsOverview: function() {
@@ -530,41 +536,19 @@ const StaffAPI = {
             },
             body: JSON.stringify(body)
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || "Request failed with ".concat(res.status));
+            }
             return res.json();
         }),
     remove: (tenantId, userId)=>authFetch("/api/v1/staff/".concat(userId), {
             method: "DELETE"
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        })
-};
-const BranchAPI = {
-    list: (tenantId, params)=>{
-        const query = new URLSearchParams();
-        if (params === null || params === void 0 ? void 0 : params.q) query.set("q", params.q);
-        if ((params === null || params === void 0 ? void 0 : params.pharmacy_id) !== undefined) query.set("pharmacy_id", String(params.pharmacy_id));
-        if (params === null || params === void 0 ? void 0 : params.page) query.set("page", String(params.page));
-        if (params === null || params === void 0 ? void 0 : params.page_size) query.set("page_size", String(params.page_size));
-        const path = "/api/v1/branches".concat(query.toString() ? "?".concat(query.toString()) : "");
-        return getAuthJSON(path, tenantId);
-    },
-    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
-    update: (tenantId, branchId, payload)=>authFetch("/api/v1/branches/".concat(branchId), {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        }),
-    remove: (tenantId, branchId)=>authFetch("/api/v1/branches/".concat(branchId), {
-            method: "DELETE"
-        }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || "Request failed with ".concat(res.status));
+            }
             return res.json();
         })
 };
@@ -583,6 +567,24 @@ const UploadAPI = {
 const KYCAPI = {
     status: (tenantId)=>getAuthJSON("/api/v1/owner/kyc/status", tenantId),
     update: (tenantId, body)=>putAuthJSON("/api/v1/owner/kyc/status", body, tenantId)
+};
+const BranchAPI = {
+    list: (tenantId, params)=>{
+        const search = new URLSearchParams();
+        search.set("page", "1");
+        var _params_page_size;
+        search.set("page_size", String((_params_page_size = params === null || params === void 0 ? void 0 : params.page_size) !== null && _params_page_size !== void 0 ? _params_page_size : 50));
+        if (params === null || params === void 0 ? void 0 : params.q) search.set("q", params.q);
+        const query = search.toString();
+        return getAuthJSON("/api/v1/owner/branches".concat(query ? "?".concat(query) : ""), tenantId);
+    },
+    create: (tenantId, body)=>postAuthJSON("/api/v1/owner/branches", body, tenantId),
+    update: (tenantId, branchId, body)=>putAuthJSON("/api/v1/owner/branches/".concat(branchId), body, tenantId),
+    remove: (tenantId, branchId)=>authFetch("/api/v1/owner/branches/".concat(branchId), {
+            method: "DELETE"
+        }, true, tenantId).then((res)=>{
+            if (!res.ok) throw new Error("Failed to remove branch");
+        })
 };
 const PharmaciesAPI = {
     list: (tenantId, params)=>{

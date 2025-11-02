@@ -37,8 +37,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/input.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/button.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/skeleton.tsx [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_components$2f$cards$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/app/(dashboard)/dashboard/affiliate/_components/cards.tsx [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_context$2f$affiliate$2d$dashboard$2d$context$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/app/(dashboard)/dashboard/affiliate/_context/affiliate-dashboard-context.tsx [app-ssr] (ecmascript)");
 "use client";
 ;
 ;
@@ -46,49 +44,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dash
 ;
 ;
 ;
-;
-;
-const statusOptions = [
-    {
-        value: "all",
-        label: "All statuses"
-    },
-    {
-        value: "pending",
-        label: "Pending"
-    },
-    {
-        value: "approved",
-        label: "Approved"
-    },
-    {
-        value: "paid",
-        label: "Paid"
-    }
-];
-const rangeOptions = [
-    {
-        value: "all",
-        label: "All time"
-    },
-    {
-        value: "7",
-        label: "Last 7 days"
-    },
-    {
-        value: "30",
-        label: "Last 30 days"
-    },
-    {
-        value: "90",
-        label: "Last 90 days"
-    }
-];
 function CommissionsListPage() {
-    const { stats, monthLabel } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_context$2f$affiliate$2d$dashboard$2d$context$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAffiliateDashboardContext"])();
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
-    const [_me, setMe] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [me, setMe] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [rows, setRows] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const [q, setQ] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [status, setStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("all");
@@ -99,9 +58,9 @@ function CommissionsListPage() {
         let active = true;
         async function load() {
             try {
-                const me = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAuthJSON"])("/api/v1/auth/me");
+                const m = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAuthJSON"])("/api/v1/auth/me");
                 if (!active) return;
-                setMe(me);
+                setMe(m);
                 const token = (0, __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAccessToken"])();
                 const res = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["API_BASE"]}/api/v1/admin/commissions`, {
                     headers: {
@@ -109,8 +68,8 @@ function CommissionsListPage() {
                         ...token ? {
                             Authorization: `Bearer ${token}`
                         } : {},
-                        ...me?.tenant_id ? {
-                            "X-Tenant-ID": me.tenant_id
+                        ...m?.tenant_id ? {
+                            "X-Tenant-ID": m.tenant_id
                         } : {}
                     }
                 });
@@ -118,9 +77,9 @@ function CommissionsListPage() {
                 const data = await res.json();
                 if (!active) return;
                 setRows(data);
-            } catch (err) {
+            } catch (e) {
                 if (!active) return;
-                setError(err?.message || "Failed to load commissions");
+                setError(e.message || "Failed to load commissions");
             } finally{
                 if (active) setLoading(false);
             }
@@ -134,17 +93,13 @@ function CommissionsListPage() {
         const query = q.trim().toLowerCase();
         const now = Date.now();
         let list = rows;
-        if (status !== "all") {
-            list = list.filter((row)=>row.status.toLowerCase() === status);
-        }
+        if (status !== "all") list = list.filter((r)=>r.status.toLowerCase() === status);
         if (range !== "all") {
             const days = Number(range);
             const since = now - days * 24 * 60 * 60 * 1000;
-            list = list.filter((row)=>new Date(row.earned_at).getTime() >= since);
+            list = list.filter((r)=>new Date(r.earned_at).getTime() >= since);
         }
-        if (query) {
-            list = list.filter((row)=>row.affiliate.toLowerCase().includes(query));
-        }
+        if (query) list = list.filter((r)=>r.affiliate.toLowerCase().includes(query));
         return list;
     }, [
         rows,
@@ -165,451 +120,394 @@ function CommissionsListPage() {
     ]);
     if (loading) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "space-y-6",
+            className: "space-y-4",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Skeleton"], {
-                    className: "h-40 rounded-3xl"
+                    className: "h-8 w-64"
                 }, void 0, false, {
                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                    lineNumber: 112,
+                    lineNumber: 84,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Skeleton"], {
-                    className: "h-32 rounded-3xl"
+                    className: "h-10 w-full"
                 }, void 0, false, {
                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                    lineNumber: 113,
+                    lineNumber: 85,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Skeleton"], {
-                    className: "h-64 rounded-3xl"
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "space-y-2",
+                    children: Array.from({
+                        length: 8
+                    }).map((_, i)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Skeleton"], {
+                            className: "h-14"
+                        }, i, false, {
+                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                            lineNumber: 86,
+                            columnNumber: 78
+                        }, this))
                 }, void 0, false, {
                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                    lineNumber: 114,
+                    lineNumber: 86,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-            lineNumber: 111,
+            lineNumber: 83,
             columnNumber: 7
         }, this);
     }
-    if (error) {
-        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "rounded-2xl border border-red-200 bg-red-50/80 p-6 text-sm text-red-600",
-            children: error
-        }, void 0, false, {
-            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-            lineNumber: 120,
-            columnNumber: 12
-        }, this);
-    }
-    const totalCommissions = filtered.reduce((sum, row)=>sum + (row.amount || 0), 0);
+    if (error) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "text-sm text-red-600",
+        children: error
+    }, void 0, false, {
+        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+        lineNumber: 90,
+        columnNumber: 21
+    }, this);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "space-y-6",
+        className: "space-y-4",
         children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_components$2f$cards$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SectionCard"], {
-                title: "Commission overview",
-                description: `You can track performance for ${monthLabel.toLowerCase()} and comparison ranges.`,
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "grid gap-4 sm:grid-cols-2 xl:grid-cols-4",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_components$2f$cards$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["StatCard"], {
-                            title: "This period",
-                            value: formatCurrency(stats.currentCommission),
-                            description: "Commission earned for the current month"
-                        }, void 0, false, {
-                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                            lineNumber: 132,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_components$2f$cards$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["StatCard"], {
-                            title: "Pending",
-                            value: formatCurrency(stats.pendingPayout),
-                            description: "Awaiting manual approval"
-                        }, void 0, false, {
-                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                            lineNumber: 137,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_components$2f$cards$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["StatCard"], {
-                            title: "Paid to date",
-                            value: formatCurrency(stats.paidPayout),
-                            description: "Lifetime cleared payouts"
-                        }, void 0, false, {
-                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                            lineNumber: 142,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_components$2f$cards$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["StatCard"], {
-                            title: "Filtered total",
-                            value: formatCurrency(totalCommissions),
-                            description: `Across ${filtered.length} record${filtered.length === 1 ? "" : "s"}`
-                        }, void 0, false, {
-                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                            lineNumber: 147,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                    lineNumber: 131,
-                    columnNumber: 9
-                }, this)
-            }, void 0, false, {
-                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                lineNumber: 127,
-                columnNumber: 7
-            }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_components$2f$cards$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SectionCard"], {
-                title: "Filter commissions",
-                description: "Narrow the dataset to focus on recent activity or statuses of interest.",
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex flex-col gap-2 lg:flex-row lg:items-center",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
-                                    placeholder: "Search affiliate name",
-                                    value: q,
-                                    onChange: (event)=>setQ(event.target.value),
-                                    className: "w-full rounded-xl border-emerald-200 focus:border-emerald-400 focus:ring-emerald-400 lg:w-64"
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                    lineNumber: 158,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                    value: status,
-                                    onChange: (event)=>setStatus(event.target.value),
-                                    className: "h-11 rounded-xl border border-emerald-200 bg-white/90 px-3 text-sm text-emerald-800 focus:border-emerald-400 focus:outline-none",
-                                    children: statusOptions.map((option)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                            value: option.value,
-                                            children: option.label
-                                        }, option.value, false, {
-                                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                            lineNumber: 171,
-                                            columnNumber: 17
-                                        }, this))
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                    lineNumber: 165,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                    value: range,
-                                    onChange: (event)=>setRange(event.target.value),
-                                    className: "h-11 rounded-xl border border-emerald-200 bg-white/90 px-3 text-sm text-emerald-800 focus:border-emerald-400 focus:outline-none",
-                                    children: rangeOptions.map((option)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                            value: option.value,
-                                            children: option.label
-                                        }, option.value, false, {
-                                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                            lineNumber: 183,
-                                            columnNumber: 17
-                                        }, this))
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                    lineNumber: 177,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                    value: pageSize,
-                                    onChange: (event)=>setPageSize(Number(event.target.value)),
-                                    className: "h-11 rounded-xl border border-emerald-200 bg-white/90 px-3 text-sm text-emerald-800 focus:border-emerald-400 focus:outline-none",
-                                    children: [
-                                        10,
-                                        25,
-                                        50
-                                    ].map((size)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                            value: size,
-                                            children: [
-                                                size,
-                                                " per page"
-                                            ]
-                                        }, size, true, {
-                                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                            lineNumber: 195,
-                                            columnNumber: 17
-                                        }, this))
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                    lineNumber: 189,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                            lineNumber: 157,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex gap-2",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                type: "button",
-                                variant: "outline",
-                                className: "rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50",
-                                onClick: ()=>{
-                                    setQ("");
-                                    setStatus("all");
-                                    setRange("all");
-                                },
-                                children: "Reset filters"
-                            }, void 0, false, {
-                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                lineNumber: 203,
-                                columnNumber: 13
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                            lineNumber: 202,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                    lineNumber: 156,
-                    columnNumber: 9
-                }, this)
-            }, void 0, false, {
-                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                lineNumber: 155,
-                columnNumber: 7
-            }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_components$2f$cards$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["SectionCard"], {
-                title: "Commission history",
-                description: `Page ${pageSafe} of ${totalPages}. Displaying ${paged.length} result${paged.length === 1 ? "" : "s"}.`,
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "flex items-center justify-between",
                 children: [
-                    paged.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/60 p-8 text-center text-sm text-emerald-700/80",
-                        children: "No commissions match your filters. Adjust search terms or time range to see more activity."
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                        className: "text-xl font-semibold",
+                        children: "Commissions"
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                        lineNumber: 224,
-                        columnNumber: 11
-                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "overflow-hidden rounded-2xl border border-emerald-100/70",
-                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("table", {
-                            className: "min-w-full divide-y divide-emerald-100/70 text-sm text-emerald-900",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("thead", {
-                                    className: "bg-emerald-50/70 text-xs uppercase tracking-wide text-emerald-600",
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "px-4 py-3 text-left",
-                                                children: "Affiliate"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                lineNumber: 232,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "px-4 py-3 text-left",
-                                                children: "Amount"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                lineNumber: 233,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "px-4 py-3 text-left",
-                                                children: "Currency"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                lineNumber: 234,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "px-4 py-3 text-left",
-                                                children: "Status"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                lineNumber: 235,
-                                                columnNumber: 19
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                className: "px-4 py-3 text-left",
-                                                children: "Earned on"
-                                            }, void 0, false, {
-                                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                lineNumber: 236,
-                                                columnNumber: 19
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                        lineNumber: 231,
-                                        columnNumber: 17
-                                    }, this)
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                    lineNumber: 230,
-                                    columnNumber: 15
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
-                                    className: "divide-y divide-emerald-50/80 bg-white",
-                                    children: paged.map((row)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
-                                            className: "hover:bg-emerald-50/40",
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "px-4 py-3 font-medium text-emerald-900",
-                                                    children: row.affiliate
-                                                }, void 0, false, {
-                                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                    lineNumber: 242,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "px-4 py-3 text-emerald-900",
-                                                    children: formatCurrency(row.amount)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                    lineNumber: 243,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "px-4 py-3 text-emerald-700",
-                                                    children: row.currency
-                                                }, void 0, false, {
-                                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                    lineNumber: 244,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "px-4 py-3",
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StatusBadge, {
-                                                        status: row.status
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                        lineNumber: 246,
-                                                        columnNumber: 23
-                                                    }, this)
-                                                }, void 0, false, {
-                                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                    lineNumber: 245,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                    className: "px-4 py-3 text-xs text-emerald-600",
-                                                    children: new Date(row.earned_at).toLocaleDateString()
-                                                }, void 0, false, {
-                                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                                    lineNumber: 248,
-                                                    columnNumber: 21
-                                                }, this)
-                                            ]
-                                        }, row.id, true, {
-                                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                            lineNumber: 241,
-                                            columnNumber: 19
-                                        }, this))
-                                }, void 0, false, {
-                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                    lineNumber: 239,
-                                    columnNumber: 15
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                            lineNumber: 229,
-                            columnNumber: 13
-                        }, this)
-                    }, void 0, false, {
-                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                        lineNumber: 228,
-                        columnNumber: 11
+                        lineNumber: 95,
+                        columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-emerald-700/80",
+                        className: "flex items-center gap-2",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                children: [
-                                    "Page ",
-                                    pageSafe,
-                                    " of ",
-                                    totalPages,
-                                    " · ",
-                                    filtered.length,
-                                    " total row",
-                                    filtered.length === 1 ? "" : "s"
-                                ]
-                            }, void 0, true, {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
+                                placeholder: "Search affiliate",
+                                value: q,
+                                onChange: (e)=>setQ(e.target.value),
+                                className: "w-64"
+                            }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                lineNumber: 257,
+                                lineNumber: 97,
                                 columnNumber: 11
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex gap-2",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                value: status,
+                                onChange: (e)=>setStatus(e.target.value),
+                                className: "border rounded px-2 py-2 text-sm",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                        type: "button",
-                                        variant: "outline",
-                                        onClick: ()=>setPage((prev)=>Math.max(1, prev - 1)),
-                                        disabled: pageSafe <= 1,
-                                        className: "rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50",
-                                        children: "Previous"
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: "all",
+                                        children: "All statuses"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                        lineNumber: 261,
+                                        lineNumber: 99,
                                         columnNumber: 13
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                        type: "button",
-                                        variant: "outline",
-                                        onClick: ()=>setPage((prev)=>Math.min(totalPages, prev + 1)),
-                                        disabled: pageSafe >= totalPages,
-                                        className: "rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50",
-                                        children: "Next"
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: "pending",
+                                        children: "Pending"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                        lineNumber: 270,
+                                        lineNumber: 100,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: "approved",
+                                        children: "Approved"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 101,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: "paid",
+                                        children: "Paid"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 102,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                                lineNumber: 260,
+                                lineNumber: 98,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                value: range,
+                                onChange: (e)=>setRange(e.target.value),
+                                className: "border rounded px-2 py-2 text-sm",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: "all",
+                                        children: "All time"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 105,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: "7",
+                                        children: "Last 7 days"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 106,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: "30",
+                                        children: "Last 30 days"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 107,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: "90",
+                                        children: "Last 90 days"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 108,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                lineNumber: 104,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                value: pageSize,
+                                onChange: (e)=>setPageSize(Number(e.target.value)),
+                                className: "border rounded px-2 py-2 text-sm",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: 10,
+                                        children: "10"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 111,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: 25,
+                                        children: "25"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 112,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                        value: 50,
+                                        children: "50"
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 113,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                lineNumber: 110,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                        lineNumber: 256,
+                        lineNumber: 96,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-                lineNumber: 219,
+                lineNumber: 94,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "border rounded bg-white divide-y",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "grid grid-cols-12 p-3 text-xs text-gray-600",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "col-span-4",
+                                children: "Affiliate"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                lineNumber: 120,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "col-span-2",
+                                children: "Amount"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                lineNumber: 121,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "col-span-2",
+                                children: "Currency"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                lineNumber: 122,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "col-span-2",
+                                children: "Status"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                lineNumber: 123,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "col-span-2",
+                                children: "Earned At"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                lineNumber: 124,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                        lineNumber: 119,
+                        columnNumber: 9
+                    }, this),
+                    paged.map((r)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "grid grid-cols-12 p-3 items-center",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "col-span-4 truncate",
+                                    children: r.affiliate
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                    lineNumber: 128,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "col-span-2",
+                                    children: Number(r.amount).toFixed(2)
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                    lineNumber: 129,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "col-span-2",
+                                    children: r.currency
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                    lineNumber: 130,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "col-span-2",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: `text-xs px-2 py-1 rounded ${r.status.toLowerCase() === "pending" ? "bg-amber-50 text-amber-700" : r.status.toLowerCase() === "approved" ? "bg-emerald-50 text-emerald-700" : "bg-blue-50 text-blue-700"}`,
+                                        children: r.status
+                                    }, void 0, false, {
+                                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                        lineNumber: 132,
+                                        columnNumber: 15
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                    lineNumber: 131,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "col-span-2 text-xs text-gray-600",
+                                    children: new Date(r.earned_at).toLocaleDateString()
+                                }, void 0, false, {
+                                    fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                    lineNumber: 134,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, r.id, true, {
+                            fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                            lineNumber: 127,
+                            columnNumber: 11
+                        }, this)),
+                    paged.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "p-6 text-gray-500",
+                        children: "No results."
+                    }, void 0, false, {
+                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                        lineNumber: 137,
+                        columnNumber: 32
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                lineNumber: 118,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "flex items-center justify-between text-sm",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        children: [
+                            "Page ",
+                            pageSafe,
+                            " of ",
+                            totalPages,
+                            " • ",
+                            filtered.length,
+                            " result(s)"
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                        lineNumber: 141,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex gap-2",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                variant: "outline",
+                                onClick: ()=>setPage((p)=>Math.max(1, p - 1)),
+                                disabled: pageSafe <= 1,
+                                children: "Previous"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                lineNumber: 143,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                variant: "outline",
+                                onClick: ()=>setPage((p)=>Math.min(totalPages, p + 1)),
+                                disabled: pageSafe >= totalPages,
+                                children: "Next"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                                lineNumber: 144,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                        lineNumber: 142,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
+                lineNumber: 140,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-        lineNumber: 126,
+        lineNumber: 93,
         columnNumber: 5
     }, this);
-}
-function StatusBadge({ status }) {
-    const tone = status?.toLowerCase();
-    const styles = tone === "approved" ? "bg-emerald-50 text-emerald-700" : tone === "paid" ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-700";
-    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-        className: `inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${styles}`,
-        children: status || "Pending"
-    }, void 0, false, {
-        fileName: "[project]/app/(dashboard)/dashboard/affiliate/commissions/page.tsx",
-        lineNumber: 296,
-        columnNumber: 5
-    }, this);
-}
-function formatCurrency(amount) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD"
-    }).format(amount || 0);
 }
 }),
 ];

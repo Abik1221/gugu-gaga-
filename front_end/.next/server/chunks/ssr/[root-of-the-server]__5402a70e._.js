@@ -85,7 +85,7 @@ function Button({ className, variant, size, asChild = false, ...props }) {
         ...props
     }, void 0, false, {
         fileName: "[project]/components/ui/button.tsx",
-        lineNumber: 53,
+        lineNumber: 52,
         columnNumber: 5
     }, this);
 }

@@ -14,6 +14,10 @@ from app.schemas.affiliate_links import (
     AffiliateLinkActionResponse,
     AffiliateLinkItem,
 )
+from app.services.notifications.triggers import (
+    notify_affiliate_link_event,
+    notify_affiliate_payout_status,
+)
 
 router = APIRouter(prefix="/affiliate", tags=["affiliate"])
 
@@ -43,6 +47,13 @@ def register_link(
         db.commit()
         db.refresh(new_link)
         links.append(new_link)
+        notify_affiliate_link_event(
+            db,
+            affiliate_user_id=user.id,
+            tenant_id=user.tenant_id,
+            event="created",
+            token=new_link.token,
+        )
     return {
         "max_links": 2,
         "count": len(links),
@@ -71,6 +82,13 @@ def deactivate_link(
     link.active = False
     db.add(link)
     db.commit()
+    notify_affiliate_link_event(
+        db,
+        affiliate_user_id=user.id,
+        tenant_id=user.tenant_id,
+        event="deactivated",
+        token=token,
+    )
     return {"token": token, "status": "deactivated"}
 
 
@@ -104,6 +122,13 @@ def rotate_link(
     new_link = AffiliateLink(affiliate_user_id=user.id, token=new_token, active=True)
     db.add(new_link)
     db.commit()
+    notify_affiliate_link_event(
+        db,
+        affiliate_user_id=user.id,
+        tenant_id=user.tenant_id,
+        event="rotated",
+        token=new_token,
+    )
     return {"token": new_token, "status": "rotated", "url": f"https://zemen.example/ref/{new_token}"}
 
 
@@ -193,6 +218,13 @@ def request_payout(
     )
     db.add(payout)
     db.commit()
+    notify_affiliate_payout_status(
+        db,
+        affiliate_user_id=user.id,
+        month=month,
+        amount=amount,
+        status="pending",
+    )
     db.refresh(payout)
     return {"id": payout.id, "month": payout.month, "amount": payout.amount, "percent": payout.percent, "status": payout.status}
 

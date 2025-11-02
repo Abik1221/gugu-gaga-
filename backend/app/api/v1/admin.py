@@ -54,6 +54,7 @@ from app.models.audit import AuditLog
 from app.core.security import hash_password
 import mimetypes
 from urllib.parse import quote
+from app.services.notifications.triggers import notify_affiliate_payout_status
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -409,7 +410,7 @@ def verify_payment(
     result = verify_payment_and_unblock(db, tenant_id=tenant_id, code=payload.code, admin_user_id=current_user.id)
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment submission not found or already processed")
-    ps, sub = result
+    ps, sub, referral = result
 
     log_event(
         db,
@@ -659,6 +660,13 @@ def mark_affiliate_payout_paid(
     payout.status = "paid"
     db.add(payout)
     db.commit()
+    notify_affiliate_payout_status(
+        db,
+        affiliate_user_id=payout.affiliate_user_id,
+        month=payout.month,
+        amount=payout.amount,
+        status="paid",
+    )
     # Notify affiliate via email if possible
     user = db.query(User).filter(User.id == payout.affiliate_user_id).first()
     if user and user.email:
@@ -968,6 +976,13 @@ def approve_affiliate_payout(
     payout.status = "approved"
     db.add(payout)
     db.commit()
+    notify_affiliate_payout_status(
+        db,
+        affiliate_user_id=payout.affiliate_user_id,
+        month=payout.month,
+        amount=payout.amount,
+        status="approved",
+    )
     return {"id": payout.id, "status": payout.status}
 
 
@@ -1096,9 +1111,9 @@ def list_pharmacies_admin(
                 "kyc_id": kyc.id if kyc else None,
                 "kyc_status": kyc_status,
                 "subscription": {
-                    "blocked": bool(sub.blocked) if sub else None,
-                    "next_due_date": sub.next_due_date.isoformat() if sub and sub.next_due_date else None,
-                    "status": subscription_status,
+                    "tenant_id": sub.tenant_id,
+                    "next_due_date": sub.next_due_date.isoformat() if sub.next_due_date else None,
+                    "blocked": sub.blocked,
                 },
                 "created_at": ph.created_at.isoformat() if ph.created_at else None,
                 "latest_payment_code": latest_payment.code if latest_payment else None,

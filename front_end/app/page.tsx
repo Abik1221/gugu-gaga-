@@ -55,7 +55,7 @@ function LandingHero({
   return (
     <section
       id="hero"
-      className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900 pt-24 pb-24 text-white lg:pt-28"
+      className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900 pt-24 pb-24 text-white lg:pt-34 p-5"
     >
       <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-blue-500/10" />
       <div className="absolute inset-0">
@@ -70,21 +70,22 @@ function LandingHero({
           transition={{ duration: 0.8 }}
           className="text-center lg:text-left"
         >
-          <h1 className="mb-6 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
+          <h1 className="mb-6 text-4xl font-bold leading-tight md:text-3xl lg:text-[2.5rem]">
             <span className="bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
               End-to-End AI-Powered
             </span>
             <br />
             <span className="text-white">Inventory Management</span>
           </h1>
-          <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-300 md:text-xl lg:mx-0">
-            Multi-tenant CMS and management system for inventory-led businesses. AI-powered insights,
-            real-time dashboards, and seamless product search for owners, staff, and customers.
+          <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-300 md:text-md lg:mx-0">
+            Multi-tenant CMS and management system for inventory-led businesses.
+            AI-powered insights, real-time dashboards, and seamless product
+            search for owners, staff, and customers.
           </p>
-          <div className="flex flex-col items-center gap-4 sm:-mt-2 sm:flex-row sm:justify-center lg:-mt-4 lg:justify-start">
+          <div className="flex flex-col items-center gap-4 sm:-mt-2 sm:flex-row sm:justify-center lg:mt-4 lg:justify-start">
             <Link
               href="/register/pharmacy"
-              className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 to-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-[0_25px_70px_-20px_rgba(16,185,129,0.65)] transition-all duration-300 hover:translate-y-[-2px] hover:shadow-[0_35px_90px_-25px_rgba(16,185,129,0.7)]"
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 to-blue-600 px-8 py-2 text-md font-semibold text-white shadow-[0_25px_70px_-20px_rgba(16,185,129,0.65)] transition-all duration-300 hover:translate-y-[-2px] hover:shadow-[0_35px_90px_-25px_rgba(16,185,129,0.7)]"
             >
               <span className="relative z-10 flex items-center">
                 Get Started
@@ -95,13 +96,13 @@ function LandingHero({
             <button
               type="button"
               onClick={onScrollToFeatures}
-              className="inline-flex cursor-pointer items-center rounded-xl border-2 border-white/20 px-8 py-4 text-lg font-semibold text-white shadow-[0_25px_70px_-25px_rgba(59,130,246,0.55)] transition-all duration-300 hover:translate-y-[-2px] hover:border-emerald-400 hover:text-emerald-400 hover:shadow-[0_35px_90px_-30px_rgba(59,130,246,0.6)]"
+              className="inline-flex cursor-pointer items-center rounded-xl border-2 border-white/20 px-8 py-2 text-md font-semibold text-white shadow-[0_25px_70px_-25px_rgba(59,130,246,0.55)] transition-all duration-300 hover:translate-y-[-2px] hover:border-emerald-400 hover:text-emerald-400 hover:shadow-[0_35px_90px_-30px_rgba(59,130,246,0.6)]"
             >
               Explore Features
             </button>
             <Link
               href="/register?tab=affiliate"
-              className="inline-flex items-center rounded-xl border-2 border-white/20 px-8 py-4 text-lg font-semibold text-white shadow-[0_25px_70px_-25px_rgba(147,51,234,0.55)] transition-all duration-300 hover:translate-y-[-2px] hover:border-emerald-400 hover:text-emerald-400 hover:shadow-[0_35px_90px_-30px_rgba(147,51,234,0.6)]"
+              className="inline-flex items-center rounded-xl border-2 border-white/20 px-8 py-2 text-md font-semibold text-white shadow-[0_25px_70px_-25px_rgba(147,51,234,0.55)] transition-all duration-300 hover:translate-y-[-2px] hover:border-emerald-400 hover:text-emerald-400 hover:shadow-[0_35px_90px_-30px_rgba(147,51,234,0.6)]"
             >
               Become an Affiliate
             </Link>
@@ -148,7 +149,10 @@ function LandingHero({
 
 function FeatureHighlights() {
   return (
-    <section id="features" className="bg-gradient-to-b from-black to-gray-900 py-24 text-white">
+    <section
+      id="features"
+      className="bg-gradient-to-b from-black to-gray-900 py-24 text-white"
+    >
       <div className="mx-auto max-w-7xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -157,9 +161,12 @@ function FeatureHighlights() {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <h2 className="text-3xl font-bold md:text-4xl">Everything You Need to Run Your Inventory Operations</h2>
+          <h2 className="text-3xl font-bold md:text-4xl">
+            Everything You Need to Run Your Inventory Operations
+          </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-300">
-            Comprehensive tools designed specifically for modern inventory operations.
+            Comprehensive tools designed specifically for modern inventory
+            operations.
           </p>
         </motion.div>
 
@@ -180,7 +187,9 @@ function FeatureHighlights() {
                 </div>
               </div>
               <h3 className="text-xl font-semibold">{feature.title}</h3>
-              <p className="mt-2 text-sm text-gray-300">{feature.description}</p>
+              <p className="mt-2 text-sm text-gray-300">
+                {feature.description}
+              </p>
             </motion.div>
           ))}
         </div>

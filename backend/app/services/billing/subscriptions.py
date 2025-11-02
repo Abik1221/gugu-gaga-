@@ -7,7 +7,9 @@ from uuid import uuid4
 from sqlalchemy.orm import Session
 
 from app.models.subscription import Subscription, PaymentSubmission
+from app.models.affiliate import AffiliateReferral
 from app.services.notifications.notify import notify_broadcast
+from app.services.notifications.triggers import notify_affiliate_referral_activated
 
 
 BILLING_CYCLE_DAYS = 30
@@ -160,7 +162,7 @@ def verify_payment_and_unblock(
     tenant_id: str,
     code: Optional[str],
     admin_user_id: Optional[int] = None,
-) -> tuple[PaymentSubmission, Subscription] | None:
+) -> tuple[PaymentSubmission, Subscription, Optional[AffiliateReferral]] | None:
     # Locate existing pending submission when code provided
     ps: Optional[PaymentSubmission] = None
     query = db.query(PaymentSubmission).filter(
@@ -204,9 +206,28 @@ def verify_payment_and_unblock(
         title="Subscription Active",
         body=f"Payment verified. Next due date: {sub.next_due_date.isoformat()}.",
     )
+    referral = (
+        db.query(AffiliateReferral)
+        .filter(
+            AffiliateReferral.referred_tenant_id == tenant_id,
+            AffiliateReferral.activated_at.is_(None),
+        )
+        .order_by(AffiliateReferral.id.desc())
+        .first()
+    )
+    if referral:
+        referral.activated_at = datetime.utcnow()
+        db.add(referral)
+        db.commit()
+        db.refresh(referral)
+        notify_affiliate_referral_activated(
+            db,
+            affiliate_user_id=referral.affiliate_user_id,
+            referred_tenant_id=tenant_id,
+        )
     db.refresh(ps)
     db.refresh(sub)
-    return ps, sub
+    return ps, sub, referral
 
 
 def reject_payment_submission(

@@ -1,13 +1,13 @@
 // Dashboard layout (sidebar, nav)
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AuthAPI, type AuthProfile } from "@/utils/api";
+import { AuthAPI, type AuthProfile, NotificationAPI, type NotificationItem } from "@/utils/api";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Activity, LogOut, Settings2 } from "lucide-react";
+import { Activity, ArrowLeft, BackpackIcon, Bell, LogOut, Settings2, StepBackIcon } from "lucide-react";
 
 type RoleAssignment = {
   role?: {
@@ -47,12 +47,12 @@ export default function DashboardLayout({
   const [banner, setBanner] = useState<
     | null
     | {
-        kind: "kyc_pending" | "payment";
-        title: string;
-        description: string;
-        actionHref?: string;
-        actionLabel?: string;
-      }
+      kind: "kyc_pending" | "payment";
+      title: string;
+      description: string;
+      actionHref?: string;
+      actionLabel?: string;
+    }
   >(null);
   const roles = deriveRoles(user);
   const roleName = roles[0] || "";
@@ -247,6 +247,11 @@ function Shell({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const notifRefreshTimer = useRef<NodeJS.Timeout | null>(null);
+  const tenantIdRef = useRef<string | null>(null);
   const roles = deriveRoles(user);
   const baseRole = (user?.role || "").toLowerCase();
   const primaryRole = baseRole || roles[0] || "";
@@ -262,6 +267,85 @@ function Shell({
   const ownerKycPath = "/dashboard/owner/kyc";
   const ownerPaymentPath = "/dashboard/owner/payment";
 
+  const fetchNotifications = useCallback(
+    async (force = false) => {
+      if (!user) return;
+      if (notifLoading && !force) return;
+      try {
+        setNotifLoading(true);
+        const items = await NotificationAPI.list();
+        setNotifications(items || []);
+      } catch (err) {
+        console.error("[Notifications] list failed", err);
+      } finally {
+        setNotifLoading(false);
+      }
+    },
+    [notifLoading, user]
+  );
+
+  const markNotificationRead = useCallback(
+    async (id: number) => {
+      try {
+        await NotificationAPI.markRead(id);
+        setNotifications((prev: NotificationItem[]) =>
+          prev.map((item) => (item.id === id ? { ...item, is_read: true } : item))
+        );
+      } catch (err) {
+        console.error("[Notifications] mark-read failed", err);
+      }
+    },
+    []
+  );
+
+  const deleteNotification = useCallback(async (id: number) => {
+    try {
+      await NotificationAPI.delete(id);
+      setNotifications((prev: NotificationItem[]) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      console.error("[Notifications] delete failed", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    tenantIdRef.current = user?.tenant_id ?? null;
+    return () => {
+      if (notifRefreshTimer.current) {
+        clearTimeout(notifRefreshTimer.current);
+        notifRefreshTimer.current = null;
+      }
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!notifOpen) {
+      if (notifRefreshTimer.current) {
+        clearTimeout(notifRefreshTimer.current);
+        notifRefreshTimer.current = null;
+      }
+      return;
+    }
+
+    void fetchNotifications(true);
+
+    function scheduleNext() {
+      if (!notifOpen) return;
+      notifRefreshTimer.current = setTimeout(() => {
+        void fetchNotifications(true);
+        scheduleNext();
+      }, 60_000);
+    }
+
+    scheduleNext();
+
+    return () => {
+      if (notifRefreshTimer.current) {
+        clearTimeout(notifRefreshTimer.current);
+        notifRefreshTimer.current = null;
+      }
+    };
+  }, [notifOpen, fetchNotifications]);
+
   if (user && isTenantStaff) {
     if (kycPending && pathname !== ownerKycPath) {
       router.replace(ownerKycPath);
@@ -275,7 +359,8 @@ function Shell({
 
   let nav: { href: string; label: string }[];
   if (isAffiliate) {
-    nav = [{ href: "/dashboard/affiliate", label: "Affiliate Dashboard" }];
+    nav = [{ href: "/dashboard/affiliate", label: "Affiliate Dashboard" },
+    ];
   } else if (isAdmin) {
     nav = [
       { href: "/dashboard/admin", label: "Admin Overview" },
@@ -325,17 +410,102 @@ function Shell({
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div className="fixed h-screen overflow-y-scroll overflow-hidden bg-black text-white">
+      <div className="w-full flex justify-center items-center mt-8"><button>Grow With Zemen Inventory</button></div>
+      <Link href="/"><button className="absolute top-5 left-5 text-white z-999 bg-slate-700 rounded-full p-2 hover:bg-slate-800 hover:cursor-pointer"><ArrowLeft /></button></Link>
+      <div className="absolute top-5 right-5 z-[999] flex items-center gap-2">
+        <div className="relative">
+          <button
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/10 transition hover:border-white/30 hover:bg-white/20"
+            onClick={() => {
+              const next = !notifOpen;
+              setNotifOpen(next);
+              if (next && !notifLoading && notifications.length === 0) {
+                void fetchNotifications();
+              }
+            }}
+            aria-label="Notifications"
+          >
+            <Bell className="h-5 w-5 text-white transition" />
+            {notifications.some((n) => !n.is_read) && (
+              <span className="absolute -top-1 -right-1 inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-400 text-[8px] font-semibold text-black">
+                •
+              </span>
+            )}
+          </button>
+          {notifOpen && (
+            <div className="absolute right-0 mt-3 w-80 rounded-2xl border border-white/10 bg-black/90 p-3 text-sm shadow-[0_25px_80px_-40px_rgba(255,255,255,0.4)]">
+              <div className="mb-2 flex items-center justify-between text-xs uppercase tracking-[0.3em] text-emerald-200">
+                <span>Notifications</span>
+                <button
+                  className="text-[10px] text-emerald-200/80 hover:text-emerald-200"
+                  onClick={() => void fetchNotifications(true)}
+                >
+                  Refresh
+                </button>
+              </div>
+              <div className="max-h-72 overflow-y-auto">
+                {notifLoading ? (
+                  <div className="py-6 text-center text-xs text-emerald-100/70">Loading...</div>
+                ) : notifications.length === 0 ? (
+                  <div className="py-6 text-center text-xs text-emerald-100/70">No notifications yet.</div>
+                ) : (
+                  <ul className="space-y-2">
+                    {notifications.map((item) => (
+                      <li
+                        key={item.id}
+                        className={`rounded-xl border px-3 py-2 text-xs transition ${
+                          item.is_read
+                            ? "border-white/10 bg-white/5 text-emerald-100/80"
+                            : "border-emerald-400/40 bg-emerald-500/10 text-emerald-50"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.3em]">
+                              {item.title || item.type || "Update"}
+                            </div>
+                            {item.body && <p className="mt-1 text-[11px] leading-relaxed">{item.body}</p>}
+                            <p className="mt-2 text-[10px] uppercase tracking-[0.25em] text-emerald-200/70">
+                              {new Date(item.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                          <div className="flex flex-col items-end gap-1 text-right">
+                            {!item.is_read && (
+                              <button
+                                className="text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-200 hover:text-emerald-100"
+                                onClick={() => void markNotificationRead(item.id)}
+                              >
+                                Mark read
+                              </button>
+                            )}
+                            <button
+                              className="text-[10px] font-semibold uppercase tracking-[0.3em] text-red-300 hover:text-red-200"
+                              onClick={() => void deleteNotification(item.id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
       <div className="pointer-events-none absolute -top-24 left-[10%] h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl" />
       <div className="pointer-events-none absolute top-1/2 right-[-10%] h-96 w-96 rounded-full bg-sky-500/20 blur-3xl" />
       <div className="pointer-events-none absolute bottom-[-20%] left-[35%] h-80 w-80 rounded-full bg-teal-500/25 blur-3xl" />
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-8 lg:flex-row">
-        <motion.aside
+      <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-8 lg:flex-row mt-2">
+        {/* <motion.aside
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.45, ease: "easeOut" }}
-          className="sticky top-8 w-full self-start rounded-3xl border border-white/10 bg-white/10 p-6 shadow-[0_40px_120px_-50px_rgba(20,184,166,0.6)] backdrop-blur-2xl lg:w-[280px]"
+          className="sticky h-[500px] overflow-y-scroll pb-10  top-8 w-full self-start rounded-3xl border border-white/10 bg-white/10 p-6 shadow-[0_40px_120px_-50px_rgba(20,184,166,0.6)] backdrop-blur-2xl lg:w-[280px]"
         >
           <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-emerald-100/90">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">
@@ -367,11 +537,10 @@ function Shell({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`group relative block overflow-hidden rounded-2xl border px-4 py-3 text-sm font-medium transition ${
-                    active
-                      ? "border-transparent bg-gradient-to-r from-emerald-500/30 via-emerald-400/20 to-blue-500/30 text-white shadow-lg"
-                      : "border-white/10 bg-white/5 text-emerald-100 hover:border-emerald-200/40 hover:bg-white/10"
-                  }`}
+                  className={`group relative block overflow-hidden rounded-2xl border px-4 py-3 text-sm font-medium transition ${active
+                    ? "border-transparent bg-gradient-to-r from-emerald-500/30 via-emerald-400/20 to-blue-500/30 text-white shadow-lg"
+                    : "border-white/10 bg-white/5 text-emerald-100 hover:border-emerald-200/40 hover:bg-white/10"
+                    }`}
                 >
                   <span className="flex items-center justify-between gap-2">
                     {item.label}
@@ -402,13 +571,13 @@ function Shell({
           >
             <LogOut className="mr-2 h-4 w-4" /> Sign out
           </Button>
-        </motion.aside>
+        </motion.aside> */}
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: "easeOut" }}
-          className="flex-1 rounded-3xl border border-white/10 bg-slate-900/70 shadow-[0_40px_120px_-50px_rgba(14,116,144,0.6)] backdrop-blur-2xl"
+          className="flex-1 rounded-3xl border border-white/10 bg-slate-900/70 shadow-[0_40px_120px_-50px_rgba(0,0,0,0.6)] backdrop-blur-2xl"
         >
           <header className="flex flex-col gap-3 border-b border-white/10 p-6 text-sm text-emerald-100/80 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-base font-semibold text-white">

@@ -60,7 +60,7 @@ export default function Benefits() {
           custom={0} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
+          <Card className="border-l-4 border-l-white bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="text-lg text-white">
                 Increased Efficiency
@@ -80,7 +80,7 @@ export default function Benefits() {
           custom={1} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
+          <Card className="border-l-4 border-l-white bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="text-lg text-white">
                 Better Decision Making
@@ -100,7 +100,7 @@ export default function Benefits() {
           custom={2} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
+          <Card className="border-l-4 border-l-white bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="text-lg text-white">
                 Enhanced Customer Experience
@@ -120,7 +120,7 @@ export default function Benefits() {
           custom={3} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
+          <Card className="border-l-4 border-l-white bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="text-lg text-white">
                 Cost Savings

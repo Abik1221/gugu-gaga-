@@ -20,7 +20,7 @@ export function StatCard({
   return (
     <Card
       className={cn(
-        "border border-white/10 bg-gradient-to-br from-emerald-500/10 via-slate-950/70 to-blue-600/10 text-white shadow-[0_18px_55px_-35px_rgba(16,185,129,0.55)] transition hover:-translate-y-1 hover:shadow-[0_28px_85px_-40px_rgba(56,189,248,0.55)] backdrop-blur-xl",
+        "border border-white/10 bg-gradient-to-br from-emerald-500/10 via-slate-950/70 to-blue-600/10 text-white shadow-[0_18px_55px_-35px_rgba(255,255,255,0.55)] transition hover:-translate-y-1 hover:shadow-[0_28px_85px_-40px_rgba(255,255,255,0.55)] backdrop-blur-xl",
         className
       )}
     >
@@ -82,7 +82,7 @@ export function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="border border-white/10 bg-gradient-to-br from-slate-950/80 via-emerald-700/15 to-blue-800/10 text-white shadow-[0_20px_60px_-35px_rgba(16,185,129,0.6)] backdrop-blur-xl">
+    <Card className="border border-black/40 bg-gradient-to-br from-black via-slate-950 to-slate-900 text-white shadow-[0_20px_60px_-35px_rgba(255,255,255,0.6)] backdrop-blur-xl">
       <CardHeader className="mb-0 space-y-1 pb-0">
         <CardTitle className="text-lg text-white">{title}</CardTitle>
         {description && <p className="text-xs text-emerald-100/70">{description}</p>}

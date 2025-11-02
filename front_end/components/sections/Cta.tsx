@@ -15,7 +15,7 @@ export default function CTA() {
           duration: 1.2, // slower animation
           ease: "easeOut", // smooth easing
         }}
-        className="rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur shadow-[0_20px_60px_-25px_rgba(16,185,129,0.45)]"
+        className="rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur shadow-[0_20px_60px_-25px_rgba(255,255,255,0.45)]"
       >
         <h3 className="mb-4 text-3xl font-bold text-emerald-200">
           Ready to Transform Your Inventory Operations?

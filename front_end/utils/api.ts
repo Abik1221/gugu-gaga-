@@ -564,22 +564,29 @@ export const AffiliateAPI = {
   getLinks: () => getAuthJSON("/api/v1/affiliate/register-link"),
   createLink: () => getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
   deactivate: (token: string) =>
-    postAuthJSON(
-      `/api/v1/affiliate/links/${encodeURIComponent(token)}/deactivate`,
-      {}
-    ),
-  rotate: (token: string) =>
-    postAuthJSON(`/api/v1/affiliate/links/${encodeURIComponent(token)}/rotate`, {}),
+    getAuthJSON(`/api/v1/affiliate/register-link?deactivate=${encodeURIComponent(token)}`),
+  rotate: (token: string) => getAuthJSON(`/api/v1/affiliate/register-link?rotate=${encodeURIComponent(token)}`),
   dashboard: () => getAuthJSON("/api/v1/affiliate/dashboard"),
   payouts: (status?: string) =>
-    getAuthJSON(
-      `/api/v1/affiliate/payouts${
-        status ? `?status_filter=${encodeURIComponent(status)}` : ""
-      }`
-    ),
-  requestPayout: (month?: string, percent = 5) =>
-    postAuthJSON("/api/v1/affiliate/payouts/request", { month, percent }),
+    getAuthJSON(`/api/v1/affiliate/payouts${status ? `?status=${encodeURIComponent(status)}` : ""}`),
+  requestPayout: (month?: string, percent?: number) =>
+    postAuthJSON("/api/v1/affiliate/payouts", { month, percent }),
   updateProfile: (body: any) => postAuthJSON("/api/v1/affiliate/profile", body),
+};
+
+export type NotificationItem = {
+  id: number;
+  type: string;
+  title: string;
+  body: string;
+  is_read: boolean;
+  created_at: string;
+};
+
+export const NotificationAPI = {
+  list: () => getAuthJSON<NotificationItem[]>("/api/v1/notifications"),
+  markRead: (id: number) => postAuthJSON(`/api/v1/notifications/${id}/read`, {}),
+  delete: (id: number) => authFetch(`/api/v1/notifications/${id}`, { method: "DELETE" }),
 };
 
 // ----------------- AdminAPI -----------------

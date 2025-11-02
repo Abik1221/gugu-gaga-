@@ -45,6 +45,10 @@ from app.services.sessions import (
     revoke_session as revoke_auth_session,
 )
 from app.services.tenant_activity import log_activity
+from app.services.notifications.triggers import (
+    notify_affiliate_login,
+    notify_affiliate_referral_registered,
+)
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -282,6 +286,12 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
             )
             db.add(ref)
             db.commit()
+            notify_affiliate_referral_registered(
+                db,
+                affiliate_user_id=link.affiliate_user_id,
+                referred_tenant_id=tenant_id,
+                pharmacy_name=payload.pharmacy_name,
+            )
     # In-app notifications and status emails (best-effort)
     try:
         from app.services.notifications.in_app import create_notification
@@ -412,6 +422,13 @@ def login(
         if tenant_id and user.tenant_id != tenant_id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
     tokens = _issue_session_tokens(db, user, request)
+    if user.role == Role.affiliate.value:
+        notify_affiliate_login(
+            db,
+            affiliate_user_id=user.id,
+            tenant_id=user.tenant_id,
+            ip=_client_ip(request),
+        )
     return tokens
 
 
