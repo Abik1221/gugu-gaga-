@@ -5,7 +5,7 @@ export type Toast = {
   id: string;
   title?: string;
   description?: string;
-  variant?: "default" | "success" | "destructive";
+  variant?: "default" | "success" | "destructive" | "warning";
   duration?: number;
 };
 
