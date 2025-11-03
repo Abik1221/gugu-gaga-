@@ -10,9 +10,9 @@ import { useToast } from "@/components/ui/toast";
 import { AuthAPI, KYCAPI, UploadAPI } from "@/utils/api";
 
 const Detail: React.FC<{ label: string; value: ReactNode; description?: ReactNode; className?: string }> = ({ label, value, description, className }) => (
-  <div className={`space-y-1 rounded border border-border/60 bg-white/40 p-3 ${className || ""}`}>
+  <div className={`space-y-1 rounded border border-border/60 p-3 ${className || ""}`}>
     <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
-    <div className="text-sm font-medium break-words">{value}</div>
+    <div className="text-sm text-white font-medium break-words">{value}</div>
     {description && <div className="text-xs text-muted-foreground">{description}</div>}
   </div>
 );
@@ -200,7 +200,7 @@ export default function OwnerKycPage() {
         )}
       </div>
 
-      <div className="rounded border bg-white p-4 shadow-sm space-y-4">
+      <div className="rounded border bg-slate-800 p-4 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-xs uppercase tracking-wide text-muted-foreground">Current status</div>
@@ -218,28 +218,28 @@ export default function OwnerKycPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm text-muted-foreground">Pharmacy name</label>
-                <Input value={pendingForm.pharmacy_name} onChange={(e) => handleFieldChange("pharmacy_name", e.target.value)} required />
+                <Input className="text-white" value={pendingForm.pharmacy_name} onChange={(e) => handleFieldChange("pharmacy_name", e.target.value)} required />
               </div>
               <div>
                 <label className="text-sm text-muted-foreground">Pharmacy address</label>
-                <Input value={pendingForm.pharmacy_address} onChange={(e) => handleFieldChange("pharmacy_address", e.target.value)} />
+                <Input className="text-white" value={pendingForm.pharmacy_address} onChange={(e) => handleFieldChange("pharmacy_address", e.target.value)} />
               </div>
               <div>
                 <label className="text-sm text-muted-foreground">Owner phone</label>
-                <Input value={pendingForm.owner_phone} onChange={(e) => handleFieldChange("owner_phone", e.target.value)} placeholder="+2519..." />
+                <Input className="text-white" value={pendingForm.owner_phone} onChange={(e) => handleFieldChange("owner_phone", e.target.value)} placeholder="+2519..." />
               </div>
               <div>
                 <label className="text-sm text-muted-foreground">National / company ID</label>
-                <Input value={pendingForm.id_number} onChange={(e) => handleFieldChange("id_number", e.target.value)} required />
+                <Input className="text-white" value={pendingForm.id_number} onChange={(e) => handleFieldChange("id_number", e.target.value)} required />
               </div>
               <div>
                 <label className="text-sm text-muted-foreground">Pharmacy license number</label>
-                <Input value={pendingForm.pharmacy_license_number} onChange={(e) => handleFieldChange("pharmacy_license_number", e.target.value)} required />
+                <Input className="text-white" value={pendingForm.pharmacy_license_number} onChange={(e) => handleFieldChange("pharmacy_license_number", e.target.value)} required />
               </div>
               <div className="md:col-span-2">
                 <label className="text-sm text-muted-foreground">Notes to reviewer</label>
                 <textarea
-                  className="mt-1 w-full rounded border border-input px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring focus-visible:ring-ring"
+                  className="mt-1 text-white w-full rounded border border-input px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring focus-visible:ring-ring"
                   rows={4}
                   value={pendingForm.notes}
                   onChange={(e) => handleFieldChange("notes", e.target.value)}
@@ -247,13 +247,13 @@ export default function OwnerKycPage() {
               </div>
               <div className="md:col-span-2 space-y-2">
                 <label className="text-sm text-muted-foreground">Upload license document (PNG/JPG/PDF)</label>
-                <input type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={(e) => setKycFile(e.target.files?.[0] || null)} />
+                <input className="ml-3" type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={(e) => setKycFile(e.target.files?.[0] || null)} />
                 <div className="text-xs text-muted-foreground">
                   {kycFile
                     ? `Ready to upload: ${kycFile.name}`
                     : pendingForm.license_document_name
-                    ? `Current file: ${pendingForm.license_document_name}`
-                    : "No file uploaded yet"}
+                      ? `Current file: ${pendingForm.license_document_name}`
+                      : "No file uploaded yet"}
                 </div>
               </div>
             </div>

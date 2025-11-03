@@ -35,7 +35,7 @@ function resolveApiUrl(path: string): string {
   const normalizedPath = path.replace(/^\/+/, "");
   let relativePath = normalizedPath;
 
-  
+
   if (API_BASE_PATH) {
     const prefix = `${API_BASE_PATH}/`;
     if (relativePath.startsWith(prefix)) {
@@ -86,10 +86,9 @@ export async function postForm<T = any>(
       msg = Object.keys(parsed.errors)
         .map(
           (k) =>
-            `${k}: ${
-              Array.isArray(parsed.errors[k])
-                ? parsed.errors[k].join(", ")
-                : parsed.errors[k]
+            `${k}: ${Array.isArray(parsed.errors[k])
+              ? parsed.errors[k].join(", ")
+              : parsed.errors[k]
             }`
         )
         .join(" | ");
@@ -318,6 +317,33 @@ export async function postAuthJSON<T = any>(
   }
 
   return (await res.json()) as T;
+}
+
+export async function deleteAuthJSON(
+  path: string,
+  tenantId?: string
+): Promise<void> {
+  const res = await authFetch(
+    path,
+    {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    },
+    true,
+    tenantId
+  );
+
+  if (!res.ok) {
+    const data = await res.text().catch(() => "");
+    throw new Error(data || `Request failed with ${res.status}`);
+  }
+
+  // For DELETE requests, we might not have a response body
+  try {
+    return await res.json();
+  } catch {
+    return undefined;
+  }
 }
 
 // ----------------- AuthAPI -----------------
@@ -573,8 +599,7 @@ export const AffiliateAPI = {
   dashboard: () => getAuthJSON("/api/v1/affiliate/dashboard"),
   payouts: (status?: string) =>
     getAuthJSON(
-      `/api/v1/affiliate/payouts${
-        status ? `?status_filter=${encodeURIComponent(status)}` : ""
+      `/api/v1/affiliate/payouts${status ? `?status_filter=${encodeURIComponent(status)}` : ""
       }`
     ),
   requestPayout: (month?: string, percent = 5) =>
@@ -710,6 +735,36 @@ export const PharmaciesAPI = {
       if (!res.ok) throw new Error(await res.text());
       return (await res.json()) as PharmacyOut;
     }),
+};
+
+// ----------------- BranchAPI -----------------
+
+interface BranchRecord {
+  id: number;
+  pharmacy_id: number;
+  tenant_id: string;
+  name: string;
+  address?: string | null;
+  phone?: string | null;
+}
+
+export const BranchAPI = {
+  create: (tenantId: string | undefined, payload: { name: string; address?: string; phone?: string; pharmacy_id: number }) =>
+    postAuthJSON<{ id: number }>("/api/v1/branches", payload, tenantId),
+
+  list: (tenantId: string | undefined, pharmacyId?: number) => {
+    const query = pharmacyId ? `?pharmacy_id=${pharmacyId}` : '';
+    return getAuthJSON<{ items: BranchRecord[] }>(`/api/v1/branches${query}`, tenantId);
+  },
+
+  get: (tenantId: string | undefined, id: number) =>
+    getAuthJSON<BranchRecord>(`/api/v1/branches/${id}`, tenantId),
+
+  update: (tenantId: string | undefined, id: number, payload: { name?: string; address?: string | null; phone?: string | null }) =>
+    putAuthJSON<BranchRecord>(`/api/v1/branches/${id}`, payload, tenantId),
+
+  delete: (tenantId: string | undefined, id: number) =>
+    deleteAuthJSON(`/api/v1/branches/${id}`, tenantId)
 };
 
 // ----------------- ChatAPI -----------------

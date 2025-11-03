@@ -13,6 +13,8 @@ __turbopack_context__.s([
     ()=>AuthAPI,
     "BillingAPI",
     ()=>BillingAPI,
+    "BranchAPI",
+    ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
     "IntegrationsAPI",
@@ -41,6 +43,8 @@ __turbopack_context__.s([
     ()=>UploadAPI,
     "authFetch",
     ()=>authFetch,
+    "deleteAuthJSON",
+    ()=>deleteAuthJSON,
     "getAccessToken",
     ()=>getAccessToken,
     "getAuthJSON",
@@ -307,6 +311,24 @@ async function postAuthJSON(path, bodyData, tenantId) {
     }
     return await res.json();
 }
+async function deleteAuthJSON(path, tenantId) {
+    const res = await authFetch(path, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }, true, tenantId);
+    if (!res.ok) {
+        const data = await res.text().catch(()=>"");
+        throw new Error(data || "Request failed with ".concat(res.status));
+    }
+    // For DELETE requests, we might not have a response body
+    try {
+        return await res.json();
+    } catch (e) {
+        return undefined;
+    }
+}
 const AuthAPI = {
     registerAffiliate: (body)=>postJSON("/api/v1/auth/register/affiliate", body),
     registerPharmacy: (body)=>postJSON("/api/v1/auth/register/pharmacy", body),
@@ -550,6 +572,16 @@ const PharmaciesAPI = {
             if (!res.ok) throw new Error(await res.text());
             return await res.json();
         })
+};
+const BranchAPI = {
+    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
+    list: (tenantId, pharmacyId)=>{
+        const query = pharmacyId ? "?pharmacy_id=".concat(pharmacyId) : '';
+        return getAuthJSON("/api/v1/branches".concat(query), tenantId);
+    },
+    get: (tenantId, id)=>getAuthJSON("/api/v1/branches/".concat(id), tenantId),
+    update: (tenantId, id, payload)=>putAuthJSON("/api/v1/branches/".concat(id), payload, tenantId),
+    delete: (tenantId, id)=>deleteAuthJSON("/api/v1/branches/".concat(id), tenantId)
 };
 const ChatAPI = {
     listThreads: (tenantId)=>getAuthJSON("/api/v1/chat/threads", tenantId),

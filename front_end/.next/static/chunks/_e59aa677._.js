@@ -917,7 +917,7 @@ function InventoryPage() {
         columnNumber: 5
     }, this);
 }
-_s(InventoryPage, "bGESMz3YnBR3V0gCOo2wS0CvExw=", false, function() {
+_s(InventoryPage, "vBIzMRowB/dYnrDQ6Z91Z4dxIFw=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$toast$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"]
     ];

@@ -55,7 +55,7 @@ export default function AffiliateLoginPage() {
         localStorage.setItem("access_token", data.access_token);
       }
       show({ variant: "success", title: "Welcome", description: "Login successful" });
-      router.replace("/dashboard/affiliate");
+      router.replace("/affiliate");
     } catch (e: any) {
       const message = e.message || "Verification failed";
       setError(message);

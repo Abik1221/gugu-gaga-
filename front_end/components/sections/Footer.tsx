@@ -23,7 +23,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-16 border-t border-white/10 bg-white/5">
+    <footer className="border-t border-white/10 bg-white/5">
       <div className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-12 md:grid-cols-5">
         <div className="space-y-4 md:col-span-2">
           <Link href="/" className="inline-flex items-center gap-2 text-white">
@@ -33,7 +33,9 @@ export default function Footer() {
             <span className="text-lg font-semibold">Zemen Pharma</span>
           </Link>
           <p className="max-w-sm text-sm text-emerald-100/70">
-            Multi-tenant, AI-powered management for modern pharmacies. Insightful dashboards, secure workflows, and delightful patient experiences.
+            Multi-tenant, AI-powered management for modern pharmacies.
+            Insightful dashboards, secure workflows, and delightful patient
+            experiences.
           </p>
           <div className="flex gap-3 text-emerald-100/70">
             <a
@@ -67,7 +69,10 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerNav.product.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="transition hover:text-emerald-200">
+                  <Link
+                    href={link.href}
+                    className="transition hover:text-emerald-200"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -79,7 +84,10 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerNav.company.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="transition hover:text-emerald-200">
+                  <Link
+                    href={link.href}
+                    className="transition hover:text-emerald-200"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -91,7 +99,10 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerNav.resources.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="transition hover:text-emerald-200">
+                  <Link
+                    href={link.href}
+                    className="transition hover:text-emerald-200"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -111,7 +122,10 @@ export default function Footer() {
             <Link href="/terms" className="transition hover:text-emerald-200">
               Terms
             </Link>
-            <Link href="/(marketing)/contact" className="transition hover:text-emerald-200">
+            <Link
+              href="/(marketing)/contact"
+              className="transition hover:text-emerald-200"
+            >
               Support
             </Link>
           </div>

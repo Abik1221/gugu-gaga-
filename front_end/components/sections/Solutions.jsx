@@ -49,12 +49,12 @@ export default function Solutions() {
           variants={textVariants}
         >
           <h3 className="mb-6 text-center text-2xl font-bold text-emerald-200">
-            AI-Powered Solutions
+            AI-Powered Inventory Solutions
           </h3>
           <div className="text-base leading-relaxed text-white">
-            Zemen Pharma is an AI-powered pharmacy management system designed to
-            streamline operations, enhance efficiency, and provide real-time
-            insights for pharmacy owners, staff, and customers.
+            Zemen Inventory is an AI-powered operations platform designed to
+            streamline stock control, enhance efficiency, and provide real-time
+            insights for owners, staff, and partners across every location.
           </div>
         </motion.div>
       </div>

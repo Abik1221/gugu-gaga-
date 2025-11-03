@@ -1,5 +1,9 @@
 import { motion } from "framer-motion"; // Import Framer Motion
-
+import dashboardImage from "@/public/pharmacy-dashboard.jpg";
+import aiAssistant from "@/public/ai-assistant.jpg";
+import ownerOverview from "@/public/owner-overview.jpg";
+import imageLeftDashboard from '@/public/imageleftdashboard.jpg'
+import Image from "next/image";
 // Variants for the container to stagger child animations
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -17,7 +21,7 @@ const titleVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -27,7 +31,7 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -37,7 +41,7 @@ const circleVariants = {
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -53,12 +57,37 @@ export default function HowItWorks() {
     >
       {/* Animated Title */}
       <motion.h3
-        className="mb-10 text-center text-2xl font-bold text-emerald-200"
+        className="mb-20 text-center text-2xl font-bold text-emerald-200"
         variants={titleVariants}
       >
-        How Zemen Pharma Works
+        How Zemen Inventory Works
       </motion.h3>
-      <div className="grid gap-8 md:grid-cols-3">
+      <div className="grid gap-8 md:grid-cols-2 mb-10 py-5 px-2 shadow-[0_25px_80px_-35px_rgba(255,255,255,0.45)]">
+        <div className="overflow-hidden rounded-lg">
+          <Image
+            className="h-full w-full object-contain"
+            src={imageLeftDashboard}
+            alt="Dashboard-image"
+          />
+        </div>
+        <div className="flex flex-col gap-8">
+          <div className="flex-1 overflow-hidden rounded-lg">
+            <Image
+              className="h-full w-full object-fill"
+              src={aiAssistant}
+              alt="AI-assistant-image"
+            />
+          </div>
+          <div className="flex-1 overflow-hidden rounded-lg">
+            <Image
+              className="h-full w-full object-cover"
+              src={ownerOverview}
+              alt="Owner-overview-image"
+            />
+          </div>
+        </div>
+      </div>
+      <div className="grid gap-8 md:grid-cols-3 mt-40">
         {/* Step 1 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
@@ -71,7 +100,7 @@ export default function HowItWorks() {
             Setup & Integration
           </h4>
           <p className="text-gray-300">
-            Quick setup with your existing pharmacy data. Integrate with your
+            Quick setup with your existing inventory data. Integrate with your
             suppliers and payment systems seamlessly.
           </p>
         </motion.div>
