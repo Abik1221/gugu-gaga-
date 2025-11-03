@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { motion } from "framer-motion";
 const FreePlanCard = () => {
   return (
-    <Card className="mx-auto max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_20px_60px_-25px_rgba(16,185,129,0.45)]">
+    <Card className="mx-auto max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_20px_60px_-25px_rgba(255,255,255,0.45)]">
       <CardHeader>
         <div className="mb-4 w-fit rounded-md bg-white/10 p-3">
           <Image src={planIcon} alt="plan-icon" className="h-8 w-8 object-contain invert brightness-150" />
@@ -42,7 +42,7 @@ const FreePlanCard = () => {
             <span className="pr-5">✔</span>Preview pro dashboards with "Upgrade to unlock" guidance
           </li>
           <li>
-            <span className="pr-5">✔</span>Single-pharmacy workspace with secure token storage
+            <span className="pr-5">✔</span>Single-business workspace with secure token storage
           </li>
         </ul>
       </CardContent>
@@ -52,7 +52,7 @@ const FreePlanCard = () => {
 
 const ProPlanCard = () => {
   return (
-    <Card className="mx-auto max-w-md rounded-2xl border border-emerald-300/40 bg-gradient-to-br from-emerald-600/10 via-emerald-500/5 to-blue-600/10 p-6 text-white shadow-[0_25px_80px_-35px_rgba(59,130,246,0.55)]">
+    <Card className="mx-auto max-w-md rounded-2xl border border-emerald-300/40 bg-gradient-to-br from-emerald-600/10 via-emerald-500/5 to-blue-600/10 p-6 text-white shadow-[0_25px_80px_-35px_rgba(255,255,255,0.55)]">
       <CardHeader>
         <div className="mb-4 w-fit rounded-md bg-white/10 p-3">
           <Image src={planIcon} alt="plan-icon" className="h-8 w-8 object-contain invert brightness-150" />
@@ -86,7 +86,7 @@ const ProPlanCard = () => {
             Unlimited integrations (Zoho Books, Odoo, Notion, Google Sheets)
           </li>
           <li>
-            <span className="pr-5">✔</span>Multi-pharmacy management with admin segments & alerts
+            <span className="pr-5">✔</span>Multi-location management with admin segments & alerts
           </li>
           <li>
             <span className="pr-5">✔</span>Priority support & compliance-ready audit history

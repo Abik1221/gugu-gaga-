@@ -18,7 +18,7 @@ const titleVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -33,7 +33,7 @@ const cardVariants = {
     opacity: 1,
     x: 0,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -52,7 +52,7 @@ export default function Benefits() {
         className="mb-10 text-center text-2xl font-bold text-emerald-200"
         variants={titleVariants}
       >
-        Why Choose Zemen Pharma?
+        Why Choose Zemen Inventory?
       </motion.h3>
       <div className="grid gap-6 md:grid-cols-2">
         {/* Card 1: Increased Efficiency */}
@@ -60,7 +60,7 @@ export default function Benefits() {
           custom={0} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
+          <Card className="border-l-4 border-l-white bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="text-lg text-white">
                 Increased Efficiency
@@ -69,7 +69,7 @@ export default function Benefits() {
             <CardContent>
               <p className="text-gray-200">
                 Automate routine tasks, reduce manual errors, and streamline
-                operations across all your pharmacy locations.
+                operations across every branch and warehouse.
               </p>
             </CardContent>
           </Card>
@@ -80,7 +80,7 @@ export default function Benefits() {
           custom={1} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
+          <Card className="border-l-4 border-l-white bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="text-lg text-white">
                 Better Decision Making
@@ -100,7 +100,7 @@ export default function Benefits() {
           custom={2} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
+          <Card className="border-l-4 border-l-white bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="text-lg text-white">
                 Enhanced Customer Experience
@@ -108,8 +108,8 @@ export default function Benefits() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-200">
-                Provide seamless shopping experiences with online ordering,
-                medicine search, and delivery tracking.
+                Provide seamless customer experiences with online ordering,
+                smart product search, and delivery tracking.
               </p>
             </CardContent>
           </Card>
@@ -120,7 +120,7 @@ export default function Benefits() {
           custom={3} // Pass index for dynamic direction
           variants={cardVariants}
         >
-          <Card className="border-l-4 border-l-emerald-400 bg-white/5 text-white">
+          <Card className="border-l-4 border-l-white bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="text-lg text-white">
                 Cost Savings

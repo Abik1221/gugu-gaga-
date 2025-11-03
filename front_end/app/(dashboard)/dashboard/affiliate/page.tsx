@@ -213,7 +213,7 @@ export default function AffiliateOverviewPage() {
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="relative overflow-hidden rounded-3xl border border-emerald-100/40 bg-gradient-to-br from-emerald-500/30 via-blue-500/10 to-slate-900/80 p-8 text-white shadow-[0_25px_80px_-40px_rgba(16,185,129,0.55)]"
+        className="relative overflow-hidden rounded-3xl border border-emerald-100/40  p-8 text-white shadow-[0_25px_80px_-40px_rgba(255,255,255,0.55)]"
       >
         <div className="absolute inset-0">
           <div className="absolute -top-16 right-10 h-40 w-40 rounded-full bg-emerald-400/30 blur-3xl" />
@@ -362,9 +362,9 @@ export default function AffiliateOverviewPage() {
               <p className="text-[11px] font-semibold uppercase tracking-widest text-emerald-600/80">
                 Tenant IDs credited
               </p>
-              <div className="mt-3 max-h-40 overflow-auto rounded-xl border border-white/10 bg-white/60 p-3 text-xs font-mono text-emerald-900 shadow-inner">
+              <div className="mt-3 max-h-40 overflow-auto rounded-xl border border-white/10 p-3 text-white text-xs font-mono shadow-inner">
                 {(dash?.tenants || []).length === 0 ? (
-                  <p className="text-emerald-700/70">No pharmacies referred yet this month. Share your link to get started.</p>
+                  <p>No pharmacies referred yet this month. Share your link to get started.</p>
                 ) : (
                   <ul className="space-y-2">
                     {dash?.tenants?.map((tenant) => (
@@ -391,7 +391,7 @@ export default function AffiliateOverviewPage() {
           >
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-[11px] font-semibold uppercase tracking-widest text-emerald-600/80">
+                <label className="text-[11px] font-semibold uppercase tracking-widest text-white">
                   Month (YYYY-MM)
                 </label>
                 <Input
@@ -402,7 +402,7 @@ export default function AffiliateOverviewPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[11px] font-semibold uppercase tracking-widest text-emerald-600/80">
+                <label className="text-[11px] font-semibold uppercase tracking-widest text-white">
                   Commission percent
                 </label>
                 <Input
@@ -424,7 +424,7 @@ export default function AffiliateOverviewPage() {
               {requestingPayout ? "Submitting..." : "Submit payout request"}
             </Button>
             {!canRequestPayout && (
-              <p className="mt-3 text-xs font-medium text-emerald-600/80">
+              <p className="mt-3 text-xs font-medium text-white">
                 {payoutGuardMessage}
               </p>
             )}

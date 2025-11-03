@@ -66,10 +66,10 @@ export default function Hero({
         className="relative z-10"
       >
         <h1 className="text-5xl font-extrabold text-emerald-700 mb-4">
-          Zemen Pharma
+          Zemen Inventory
         </h1>
         <h2 className="text-2xl font-semibold text-emerald-900 mb-6">
-          The integration-first control center for modern pharmacies
+          The integration-first control center for modern inventory teams
         </h2>
         <p className="text-lg text-gray-400 mb-8 max-w-2xl">
           Connect Zoho Books, Odoo, Notion, and Google Sheets in minutes. Let the

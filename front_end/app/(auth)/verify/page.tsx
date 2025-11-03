@@ -94,7 +94,7 @@ export default function VerifyRegistrationPage() {
 
       // Redirect to affiliate dashboard after a short delay
       setTimeout(() => {
-        router.replace("/dashboard/affiliate");
+        router.replace("/affiliate");
       }, 2000);
     } catch (err: any) {
       setError(err.message || "Verification failed");
@@ -129,7 +129,7 @@ export default function VerifyRegistrationPage() {
             Your account has been activated. We&rsquo;ll send you to the affiliate dashboard in a moment.
           </p>
           <Button
-            onClick={() => router.replace("/dashboard/affiliate")}
+            onClick={() => router.replace("/affiliate")}
             className="mt-8 w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-500 text-sm font-semibold shadow-[0_15px_45px_-25px_rgba(16,185,129,0.65)]"
           >
             Go now

@@ -340,7 +340,7 @@ function AffiliateOverviewPage() {
                     duration: 0.45,
                     ease: "easeOut"
                 },
-                className: "relative overflow-hidden rounded-3xl border border-emerald-100/40 bg-gradient-to-br from-emerald-500/30 via-blue-500/10 to-slate-900/80 p-8 text-white shadow-[0_25px_80px_-40px_rgba(16,185,129,0.55)]",
+                className: "relative overflow-hidden rounded-3xl border border-emerald-100/40  p-8 text-white shadow-[0_25px_80px_-40px_rgba(255,255,255,0.55)]",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "absolute inset-0",
@@ -775,9 +775,8 @@ function AffiliateOverviewPage() {
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "mt-3 max-h-40 overflow-auto rounded-xl border border-white/10 bg-white/60 p-3 text-xs font-mono text-emerald-900 shadow-inner",
+                                            className: "mt-3 max-h-40 overflow-auto rounded-xl border border-white/10 p-3 text-white text-xs font-mono shadow-inner",
                                             children: (dash?.tenants || []).length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-emerald-700/70",
                                                 children: "No pharmacies referred yet this month. Share your link to get started."
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
@@ -861,7 +860,7 @@ function AffiliateOverviewPage() {
                                             className: "space-y-2",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                    className: "text-[11px] font-semibold uppercase tracking-widest text-emerald-600/80",
+                                                    className: "text-[11px] font-semibold uppercase tracking-widest text-white",
                                                     children: "Month (YYYY-MM)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
@@ -888,7 +887,7 @@ function AffiliateOverviewPage() {
                                             className: "space-y-2",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                    className: "text-[11px] font-semibold uppercase tracking-widest text-emerald-600/80",
+                                                    className: "text-[11px] font-semibold uppercase tracking-widest text-white",
                                                     children: "Commission percent"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
@@ -931,7 +930,7 @@ function AffiliateOverviewPage() {
                                     columnNumber: 13
                                 }, this),
                                 !canRequestPayout && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                    className: "mt-3 text-xs font-medium text-emerald-600/80",
+                                    className: "mt-3 text-xs font-medium text-white",
                                     children: payoutGuardMessage
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",

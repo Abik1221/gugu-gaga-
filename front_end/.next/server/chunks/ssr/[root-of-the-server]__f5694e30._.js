@@ -845,6 +845,26 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/framer-motion/dist/es/render/components/motion/proxy.mjs [app-ssr] (ecmascript)"); // Import Framer Motion
+(()=>{
+    const e = new Error("Cannot find module '@/public/ai-assistant.jpg'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
+(()=>{
+    const e = new Error("Cannot find module '@/public/owner-overview.jpg'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
+(()=>{
+    const e = new Error("Cannot find module '@/public/imageleftdashboard.jpg'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/image.js [app-ssr] (ecmascript)");
+;
+;
+;
+;
 ;
 ;
 // Variants for the container to stagger child animations
@@ -870,7 +890,12 @@ const titleVariants = {
         y: 0,
         transition: {
             duration: 0.6,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -885,7 +910,12 @@ const cardVariants = {
         y: 0,
         transition: {
             duration: 0.6,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -900,7 +930,12 @@ const circleVariants = {
         scale: 1,
         transition: {
             duration: 0.5,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -917,16 +952,82 @@ function HowItWorks() {
         variants: containerVariants,
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].h3, {
-                className: "mb-10 text-center text-2xl font-bold text-emerald-200",
+                className: "mb-20 text-center text-2xl font-bold text-emerald-200",
                 variants: titleVariants,
-                children: "How Zemen Pharma Works"
+                children: "How Zemen Inventory Works"
             }, void 0, false, {
                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                lineNumber: 55,
+                lineNumber: 59,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "grid gap-8 md:grid-cols-3",
+                className: "grid gap-8 md:grid-cols-2 mb-10 py-5 px-2 shadow-[0_25px_80px_-35px_rgba(255,255,255,0.45)]",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "overflow-hidden rounded-lg",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                            className: "h-full w-full object-contain",
+                            src: imageLeftDashboard,
+                            alt: "Dashboard-image"
+                        }, void 0, false, {
+                            fileName: "[project]/components/sections/HowItWorks.tsx",
+                            lineNumber: 67,
+                            columnNumber: 11
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/components/sections/HowItWorks.tsx",
+                        lineNumber: 66,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex flex-col gap-8",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex-1 overflow-hidden rounded-lg",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                                    className: "h-full w-full object-fill",
+                                    src: aiAssistant,
+                                    alt: "AI-assistant-image"
+                                }, void 0, false, {
+                                    fileName: "[project]/components/sections/HowItWorks.tsx",
+                                    lineNumber: 75,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/components/sections/HowItWorks.tsx",
+                                lineNumber: 74,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex-1 overflow-hidden rounded-lg",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                                    className: "h-full w-full object-cover",
+                                    src: ownerOverview,
+                                    alt: "Owner-overview-image"
+                                }, void 0, false, {
+                                    fileName: "[project]/components/sections/HowItWorks.tsx",
+                                    lineNumber: 82,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/components/sections/HowItWorks.tsx",
+                                lineNumber: 81,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/components/sections/HowItWorks.tsx",
+                        lineNumber: 73,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/components/sections/HowItWorks.tsx",
+                lineNumber: 65,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "grid gap-8 md:grid-cols-3 mt-40",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
                         className: "text-center",
@@ -940,12 +1041,12 @@ function HowItWorks() {
                                     children: "1"
                                 }, void 0, false, {
                                     fileName: "[project]/components/sections/HowItWorks.tsx",
-                                    lineNumber: 68,
+                                    lineNumber: 97,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                                lineNumber: 64,
+                                lineNumber: 93,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
@@ -953,21 +1054,21 @@ function HowItWorks() {
                                 children: "Setup & Integration"
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                                lineNumber: 70,
+                                lineNumber: 99,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 className: "text-gray-300",
-                                children: "Quick setup with your existing pharmacy data. Integrate with your suppliers and payment systems seamlessly."
+                                children: "Quick setup with your existing inventory data. Integrate with your suppliers and payment systems seamlessly."
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                                lineNumber: 73,
+                                lineNumber: 102,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/sections/HowItWorks.tsx",
-                        lineNumber: 63,
+                        lineNumber: 92,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -982,12 +1083,12 @@ function HowItWorks() {
                                     children: "2"
                                 }, void 0, false, {
                                     fileName: "[project]/components/sections/HowItWorks.tsx",
-                                    lineNumber: 85,
+                                    lineNumber: 114,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                                lineNumber: 81,
+                                lineNumber: 110,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
@@ -995,7 +1096,7 @@ function HowItWorks() {
                                 children: "AI Optimization"
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                                lineNumber: 87,
+                                lineNumber: 116,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1003,13 +1104,13 @@ function HowItWorks() {
                                 children: "Our AI analyzes your operations and starts providing insights, predictions, and automated recommendations."
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                                lineNumber: 90,
+                                lineNumber: 119,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/sections/HowItWorks.tsx",
-                        lineNumber: 80,
+                        lineNumber: 109,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -1024,12 +1125,12 @@ function HowItWorks() {
                                     children: "3"
                                 }, void 0, false, {
                                     fileName: "[project]/components/sections/HowItWorks.tsx",
-                                    lineNumber: 102,
+                                    lineNumber: 131,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                                lineNumber: 98,
+                                lineNumber: 127,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
@@ -1037,7 +1138,7 @@ function HowItWorks() {
                                 children: "Grow & Scale"
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                                lineNumber: 104,
+                                lineNumber: 133,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1045,25 +1146,25 @@ function HowItWorks() {
                                 children: "Expand your business with confidence using real-time data, multi-branch support, and continuous AI improvements."
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                                lineNumber: 107,
+                                lineNumber: 136,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/sections/HowItWorks.tsx",
-                        lineNumber: 97,
+                        lineNumber: 126,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/sections/HowItWorks.tsx",
-                lineNumber: 61,
+                lineNumber: 90,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/sections/HowItWorks.tsx",
-        lineNumber: 46,
+        lineNumber: 50,
         columnNumber: 5
     }, this);
 }
@@ -1450,7 +1551,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$mo
 ;
 const FreePlanCard = ()=>{
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-        className: "mx-auto max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_20px_60px_-25px_rgba(16,185,129,0.45)]",
+        className: "mx-auto max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_20px_60px_-25px_rgba(255,255,255,0.45)]",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
                 children: [
@@ -1615,7 +1716,7 @@ const FreePlanCard = ()=>{
                                         lineNumber: 45,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Single-pharmacy workspace with secure token storage"
+                                    "Single-business workspace with secure token storage"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1643,7 +1744,7 @@ const FreePlanCard = ()=>{
 };
 const ProPlanCard = ()=>{
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-        className: "mx-auto max-w-md rounded-2xl border border-emerald-300/40 bg-gradient-to-br from-emerald-600/10 via-emerald-500/5 to-blue-600/10 p-6 text-white shadow-[0_25px_80px_-35px_rgba(59,130,246,0.55)]",
+        className: "mx-auto max-w-md rounded-2xl border border-emerald-300/40 bg-gradient-to-br from-emerald-600/10 via-emerald-500/5 to-blue-600/10 p-6 text-white shadow-[0_25px_80px_-35px_rgba(255,255,255,0.55)]",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
                 children: [
@@ -1791,7 +1892,7 @@ const ProPlanCard = ()=>{
                                         lineNumber: 89,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    "Multi-pharmacy management with admin segments & alerts"
+                                    "Multi-location management with admin segments & alerts"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Pricing.tsx",
@@ -1998,7 +2099,7 @@ function Solutions() {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                             className: "mb-6 text-center text-2xl font-bold text-emerald-200",
-                            children: "AI-Powered Solutions"
+                            children: "AI-Powered Inventory Solutions"
                         }, void 0, false, {
                             fileName: "[project]/components/sections/Solutions.jsx",
                             lineNumber: 51,
@@ -2006,7 +2107,7 @@ function Solutions() {
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "text-base leading-relaxed text-white",
-                            children: "Zemen Pharma is an AI-powered pharmacy management system designed to streamline operations, enhance efficiency, and provide real-time insights for pharmacy owners, staff, and customers."
+                            children: "Zemen Inventory is an AI-powered operations platform designed to streamline stock control, enhance efficiency, and provide real-time insights for owners, staff, and partners across every location."
                         }, void 0, false, {
                             fileName: "[project]/components/sections/Solutions.jsx",
                             lineNumber: 54,
@@ -2067,7 +2168,12 @@ const titleVariants = {
         y: 0,
         transition: {
             duration: 0.6,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -2084,7 +2190,12 @@ const cardVariants = {
         y: 0,
         transition: {
             duration: 0.6,
-            ease: "easeOut"
+            ease: [
+                0.16,
+                1,
+                0.3,
+                1
+            ]
         }
     }
 };
@@ -2103,7 +2214,7 @@ function Benefits() {
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].h3, {
                 className: "mb-10 text-center text-2xl font-bold text-emerald-200",
                 variants: titleVariants,
-                children: "Why Choose Zemen Pharma?"
+                children: "Why Choose Zemen Inventory?"
             }, void 0, false, {
                 fileName: "[project]/components/sections/Benefits.tsx",
                 lineNumber: 51,
@@ -2116,7 +2227,7 @@ function Benefits() {
                         custom: 0,
                         variants: cardVariants,
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-                            className: "border-l-4 border-l-emerald-400 bg-white/5 text-white",
+                            className: "border-l-4 border-l-white bg-white/5 text-white",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -2135,7 +2246,7 @@ function Benefits() {
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-gray-200",
-                                        children: "Automate routine tasks, reduce manual errors, and streamline operations across all your pharmacy locations."
+                                        children: "Automate routine tasks, reduce manual errors, and streamline operations across every branch and warehouse."
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Benefits.tsx",
                                         lineNumber: 70,
@@ -2161,7 +2272,7 @@ function Benefits() {
                         custom: 1,
                         variants: cardVariants,
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-                            className: "border-l-4 border-l-emerald-400 bg-white/5 text-white",
+                            className: "border-l-4 border-l-white bg-white/5 text-white",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -2206,7 +2317,7 @@ function Benefits() {
                         custom: 2,
                         variants: cardVariants,
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-                            className: "border-l-4 border-l-emerald-400 bg-white/5 text-white",
+                            className: "border-l-4 border-l-white bg-white/5 text-white",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -2225,7 +2336,7 @@ function Benefits() {
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-gray-200",
-                                        children: "Provide seamless shopping experiences with online ordering, medicine search, and delivery tracking."
+                                        children: "Provide seamless customer experiences with online ordering, smart product search, and delivery tracking."
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Benefits.tsx",
                                         lineNumber: 110,
@@ -2251,7 +2362,7 @@ function Benefits() {
                         custom: 3,
                         variants: cardVariants,
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-                            className: "border-l-4 border-l-emerald-400 bg-white/5 text-white",
+                            className: "border-l-4 border-l-white bg-white/5 text-white",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
@@ -2338,11 +2449,11 @@ function CTA() {
                 duration: 1.2,
                 ease: "easeOut"
             },
-            className: "rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur shadow-[0_20px_60px_-25px_rgba(16,185,129,0.45)]",
+            className: "rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur shadow-[0_20px_60px_-25px_rgba(255,255,255,0.45)]",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                     className: "mb-4 text-3xl font-bold text-emerald-200",
-                    children: "Ready to Transform Your Pharmacy?"
+                    children: "Ready to Transform Your Inventory Operations?"
                 }, void 0, false, {
                     fileName: "[project]/components/sections/Cta.tsx",
                     lineNumber: 20,
@@ -2350,7 +2461,7 @@ function CTA() {
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                     className: "mb-8 text-lg text-gray-200",
-                    children: "Join the future of pharmacy management with Zemen Pharma's AI-powered platform. Schedule a demo to see how we can help your business grow."
+                    children: "Join the future of inventory management with Zemen Inventory's AI-powered platform. Schedule a demo to see how we can help your business grow."
                 }, void 0, false, {
                     fileName: "[project]/components/sections/Cta.tsx",
                     lineNumber: 23,
@@ -2656,7 +2767,7 @@ function WhoIsZemenPharma() {
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                     className: "mb-8 text-center text-3xl font-bold text-emerald-200",
-                    children: "Who is Zemen Pharma for?"
+                    children: "Who is Zemen Inventory for?"
                 }, void 0, false, {
                     fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                     lineNumber: 15,
@@ -2705,7 +2816,7 @@ function WhoIsZemenPharma() {
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
                                                         className: "text-lg font-semibold text-emerald-100",
-                                                        children: "For Pharmacy Owners"
+                                                        children: "For Inventory Operators"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                                                         lineNumber: 44,
@@ -2713,7 +2824,7 @@ function WhoIsZemenPharma() {
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         className: "text-sm leading-relaxed text-gray-200",
-                                                        children: "Stay in control of multi-branch operations with AI-driven dashboards, predictive restocking, and centralized governance."
+                                                        children: "Stay in control of multi-location operations with AI-driven dashboards, predictive restocking, and centralized governance."
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                                                         lineNumber: 47,
@@ -2752,7 +2863,7 @@ function WhoIsZemenPharma() {
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         className: "text-sm leading-relaxed text-gray-200",
-                                                        children: "Activate AI copilots that surface demand forecasts, smart alerts, and workflow recommendations to keep every branch in sync."
+                                                        children: "Activate AI copilots that surface demand forecasts, smart alerts, and workflow recommendations to keep every location in sync."
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                                                         lineNumber: 61,
@@ -2791,7 +2902,7 @@ function WhoIsZemenPharma() {
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                         className: "text-sm leading-relaxed text-gray-200",
-                                                        children: "Enforce role-based access, maintain audit trails, and safeguard sensitive patient data with encryption-first architecture."
+                                                        children: "Enforce role-based access, maintain audit trails, and safeguard sensitive business data with encryption-first architecture."
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/WhoIsZemenPharma.tsx",
                                                         lineNumber: 75,
@@ -2959,7 +3070,7 @@ const footerNav = {
 function Footer() {
     const year = new Date().getFullYear();
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
-        className: "mt-16 border-t border-white/10 bg-white/5",
+        className: "border-t border-white/10 bg-white/5",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "mx-auto grid w-full max-w-7xl gap-12 px-6 py-12 md:grid-cols-5",
@@ -3019,12 +3130,12 @@ function Footer() {
                                             className: "h-4 w-4"
                                         }, void 0, false, {
                                             fileName: "[project]/components/sections/Footer.tsx",
-                                            lineNumber: 45,
+                                            lineNumber: 47,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Footer.tsx",
-                                        lineNumber: 39,
+                                        lineNumber: 41,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -3036,12 +3147,12 @@ function Footer() {
                                             className: "h-4 w-4"
                                         }, void 0, false, {
                                             fileName: "[project]/components/sections/Footer.tsx",
-                                            lineNumber: 53,
+                                            lineNumber: 55,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Footer.tsx",
-                                        lineNumber: 47,
+                                        lineNumber: 49,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -3051,18 +3162,18 @@ function Footer() {
                                             className: "h-4 w-4"
                                         }, void 0, false, {
                                             fileName: "[project]/components/sections/Footer.tsx",
-                                            lineNumber: 59,
+                                            lineNumber: 61,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Footer.tsx",
-                                        lineNumber: 55,
+                                        lineNumber: 57,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Footer.tsx",
-                                lineNumber: 38,
+                                lineNumber: 40,
                                 columnNumber: 11
                             }, this)
                         ]
@@ -3082,7 +3193,7 @@ function Footer() {
                                         children: "Product"
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Footer.tsx",
-                                        lineNumber: 66,
+                                        lineNumber: 68,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -3094,23 +3205,23 @@ function Footer() {
                                                     children: link.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/Footer.tsx",
-                                                    lineNumber: 70,
+                                                    lineNumber: 72,
                                                     columnNumber: 19
                                                 }, this)
                                             }, link.href, false, {
                                                 fileName: "[project]/components/sections/Footer.tsx",
-                                                lineNumber: 69,
+                                                lineNumber: 71,
                                                 columnNumber: 17
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Footer.tsx",
-                                        lineNumber: 67,
+                                        lineNumber: 69,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Footer.tsx",
-                                lineNumber: 65,
+                                lineNumber: 67,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3121,7 +3232,7 @@ function Footer() {
                                         children: "Company"
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Footer.tsx",
-                                        lineNumber: 78,
+                                        lineNumber: 83,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -3133,23 +3244,23 @@ function Footer() {
                                                     children: link.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/Footer.tsx",
-                                                    lineNumber: 82,
+                                                    lineNumber: 87,
                                                     columnNumber: 19
                                                 }, this)
                                             }, link.href, false, {
                                                 fileName: "[project]/components/sections/Footer.tsx",
-                                                lineNumber: 81,
+                                                lineNumber: 86,
                                                 columnNumber: 17
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Footer.tsx",
-                                        lineNumber: 79,
+                                        lineNumber: 84,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Footer.tsx",
-                                lineNumber: 77,
+                                lineNumber: 82,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3160,7 +3271,7 @@ function Footer() {
                                         children: "Resources"
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Footer.tsx",
-                                        lineNumber: 90,
+                                        lineNumber: 98,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -3172,29 +3283,29 @@ function Footer() {
                                                     children: link.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/Footer.tsx",
-                                                    lineNumber: 94,
+                                                    lineNumber: 102,
                                                     columnNumber: 19
                                                 }, this)
                                             }, link.href, false, {
                                                 fileName: "[project]/components/sections/Footer.tsx",
-                                                lineNumber: 93,
+                                                lineNumber: 101,
                                                 columnNumber: 17
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/Footer.tsx",
-                                        lineNumber: 91,
+                                        lineNumber: 99,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/Footer.tsx",
-                                lineNumber: 89,
+                                lineNumber: 97,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/sections/Footer.tsx",
-                        lineNumber: 64,
+                        lineNumber: 66,
                         columnNumber: 9
                     }, this)
                 ]
@@ -3216,7 +3327,7 @@ function Footer() {
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/sections/Footer.tsx",
-                            lineNumber: 106,
+                            lineNumber: 117,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3228,7 +3339,7 @@ function Footer() {
                                     children: "Privacy"
                                 }, void 0, false, {
                                     fileName: "[project]/components/sections/Footer.tsx",
-                                    lineNumber: 108,
+                                    lineNumber: 119,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -3237,7 +3348,7 @@ function Footer() {
                                     children: "Terms"
                                 }, void 0, false, {
                                     fileName: "[project]/components/sections/Footer.tsx",
-                                    lineNumber: 111,
+                                    lineNumber: 122,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -3246,24 +3357,24 @@ function Footer() {
                                     children: "Support"
                                 }, void 0, false, {
                                     fileName: "[project]/components/sections/Footer.tsx",
-                                    lineNumber: 114,
+                                    lineNumber: 125,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/sections/Footer.tsx",
-                            lineNumber: 107,
+                            lineNumber: 118,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/sections/Footer.tsx",
-                    lineNumber: 105,
+                    lineNumber: 116,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/sections/Footer.tsx",
-                lineNumber: 104,
+                lineNumber: 115,
                 columnNumber: 7
             }, this)
         ]
@@ -3325,12 +3436,12 @@ const heroFeatures = [
     {
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chart$2d$column$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__BarChart3$3e$__["BarChart3"],
         title: "Real-time Dashboards",
-        description: "Monitor your pharmacy performance with live analytics, sales tracking, and branch management tools."
+        description: "Monitor your locations with live analytics, sales tracking, and branch management tools."
     },
     {
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Search$3e$__["Search"],
-        title: "Smart Medicine Search",
-        description: "Advanced search capabilities for staff and customers to find medicines quickly and efficiently."
+        title: "Smart Product Search",
+        description: "Advanced search capabilities for staff and customers to find products quickly and efficiently."
     },
     {
         icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"],
@@ -3341,7 +3452,7 @@ const heroFeatures = [
 function LandingHero({ onScrollToFeatures }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
         id: "hero",
-        className: "relative overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900 pt-24 pb-24 text-white lg:pt-28",
+        className: "relative overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900 pt-24 pb-24 text-white lg:pt-34 p-5",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-blue-500/10"
@@ -3391,7 +3502,7 @@ function LandingHero({ onScrollToFeatures }) {
                         className: "text-center lg:text-left",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                className: "mb-6 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl",
+                                className: "mb-6 text-4xl font-bold leading-tight md:text-3xl lg:text-[2.5rem]",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent",
@@ -3408,7 +3519,7 @@ function LandingHero({ onScrollToFeatures }) {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: "text-white",
-                                        children: "Pharmacy Management"
+                                        children: "Inventory Management"
                                     }, void 0, false, {
                                         fileName: "[project]/app/page.tsx",
                                         lineNumber: 78,
@@ -3421,19 +3532,19 @@ function LandingHero({ onScrollToFeatures }) {
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "mx-auto mb-8 max-w-2xl text-lg text-gray-300 md:text-xl lg:mx-0",
-                                children: "Multi-tenant CMS and management system for pharmacies. AI-powered insights, real-time dashboards, and seamless medicine search for owners, staff, and customers."
+                                className: "mx-auto mb-8 max-w-2xl text-lg text-gray-300 md:text-md lg:mx-0",
+                                children: "Multi-tenant CMS and management system for inventory-led businesses. AI-powered insights, real-time dashboards, and seamless product search for owners, staff, and customers."
                             }, void 0, false, {
                                 fileName: "[project]/app/page.tsx",
                                 lineNumber: 80,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex flex-col items-center gap-4 sm:-mt-2 sm:flex-row sm:justify-center lg:-mt-4 lg:justify-start",
+                                className: "flex flex-col items-center gap-4 sm:-mt-2 sm:flex-row sm:justify-center lg:mt-4 lg:justify-start",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                         href: "/register/pharmacy",
-                                        className: "group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 to-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-[0_25px_70px_-20px_rgba(16,185,129,0.65)] transition-all duration-300 hover:translate-y-[-2px] hover:shadow-[0_35px_90px_-25px_rgba(16,185,129,0.7)]",
+                                        className: "group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 to-blue-600 px-8 py-2 text-md font-semibold text-white shadow-[0_25px_70px_-20px_rgba(16,185,129,0.65)] transition-all duration-300 hover:translate-y-[-2px] hover:shadow-[0_35px_90px_-25px_rgba(16,185,129,0.7)]",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "relative z-10 flex items-center",
@@ -3443,51 +3554,51 @@ function LandingHero({ onScrollToFeatures }) {
                                                         className: "ml-2 h-5 w-5 transition-transform group-hover:translate-x-1"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/page.tsx",
-                                                        lineNumber: 91,
+                                                        lineNumber: 92,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/page.tsx",
-                                                lineNumber: 89,
+                                                lineNumber: 90,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "absolute inset-0 bg-gradient-to-r from-emerald-600 to-blue-700 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/page.tsx",
-                                                lineNumber: 93,
+                                                lineNumber: 94,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/page.tsx",
-                                        lineNumber: 85,
+                                        lineNumber: 86,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         type: "button",
                                         onClick: onScrollToFeatures,
-                                        className: "inline-flex cursor-pointer items-center rounded-xl border-2 border-white/20 px-8 py-4 text-lg font-semibold text-white shadow-[0_25px_70px_-25px_rgba(59,130,246,0.55)] transition-all duration-300 hover:translate-y-[-2px] hover:border-emerald-400 hover:text-emerald-400 hover:shadow-[0_35px_90px_-30px_rgba(59,130,246,0.6)]",
+                                        className: "inline-flex cursor-pointer items-center rounded-xl border-2 border-white/20 px-8 py-2 text-md font-semibold text-white shadow-[0_25px_70px_-25px_rgba(59,130,246,0.55)] transition-all duration-300 hover:translate-y-[-2px] hover:border-emerald-400 hover:text-emerald-400 hover:shadow-[0_35px_90px_-30px_rgba(59,130,246,0.6)]",
                                         children: "Explore Features"
                                     }, void 0, false, {
                                         fileName: "[project]/app/page.tsx",
-                                        lineNumber: 95,
+                                        lineNumber: 96,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                         href: "/register?tab=affiliate",
-                                        className: "inline-flex items-center rounded-xl border-2 border-white/20 px-8 py-4 text-lg font-semibold text-white shadow-[0_25px_70px_-25px_rgba(147,51,234,0.55)] transition-all duration-300 hover:translate-y-[-2px] hover:border-emerald-400 hover:text-emerald-400 hover:shadow-[0_35px_90px_-30px_rgba(147,51,234,0.6)]",
+                                        className: "inline-flex items-center rounded-xl border-2 border-white/20 px-8 py-2 text-md font-semibold text-white shadow-[0_25px_70px_-25px_rgba(147,51,234,0.55)] transition-all duration-300 hover:translate-y-[-2px] hover:border-emerald-400 hover:text-emerald-400 hover:shadow-[0_35px_90px_-30px_rgba(147,51,234,0.6)]",
                                         children: "Become an Affiliate"
                                     }, void 0, false, {
                                         fileName: "[project]/app/page.tsx",
-                                        lineNumber: 102,
+                                        lineNumber: 103,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/page.tsx",
-                                lineNumber: 84,
+                                lineNumber: 85,
                                 columnNumber: 11
                             }, this)
                         ]
@@ -3515,32 +3626,32 @@ function LandingHero({ onScrollToFeatures }) {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                     src: "/hero.jpg",
-                                    alt: "Secure Cloud-Based Pharmacy Management System",
+                                    alt: "Secure Cloud-Based Inventory Management System",
                                     width: 720,
                                     height: 540,
                                     priority: true,
                                     className: "h-full w-full object-cover"
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 118,
+                                    lineNumber: 119,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 126,
+                                    lineNumber: 127,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 117,
+                            lineNumber: 118,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 111,
+                        lineNumber: 112,
                         columnNumber: 9
                     }, this)
                 ]
@@ -3566,12 +3677,12 @@ function LandingHero({ onScrollToFeatures }) {
                     className: "h-16 w-16 rounded-full bg-gradient-to-r from-emerald-400 to-blue-400 blur-xl"
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 132,
+                    lineNumber: 133,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 131,
+                lineNumber: 132,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3591,12 +3702,12 @@ function LandingHero({ onScrollToFeatures }) {
                     className: "h-24 w-24 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 blur-xl"
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 139,
+                    lineNumber: 140,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 138,
+                lineNumber: 139,
                 columnNumber: 7
             }, this)
         ]
@@ -3632,24 +3743,24 @@ function FeatureHighlights() {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
                             className: "text-3xl font-bold md:text-4xl",
-                            children: "Everything You Need to Run Your Pharmacy"
+                            children: "Everything You Need to Run Your Inventory Operations"
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 160,
+                            lineNumber: 164,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                             className: "mx-auto mt-4 max-w-2xl text-lg text-gray-300",
-                            children: "Comprehensive tools designed specifically for modern pharmacy operations."
+                            children: "Comprehensive tools designed specifically for modern inventory operations."
                         }, void 0, false, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 161,
+                            lineNumber: 167,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 153,
+                    lineNumber: 157,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3679,7 +3790,7 @@ function FeatureHighlights() {
                                             className: "absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-500 to-blue-600 opacity-0 blur group-hover:opacity-20"
                                         }, void 0, false, {
                                             fileName: "[project]/app/page.tsx",
-                                            lineNumber: 177,
+                                            lineNumber: 184,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3688,18 +3799,18 @@ function FeatureHighlights() {
                                                 className: "h-6 w-6 text-white"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/page.tsx",
-                                                lineNumber: 179,
+                                                lineNumber: 186,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/page.tsx",
-                                            lineNumber: 178,
+                                            lineNumber: 185,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 176,
+                                    lineNumber: 183,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -3707,7 +3818,7 @@ function FeatureHighlights() {
                                     children: feature.title
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 182,
+                                    lineNumber: 189,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3715,29 +3826,29 @@ function FeatureHighlights() {
                                     children: feature.description
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.tsx",
-                                    lineNumber: 183,
+                                    lineNumber: 190,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, feature.title, true, {
                             fileName: "[project]/app/page.tsx",
-                            lineNumber: 168,
+                            lineNumber: 175,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/app/page.tsx",
-                    lineNumber: 166,
+                    lineNumber: 173,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/page.tsx",
-            lineNumber: 152,
+            lineNumber: 156,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/page.tsx",
-        lineNumber: 151,
+        lineNumber: 152,
         columnNumber: 5
     }, this);
 }
@@ -3778,19 +3889,19 @@ function HomePage() {
                 handleScrollToSection: handleScrollToSection
             }, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 224,
+                lineNumber: 233,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(LandingHero, {
                 onScrollToFeatures: ()=>handleScrollToSection("features")
             }, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 231,
+                lineNumber: 240,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(FeatureHighlights, {}, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 234,
+                lineNumber: 243,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3798,54 +3909,54 @@ function HomePage() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$sections$2f$WhoIsZemenPharma$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 236,
+                        lineNumber: 245,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$sections$2f$Solutions$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 237,
+                        lineNumber: 246,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$sections$2f$SecurityFeatures$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 238,
+                        lineNumber: 247,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$sections$2f$HowItWorks$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 239,
+                        lineNumber: 248,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$sections$2f$Benefits$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 240,
+                        lineNumber: 249,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$sections$2f$Pricing$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 241,
+                        lineNumber: 250,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$sections$2f$Cta$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                         fileName: "[project]/app/page.tsx",
-                        lineNumber: 242,
+                        lineNumber: 251,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 235,
+                lineNumber: 244,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$sections$2f$Footer$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/app/page.tsx",
-                lineNumber: 244,
+                lineNumber: 253,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/page.tsx",
-        lineNumber: 223,
+        lineNumber: 232,
         columnNumber: 5
     }, this);
 }

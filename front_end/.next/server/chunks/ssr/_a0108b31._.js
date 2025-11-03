@@ -38,8 +38,6 @@ __turbopack_context__.s([
     ()=>AuthAPI,
     "BillingAPI",
     ()=>BillingAPI,
-    "BranchAPI",
-    ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
     "IntegrationsAPI",
@@ -483,41 +481,19 @@ const StaffAPI = {
             },
             body: JSON.stringify(body)
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || `Request failed with ${res.status}`);
+            }
             return res.json();
         }),
     remove: (tenantId, userId)=>authFetch(`/api/v1/staff/${userId}`, {
             method: "DELETE"
         }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        })
-};
-const BranchAPI = {
-    list: (tenantId, params)=>{
-        const query = new URLSearchParams();
-        if (params?.q) query.set("q", params.q);
-        if (params?.pharmacy_id !== undefined) query.set("pharmacy_id", String(params.pharmacy_id));
-        if (params?.page) query.set("page", String(params.page));
-        if (params?.page_size) query.set("page_size", String(params.page_size));
-        const path = `/api/v1/branches${query.toString() ? `?${query.toString()}` : ""}`;
-        return getAuthJSON(path, tenantId);
-    },
-    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
-    update: (tenantId, branchId, payload)=>authFetch(`/api/v1/branches/${branchId}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        }),
-    remove: (tenantId, branchId)=>authFetch(`/api/v1/branches/${branchId}`, {
-            method: "DELETE"
-        }, true, tenantId).then(async (res)=>{
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const text = await res.text().catch(()=>"");
+                throw new Error(text || `Request failed with ${res.status}`);
+            }
             return res.json();
         })
 };
@@ -561,9 +537,9 @@ const PharmaciesAPI = {
 };
 const ChatAPI = {
     listThreads: (tenantId)=>getAuthJSON(`/api/v1/chat/threads`, tenantId),
-    createThread: (tenantId, title)=>postAuthJSON(`/api/v1/chat/threads`, {
+    createThread: (tenantId, title)=>postAuthJSON(`/api/v1/chat/threads`, title ? {
             title
-        }, tenantId),
+        } : {}, tenantId),
     listMessages: (tenantId, threadId)=>getAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, tenantId),
     sendMessage: (tenantId, threadId, prompt)=>postAuthJSON(`/api/v1/chat/threads/${threadId}/messages`, {
             prompt
@@ -1311,7 +1287,7 @@ function VerifyRegistrationPage() {
             });
             // Redirect to affiliate dashboard after a short delay
             setTimeout(()=>{
-                router.replace("/dashboard/affiliate");
+                router.replace("/affiliate");
             }, 2000);
         } catch (err) {
             setError(err.message || "Verification failed");
@@ -1397,7 +1373,7 @@ function VerifyRegistrationPage() {
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                            onClick: ()=>router.replace("/dashboard/affiliate"),
+                            onClick: ()=>router.replace("/affiliate"),
                             className: "mt-8 w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-500 text-sm font-semibold shadow-[0_15px_45px_-25px_rgba(16,185,129,0.65)]",
                             children: "Go now"
                         }, void 0, false, {
