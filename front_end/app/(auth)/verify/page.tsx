@@ -94,7 +94,7 @@ export default function VerifyRegistrationPage() {
 
       // Redirect to affiliate dashboard after a short delay
       setTimeout(() => {
-        router.replace("/affiliate");
+        router.replace("/dashboard/affiliate");
       }, 2000);
     } catch (err: any) {
       setError(err.message || "Verification failed");
@@ -110,27 +110,27 @@ export default function VerifyRegistrationPage() {
 
   if (success) {
     return (
-      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 text-white">
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-blue-50 p-6 text-slate-900">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-10 left-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-emerald-500/30 blur-3xl" />
-          <div className="absolute bottom-10 right-1/3 h-80 w-80 translate-x-1/2 rounded-full bg-blue-500/25 blur-3xl" />
+          <div className="absolute top-4 left-1/3 h-72 w-72 -translate-x-1/2 rounded-full bg-emerald-200/40 blur-3xl" />
+          <div className="absolute bottom-6 right-1/3 h-72 w-72 translate-x-1/2 rounded-full bg-blue-200/35 blur-3xl" />
         </div>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="w-full max-w-md rounded-3xl border border-white/10 bg-white/10 p-10 text-center shadow-[0_30px_100px_-40px_rgba(16,185,129,0.65)] backdrop-blur-lg"
+          className="w-full max-w-md rounded-3xl border border-emerald-100/80 bg-white/95 p-10 text-center shadow-[0_35px_100px_-55px_rgba(15,118,110,0.45)] backdrop-blur"
         >
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20">
-            <CheckCircle2 className="h-10 w-10 text-emerald-300" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15">
+            <CheckCircle2 className="h-10 w-10 text-emerald-500" />
           </div>
-          <h1 className="mt-6 text-3xl font-semibold text-white">Account verified!</h1>
-          <p className="mt-3 text-sm text-emerald-100/80">
-            Your account has been activated. We&rsquo;ll send you to the affiliate dashboard in a moment.
+          <h1 className="mt-6 text-3xl font-semibold text-slate-900">Account verified!</h1>
+          <p className="mt-3 text-sm text-slate-600">
+            Your account has been activated. We’ll send you to the affiliate dashboard in a moment.
           </p>
           <Button
-            onClick={() => router.replace("/affiliate")}
-            className="mt-8 w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-500 text-sm font-semibold shadow-[0_15px_45px_-25px_rgba(16,185,129,0.65)]"
+            onClick={() => router.replace("/dashboard/affiliate")}
+            className="mt-8 w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 text-sm font-semibold text-white shadow-[0_25px_70px_-50px_rgba(15,118,110,0.45)] hover:translate-y-[-1px]"
           >
             Go now
           </Button>
@@ -140,50 +140,51 @@ export default function VerifyRegistrationPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-10 left-10 h-80 w-80 rounded-full bg-emerald-500/20 blur-3xl" />
-        <div className="absolute bottom-10 right-10 h-[26rem] w-[26rem] rounded-full bg-blue-500/20 blur-3xl" />
+    <div className="relative flex min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 text-slate-900">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[-6rem] left-[-4rem] h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
+        <div className="absolute bottom-[-5rem] right-[-3rem] h-[26rem] w-[26rem] rounded-full bg-blue-200/40 blur-3xl" />
+        <div className="absolute inset-x-0 top-[40%] h-24 bg-gradient-to-r from-emerald-100/40 via-transparent to-blue-100/40 blur-2xl" />
       </div>
 
-      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden bg-gradient-to-br from-emerald-600/50 via-blue-700/50 to-slate-800/60 p-12 lg:flex">
+      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden rounded-r-[48px] border border-emerald-100 bg-white/80 p-12 shadow-[0_60px_160px_-90px_rgba(14,116,144,0.45)] backdrop-blur lg:flex">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="max-w-lg space-y-5"
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/80">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-700">
             Secure verification
           </div>
-          <h1 className="text-4xl font-bold leading-tight text-white">
+          <h1 className="text-4xl font-bold leading-tight text-slate-900">
             Confirm your email and unlock the partner dashboard
           </h1>
-          <p className="text-sm text-emerald-100/80">
+          <p className="text-sm text-slate-600">
             Enter the one-time code sent to your inbox. Once it matches, we&rsquo;ll activate your affiliate portal and load your referral toolkit.
           </p>
 
-          <div className="mt-8 grid gap-4 text-sm text-emerald-100/80">
+          <div className="mt-8 grid gap-4 text-sm text-slate-600">
             {highlights.map((item) => (
               <div
                 key={item.title}
-                className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"
+                className="flex items-start gap-3 rounded-2xl border border-emerald-100 bg-white/90 p-4 shadow-sm"
               >
-                <span className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-200">
+                <span className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-600">
                   {item.icon}
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-white/90">{item.title}</p>
-                  <p className="text-xs text-emerald-100/70">{item.copy}</p>
+                  <p className="text-sm font-semibold text-slate-900">{item.title}</p>
+                  <p className="text-xs text-slate-500">{item.copy}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="space-y-3 text-xs text-emerald-100/60">
+          <div className="space-y-3 text-xs text-slate-500">
             <p>
               Need help? {" "}
-              <Link href="/contact" className="text-white hover:underline">
+              <Link href="/contact" className="text-emerald-600 hover:underline">
                 Partner support is a message away
               </Link>
             </p>
@@ -194,7 +195,7 @@ export default function VerifyRegistrationPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-          className="text-xs text-emerald-100/60"
+          className="text-xs text-slate-500"
         >
           <p>Verification keeps your earnings protected.</p>
           <p className="mt-1">© {new Date().getFullYear()} Zemen Pharma Partners.</p>
@@ -206,24 +207,24 @@ export default function VerifyRegistrationPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mx-auto w-full max-w-md rounded-3xl border border-white/10 bg-black/65 p-8 shadow-[0_25px_80px_-40px_rgba(124,58,237,0.6)] backdrop-blur"
+          className="mx-auto w-full max-w-md rounded-3xl border border-emerald-100/80 bg-white/95 p-8 shadow-[0_35px_90px_-55px_rgba(15,118,110,0.45)] backdrop-blur"
         >
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-white">Verify your account</h2>
-            <p className="mt-2 text-sm text-emerald-100/75">
+            <h2 className="text-3xl font-bold text-slate-900">Verify your account</h2>
+            <p className="mt-2 text-sm text-slate-500">
               Enter the six-digit code we just emailed to finish activating your partner access.
             </p>
           </div>
 
           {error && (
-            <div className="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-100">
+            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
               {error}
             </div>
           )}
 
           <form onSubmit={onSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-100/80">
+              <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
                 Email address
               </label>
               <Input
@@ -233,12 +234,12 @@ export default function VerifyRegistrationPage() {
                 placeholder="Enter your email"
                 required
                 autoComplete="email"
-                className="mt-2 border-white/10 bg-white/5 text-white placeholder:text-emerald-100/40 focus:border-emerald-400 focus:ring-emerald-400"
+                className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-100/80">
+              <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
                 Verification code
               </label>
               <Input
@@ -249,23 +250,23 @@ export default function VerifyRegistrationPage() {
                 required
                 autoComplete="one-time-code"
                 maxLength={6}
-                className="mt-2 border-white/10 bg-white/5 text-white placeholder:text-emerald-100/40 focus:border-emerald-400 focus:ring-emerald-400"
+                className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
               />
             </div>
 
             <Button
               type="submit"
               disabled={loading}
-              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-500 px-6 py-3 font-semibold text-white shadow-[0_15px_45px_-25px_rgba(16,185,129,0.65)] transition duration-300 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 px-6 py-3 font-semibold text-white shadow-[0_25px_70px_-50px_rgba(15,118,110,0.45)] transition duration-300 hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Verifying..." : "Verify account"}
             </Button>
           </form>
 
-          <div className="mt-8 space-y-3 text-center text-xs text-emerald-100/70">
+          <div className="mt-8 space-y-3 text-center text-xs text-slate-500">
             <p>
               Didn’t get the code? Check spam or {" "}
-              <Link href="/register/affiliate" className="text-white hover:underline">
+              <Link href="/auth?tab=affiliate" className="text-emerald-600 hover:underline">
                 resend from registration
               </Link>
               .

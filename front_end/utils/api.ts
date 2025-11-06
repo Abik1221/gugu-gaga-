@@ -587,24 +587,26 @@ export const IntegrationsAPI = {
 };
 
 export const AffiliateAPI = {
-  getLinks: () => getAuthJSON("/api/v1/affiliate/register-link"),
-  createLink: () => getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
+  getLinks: () => getAuthJSON("/api/v1/affiliate/register-link", ""),
+  createLink: () => getAuthJSON("/api/v1/affiliate/register-link?create_new=true", ""),
   deactivate: (token: string) =>
     postAuthJSON(
       `/api/v1/affiliate/links/${encodeURIComponent(token)}/deactivate`,
-      {}
+      {},
+      ""
     ),
   rotate: (token: string) =>
-    postAuthJSON(`/api/v1/affiliate/links/${encodeURIComponent(token)}/rotate`, {}),
-  dashboard: () => getAuthJSON("/api/v1/affiliate/dashboard"),
+    postAuthJSON(`/api/v1/affiliate/links/${encodeURIComponent(token)}/rotate`, {}, ""),
+  dashboard: () => getAuthJSON("/api/v1/affiliate/dashboard", ""),
   payouts: (status?: string) =>
     getAuthJSON(
       `/api/v1/affiliate/payouts${status ? `?status_filter=${encodeURIComponent(status)}` : ""
-      }`
+      }`,
+      ""
     ),
   requestPayout: (month?: string, percent = 5) =>
-    postAuthJSON("/api/v1/affiliate/payouts/request", { month, percent }),
-  updateProfile: (body: any) => postAuthJSON("/api/v1/affiliate/profile", body),
+    postAuthJSON("/api/v1/affiliate/payouts/request", { month, percent }, ""),
+  updateProfile: (body: any) => postAuthJSON("/api/v1/affiliate/profile", body, ""),
 };
 
 // ----------------- AdminAPI -----------------

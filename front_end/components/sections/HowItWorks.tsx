@@ -1,8 +1,9 @@
+"use client"
 import { motion } from "framer-motion"; // Import Framer Motion
-import dashboardImage from "@/public/pharmacy-dashboard.jpg";
-import aiAssistant from "@/public/ai-assistant.jpg";
+import righttop from "@/public/threeimg.jpeg";
+import messobconnector from '@/public/messobconnector.jpeg';
 import ownerOverview from "@/public/owner-overview.jpg";
-import imageLeftDashboard from '@/public/imageleftdashboard.jpg'
+import overview from '@/public/overview.jpeg'
 import Image from "next/image";
 // Variants for the container to stagger child animations
 const containerVariants = {
@@ -57,7 +58,7 @@ export default function HowItWorks() {
     >
       {/* Animated Title */}
       <motion.h3
-        className="mb-20 text-center text-2xl font-bold text-emerald-200"
+        className="mb-20 text-center text-2xl font-bold text-black"
         variants={titleVariants}
       >
         How Zemen Inventory Works
@@ -66,7 +67,7 @@ export default function HowItWorks() {
         <div className="overflow-hidden rounded-lg">
           <Image
             className="h-full w-full object-contain"
-            src={imageLeftDashboard}
+            src={overview}
             alt="Dashboard-image"
           />
         </div>
@@ -74,32 +75,32 @@ export default function HowItWorks() {
           <div className="flex-1 overflow-hidden rounded-lg">
             <Image
               className="h-full w-full object-fill"
-              src={aiAssistant}
+              src={righttop}
               alt="AI-assistant-image"
             />
           </div>
           <div className="flex-1 overflow-hidden rounded-lg">
             <Image
               className="h-full w-full object-cover"
-              src={ownerOverview}
+              src={messobconnector}
               alt="Owner-overview-image"
             />
           </div>
         </div>
       </div>
-      <div className="grid gap-8 md:grid-cols-3 mt-40">
+      <div className="grid gap-8 md:grid-cols-3 mt-40 text-black">
         {/* Step 1 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
-            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10"
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black "
             variants={circleVariants}
           >
             <span className="text-2xl font-bold text-white">1</span>
           </motion.div>
-          <h4 className="mb-3 text-xl font-semibold text-white">
+          <h4 className="mb-3 text-xl font-semibold text-black">
             Setup & Integration
           </h4>
-          <p className="text-gray-300">
+          <p className="text-gray-700">
             Quick setup with your existing inventory data. Integrate with your
             suppliers and payment systems seamlessly.
           </p>
@@ -108,15 +109,15 @@ export default function HowItWorks() {
         {/* Step 2 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
-            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10"
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black"
             variants={circleVariants}
           >
             <span className="text-2xl font-bold text-white">2</span>
           </motion.div>
-          <h4 className="mb-3 text-xl font-semibold text-white">
+          <h4 className="mb-3 text-xl font-semibold text-black">
             AI Optimization
           </h4>
-          <p className="text-gray-300">
+          <p className="text-gray-700">
             Our AI analyzes your operations and starts providing insights,
             predictions, and automated recommendations.
           </p>
@@ -125,15 +126,15 @@ export default function HowItWorks() {
         {/* Step 3 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
-            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/10"
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black"
             variants={circleVariants}
           >
             <span className="text-2xl font-bold text-white">3</span>
           </motion.div>
-          <h4 className="mb-3 text-xl font-semibold text-white">
+          <h4 className="mb-3 text-xl font-semibold text-black">
             Grow & Scale
           </h4>
-          <p className="text-gray-300">
+          <p className="text-gray-700">
             Expand your business with confidence using real-time data,
             multi-branch support, and continuous AI improvements.
           </p>

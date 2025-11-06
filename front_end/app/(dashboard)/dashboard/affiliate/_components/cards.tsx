@@ -20,18 +20,18 @@ export function StatCard({
   return (
     <Card
       className={cn(
-        "border border-white/10 bg-gradient-to-br from-emerald-500/10 via-slate-950/70 to-blue-600/10 text-white shadow-[0_18px_55px_-35px_rgba(16,185,129,0.55)] transition hover:-translate-y-1 hover:shadow-[0_28px_85px_-40px_rgba(56,189,248,0.55)] backdrop-blur-xl",
+        "border border-emerald-100 bg-white text-slate-900 shadow-sm transition hover:-translate-y-1 hover:shadow-lg",
         className
       )}
     >
-      <CardContent className="flex items-start justify-between gap-3 p-5">
+      <CardContent className="flex items-start justify-between gap-4 p-5">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-emerald-200">{title}</p>
-          <p className="mt-3 text-2xl font-semibold text-white">{value}</p>
-          {description && <p className="mt-3 text-xs text-emerald-100/70">{description}</p>}
+          <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-emerald-600">{title}</p>
+          <p className="mt-3 text-2xl font-semibold text-slate-900">{value}</p>
+          {description && <p className="mt-3 text-sm text-slate-500">{description}</p>}
         </div>
         {icon && (
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-emerald-200 shadow-inner shadow-emerald-500/10">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
             {icon}
           </span>
         )}
@@ -42,10 +42,10 @@ export function StatCard({
 
 export function MiniStat({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <Card className="border border-white/10 bg-gradient-to-br from-slate-900/70 via-emerald-600/10 to-blue-600/10 text-white shadow-[0_12px_45px_-30px_rgba(59,130,246,0.45)]">
+    <Card className="border border-emerald-100 bg-emerald-50 text-emerald-900 shadow-sm">
       <CardContent className="space-y-2 p-4">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-emerald-200/80">{label}</p>
-        <div className="text-xl font-semibold leading-tight text-white break-words">{value}</div>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-emerald-600/80">{label}</p>
+        <div className="break-words text-xl font-semibold leading-tight text-emerald-900">{value}</div>
       </CardContent>
     </Card>
   );
@@ -82,10 +82,10 @@ export function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="border border-white/10 bg-gradient-to-br from-slate-950/80 via-emerald-700/15 to-blue-800/10 text-white shadow-[0_20px_60px_-35px_rgba(16,185,129,0.6)] backdrop-blur-xl">
+    <Card className="border border-emerald-100 bg-white text-slate-900 shadow-sm">
       <CardHeader className="mb-0 space-y-1 pb-0">
-        <CardTitle className="text-lg text-white">{title}</CardTitle>
-        {description && <p className="text-xs text-emerald-100/70">{description}</p>}
+        <CardTitle className="text-lg font-semibold text-slate-900">{title}</CardTitle>
+        {description && <p className="text-sm text-slate-500">{description}</p>}
       </CardHeader>
       <CardContent className="pt-5">{children}</CardContent>
     </Card>

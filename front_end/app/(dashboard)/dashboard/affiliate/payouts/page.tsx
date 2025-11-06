@@ -1,109 +1,219 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { AffiliateAPI } from "@/utils/api";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
+
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
+import { SectionCard, MiniStat } from "@/app/(dashboard)/dashboard/affiliate/_components/cards";
+import { useAffiliateDashboardContext } from "@/app/(dashboard)/dashboard/affiliate/_context/affiliate-dashboard-context";
 
-export default function AffiliatePayoutsPage() {
-  const { show } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState<string>("");
-  const [items, setItems] = useState<Array<{ id:number; month?:string; percent?:number; amount:number; status:string }>>([]);
-  const [month, setMonth] = useState("");
-  const [percent, setPercent] = useState("5");
+function formatCurrency(amount: number) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount || 0);
+}
 
-  async function refresh() {
-    setLoading(true);
+export default function PayoutsPage() {
+  const {
+    dash,
+    payouts,
+    payoutMonth,
+    setPayoutMonth,
+    payoutPercent,
+    setPayoutPercent,
+    requestingPayout,
+    actions,
+    stats,
+    monthLabel,
+  } = useAffiliateDashboardContext();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const tenantsCount = dash?.tenants?.length ?? 0;
+  const currentPeriodLabel = useMemo(() => {
+    if (dash?.year && dash?.month) {
+      try {
+        return new Date(dash.year, dash.month - 1).toLocaleDateString("en-US", {
+          month: "long",
+          year: "numeric",
+        });
+      } catch {
+        return `${dash.year}-${String(dash.month).padStart(2, "0")}`;
+      }
+    }
+    return monthLabel || "current period";
+  }, [dash?.month, dash?.year, monthLabel]);
+
+  const canRequestPayout = Math.max(stats.currentCommission, dash?.amount ?? 0) > 0;
+  const payoutGuardMessage = "You haven't earned any commission yet. Share your referral link to start earning before requesting a payout.";
+
+  async function handleRefresh() {
+    setRefreshing(true);
     try {
-      const rows = await AffiliateAPI.payouts(status || undefined);
-      setItems(rows || []);
-      setError(null);
-    } catch (e:any) {
-      setError(e.message || "Failed to load");
-    } finally { setLoading(false); }
-  }
-
-  useEffect(() => { refresh(); }, [status]);
-
-  async function requestPayout() {
-    try {
-      const p = Number(percent) || 5;
-      await AffiliateAPI.requestPayout(month || undefined, p);
-      show({ variant: "success", title: "Payout requested" });
-      setMonth("");
-      refresh();
-    } catch (e:any) {
-      show({ variant: "destructive", title: "Request failed", description: e.message });
+      await actions.refresh();
+    } finally {
+      setRefreshing(false);
     }
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Affiliate · Payouts</h1>
-        <div className="flex items-center gap-2">
-          <select className="border rounded px-2 py-1" value={status} onChange={(e)=>setStatus(e.target.value)}>
-            <option value="">All</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="paid">Paid</option>
-          </select>
+    <div className="space-y-8">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div>
+          <h1 className="text-2xl font-semibold text-slate-900">Commission payouts</h1>
+          <p className="text-sm text-slate-500">Track requests, statuses, and submit new payout claims.</p>
         </div>
+        <Button
+          variant="outline"
+          onClick={() => {
+            void handleRefresh();
+          }}
+          disabled={refreshing}
+          className="h-10 rounded-2xl border border-emerald-200/70 bg-white px-4 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-50 disabled:cursor-wait"
+        >
+          {refreshing ? "Refreshing..." : "Refresh data"}
+        </Button>
       </div>
 
-      <div className="border rounded p-3 bg-white">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
-          <div>
-            <div className="text-xs text-gray-600 mb-1">Month (YYYY-MM)</div>
-            <Input placeholder="2025-10" value={month} onChange={(e)=>setMonth(e.target.value)} />
-          </div>
-          <div>
-            <div className="text-xs text-gray-600 mb-1">Percent</div>
-            <Input type="number" min="1" max="20" step="0.5" value={percent} onChange={(e)=>setPercent(e.target.value)} />
-          </div>
-          <div className="md:col-span-2 flex justify-end">
-            <Button onClick={requestPayout}>Request Payout</Button>
-          </div>
-        </div>
-        <div className="text-xs text-gray-500 mt-2">Note: Admin manually approves and pays after verifying your referred pharmacies generate revenue.</div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.12, ease: "easeOut" }}
+        >
+          <SectionCard
+            title="This period at a glance"
+            description={`Commission summary for ${currentPeriodLabel}.`}
+          >
+            <div className="grid gap-3 sm:grid-cols-3">
+              <MiniStat label="Percent" value={`${dash?.percent ?? payoutPercent}%`} />
+              <MiniStat label="Commission" value={formatCurrency(dash?.amount ?? stats.currentCommission)} />
+              <MiniStat label="Referred Pharmacies" value={tenantsCount.toString()} />
+            </div>
+            <div className="mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-emerald-700">
+                Tenant IDs credited
+              </p>
+              <div className="mt-3 max-h-40 overflow-auto rounded-xl border border-emerald-100 bg-white p-3 text-xs font-mono text-slate-700 shadow-sm">
+                {tenantsCount === 0 ? (
+                  <p>No pharmacies referred yet this month. Share your link to get started.</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {(dash?.tenants ?? []).map((tenant) => (
+                      <li key={tenant} className="flex items-center justify-between">
+                        <span>{tenant}</span>
+                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-emerald-700">
+                          Credited
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </SectionCard>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.16, ease: "easeOut" }}
+        >
+          <SectionCard
+            title="Request payout"
+            description="Submit a commission payout request for a specific month."
+          >
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-600">
+                  Month (YYYY-MM)
+                </label>
+                <Input
+                  value={payoutMonth}
+                  onChange={(e) => setPayoutMonth(e.target.value)}
+                  placeholder="2025-10"
+                  className="rounded-2xl border border-emerald-100/40 bg-white/80 text-emerald-900 placeholder:text-emerald-300 focus:border-emerald-400 focus:ring-emerald-400"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-600">
+                  Commission percent
+                </label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={20}
+                  step={0.5}
+                  value={payoutPercent}
+                  onChange={(e) => setPayoutPercent(Number(e.target.value))}
+                  className="rounded-2xl border border-emerald-100/40 bg-white/80 text-emerald-900 focus:border-emerald-400 focus:ring-emerald-400"
+                />
+              </div>
+            </div>
+            <Button
+              onClick={() => {
+                if (!payoutMonth) return;
+                if (!canRequestPayout) return;
+                void actions.requestPayout();
+              }}
+              disabled={requestingPayout || !payoutMonth || !canRequestPayout}
+              className="mt-6 h-11 w-full rounded-2xl bg-emerald-600 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {requestingPayout ? "Submitting..." : "Submit payout request"}
+            </Button>
+            {!canRequestPayout && (
+              <p className="mt-3 text-xs font-medium text-rose-600">{payoutGuardMessage}</p>
+            )}
+          </SectionCard>
+        </motion.div>
       </div>
 
-      {loading ? (
-        <Skeleton className="h-64" />
-      ) : error ? (
-        <div className="text-sm text-red-600">{error}</div>
-      ) : (
-        <div className="overflow-auto border rounded">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-3 py-2 text-left">ID</th>
-                <th className="px-3 py-2 text-left">Month</th>
-                <th className="px-3 py-2 text-left">Percent</th>
-                <th className="px-3 py-2 text-left">Amount</th>
-                <th className="px-3 py-2 text-left">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {items.map((r)=> (
-                <tr key={r.id}>
-                  <td className="px-3 py-2">{r.id}</td>
-                  <td className="px-3 py-2">{r.month || "-"}</td>
-                  <td className="px-3 py-2">{r.percent ?? "-"}</td>
-                  <td className="px-3 py-2">{r.amount?.toFixed?.(2) ?? r.amount}</td>
-                  <td className="px-3 py-2">{r.status}</td>
-                </tr>
-              ))}
-              {items.length === 0 && (
-                <tr><td className="px-3 py-4 text-gray-500" colSpan={5}>No payouts yet.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, delay: 0.2, ease: "easeOut" }}
+      >
+        <SectionCard title="Payout history" description="Latest payout requests with status updates.">
+          {payouts.length === 0 ? (
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-6 text-sm text-emerald-700">
+              No payout requests yet. Submit your first payout to see it listed here.
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-2xl border border-emerald-100 bg-white">
+              <table className="w-full text-left text-sm text-slate-700">
+                <thead className="bg-emerald-50 text-xs uppercase tracking-[0.25em] text-emerald-600">
+                  <tr>
+                    <th className="px-4 py-3">Month</th>
+                    <th className="px-4 py-3">Percent</th>
+                    <th className="px-4 py-3">Amount</th>
+                    <th className="px-4 py-3 text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payouts.map((payout) => (
+                    <tr key={payout.id} className="border-t border-emerald-50">
+                      <td className="px-4 py-3 font-mono text-xs text-slate-700">{payout.month || "—"}</td>
+                      <td className="px-4 py-3">{`${payout.percent}%`}</td>
+                      <td className="px-4 py-3">{formatCurrency(payout.amount)}</td>
+                      <td className="px-4 py-3 text-right">
+                        <span
+                          className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] ${
+                            payout.status === "paid"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : payout.status === "pending"
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-slate-200 text-slate-700"
+                          }`}
+                        >
+                          {payout.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </SectionCard>
+      </motion.div>
     </div>
   );
 }
