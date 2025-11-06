@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/habtamusemagn/Desktop/last/gugu-gaga-/front_end/app/%28dashboard%29/dashboard/layout.tsx"],"sourcesContent":["\"use client\"\n\nexport default function App({\n    children,\n}: Readonly<{\n    children: React.ReactNode;\n}>) {\n    return (\n        <div>\n            {children}\n        </div>\n    );\n}"],"names":[],"mappings":";;;;;AAAA;;AAEe,SAAS,IAAI,EACxB,QAAQ,EAGV;IACE,qBACI,8OAAC;kBACI;;;;;;AAGb","debugId":null}}]
+}

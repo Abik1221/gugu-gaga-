@@ -25,12 +25,21 @@ export type AffiliateDashboardSummary = {
   [key: string]: unknown;
 };
 
+export type AffiliatePayout = {
+  id: number;
+  month: string;
+  percent: number;
+  amount: number;
+  status: string;
+};
+
 type DashboardState = {
   loading: boolean;
   error: string | null;
   stats: AffiliateStats;
   dash: AffiliateDashboardSummary | null;
   links: AffiliateLink[];
+  payouts: AffiliatePayout[];
   canCreateMore: boolean;
   monthLabel: string;
   payoutMonth: string;
@@ -69,12 +78,41 @@ function toNumber(value: unknown): number {
 
 function extractStats(data: any): AffiliateStats {
   const source = data?.stats ?? data ?? {};
+  const payouts = source?.payouts ?? {};
   return {
     currentCommission:
-      toNumber(source.currentCommission ?? source.current_commission ?? source.current ?? 0),
-    pendingPayout: toNumber(source.pendingPayout ?? source.pending_payout ?? 0),
-    paidPayout: toNumber(source.paidPayout ?? source.paid_payout ?? source.paid ?? 0),
-    referrals: toNumber(source.referrals ?? source.total_referrals ?? source.affiliates ?? 0),
+      toNumber(
+        source.currentCommission ??
+          source.current_commission ??
+          source.current ??
+          source.amount ??
+          source.commission ??
+          0
+      ),
+    pendingPayout: toNumber(
+      source.pendingPayout ??
+        source.pending_payout ??
+        source.pending ??
+        payouts.pending_total ??
+        payouts.pending ??
+        0
+    ),
+    paidPayout: toNumber(
+      source.paidPayout ??
+        source.paid_payout ??
+        source.paid ??
+        payouts.paid_total ??
+        payouts.paid ??
+        0
+    ),
+    referrals: toNumber(
+      source.referrals ??
+        source.total_referrals ??
+        source.affiliates ??
+        source.referrals_count ??
+        source.activated_referrals ??
+        0
+    ),
   };
 }
 
@@ -96,6 +134,15 @@ function normalizeLinks(payload: any): AffiliateLink[] {
 }
 
 function extractMonthLabel(data: any): string {
+  if (typeof data?.year === "number" && typeof data?.month === "number") {
+    try {
+      return new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(
+        new Date(data.year, data.month - 1)
+      );
+    } catch {
+      return `${data.year}-${String(data.month).padStart(2, "0")}`;
+    }
+  }
   const month =
     data?.monthLabel ??
     data?.month_label ??
@@ -116,6 +163,16 @@ function extractPercent(data: any): number {
   );
 }
 
+function normalizePayout(item: any): AffiliatePayout {
+  return {
+    id: Number(item?.id ?? 0),
+    month: item?.month ? String(item.month) : "",
+    percent: toNumber(item?.percent ?? 0),
+    amount: toNumber(item?.amount ?? 0),
+    status: String(item?.status ?? "pending"),
+  };
+}
+
 function getErrorMessage(error: unknown): string {
   if (typeof error === "string") return error;
   if (error instanceof Error) return error.message;
@@ -134,6 +191,7 @@ export function useAffiliateDashboard(): DashboardState {
   const [stats, setStats] = useState<AffiliateStats>(DEFAULT_STATS);
   const [dash, setDash] = useState<AffiliateDashboardSummary | null>(null);
   const [links, setLinks] = useState<AffiliateLink[]>([]);
+  const [payouts, setPayouts] = useState<AffiliatePayout[]>([]);
   const [canCreateMore, setCanCreateMore] = useState<boolean>(true);
   const [monthLabel, setMonthLabel] = useState<string>(extractMonthLabel(null));
   const [payoutMonth, setPayoutMonthState] = useState<string>(DEFAULT_MONTH);
@@ -158,11 +216,17 @@ export function useAffiliateDashboard(): DashboardState {
       response?.current_month ??
       response?.summary ??
       response?.stats?.current_month ??
+      response ??
       null;
     setDash(snapshot ?? null);
     setMonthLabel(extractMonthLabel(response));
     const percent = extractPercent(response);
-    const nextMonth = response?.next_payout_month ?? response?.payout_month ?? null;
+    const nextMonth =
+      response?.next_payout_month ??
+      response?.payout_month ??
+      (typeof response?.year === "number" && typeof response?.month === "number"
+        ? `${response.year}-${String(response.month).padStart(2, "0")}`
+        : null);
 
     if (!hasInitialized.current) {
       setPayoutPercentState(percent > 0 ? percent : 5);
@@ -171,10 +235,19 @@ export function useAffiliateDashboard(): DashboardState {
     }
   }, []);
 
+  const refreshPayouts = useCallback(async () => {
+    const response = await AffiliateAPI.payouts();
+    if (Array.isArray(response)) {
+      setPayouts(response.map(normalizePayout));
+    } else {
+      setPayouts([]);
+    }
+  }, []);
+
   const refresh = useCallback(async () => {
     try {
       setLoading(true);
-      await Promise.all([refreshDashboard(), refreshLinks()]);
+      await Promise.all([refreshDashboard(), refreshLinks(), refreshPayouts()]);
       setError(null);
     } catch (err) {
       const message = getErrorMessage(err);
@@ -183,7 +256,7 @@ export function useAffiliateDashboard(): DashboardState {
     } finally {
       setLoading(false);
     }
-  }, [refreshDashboard, refreshLinks]);
+  }, [refreshDashboard, refreshLinks, refreshPayouts]);
 
   useEffect(() => {
     refresh();
@@ -250,14 +323,14 @@ export function useAffiliateDashboard(): DashboardState {
     try {
       await AffiliateAPI.requestPayout(payoutMonth || undefined, payoutPercent || 5);
       show({ variant: "success", title: "Payout requested", description: "Finance will review your request shortly." });
-      await refreshDashboard();
+      await Promise.all([refreshDashboard(), refreshPayouts()]);
     } catch (err) {
       const message = getErrorMessage(err);
       show({ variant: "destructive", title: "Request failed", description: message });
     } finally {
       setRequestingPayout(false);
     }
-  }, [payoutMonth, payoutPercent, refreshDashboard, show]);
+  }, [payoutMonth, payoutPercent, refreshDashboard, refreshPayouts, show]);
 
   const actions = useMemo(
     () => ({
@@ -277,6 +350,7 @@ export function useAffiliateDashboard(): DashboardState {
     stats,
     dash,
     links,
+    payouts,
     canCreateMore,
     monthLabel,
     payoutMonth,

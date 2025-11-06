@@ -71,13 +71,14 @@ export default function AffiliateRegisterPage() {
   ];
 
   return (
-    <div className="relative flex min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-12 left-0 h-72 w-72 -translate-x-1/2 rounded-full bg-purple-500/10 blur-3xl" />
-        <div className="absolute bottom-0 right-10 h-[28rem] w-[28rem] translate-y-1/3 rounded-full bg-emerald-500/20 blur-3xl" />
+    <div className="relative flex min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 text-slate-900">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[-6rem] left-[-4rem] h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
+        <div className="absolute bottom-[-5rem] right-[-3rem] h-[28rem] w-[28rem] rounded-full bg-blue-200/40 blur-3xl" />
+        <div className="absolute inset-x-0 top-[38%] h-24 bg-gradient-to-r from-emerald-100/40 via-transparent to-blue-100/40 blur-2xl" />
       </div>
 
-      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden bg-gradient-to-br from-purple-700/60 via-blue-700/60 to-emerald-600/60 p-12 lg:flex">
+      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden rounded-r-[48px] border border-emerald-100 bg-white/80 p-12 shadow-[0_60px_160px_-90px_rgba(14,116,144,0.55)] backdrop-blur lg:flex">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -86,8 +87,8 @@ export default function AffiliateRegisterPage() {
         >
           <div className="flex items-center gap-3 text-left">
             <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-400 to-emerald-400 blur opacity-70" />
-              <div className="relative rounded-xl bg-gradient-to-br from-purple-400 to-emerald-400 p-3">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 opacity-30 blur" />
+              <div className="relative rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 p-3 text-white shadow-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -100,23 +101,23 @@ export default function AffiliateRegisterPage() {
                 </svg>
               </div>
             </div>
-            <span className="text-2xl font-semibold tracking-wide text-white/90">
-              Zemen Pharma Affiliate Network
+            <span className="text-2xl font-semibold tracking-wide text-emerald-700">
+              Mesob AI Affiliate Network
             </span>
           </div>
 
-          <h1 className="mt-10 text-4xl font-bold leading-tight text-white">
+          <h1 className="mt-10 text-4xl font-bold leading-tight text-slate-900">
             Grow with the pharmacies you onboard
           </h1>
-          <p className="mt-4 text-lg text-purple-50/80">
+          <p className="mt-4 text-lg text-slate-600">
             Become a trusted partner for pharmacy digitization. Unlock recurring earnings with every successful
             registration.
           </p>
 
-          <ul className="mt-10 space-y-4 text-purple-50/70">
+          <ul className="mt-10 space-y-4 text-slate-600">
             {programHighlights.map((item) => (
               <li key={item} className="flex items-start gap-3">
-                <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+                <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
                 <span>{item}</span>
               </li>
             ))}
@@ -127,15 +128,15 @@ export default function AffiliateRegisterPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="space-y-4 text-sm text-purple-50/80"
+          className="space-y-4 text-sm text-slate-600"
         >
           <p>
             “The affiliate dashboard keeps payouts transparent and the training resources help us close pharmacies fast.”
           </p>
-          <div className="h-px w-24 bg-white/20" />
+          <div className="h-px w-24 bg-emerald-100" />
           <p>
             Questions? {" "}
-            <Link href="/contact" className="text-white hover:underline">
+            <Link href="/contact" className="text-emerald-600 hover:underline">
               Chat with our partner success team
             </Link>
           </p>
@@ -147,22 +148,22 @@ export default function AffiliateRegisterPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mx-auto w-full max-w-md rounded-3xl border border-white/10 bg-black/65 p-8 shadow-[0_25px_80px_-40px_rgba(124,58,237,0.6)] backdrop-blur"
+          className="mx-auto w-full max-w-md rounded-3xl border border-emerald-100/80 bg-white/95 p-8 shadow-[0_35px_90px_-55px_rgba(15,118,110,0.55)] backdrop-blur"
         >
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-white">Join the affiliate program</h2>
-            <p className="mt-2 text-sm text-purple-100/70">
+            <h2 className="text-3xl font-bold text-slate-900">Join the affiliate program</h2>
+            <p className="mt-2 text-sm text-slate-500">
               Earn commissions every time a pharmacy goes live.
             </p>
           </div>
 
           {error && (
-            <div className="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-100">
+            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
               {error}
             </div>
           )}
           {success && (
-            <div className="mb-4 rounded-xl border border-emerald-400/30 bg-emerald-500/10 p-3 text-sm text-emerald-100">
+            <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
               {success}
             </div>
           )}
@@ -170,7 +171,7 @@ export default function AffiliateRegisterPage() {
           <form onSubmit={submitAffiliate} className="space-y-5">
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-purple-100/80">
+                <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
                   Email*
                 </label>
                 <Input
@@ -178,11 +179,11 @@ export default function AffiliateRegisterPage() {
                   value={affEmail}
                   onChange={(e) => setAffEmail(e.target.value)}
                   required
-                  className="mt-2 border-white/10 bg-white/5 text-white placeholder:text-purple-100/40 focus:border-purple-400 focus:ring-purple-400"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-purple-100/80">
+                <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
                   Password*
                 </label>
                 <Input
@@ -190,47 +191,47 @@ export default function AffiliateRegisterPage() {
                   value={affPassword}
                   onChange={(e) => setAffPassword(e.target.value)}
                   required
-                  className="mt-2 border-white/10 bg-white/5 text-white placeholder:text-purple-100/40 focus:border-purple-400 focus:ring-purple-400"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-purple-100/80">
+                <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
                   Full name (for payouts)
                 </label>
                 <Input
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="mt-2 border-white/10 bg-white/5 text-white placeholder:text-purple-100/40 focus:border-purple-400 focus:ring-purple-400"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-purple-100/80">
+                <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
                   Bank name
                 </label>
                 <Input
                   value={bankName}
                   onChange={(e) => setBankName(e.target.value)}
-                  className="mt-2 border-white/10 bg-white/5 text-white placeholder:text-purple-100/40 focus:border-purple-400 focus:ring-purple-400"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-purple-100/80">
+                <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
                   Account name
                 </label>
                 <Input
                   value={bankAccountName}
                   onChange={(e) => setBankAccountName(e.target.value)}
-                  className="mt-2 border-white/10 bg-white/5 text-white placeholder:text-purple-100/40 focus:border-purple-400 focus:ring-purple-400"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-purple-100/80">
+                <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
                   Account number
                 </label>
                 <Input
                   value={bankAccountNumber}
                   onChange={(e) => setBankAccountNumber(e.target.value)}
-                  className="mt-2 border-white/10 bg-white/5 text-white placeholder:text-purple-100/40 focus:border-purple-400 focus:ring-purple-400"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
             </div>
@@ -238,7 +239,7 @@ export default function AffiliateRegisterPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-purple-500 to-emerald-500 px-6 py-3 font-semibold text-white shadow-lg shadow-purple-500/30 transition duration-300 hover:scale-[1.01] hover:shadow-purple-400/40"
+              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-black px-6 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition duration-300 hover:translate-y-[-1px] hover:shadow-emerald-400/40"
             >
               {loading ? (
                 <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -250,24 +251,24 @@ export default function AffiliateRegisterPage() {
                   />
                 </svg>
               ) : null}
-              {loading ? "Registering..." : "Register as affiliate"}
+              {loading ? "Registering..." : "Sign Up"}
             </Button>
 
-            <p className="text-center text-xs text-purple-100/70">
-              Already part of the network?{" "}
-              <Link href="/affiliate-login" className="font-medium text-white hover:underline">
+            <p className="text-center text-xs text-slate-500">
+              Already part of the network? {" "}
+              <Link href="/auth?tab=signin" className="font-medium text-emerald-600 hover:underline">
                 Sign in
               </Link>
             </p>
           </form>
 
-          <p className="mt-8 text-center text-[11px] text-purple-100/60">
+          <p className="mt-8 text-center text-[11px] text-slate-400">
             By continuing you agree to our {" "}
-            <Link href="/terms" className="text-white hover:underline">
+            <Link href="/terms" className="text-emerald-600 hover:underline">
               Terms
             </Link>{" "}
             and {" "}
-            <Link href="/privacy" className="text-white hover:underline">
+            <Link href="/privacy" className="text-emerald-600 hover:underline">
               Privacy Policy
             </Link>
             .

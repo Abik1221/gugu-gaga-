@@ -1,8 +1,9 @@
 "use client";
 import NavBar from "@/components/layout/NavBar";
-import Footer from "@/components/sections/Footer";
 import { useEffect, useState } from "react";
-
+import Footer from "@/components/sections/Footer";
+import Navbar from "@/components/sections/Navbar";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 // Auth layout (no header maybe)
 export default function AuthLayout({
   children,
@@ -38,14 +39,11 @@ export default function AuthLayout({
   };
   return (
     <div>
-      <NavBar
-        isOpen={isOpen}
-        scrolled={scrolled}
-        setIsOpen={setIsOpen}
-        setScrolled={setScrolled}
-        handleScrollToSection={handleScrollToSection}
-      />
-      <div>{children}</div>
+      {isOpen ? <Dialog>
+        <DialogContent>hello dialog</DialogContent>
+      </Dialog> : null}
+      <Navbar onOpenDialog={() => setIsOpen(true)} />
+      <div className="mt-10">{children}</div>
       <Footer />
     </div>
   );

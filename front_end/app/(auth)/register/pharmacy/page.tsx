@@ -166,13 +166,13 @@ export default function PharmacyRegisterPage() {
   ];
 
   return (
-    <div className="relative flex min-h-screen bg-gradient-to-br from-gray-950 via-black to-slate-900 text-white">
+    <div className="relative flex min-h-screen text-white">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-10 left-10 h-80 w-80 rounded-full bg-emerald-500/15 blur-3xl" />
         <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
       </div>
 
-      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden bg-gradient-to-br from-emerald-600/60 via-blue-700/70 to-purple-700/60 p-12 lg:flex">
+      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden bg-white  p-12 lg:flex">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -182,7 +182,7 @@ export default function PharmacyRegisterPage() {
           <div className="flex items-center gap-3 text-left">
             <div className="relative">
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-400 to-blue-500 blur opacity-70" />
-              <div className="relative rounded-xl bg-gradient-to-br from-emerald-400 to-blue-500 p-3">
+              <div className="relative rounded-xl  p-3">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -201,18 +201,18 @@ export default function PharmacyRegisterPage() {
             </span>
           </div>
 
-          <h1 className="mt-10 text-4xl font-bold leading-tight text-white">
+          <h1 className="mt-10 text-4xl font-bold leading-tight text-black">
             Build a future-ready pharmacy
           </h1>
-          <p className="mt-4 text-lg text-emerald-100/90">
+          <p className="mt-4 text-lg text-slate-500">
             Join a network of modern pharmacies using AI-driven workflows to automate operations and deliver
             world-class patient experiences.
           </p>
 
-          <ul className="mt-10 space-y-4 text-emerald-50/80">
+          <ul className="mt-10 space-y-4 text-slate-700">
             {featureBullets.map((item) => (
               <li key={item} className="flex items-start gap-3">
-                <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+                <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-black" />
                 <span>{item}</span>
               </li>
             ))}
@@ -223,7 +223,7 @@ export default function PharmacyRegisterPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="space-y-4 text-sm text-emerald-50/70"
+          className="space-y-4 text-sm text-slate-700"
         >
           <p>
             “The onboarding experience with Zemen Pharma is seamless. Their KYC process and centralized dashboards
@@ -231,21 +231,21 @@ export default function PharmacyRegisterPage() {
           </p>
           <div className="h-px w-24 bg-white/20" />
           <p>
-            Need help? <Link href="/contact" className="text-white hover:underline">Contact our onboarding team</Link>
+            Need help? <Link href="/contact" className="text-black hover:underline">Contact our onboarding team</Link>
           </p>
         </motion.div>
       </div>
 
-      <div className="relative flex w-full flex-col justify-center px-4 py-16 sm:px-10 lg:w-[560px] lg:px-12">
+      <div className="relative flex w-full flex-col justify-center px-4 py-16 sm:px-10 lg:w-[560px] lg:px-12 bg-white">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mx-auto w-full max-w-md rounded-3xl border border-white/10 bg-black/60 p-8 shadow-[0_25px_80px_-40px_rgba(16,185,129,0.65)] backdrop-blur"
+          className="mx-auto w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-[0_25px_80px_-40px_rgba(16,185,129,0.65)] backdrop-blur"
         >
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-white">Register your pharmacy</h2>
-            <p className="mt-2 text-sm text-emerald-100/80">
+            <h2 className="text-3xl font-bold text-black">Register your pharmacy</h2>
+            <p className="mt-2 text-sm text-slate-600">
               Start with a full-featured trial. No credit card required.
             </p>
           </div>
@@ -264,7 +264,7 @@ export default function PharmacyRegisterPage() {
           <form onSubmit={submitPharmacy} className="space-y-5">
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
                   Pharmacy name*
                 </label>
                 <Input
@@ -273,30 +273,29 @@ export default function PharmacyRegisterPage() {
                     clearFieldError("pharmacyName");
                     setPharmacyName(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-white placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${
-                    fieldErrors.pharmacyName
-                      ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                      : "border-white/10 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
-                  }`}
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${fieldErrors.pharmacyName
+                    ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                    : "border-slate-200 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
+                    }`}
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">Use the exact legal name that appears on your pharmacy license.</p>
+                <p className="mt-1 text-xs text-slate-500">Use the exact legal name that appears on your pharmacy license.</p>
                 {fieldErrors.pharmacyName ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.pharmacyName}</p>
                 ) : null}
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
                   Address
                 </label>
                 <Input
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="mt-2 border border-white/10 bg-white/5 text-white placeholder:text-emerald-100/40 transition focus-visible:border-emerald-400 focus-visible:ring-emerald-400/40"
+                  className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-emerald-100/40 transition focus-visible:border-emerald-400 focus-visible:ring-emerald-400/40"
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">Optional — headquarters or primary operating address.</p>
+                <p className="mt-1 text-xs text-slate-500">Optional — headquarters or primary operating address.</p>
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
                   Owner email*
                 </label>
                 <Input
@@ -306,19 +305,18 @@ export default function PharmacyRegisterPage() {
                     clearFieldError("ownerEmail");
                     setOwnerEmail(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-white placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${
-                    fieldErrors.ownerEmail
-                      ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                      : "border-white/10 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
-                  }`}
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${fieldErrors.ownerEmail
+                    ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                    : "border-slate-200 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
+                    }`}
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">We’ll send onboarding updates here (example: owner@pharmacy.com).</p>
+                <p className="mt-1 text-xs text-slate-500">We’ll send onboarding updates here (example: owner@pharmacy.com).</p>
                 {fieldErrors.ownerEmail ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.ownerEmail}</p>
                 ) : null}
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
                   Owner phone
                 </label>
                 <Input
@@ -328,19 +326,18 @@ export default function PharmacyRegisterPage() {
                     setOwnerPhone(e.target.value);
                   }}
                   placeholder="+2519..."
-                  className={`mt-2 border bg-white/5 text-white placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${
-                    fieldErrors.ownerPhone
-                      ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                      : "border-white/10 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
-                  }`}
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${fieldErrors.ownerPhone
+                    ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                    : "border-slate-200 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
+                    }`}
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">Optional — include an international format number so we can reach you quickly.</p>
+                <p className="mt-1 text-xs text-slate-500">Optional — include an international format number so we can reach you quickly.</p>
                 {fieldErrors.ownerPhone ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.ownerPhone}</p>
                 ) : null}
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
                   Password*
                 </label>
                 <Input
@@ -350,19 +347,18 @@ export default function PharmacyRegisterPage() {
                     clearFieldError("ownerPassword");
                     setOwnerPassword(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-white placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${
-                    fieldErrors.ownerPassword
-                      ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                      : "border-white/10 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
-                  }`}
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${fieldErrors.ownerPassword
+                    ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                    : "border-slate-200 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
+                    }`}
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">Minimum 6 characters. Use a mix of letters and numbers for security.</p>
+                <p className="mt-1 text-xs text-slate-500">Minimum 6 characters. Use a mix of letters and numbers for security.</p>
                 {fieldErrors.ownerPassword ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.ownerPassword}</p>
                 ) : null}
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
                   National / company ID*
                 </label>
                 <Input
@@ -371,19 +367,18 @@ export default function PharmacyRegisterPage() {
                     clearFieldError("idNumber");
                     setIdNumber(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-white placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${
-                    fieldErrors.idNumber
-                      ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                      : "border-white/10 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
-                  }`}
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${fieldErrors.idNumber
+                    ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                    : "border-slate-200 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
+                    }`}
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">Provide the government-issued or commercial registration ID.</p>
+                <p className="mt-1 text-xs text-slate-500">Provide the government-issued or commercial registration ID.</p>
                 {fieldErrors.idNumber ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.idNumber}</p>
                 ) : null}
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
                   Pharmacy license number*
                 </label>
                 <Input
@@ -392,29 +387,27 @@ export default function PharmacyRegisterPage() {
                     clearFieldError("licenseNumber");
                     setLicenseNumber(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-white placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${
-                    fieldErrors.licenseNumber
-                      ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                      : "border-white/10 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
-                  }`}
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-emerald-100/40 transition focus-visible:ring-2 ${fieldErrors.licenseNumber
+                    ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                    : "border-slate-200 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/50"
+                    }`}
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">Enter the regulator-issued permit number exactly as shown.</p>
+                <p className="mt-1 text-xs text-slate-500">Enter the regulator-issued permit number exactly as shown.</p>
                 {fieldErrors.licenseNumber ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.licenseNumber}</p>
                 ) : null}
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
                   License document (jpg/png)*
                 </label>
                 <label
-                  className={`mt-2 flex cursor-pointer items-center justify-between rounded-2xl border border-dashed px-4 py-3 text-sm transition ${
-                    fieldErrors.kycFile
-                      ? "border-red-400/60 bg-red-500/10 text-red-100 hover:border-red-300/70 hover:bg-red-500/15"
-                      : "border-white/15 bg-white/5 text-emerald-100/70 hover:border-emerald-300/60 hover:bg-white/10"
-                  }`}
+                  className={`mt-2 flex cursor-pointer items-center justify-between rounded-2xl border border-dashed px-4 py-3 text-sm transition ${fieldErrors.kycFile
+                    ? "border-red-400/60 bg-red-500/10 text-red-100 hover:border-red-300/70 hover:bg-red-500/15"
+                    : "border-emerald-300 bg-white/5 text-emerald-100/70 hover:border-emerald-300/60 hover:bg-white/10"
+                    }`}
                 >
-                  <span>{kycFile ? kycFile.name : "Upload document"}</span>
+                  <span className="text-slate-500">{kycFile ? kycFile.name : "Upload document"}</span>
                   <input
                     type="file"
                     accept=".jpg,.jpeg,.png"
@@ -424,9 +417,9 @@ export default function PharmacyRegisterPage() {
                     }}
                     className="hidden"
                   />
-                  <span className="text-xs uppercase tracking-wide text-emerald-200/70">Browse</span>
+                  <span className="text-xs uppercase tracking-wide text-emerald-400">Browse</span>
                 </label>
-                <p className="mt-1 text-xs text-emerald-100/60">Upload a clear scan or photo of the valid pharmacy license (JPG or PNG).</p>
+                <p className="mt-1 text-xs text-slate-500">Upload a clear scan or photo of the valid pharmacy license (JPG or PNG).</p>
                 {fieldErrors.kycFile ? (
                   <p className="mt-1 text-xs text-red-300">{fieldErrors.kycFile}</p>
                 ) : null}
@@ -435,16 +428,16 @@ export default function PharmacyRegisterPage() {
                 )}
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wide text-emerald-200/80">
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
                   Notes to reviewer
                 </label>
                 <textarea
                   rows={3}
                   value={kycNotes}
                   onChange={(e) => setKycNotes(e.target.value)}
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-emerald-100/40 transition focus-visible:border-emerald-400 focus-visible:ring-emerald-400/40"
+                  className="mt-2 w-full rounded-2xl border border-slate-200 bg-white/5 px-3 py-2 text-sm text-slate-700 placeholder:text-emerald-100/40 transition focus-visible:border-emerald-400 focus-visible:ring-emerald-400/40"
                 />
-                <p className="mt-1 text-xs text-emerald-100/60">Optional context for the reviewers (operating hours, special approvals, etc.).</p>
+                <p className="mt-1 text-xs text-slate-500">Optional context for the reviewers (operating hours, special approvals, etc.).</p>
               </div>
             </div>
 
@@ -457,7 +450,7 @@ export default function PharmacyRegisterPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition duration-300 hover:scale-[1.01] hover:shadow-emerald-400/40"
+              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-black hover:bg-slate-800 px-6 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition duration-300 hover:scale-[1.01] hover:shadow-emerald-400/40"
             >
               {loading ? (
                 <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -472,21 +465,21 @@ export default function PharmacyRegisterPage() {
               {loading ? "Submitting..." : "Submit application"}
             </Button>
 
-            <p className="text-center text-xs text-emerald-100/70">
+            <p className="text-center text-xs text-slate-700">
               Already have an owner account?{" "}
-              <Link href="/auth?tab=signin" className="font-medium text-white hover:underline">
+              <Link href="/auth?tab=signin" className="font-medium text-emerald-400 hover:underline">
                 Sign in
               </Link>
             </p>
           </form>
 
-          <p className="mt-8 text-center text-[11px] text-emerald-100/60">
+          <p className="mt-8 text-center text-[11px] text-slate-700">
             By continuing you agree to our {" "}
-            <Link href="/terms" className="text-white hover:underline">
+            <Link href="/terms" className="text-emerald-400 hover:underline">
               Terms
             </Link>{" "}
             and {" "}
-            <Link href="/privacy" className="text-white hover:underline">
+            <Link href="/privacy" className="text-emerald-400 hover:underline">
               Privacy Policy
             </Link>
             .

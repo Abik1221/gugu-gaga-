@@ -116,6 +116,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     background-image: radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.08), transparent 45%),
