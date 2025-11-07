@@ -7,7 +7,13 @@ import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Sheet,
@@ -92,20 +98,27 @@ export default function BranchManagementPage() {
     [show]
   );
 
-  const loadPharmacies = useCallback(async (tid: string) => {
-    setPharmacyLoading(true);
-    setPharmacyError(null);
-    try {
-      const response = await PharmaciesAPI.list(tid, { page_size: 20 });
-      setPharmacies(response?.items ?? []);
-    } catch (error: any) {
-      const message = error?.message || "Unable to load pharmacies";
-      setPharmacyError(message);
-      show({ variant: "destructive", title: "Unable to load pharmacies", description: message });
-    } finally {
-      setPharmacyLoading(false);
-    }
-  }, [show]);
+  const loadPharmacies = useCallback(
+    async (tid: string) => {
+      setPharmacyLoading(true);
+      setPharmacyError(null);
+      try {
+        const response = await PharmaciesAPI.list(tid, { page_size: 20 });
+        setPharmacies(response?.items ?? []);
+      } catch (error: any) {
+        const message = error?.message || "Unable to load pharmacies";
+        setPharmacyError(message);
+        show({
+          variant: "destructive",
+          title: "Unable to load pharmacies",
+          description: message,
+        });
+      } finally {
+        setPharmacyLoading(false);
+      }
+    },
+    [show]
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -166,7 +179,8 @@ export default function BranchManagementPage() {
   const stats = useMemo(
     () => ({
       total: branches.length,
-      withPhone: branches.filter((b) => (b.phone ?? "").trim().length > 0).length,
+      withPhone: branches.filter((b) => (b.phone ?? "").trim().length > 0)
+        .length,
     }),
     [branches]
   );
@@ -175,11 +189,14 @@ export default function BranchManagementPage() {
 
   return (
     <div className="space-y-8">
-      <header className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/10 p-6 shadow-[0_32px_120px_-60px_rgba(16,185,129,0.7)] backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between">
+      <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-md lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold text-white">Branch management</h1>
-          <p className="text-sm text-emerald-100/80">
-            Organise your pharmacy locations, keep contact information up to date, and control where sales are attributed.
+          <h1 className="text-2xl font-semibold text-slate-900">
+            Branch management
+          </h1>
+          <p className="text-sm text-slate-600">
+            Organise your pharmacy locations, keep contact information up to
+            date, and control where sales are attributed.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -195,6 +212,7 @@ export default function BranchManagementPage() {
             size="sm"
             onClick={() => setCreateOpen(true)}
             disabled={!tenantId || pharmacyLoading}
+            className="bg-emerald-700 hover:bg-emerald-800 text-white"
           >
             New branch
           </Button>
@@ -202,45 +220,49 @@ export default function BranchManagementPage() {
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Card className="border border-white/10 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
+        <Card className="border border-slate-200 bg-white shadow-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-[0.35em] text-emerald-100/80">
+            <CardTitle className="text-xs uppercase tracking-wider text-slate-600">
               Total branches
             </CardTitle>
             {isBusy ? (
               <Skeleton className="h-7 w-12" />
             ) : (
-              <div className="text-2xl font-semibold text-white">{stats.total}</div>
+              <div className="text-2xl font-semibold text-slate-900">
+                {stats.total}
+              </div>
             )}
           </CardHeader>
         </Card>
-        <Card className="border border-white/10 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
+        <Card className="border border-slate-200 bg-white shadow-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-[0.35em] text-emerald-100/80">
+            <CardTitle className="text-xs uppercase tracking-wider text-slate-600">
               Contact-ready
             </CardTitle>
             {isBusy ? (
               <Skeleton className="h-7 w-12" />
             ) : (
-              <div className="text-2xl font-semibold text-white">{stats.withPhone}</div>
+              <div className="text-2xl font-semibold text-slate-900">
+                {stats.withPhone}
+              </div>
             )}
           </CardHeader>
-          <CardFooter className="pt-0 text-xs text-emerald-100/70">
+          <CardFooter className="pt-0 text-xs text-slate-500">
             Branches with a phone number recorded
           </CardFooter>
         </Card>
       </section>
 
       <section>
-        <Card className="border border-white/10 bg-white/10 text-emerald-50 shadow-[0_32px_120px_-60px_rgba(59,130,246,0.55)] backdrop-blur-xl">
+        <Card className="border border-slate-200 bg-white shadow-md">
           <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <CardTitle className="text-white">Branch directory</CardTitle>
+            <CardTitle className="text-slate-900">Branch directory</CardTitle>
             <div className="flex flex-wrap items-center gap-2">
               <Input
                 placeholder="Search branch name, address, phone"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                className="w-64 rounded-full border border-white/20 bg-white/10 text-sm text-white placeholder:text-emerald-100/60"
+                className="w-64 border border-slate-300 bg-white text-sm text-slate-900 placeholder:text-slate-500"
               />
             </div>
           </CardHeader>
@@ -248,38 +270,64 @@ export default function BranchManagementPage() {
             {isBusy ? (
               <Skeleton className="h-64 w-full" />
             ) : branchesError ? (
-              <div className="p-6 text-sm text-red-200">{branchesError}</div>
+              <div className="p-6 text-sm text-red-600">{branchesError}</div>
             ) : filteredBranches.length === 0 ? (
-              <div className="space-y-2 p-6 text-sm text-emerald-100/75">
-                <p>No branches yet. Create a branch to start allocating sales across locations.</p>
+              <div className="space-y-2 p-6 text-sm text-slate-600">
+                <p>
+                  No branches yet. Create a branch to start allocating sales
+                  across locations.
+                </p>
                 {pharmacies.length === 0 && !pharmacyLoading && (
-                  <div className="rounded-2xl border border-amber-400/30 bg-amber-500/15 p-3 text-xs text-amber-100">
-                    We couldn't find a pharmacy record for this tenant. Please complete your pharmacy profile (Settings → Pharmacy) before adding branches.
+                  <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-800">
+                    We couldn't find a pharmacy record for this tenant. Please
+                    complete your pharmacy profile (Settings → Pharmacy) before
+                    adding branches.
                   </div>
                 )}
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-white/10 text-sm text-emerald-100/80">
-                  <thead className="bg-white/5">
+                <table className="min-w-full divide-y divide-slate-200 text-sm text-slate-800">
+                  <thead className="bg-slate-50">
                     <tr>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Name</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Address</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Phone</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Pharmacy</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">Actions</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Name
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Address
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Phone
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Pharmacy
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/10 bg-white/5 text-emerald-50">
+                  <tbody className="divide-y divide-slate-100 bg-white">
                     {filteredBranches.map((branch) => {
-                      const pharmacy = pharmacies.find((p) => p.id === branch.pharmacy_id);
+                      const pharmacy = pharmacies.find(
+                        (p) => p.id === branch.pharmacy_id
+                      );
                       return (
                         <tr key={branch.id}>
-                          <td className="px-3 py-2 font-semibold text-white">{branch.name}</td>
-                          <td className="px-3 py-2 text-emerald-100/70">{branch.address || "—"}</td>
-                          <td className="px-3 py-2 text-emerald-100/70">{branch.phone || "—"}</td>
-                          <td className="px-3 py-2 text-emerald-100/80">
-                            <Badge variant="outline" className="border-emerald-300/40 bg-emerald-500/10 text-emerald-100">
+                          <td className="px-3 py-2 font-semibold text-slate-900">
+                            {branch.name}
+                          </td>
+                          <td className="px-3 py-2 text-slate-600">
+                            {branch.address || "—"}
+                          </td>
+                          <td className="px-3 py-2 text-slate-600">
+                            {branch.phone || "—"}
+                          </td>
+                          <td className="px-3 py-2">
+                            <Badge
+                              variant="outline"
+                              className="border-emerald-300 bg-emerald-50 text-emerald-800"
+                            >
                               {pharmacy?.name ?? `#${branch.pharmacy_id}`}
                             </Badge>
                           </td>
@@ -303,8 +351,10 @@ export default function BranchManagementPage() {
               </div>
             )}
           </CardContent>
-          <CardFooter className="justify-between text-xs text-gray-500">
-            <div>Showing {filteredBranches.length} of {branches.length} branches</div>
+          <CardFooter className="justify-between text-xs text-slate-500">
+            <div>
+              Showing {filteredBranches.length} of {branches.length} branches
+            </div>
             <div>Tenant: {tenantId ?? "—"}</div>
           </CardFooter>
         </Card>
@@ -320,7 +370,9 @@ export default function BranchManagementPage() {
         pharmacies={pharmacies}
         loadingPharmacies={pharmacyLoading}
         disabled={!tenantId || pharmacyLoading || pharmacies.length === 0}
-        onCreated={async () => tenantId && loadBranches(tenantId, { silent: true })}
+        onCreated={async () =>
+          tenantId && loadBranches(tenantId, { silent: true })
+        }
       />
     </div>
   );
@@ -369,18 +421,32 @@ function CreateBranchSheet({
     setPhone("");
   };
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
     if (!tenantId) {
-      show({ variant: "destructive", title: "No tenant context", description: "Reload and try again." });
+      show({
+        variant: "destructive",
+        title: "No tenant context",
+        description: "Reload and try again.",
+      });
       return;
     }
     if (!pharmacyId) {
-      show({ variant: "destructive", title: "Select a pharmacy", description: "A primary pharmacy record is required." });
+      show({
+        variant: "destructive",
+        title: "Select a pharmacy",
+        description: "A primary pharmacy record is required.",
+      });
       return;
     }
     if (!name.trim()) {
-      show({ variant: "destructive", title: "Branch name required", description: "Please provide a branch name." });
+      show({
+        variant: "destructive",
+        title: "Branch name required",
+        description: "Please provide a branch name.",
+      });
       return;
     }
 
@@ -392,12 +458,20 @@ function CreateBranchSheet({
         address: address.trim() || undefined,
         phone: phone.trim() || undefined,
       });
-      show({ variant: "success", title: "Branch created", description: name.trim() });
+      show({
+        variant: "success",
+        title: "Branch created",
+        description: name.trim(),
+      });
       resetForm();
       onOpenChange(false);
       onCreated();
     } catch (error: any) {
-      show({ variant: "destructive", title: "Failed to create branch", description: error?.message || "Please try again." });
+      show({
+        variant: "destructive",
+        title: "Failed to create branch",
+        description: error?.message || "Please try again.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -415,15 +489,20 @@ function CreateBranchSheet({
         <SheetHeader>
           <SheetTitle>Create branch</SheetTitle>
           <SheetDescription>
-            Add a new pharmacy location. Branch names appear in POS sales reports and analytics.
+            Add a new pharmacy location. Branch names appear in POS sales
+            reports and analytics.
           </SheetDescription>
         </SheetHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Pharmacy</label>
+            <label className="text-xs font-medium text-gray-600">
+              Pharmacy
+            </label>
             <select
               value={pharmacyId ?? ""}
-              onChange={(event) => setPharmacyId(Number(event.target.value) || null)}
+              onChange={(event) =>
+                setPharmacyId(Number(event.target.value) || null)
+              }
               disabled={loadingPharmacies || pharmacies.length === 0}
               className="w-full rounded border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring"
             >
@@ -439,16 +518,35 @@ function CreateBranchSheet({
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Branch name</label>
-            <Input value={name} onChange={(event) => setName(event.target.value)} required placeholder="e.g. Bole Branch" />
+            <label className="text-xs font-medium text-gray-600">
+              Branch name
+            </label>
+            <Input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              required
+              placeholder="e.g. Bole Branch"
+            />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Address (optional)</label>
-            <Input value={address} onChange={(event) => setAddress(event.target.value)} placeholder="Street, city" />
+            <label className="text-xs font-medium text-gray-600">
+              Address (optional)
+            </label>
+            <Input
+              value={address}
+              onChange={(event) => setAddress(event.target.value)}
+              placeholder="Street, city"
+            />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-gray-600">Phone (optional)</label>
-            <Input value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="e.g. +251-911-000000" />
+            <label className="text-xs font-medium text-gray-600">
+              Phone (optional)
+            </label>
+            <Input
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+              placeholder="e.g. +251-911-000000"
+            />
           </div>
           <SheetFooter>
             <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-between">

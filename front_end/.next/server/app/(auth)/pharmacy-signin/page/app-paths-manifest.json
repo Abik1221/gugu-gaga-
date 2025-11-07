@@ -1,0 +1,3 @@
+{
+  "/(auth)/pharmacy-signin/page": "app/(auth)/pharmacy-signin/page.js"
+}
