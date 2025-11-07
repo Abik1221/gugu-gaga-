@@ -466,7 +466,16 @@ const AdminAPI = {
             code: code || null
         }, tenantId),
     approveAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
-    rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {})
+    rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {}),
+    affiliates: (page = 1, pageSize = 20, q = "")=>getAuthJSON(`/api/v1/admin/affiliates?page=${page}&page_size=${pageSize}&q=${encodeURIComponent(q)}`),
+    usage: (days = 14)=>getAuthJSON(`/api/v1/admin/usage?days=${days}`),
+    audit: (params)=>{
+        const query = new URLSearchParams();
+        if (params.tenant_id) query.set('tenant_id', params.tenant_id);
+        if (params.action) query.set('action', params.action);
+        if (params.limit) query.set('limit', params.limit.toString());
+        return getAuthJSON(`/api/v1/admin/audit${query.toString() ? `?${query.toString()}` : ''}`);
+    }
 };
 const StaffAPI = {
     createCashier: (tenantId, body)=>postAuthJSON("/api/v1/staff", body, tenantId),
@@ -2356,7 +2365,7 @@ function SidebarRail({ className, ...props }) {
 function SidebarInset({ className, ...props }) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
         "data-slot": "sidebar-inset",
-        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("bg-background relative flex w-full flex-1 flex-col", "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2", className),
+        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("bg-white relative flex w-full flex-1 flex-col", "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2", className),
         ...props
     }, void 0, false, {
         fileName: "[project]/components/ui/sidebar.tsx",

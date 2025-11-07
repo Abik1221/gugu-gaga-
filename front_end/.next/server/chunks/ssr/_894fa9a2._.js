@@ -466,7 +466,16 @@ const AdminAPI = {
             code: code || null
         }, tenantId),
     approveAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
-    rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {})
+    rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {}),
+    affiliates: (page = 1, pageSize = 20, q = "")=>getAuthJSON(`/api/v1/admin/affiliates?page=${page}&page_size=${pageSize}&q=${encodeURIComponent(q)}`),
+    usage: (days = 14)=>getAuthJSON(`/api/v1/admin/usage?days=${days}`),
+    audit: (params)=>{
+        const query = new URLSearchParams();
+        if (params.tenant_id) query.set('tenant_id', params.tenant_id);
+        if (params.action) query.set('action', params.action);
+        if (params.limit) query.set('limit', params.limit.toString());
+        return getAuthJSON(`/api/v1/admin/audit${query.toString() ? `?${query.toString()}` : ''}`);
+    }
 };
 const StaffAPI = {
     createCashier: (tenantId, body)=>postAuthJSON("/api/v1/staff", body, tenantId),
@@ -1217,8 +1226,8 @@ function OwnerPaymentPage() {
                 const kycApproved = me?.kyc_status === "approved";
                 const subscriptionStatus = me?.subscription_status || "active";
                 if (!kycApproved) {
-                    router.replace("/dashboard/owner/kyc");
-                    return;
+                // router.replace("/dashboard/kyc");
+                // return;
                 }
                 if (subscriptionStatus === "active") {
                     router.replace("/dashboard/owner");
@@ -1314,7 +1323,7 @@ function OwnerPaymentPage() {
         className: "h-64"
     }, void 0, false, {
         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-        lineNumber: 108,
+        lineNumber: 131,
         columnNumber: 23
     }, this);
     if (error) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1322,7 +1331,7 @@ function OwnerPaymentPage() {
         children: error
     }, void 0, false, {
         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-        lineNumber: 109,
+        lineNumber: 132,
         columnNumber: 21
     }, this);
     const subscriptionStatus = user?.subscription_status || "awaiting_payment";
@@ -1356,7 +1365,7 @@ function OwnerPaymentPage() {
                         children: copy.title
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                        lineNumber: 142,
+                        lineNumber: 175,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1364,13 +1373,13 @@ function OwnerPaymentPage() {
                         children: copy.description
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                        lineNumber: 143,
+                        lineNumber: 176,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                lineNumber: 141,
+                lineNumber: 174,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1386,7 +1395,7 @@ function OwnerPaymentPage() {
                                         children: "Current status"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                        lineNumber: 149,
+                                        lineNumber: 182,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1394,13 +1403,13 @@ function OwnerPaymentPage() {
                                         children: subscriptionStatus.replace(/_/g, " ")
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                        lineNumber: 150,
+                                        lineNumber: 185,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                lineNumber: 148,
+                                lineNumber: 181,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1410,13 +1419,13 @@ function OwnerPaymentPage() {
                                 children: refreshing ? "Refreshing..." : "Refresh status"
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                lineNumber: 152,
+                                lineNumber: 189,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                        lineNumber: 147,
+                        lineNumber: 180,
                         columnNumber: 9
                     }, this),
                     subscriptionStatus !== "pending_verification" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1432,7 +1441,7 @@ function OwnerPaymentPage() {
                                         children: "Payment code"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                        lineNumber: 160,
+                                        lineNumber: 201,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1442,13 +1451,13 @@ function OwnerPaymentPage() {
                                         placeholder: "Enter the receipt/payment code"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                        lineNumber: 163,
+                                        lineNumber: 207,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                lineNumber: 159,
+                                lineNumber: 200,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1460,7 +1469,7 @@ function OwnerPaymentPage() {
                                         children: submitting ? "Submitting..." : "Submit code"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                        lineNumber: 171,
+                                        lineNumber: 215,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1471,19 +1480,19 @@ function OwnerPaymentPage() {
                                         children: "Clear"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                        lineNumber: 174,
+                                        lineNumber: 218,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                                lineNumber: 170,
+                                lineNumber: 214,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                        lineNumber: 158,
+                        lineNumber: 199,
                         columnNumber: 11
                     }, this),
                     subscriptionStatus === "pending_verification" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1491,19 +1500,19 @@ function OwnerPaymentPage() {
                         children: "We will email you once verification is complete. You can refresh this page to check for updates."
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                        lineNumber: 182,
+                        lineNumber: 231,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-                lineNumber: 146,
+                lineNumber: 179,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/dashboard/owner/payment/page.tsx",
-        lineNumber: 140,
+        lineNumber: 173,
         columnNumber: 5
     }, this);
 }
