@@ -278,7 +278,7 @@ function ContactPage() {
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                             className: "text-xl text-gray-600 max-w-3xl mx-auto",
-                            children: "Ready to see how Zemen Pharma can transform your pharmacy operations? Let's schedule a personalized demo tailored to your needs."
+                            children: "Ready to see how Mesob can transform your business operations? Let's schedule a personalized demo tailored to your needs."
                         }, void 0, false, {
                             fileName: "[project]/app/(marketing)/contact/page.tsx",
                             lineNumber: 47,
@@ -559,7 +559,7 @@ function ContactPage() {
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                     className: "text-gray-600",
-                                                                    children: "support@zemenpharma.com"
+                                                                    children: "support@mesob.com"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(marketing)/contact/page.tsx",
                                                                     lineNumber: 144,

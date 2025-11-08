@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { TrialDialog } from "@/components/ui/trial-dialog";
 import { RoleSelectionDialog } from "@/components/ui/role-selection-dialog";
-
+import logoImage from "@/public/mesoblogo.jpeg";
+import Image from "next/image";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -43,7 +44,12 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <h1 className="text-emerald-600 text-lg sm:text-xl">Mesob</h1>
+              <Image
+                height={60}
+                width={60}
+                src={logoImage}
+                alt="affiliate registration image"
+              />
             </motion.div>
             <div className="hidden lg:block ml-10">
               <div className="flex items-baseline space-x-1 xl:space-x-3">

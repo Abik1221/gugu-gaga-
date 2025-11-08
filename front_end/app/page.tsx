@@ -12,6 +12,8 @@ import AffiliateSection from "@/components/sections/AffiliateSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
+import { CookieConsent } from "@/components/ui/cookie-consent";
+import { GoogleAds } from "@/components/ads/google-ads";
 import { useState } from "react";
 import {
   Dialog,
@@ -31,7 +33,7 @@ export default function App() {
   const [modalState, setModalState] = useState(false);
   console.log("modal state ", modalState);
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       <Navbar />
       <HeroSection />
       <ProblemSolution />
@@ -40,11 +42,13 @@ export default function App() {
       <HowItWorks />
       <SecuritySection />
       <PricingSection />
+      <GoogleAds adSlot="1234567890" className="my-8" />
       <IntegrationsSection />
       <AffiliateSection />
       <TestimonialsSection />
       <CTASection />
       <Footer />
+      <CookieConsent />
     </div>
   );
 }

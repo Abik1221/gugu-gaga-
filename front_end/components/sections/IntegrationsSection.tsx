@@ -7,9 +7,27 @@ import Image from "next/image";
 
 export default function IntegrationsSection() {
   const integrations = [
-    { name: "Google Sheets", category: "Spreadsheets" },
-    { name: "SAP", category: "ERP" },
-    { name: "Odoo", category: "ERP" },
+    {
+      name: "Google Sheets",
+      category: "Spreadsheets",
+      logo: "https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png",
+      description:
+        "Export reports and sync inventory data directly from Google Sheets for easy analysis and sharing.",
+    },
+    {
+      name: "SAP",
+      category: "ERP",
+      logo: "https://www.sap.com/dam/application/shared/logos/sap-logo-svg.svg",
+      description:
+        "Seamlessly integrate with SAP ERP systems for enterprise-level financial and operational management.",
+    },
+    {
+      name: "Odoo",
+      category: "ERP",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Odoo_logo.svg/200px-Odoo_logo.svg.png",
+      description:
+        "Connect with Odoo's comprehensive business suite for unified inventory, sales, and accounting workflows.",
+    },
   ];
 
   const categories = [...new Set(integrations.map((i) => i.category))];
@@ -97,7 +115,7 @@ export default function IntegrationsSection() {
           </motion.div>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-16">
           {categories.map((category, categoryIndex) => (
             <motion.div
               key={categoryIndex}
@@ -105,11 +123,12 @@ export default function IntegrationsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
+              className="text-center"
             >
               <Badge className="mb-4 bg-emerald-100 text-emerald-700 border-emerald-200">
                 {category}
               </Badge>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="flex flex-wrap justify-center gap-6">
                 {integrations
                   .filter((int) => int.category === category)
                   .map((integration, intIndex) => (
@@ -120,11 +139,20 @@ export default function IntegrationsSection() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: intIndex * 0.05 }}
                     >
-                      <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
-                        <div className="w-12 h-12 rounded-xl bg-gray-100 mx-auto mb-3 flex items-center justify-center">
-                          <span className="text-2xl">🔗</span>
+                      <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full w-80">
+                        <div className="w-12 h-12 rounded-xl bg-gray-100 mx-auto mb-3 flex items-center justify-center overflow-hidden">
+                          <img
+                            src={integration.logo}
+                            alt={`${integration.name} logo`}
+                            className="w-8 h-8 object-contain"
+                          />
                         </div>
-                        <p className="text-gray-900">{integration.name}</p>
+                        <h4 className="text-gray-900 font-semibold mb-2 text-center">
+                          {integration.name}
+                        </h4>
+                        <p className="text-gray-600 text-sm text-center">
+                          {integration.description}
+                        </p>
                       </Card>
                     </motion.div>
                   ))}
@@ -136,7 +164,7 @@ export default function IntegrationsSection() {
         <div className="text-center mt-12">
           <p className="text-gray-600">
             Don't see your tool?{" "}
-            <a href="#contact" className="text-emerald-600 underline">
+            <a href="/request-integration" className="text-emerald-600 underline">
               Request a custom integration
             </a>
           </p>

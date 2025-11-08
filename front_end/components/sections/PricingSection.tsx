@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
@@ -9,17 +9,19 @@ import { motion } from "framer-motion";
 import { TrialDialog } from "@/components/ui/trial-dialog";
 
 export default function PricingSection() {
-  const [selectedType, setSelectedType] = useState<'owner' | 'supplier'>('owner');
+  const [selectedType, setSelectedType] = useState<"owner" | "supplier">(
+    "owner"
+  );
   const router = useRouter();
 
   const handleSupplierPlanClick = (planName: string) => {
-    router.push('/register/supplier');
+    router.push("/register/supplier");
   };
 
   const handlePlanClick = (plan: any) => {
-    if (selectedType === 'supplier') {
+    if (selectedType === "supplier") {
       handleSupplierPlanClick(plan.name);
-    } else if (plan.name === 'Free Trial') {
+    } else if (plan.name === "Free Trial") {
       // Free trial buttons will use TrialDialog
       return;
     }
@@ -40,10 +42,10 @@ export default function PricingSection() {
         "All integrations unlocked",
         "Supplier marketplace",
         "Full analytics dashboard",
-        "Priority support"
+        "Priority support",
       ],
       cta: "Start Free Trial",
-      highlight: false
+      highlight: false,
     },
     {
       name: "Essential",
@@ -59,10 +61,10 @@ export default function PricingSection() {
         "Sales analytics",
         "Staff management (up to 5 users)",
         "Email support",
-        "Mobile app access"
+        "Mobile app access",
       ],
       cta: "Get Started",
-      highlight: false
+      highlight: false,
     },
     {
       name: "Professional",
@@ -80,11 +82,11 @@ export default function PricingSection() {
         "Unlimited staff accounts",
         "Advanced analytics & reports",
         "Custom integrations",
-        "Dedicated account manager"
+        "Dedicated account manager",
       ],
       cta: "Go Professional",
-      highlight: true
-    }
+      highlight: true,
+    },
   ];
 
   const supplierPlans = [
@@ -101,10 +103,10 @@ export default function PricingSection() {
         "Customer communication",
         "Advanced analytics",
         "Priority marketplace listing",
-        "24/7 support"
+        "24/7 support",
       ],
       cta: "Start Free Trial",
-      highlight: false
+      highlight: false,
     },
     {
       name: "Starter",
@@ -118,10 +120,10 @@ export default function PricingSection() {
         "Customer communication",
         "Payment tracking",
         "Monthly reports",
-        "Email support"
+        "Email support",
       ],
       cta: "Start Supplying",
-      highlight: false
+      highlight: false,
     },
     {
       name: "Growth",
@@ -136,10 +138,10 @@ export default function PricingSection() {
         "Inventory forecasting",
         "Priority marketplace listing",
         "24/7 phone support",
-        "Custom branding"
+        "Custom branding",
       ],
       cta: "Scale Your Business",
-      highlight: true
+      highlight: true,
     },
     {
       name: "Enterprise",
@@ -154,17 +156,20 @@ export default function PricingSection() {
         "Dedicated account manager",
         "White-label solutions",
         "SLA guarantees",
-        "On-site training"
+        "On-site training",
       ],
       cta: "Contact Sales",
-      highlight: false
-    }
+      highlight: false,
+    },
   ];
 
-  const currentPlans = selectedType === 'owner' ? ownerPlans : supplierPlans;
+  const currentPlans = selectedType === "owner" ? ownerPlans : supplierPlans;
 
   return (
-    <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-emerald-50">
+    <section
+      id="pricing"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-emerald-50"
+    >
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -174,34 +179,35 @@ export default function PricingSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl text-gray-900 mb-4">
-            Simple, <span className="text-emerald-600">Transparent Pricing</span>
+            Simple,{" "}
+            <span className="text-emerald-600">Transparent Pricing</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Choose the plan that fits your business. Start with a 30-day free trial,
-            then select the tier that matches your needs.
+            Choose the plan that fits your business. Start with a 30-day free
+            trial, then select the tier that matches your needs.
           </p>
-          
+
           <div className="flex justify-center mb-8">
             <div className="bg-white rounded-lg p-1 shadow-md border">
               <Button
-                variant={selectedType === 'owner' ? 'default' : 'ghost'}
+                variant={selectedType === "owner" ? "default" : "ghost"}
                 className={`px-6 py-2 rounded-md transition-all ${
-                  selectedType === 'owner' 
-                    ? 'bg-emerald-600 text-white shadow-sm' 
-                    : 'text-gray-600 hover:text-gray-900'
+                  selectedType === "owner"
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
                 }`}
-                onClick={() => setSelectedType('owner')}
+                onClick={() => setSelectedType("owner")}
               >
                 Pharmacy Owner
               </Button>
               <Button
-                variant={selectedType === 'supplier' ? 'default' : 'ghost'}
+                variant={selectedType === "supplier" ? "default" : "ghost"}
                 className={`px-6 py-2 rounded-md transition-all ${
-                  selectedType === 'supplier' 
-                    ? 'bg-emerald-600 text-white shadow-sm' 
-                    : 'text-gray-600 hover:text-gray-900'
+                  selectedType === "supplier"
+                    ? "bg-emerald-600 text-white shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
                 }`}
-                onClick={() => setSelectedType('supplier')}
+                onClick={() => setSelectedType("supplier")}
               >
                 Supplier
               </Button>
@@ -209,9 +215,11 @@ export default function PricingSection() {
           </div>
         </motion.div>
 
-        <div className={`grid gap-8 max-w-6xl mx-auto ${
-          selectedType === 'supplier' ? 'md:grid-cols-4' : 'md:grid-cols-3'
-        }`}>
+        <div
+          className={`grid gap-8 max-w-6xl mx-auto ${
+            selectedType === "supplier" ? "md:grid-cols-4" : "md:grid-cols-3"
+          }`}
+        >
           {currentPlans.map((plan, index) => (
             <motion.div
               key={index}
@@ -221,10 +229,11 @@ export default function PricingSection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Card
-                className={`p-8 relative h-full ${plan.highlight
-                  ? 'border-2 border-emerald-500 shadow-2xl md:scale-105'
-                  : 'border border-gray-200'
-                  }`}
+                className={`p-8 relative h-full ${
+                  plan.highlight
+                    ? "border-2 border-emerald-500 shadow-2xl md:scale-105"
+                    : "border border-gray-200"
+                }`}
               >
                 {plan.popular && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white">
@@ -251,13 +260,14 @@ export default function PricingSection() {
                   ))}
                 </ul>
 
-                {plan.name === 'Free Trial' ? (
+                {plan.name === "Free Trial" ? (
                   <TrialDialog>
                     <Button
-                      className={`w-full ${plan.highlight
-                        ? 'bg-emerald-600 hover:bg-emerald-700'
-                        : 'bg-gray-900 hover:bg-gray-800'
-                        }`}
+                      className={`w-full ${
+                        plan.highlight
+                          ? "bg-emerald-600 hover:bg-emerald-700"
+                          : "bg-gray-900 hover:bg-gray-800"
+                      }`}
                       size="lg"
                     >
                       {plan.cta}
@@ -265,10 +275,11 @@ export default function PricingSection() {
                   </TrialDialog>
                 ) : (
                   <Button
-                    className={`w-full ${plan.highlight
-                      ? 'bg-emerald-600 hover:bg-emerald-700'
-                      : 'bg-gray-900 hover:bg-gray-800'
-                      }`}
+                    className={`w-full ${
+                      plan.highlight
+                        ? "bg-emerald-600 hover:bg-emerald-700"
+                        : "bg-gray-900 hover:bg-gray-800"
+                    }`}
                     size="lg"
                     onClick={() => handlePlanClick(plan)}
                   >
@@ -282,12 +293,15 @@ export default function PricingSection() {
 
         <div className="text-center mt-12">
           <p className="text-gray-600">
-            All plans include secure data encryption, regular backups, and Ethiopian Birr support.
+            All plans include secure data encryption, regular backups, and
+            Ethiopian Birr support.
             <br />
-            {selectedType === 'owner' 
-              ? 'Need a custom enterprise solution?' 
-              : 'Ready to join our supplier network?'
-            } <a href="#contact" className="text-emerald-600 underline">Contact us</a>
+            {selectedType === "owner"
+              ? "Need a custom enterprise solution?"
+              : "Ready to join our supplier network?"}{" "}
+            <a href="/contact" className="text-emerald-600 underline">
+              Contact us
+            </a>
           </p>
         </div>
       </div>

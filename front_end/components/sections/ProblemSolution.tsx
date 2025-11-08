@@ -36,7 +36,7 @@ export default function ProblemSolution() {
             From Chaos to <span className="text-emerald-600">Control</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Traditional inventory management is holding Ethiopian businesses
+            Traditional Bussiness management is holding Ethiopian businesses
             back. It's time for a revolution.
           </p>
         </motion.div>

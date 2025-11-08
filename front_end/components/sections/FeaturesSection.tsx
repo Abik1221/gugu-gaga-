@@ -50,18 +50,6 @@ export default function FeaturesSection() {
         "Connect directly with verified suppliers who promote their products on your dashboard. Discover new products, compare prices, and order with confidence.",
       image: branch4,
     },
-    // {
-    //   icon: Share2,
-    //   title: "Affiliate Marketing Program",
-    //   description: "Generate your unique referral link and earn commissions by connecting suppliers with inventory owners. Turn your network into a revenue stream.",
-    //   image: "https://images.unsplash.com/photo-1748609160056-7b95f30041f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGFuYWx5dGljcyUyMGNoYXJ0c3xlbnwxfHx8fDE3NjIyODI0MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-    // },
-    // {
-    //   icon: MessageSquare,
-    //   title: "AI Chat Assistant",
-    //   description: "Chat with Stock Sentinel AI about your inventory anytime. Get instant answers, professional insights, forecasts, and recommendations based on your data.",
-    //   image: "https://images.unsplash.com/photo-1687422809654-579d81c29d32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwYnVzaW5lc3MlMjBvd25lcnxlbnwxfHx8fDE3NjIzMzk1NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-    // }
   ];
 
   const quickFeatures = [
@@ -86,7 +74,7 @@ export default function FeaturesSection() {
             <span className="text-emerald-600">One Platform</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            A complete, modern inventory management system designed specifically
+            A complete, modern bussiness management system designed specifically
             for Ethiopian shops, pharmacies, and retail businesses.
           </p>
         </motion.div>

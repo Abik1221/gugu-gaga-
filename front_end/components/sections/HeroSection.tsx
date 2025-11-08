@@ -94,8 +94,8 @@ export default function HeroSection() {
               </div>
               <div className="h-12 w-px bg-gray-300" />
               <div>
-                <div className="text-3xl text-gray-900">100+</div>
-                <div className="text-sm text-gray-600">Integrations</div>
+                <div className="text-3xl text-gray-900">{">"}99.9%</div>
+                <div className="text-sm text-gray-600">Uptime</div>
               </div>
             </motion.div>
           </motion.div>
