@@ -467,7 +467,7 @@ export default function PharmacyRegisterPage() {
 
             <p className="text-center text-xs text-slate-700">
               Already have an owner account?{" "}
-              <Link href="/auth?tab=signin" className="font-medium text-emerald-400 hover:underline">
+              <Link href="/pharmacy-signin" className="font-medium text-emerald-400 hover:underline">
                 Sign in
               </Link>
             </p>

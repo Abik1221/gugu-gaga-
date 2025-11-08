@@ -8,12 +8,15 @@ import { StatCard, MiniStat, SectionCard } from "./_components/cards";
 import { useAffiliateDashboardContext } from "./_context/affiliate-dashboard-context";
 
 export default function AffiliateOverviewPage() {
-  const { stats, dash, monthLabel, payoutPercent, actions, canCreateMore } = useAffiliateDashboardContext();
+  const { stats, dash, monthLabel, payoutPercent, actions, canCreateMore } =
+    useAffiliateDashboardContext();
 
   const highlightItems = [
     `You’re earning a ${payoutPercent}% commission rate this month.`,
     `${stats.referrals.toLocaleString()} referred pharmacies are being tracked in real-time.`,
-    `${formatCurrency(stats.paidPayout)} has already been paid out – keep sharing links to grow it.`,
+    `${formatCurrency(
+      stats.paidPayout
+    )} has already been paid out – keep sharing links to grow it.`,
   ];
 
   const summaryCards = useMemo(
@@ -39,13 +42,18 @@ export default function AffiliateOverviewPage() {
         description: "Pharmacies onboarded via your links",
       },
     ],
-    [monthLabel, stats.currentCommission, stats.paidPayout, stats.pendingPayout, stats.referrals]
+    [
+      monthLabel,
+      stats.currentCommission,
+      stats.paidPayout,
+      stats.pendingPayout,
+      stats.referrals,
+    ]
   );
 
   const referredTenants = dash?.tenants ?? [];
 
   return (
-
     <div className="pb-16">
       <motion.section
         initial={{ opacity: 0, y: -20 }}
@@ -67,7 +75,10 @@ export default function AffiliateOverviewPage() {
                 Grow partner revenue with the same polish as your landing page.
               </h1>
               <p className="text-base text-slate-600">
-                Keep your pharmacy partners engaged with a calm, minimal control center. Review earnings, generate links, and submit payout requests with live numbers pulled directly from the partner API.
+                Keep your bussiness partners engaged with a calm, minimal
+                control center. Review earnings, generate links, and submit
+                payout requests with live numbers pulled directly from the
+                partner API.
               </p>
             </div>
             <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
@@ -91,10 +102,15 @@ export default function AffiliateOverviewPage() {
           </div>
 
           <div className="w-full max-w-sm space-y-4 rounded-3xl border border-slate-200 bg-slate-50/70 p-6 shadow-inner shadow-emerald-100/60 backdrop-blur">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">Why teams stay</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
+              Why teams stay
+            </h2>
             <ul className="space-y-3 text-sm text-slate-600">
               {highlightItems.map((item) => (
-                <li key={item} className="rounded-2xl border border-white/60 bg-white/80 px-4 py-3 shadow-sm">
+                <li
+                  key={item}
+                  className="rounded-2xl border border-white/60 bg-white/80 px-4 py-3 shadow-sm"
+                >
                   {item}
                 </li>
               ))}
@@ -107,5 +123,8 @@ export default function AffiliateOverviewPage() {
 }
 
 function formatCurrency(amount: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount || 0);
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount || 0);
 }

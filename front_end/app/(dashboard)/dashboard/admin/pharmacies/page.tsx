@@ -189,45 +189,75 @@ export default function AdminPharmaciesPage() {
   return (
     <>
       {recentCredentials && (
-        <div className="mb-4 rounded border border-emerald-500/60 bg-emerald-50 p-3 text-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <div className="font-semibold text-emerald-800">Temporary credentials issued</div>
-            <div className="text-xs text-emerald-700">
-              {recentCredentials.name} (tenant {recentCredentials.tenantId}) — share the password securely with the owner.
+        <div className="mb-6 rounded-xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 p-4 shadow-sm">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <div className="font-semibold text-emerald-800 text-base">Temporary Credentials Issued</div>
+              </div>
+              <div className="text-sm text-emerald-700 ml-4">
+                {recentCredentials.name} <span className="text-emerald-600">(tenant {recentCredentials.tenantId})</span>
+              </div>
+              <div className="text-xs text-emerald-600 ml-4">Share the password securely with the owner</div>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-emerald-900 text-sm">{recentCredentials.tempPassword}</span>
-            <Button size="sm" variant="outline" onClick={() => handleCopyPassword(recentCredentials.tempPassword)}>Copy</Button>
+            <div className="flex items-center gap-3 bg-white/70 rounded-lg p-3 border border-emerald-200">
+              <span className="font-mono text-emerald-900 font-semibold text-base tracking-wider">{recentCredentials.tempPassword}</span>
+              <Button size="sm" variant="outline" className="border-emerald-300 text-emerald-700 hover:bg-emerald-100" onClick={() => handleCopyPassword(recentCredentials.tempPassword)}>Copy</Button>
+            </div>
           </div>
         </div>
       )}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Admin · Pharmacies</h1>
-          <div className="flex gap-2">
-            <Input placeholder="Search by name" value={q} onChange={(e)=>setQ(e.target.value)} />
-            <Button onClick={()=>refresh(1)}>Search</Button>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Pharmacy Management</h1>
+            <p className="text-sm text-gray-600 mt-1">Manage pharmacy applications and payments</p>
+          </div>
+          <div className="flex gap-3">
+            <div className="relative">
+              <Input 
+                placeholder="Search pharmacies..." 
+                value={q} 
+                onChange={(e)=>setQ(e.target.value)}
+                className="pl-10 w-64 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              />
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+            <Button onClick={()=>refresh(1)} className="bg-blue-600 hover:bg-blue-700 text-white px-6">Search</Button>
           </div>
         </div>
         {loading ? (
-          <Skeleton className="h-64" />
+          <div className="flex items-center justify-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
         ) : error ? (
-          <div className="text-sm text-red-600">{error}</div>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+            <div className="text-red-600 font-medium">{error}</div>
+          </div>
         ) : items.length === 0 ? (
-          <div className="border rounded p-6 text-center text-gray-500">No pharmacies found.</div>
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-12 text-center">
+            <div className="text-gray-500 text-lg font-medium">No pharmacies found</div>
+            <div className="text-gray-400 text-sm mt-2">Try adjusting your search criteria</div>
+          </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {STATUS_SECTIONS.map((section) => {
               const sectionItems = grouped.get(section.key) || [];
               if (sectionItems.length === 0) return null;
               return (
-                <div key={section.key} className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold">{section.title}</h2>
-                    <span className="text-xs text-muted-foreground">{sectionItems.length} {sectionItems.length === 1 ? "pharmacy" : "pharmacies"}</span>
+                <div key={section.key} className="space-y-4">
+                  <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
+                    <h2 className="text-xl font-bold text-gray-900">{section.title}</h2>
+                    <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                      {sectionItems.length} {sectionItems.length === 1 ? "pharmacy" : "pharmacies"}
+                    </div>
                   </div>
-                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                     {sectionItems.map((ph) => {
                       const isSelected = selectedTenant === ph.tenant_id;
                       const statusTone = STATUS_TONE[ph.status_category] || "muted";
@@ -241,21 +271,28 @@ export default function AdminPharmaciesPage() {
                       return (
                         <Card
                           key={ph.id}
-                          className={cn("transition-shadow", isSelected && "border-blue-500 shadow-lg")}
+                          className={cn(
+                            "transition-all duration-200 hover:shadow-xl cursor-pointer border-0 shadow-md bg-white",
+                            isSelected && "ring-2 ring-blue-500 shadow-xl transform scale-[1.02]"
+                          )}
                           onClick={() => setSelectedTenant(ph.tenant_id)}
                         >
-                          <CardHeader className="flex flex-row items-start justify-between gap-4">
-                            <div className="space-y-1">
-                              <CardTitle className="text-lg">{ph.name}</CardTitle>
-                              <div className="text-xs text-muted-foreground font-mono">{ph.tenant_id}</div>
-                            </div>
-                            <div className="flex flex-wrap gap-2 justify-end">
-                              <StatusPill tone={statusTone}>{ph.status_label}</StatusPill>
-                              {ph.owner_approved && <StatusPill tone="outline">Owner approved</StatusPill>}
+                          <CardHeader className="pb-3">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="space-y-2">
+                                <CardTitle className="text-xl font-bold text-gray-900">{ph.name}</CardTitle>
+                                <div className="flex items-center gap-2">
+                                  <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded font-mono">{ph.tenant_id}</div>
+                                </div>
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <StatusPill tone={statusTone}>{ph.status_label}</StatusPill>
+                                {ph.owner_approved && <StatusPill tone="outline">Owner approved</StatusPill>}
+                              </div>
                             </div>
                           </CardHeader>
-                          <CardContent className="space-y-4">
-                            <div className="grid gap-2">
+                          <CardContent className="space-y-5">
+                            <div className="grid gap-3">
                               <InfoRow label="Owner" value={ph.owner_email || "-"} description={ph.owner_phone} />
                               <InfoRow label="Created" value={formatDateTime(ph.created_at)} />
                               <InfoRow label="Address" value={ph.address || "-"} />
@@ -265,11 +302,24 @@ export default function AdminPharmaciesPage() {
                                 description={ph.subscription?.next_due_date ? `Next due: ${formatDateTime(ph.subscription.next_due_date, { dateStyle: "medium" })}` : undefined}
                               />
                               {pendingCode && (
-                                <InfoRow
-                                  label="Pending payment"
-                                  value={pendingCode}
-                                  description={ph.pending_payment?.submitted_at ? `Submitted ${formatDateTime(ph.pending_payment?.submitted_at)}` : undefined}
-                                />
+                                <div className="rounded-lg border border-orange-200 p-4 space-y-3 bg-orange-50/50">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                                    <div className="text-sm font-bold text-orange-900">Pending Payment</div>
+                                  </div>
+                                  <div className="space-y-2">
+                                    <div className="flex justify-between items-center">
+                                      <span className="text-xs font-semibold uppercase tracking-wide text-orange-700">Code</span>
+                                      <span className="font-mono bg-white px-2 py-1 rounded border text-orange-900 font-semibold">{pendingCode}</span>
+                                    </div>
+                                    {ph.pending_payment?.submitted_at && (
+                                      <div className="flex justify-between items-center">
+                                        <span className="text-xs font-semibold uppercase tracking-wide text-orange-700">Submitted</span>
+                                        <span className="text-sm text-orange-800">{formatDateTime(ph.pending_payment.submitted_at)}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
                               )}
                               <InfoRow
                                 label="Latest payment"
@@ -277,9 +327,12 @@ export default function AdminPharmaciesPage() {
                                 description={ph.latest_payment?.status ? `${ph.latest_payment?.status?.toUpperCase?.()}${ph.latest_payment?.submitted_at ? ` · ${formatDateTime(ph.latest_payment?.submitted_at)}` : ""}` : undefined}
                               />
                               {kyc && (
-                                <div className="rounded border p-3 space-y-2 bg-muted/50">
-                                  <div className="text-sm font-semibold">KYC Details</div>
-                                  <div className="grid gap-2 md:grid-cols-2">
+                                <div className="rounded-lg border border-blue-200 p-4 space-y-3 bg-blue-50/50">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    <div className="text-sm font-bold text-blue-900">KYC Details</div>
+                                  </div>
+                                  <div className="grid gap-3 md:grid-cols-2">
                                     <InfoRow label="KYC Status" value={kyc.status?.toUpperCase() || "-"} />
                                     <InfoRow label="Submitted" value={formatDateTime(kyc.submitted_at)} />
                                     <InfoRow label="ID Number" value={kyc.id_number || "-"} />
@@ -289,11 +342,12 @@ export default function AdminPharmaciesPage() {
                                     {kyc.owner_email && <InfoRow label="Owner Email (submitted)" value={kyc.owner_email} />}
                                     {kyc.owner_phone && <InfoRow label="Owner Phone (submitted)" value={kyc.owner_phone} />}
                                   </div>
-                                  {kyc.notes && <div className="text-xs text-muted-foreground">Notes: {kyc.notes}</div>}
+                                  {kyc.notes && <div className="text-xs text-blue-700 bg-blue-100 p-2 rounded">Notes: {kyc.notes}</div>}
                                   {kyc.license_document_available && kyc.application_id && (
                                     <Button
                                       variant="outline"
                                       size="sm"
+                                      className="border-blue-300 text-blue-700 hover:bg-blue-100"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         const appId = kyc.application_id;
@@ -313,40 +367,43 @@ export default function AdminPharmaciesPage() {
                               )}
                             </div>
 
-                            <div className="h-px bg-border" />
-
-                            <div className="flex flex-wrap gap-2">
-                              <Button
-                                disabled={!canApprove}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openAction({ type: "approve", tenantId: ph.tenant_id, kycId: ph.kyc_id, name: ph.name });
-                                }}
-                              >Approve & Notify</Button>
-                              <Button
-                                variant="outline"
-                                disabled={!canReject}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openAction({ type: "reject", tenantId: ph.tenant_id, kycId: ph.kyc_id, name: ph.name });
-                                }}
-                              >Reject</Button>
-                              <Button
-                                variant="secondary"
-                                disabled={!canVerify}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openAction({ type: "verify", tenantId: ph.tenant_id, name: ph.name, pendingPayment: ph.pending_payment });
-                                }}
-                              >Verify Payment</Button>
-                              <Button
-                                variant="outline"
-                                disabled={!canRejectPayment}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openAction({ type: "rejectPayment", tenantId: ph.tenant_id, name: ph.name, pendingPayment: ph.pending_payment });
-                                }}
-                              >Reject Payment</Button>
+                            <div className="border-t border-gray-200 pt-4 mt-4">
+                              <div className="grid grid-cols-2 gap-2">
+                                <Button
+                                  disabled={!canApprove}
+                                  className="bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-300 disabled:text-gray-500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openAction({ type: "approve", tenantId: ph.tenant_id, kycId: ph.kyc_id, name: ph.name });
+                                  }}
+                                >✓ Approve</Button>
+                                <Button
+                                  variant="outline"
+                                  disabled={!canReject}
+                                  className="border-red-300 text-red-700 hover:bg-red-50 disabled:border-gray-300 disabled:text-gray-500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openAction({ type: "reject", tenantId: ph.tenant_id, kycId: ph.kyc_id, name: ph.name });
+                                  }}
+                                >✗ Reject</Button>
+                                <Button
+                                  disabled={!canVerify}
+                                  className="bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-300 disabled:text-gray-500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openAction({ type: "verify", tenantId: ph.tenant_id, name: ph.name, pendingPayment: ph.pending_payment });
+                                  }}
+                                >💳 Verify Payment</Button>
+                                <Button
+                                  variant="outline"
+                                  disabled={!canRejectPayment}
+                                  className="border-orange-300 text-orange-700 hover:bg-orange-50 disabled:border-gray-300 disabled:text-gray-500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openAction({ type: "rejectPayment", tenantId: ph.tenant_id, name: ph.name, pendingPayment: ph.pending_payment });
+                                  }}
+                                >⚠ Reject Payment</Button>
+                              </div>
                             </div>
                           </CardContent>
                         </Card>
@@ -460,19 +517,19 @@ export default function AdminPharmaciesPage() {
 function InfoRow({ label, value, description, className, masked }: { label: string; value: React.ReactNode; description?: React.ReactNode; className?: string; masked?: boolean }) {
   const [showValue, setShowValue] = useState(!masked);
   return (
-    <div className={cn("space-y-1 rounded border p-3", className)}>
+    <div className={cn("space-y-2 rounded-lg border border-gray-200 p-3 bg-gray-50/50 hover:bg-gray-50 transition-colors", className)}>
       <div className="flex items-center justify-between gap-2">
-        <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
+        <div className="text-xs font-semibold uppercase tracking-wide text-gray-600">{label}</div>
         {masked && (
-          <button type="button" className="text-xs text-blue-600 underline" onClick={() => setShowValue((prev) => !prev)}>
+          <button type="button" className="text-xs text-blue-600 hover:text-blue-800 font-medium" onClick={() => setShowValue((prev) => !prev)}>
             {showValue ? "Hide" : "Show"}
           </button>
         )}
       </div>
-      <div className="text-sm font-medium break-all">
+      <div className="text-sm font-medium text-gray-900 break-all">
         {masked && !showValue ? "••••••••" : value}
       </div>
-      {description && <div className="text-xs text-muted-foreground">{description}</div>}
+      {description && <div className="text-xs text-gray-600 mt-1">{description}</div>}
     </div>
   );
 }
@@ -480,13 +537,13 @@ function InfoRow({ label, value, description, className, masked }: { label: stri
 function StatusPill({ children, tone = "primary" }: { children: React.ReactNode; tone?: "primary" | "muted" | "outline" | "danger" }) {
   const styles =
     tone === "primary"
-      ? "bg-blue-100 text-blue-700"
+      ? "bg-blue-100 text-blue-800 border border-blue-200"
       : tone === "danger"
-      ? "bg-red-100 text-red-700"
+      ? "bg-red-100 text-red-800 border border-red-200"
       : tone === "outline"
-      ? "border border-muted-foreground/40 text-muted-foreground"
-      : "bg-muted text-muted-foreground";
-  return <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", styles)}>{children}</span>;
+      ? "border border-gray-300 text-gray-700 bg-white"
+      : "bg-gray-100 text-gray-700 border border-gray-200";
+  return <span className={cn("rounded-full px-3 py-1 text-xs font-semibold shadow-sm", styles)}>{children}</span>;
 }
 
 
@@ -532,41 +589,50 @@ function ConfirmDialog({
   const paymentDetails = action.pendingPayment;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-        <h2 className="text-lg font-semibold">{meta.title}</h2>
-        <p className="mt-2 text-sm text-muted-foreground">{meta.description}</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl border border-gray-200">
+        <h2 className="text-xl font-bold text-gray-900">{meta.title}</h2>
+        <p className="mt-3 text-sm text-gray-600">{meta.description}</p>
         {paymentDetails && (action.type === "verify" || action.type === "rejectPayment") && (
-          <div className="mt-4 rounded border bg-muted/30 p-3 text-xs">
-            <div className="font-medium text-sm mb-1">Pending payment details</div>
-            <div className="flex justify-between"><span>Code:</span> <span className="font-mono">{paymentDetails.code}</span></div>
-            <div className="flex justify-between"><span>Submitted:</span> <span>{formatDateTime(paymentDetails.submitted_at)}</span></div>
+          <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
+            <div className="font-semibold text-sm mb-3 text-blue-900">Payment Details</div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Code:</span> 
+                <span className="font-mono bg-white px-2 py-1 rounded border text-blue-900">{paymentDetails.code}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Submitted:</span> 
+                <span className="text-gray-900">{formatDateTime(paymentDetails.submitted_at)}</span>
+              </div>
+            </div>
           </div>
         )}
         {action.type === "approve" && (
-          <div className="mt-4 space-y-3 border rounded bg-muted/30 p-3">
+          <div className="mt-4 space-y-4 border border-green-200 rounded-lg bg-green-50 p-4">
             <div className="flex items-center justify-between gap-3">
-              <label className="text-sm font-medium">Issue temporary password</label>
+              <label className="text-sm font-semibold text-green-900">Issue temporary password</label>
               <input
                 type="checkbox"
                 checked={Boolean(options.issueTempPassword)}
                 onChange={(e) => setOptions({ ...options, issueTempPassword: e.target.checked })}
+                className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
               />
             </div>
             {options.issueTempPassword && (
-              <div className="space-y-1">
-                <label className="text-xs uppercase tracking-wide text-muted-foreground" htmlFor="temp-password-input">Password</label>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wide text-green-700" htmlFor="temp-password-input">Password</label>
                 <input
                   id="temp-password-input"
                   type="text"
                   value={options.tempPassword ?? ""}
                   onChange={(e) => setOptions({ ...options, tempPassword: e.target.value })}
-                  className="w-full rounded border border-border px-2 py-1 text-sm"
+                  className="w-full rounded-lg border border-green-300 px-3 py-2 text-sm focus:border-green-500 focus:ring-green-500"
                   placeholder="Auto-generate if left blank"
                 />
                 <button
                   type="button"
-                  className="text-xs text-blue-600 underline"
+                  className="text-xs text-green-600 hover:text-green-800 font-medium"
                   onClick={() => setOptions({ ...options, tempPassword: generatePassword() })}
                 >
                   Generate strong password

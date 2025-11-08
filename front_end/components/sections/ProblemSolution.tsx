@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Card } from "@/components/ui/card";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -10,7 +10,7 @@ export default function ProblemSolution() {
     "Disconnected systems and spreadsheets",
     "Difficulty connecting with reliable suppliers",
     "No real-time insights into inventory health",
-    "Wasted time on administrative tasks"
+    "Wasted time on administrative tasks",
   ];
 
   const solutions = [
@@ -19,7 +19,7 @@ export default function ProblemSolution() {
     "One-click integrations with Google Sheets, ERP, and more",
     "Direct supplier marketplace in your dashboard",
     "Real-time AI chat assistant for instant insights",
-    "Automated workflows saving hours every week"
+    "Automated workflows saving hours every week",
   ];
 
   return (
@@ -36,8 +36,8 @@ export default function ProblemSolution() {
             From Chaos to <span className="text-emerald-600">Control</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Traditional inventory management is holding Ethiopian businesses back.
-            It's time for a revolution.
+            Traditional inventory management is holding Ethiopian businesses
+            back. It's time for a revolution.
           </p>
         </motion.div>
 
@@ -79,7 +79,7 @@ export default function ProblemSolution() {
                 <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
                   <CheckCircle2 className="w-6 h-6 text-emerald-600" />
                 </div>
-                <h3 className="text-2xl text-gray-900">Mesob AI Way</h3>
+                <h3 className="text-2xl text-gray-900">Mesob Way</h3>
               </div>
               <ul className="space-y-4">
                 {solutions.map((solution, index) => (

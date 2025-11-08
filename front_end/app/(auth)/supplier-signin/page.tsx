@@ -1,0 +1,264 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/toast";
+
+export default function SupplierSignInPage() {
+  const router = useRouter();
+  const { show } = useToast();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleSignIn(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    const trimmedEmail = email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      setError("Please enter a valid email address.");
+      show({ variant: "destructive", title: "Invalid Email", description: "Please enter a valid email address." });
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      show({ variant: "destructive", title: "Invalid Password", description: "Password must be at least 6 characters." });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // API call would go here
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Mock successful login
+      if (typeof window !== "undefined") {
+        localStorage.setItem("access_token", "mock_supplier_token");
+        localStorage.setItem("user_role", "supplier");
+      }
+
+      show({
+        variant: "success",
+        title: "Welcome back!",
+        description: "Redirecting to your supplier dashboard...",
+      });
+      
+      setTimeout(() => router.replace("/dashboard/supplier"), 1000);
+    } catch (err: any) {
+      const message = err?.message || "Invalid credentials";
+      setError(message);
+      show({ variant: "destructive", title: "Sign In Failed", description: message });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const featureBullets = [
+    "Manage your product catalog",
+    "Track orders and shipments",
+    "View performance analytics",
+    "Connect with pharmacy partners",
+  ];
+
+  return (
+    <div className="relative flex min-h-screen text-white">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-10 left-10 h-80 w-80 rounded-full bg-green-500/15 blur-3xl" />
+        <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
+      </div>
+
+      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden bg-white p-12 lg:flex">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-lg"
+        >
+          <div className="flex items-center gap-3 text-left">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green-400 to-blue-500 blur opacity-70" />
+              <div className="relative rounded-xl p-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="h-6 w-6 text-white"
+                >
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9,22 9,12 15,12 15,22" />
+                </svg>
+              </div>
+            </div>
+            <span className="text-2xl font-semibold tracking-wide text-white/90">
+              Zemen Pharma
+            </span>
+          </div>
+
+          <h1 className="mt-10 text-4xl font-bold leading-tight text-black">
+            Welcome back, supplier
+          </h1>
+          <p className="mt-4 text-lg text-slate-500">
+            Access your supplier dashboard to manage orders, track performance, and grow your pharmaceutical business.
+          </p>
+
+          <ul className="mt-10 space-y-4 text-slate-700">
+            {featureBullets.map((item) => (
+              <li key={item} className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-black" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="space-y-4 text-sm text-slate-700"
+        >
+          <p>
+            "The supplier portal makes it easy to manage our entire pharmaceutical distribution network from one place."
+          </p>
+          <div className="h-px w-24 bg-white/20" />
+          <p>
+            Need help? <Link href="/contact" className="text-black hover:underline">Contact supplier support</Link>
+          </p>
+        </motion.div>
+      </div>
+
+      <div className="relative flex w-full flex-col justify-center px-4 py-16 sm:px-10 lg:w-[560px] lg:px-12 bg-white">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-[0_25px_80px_-40px_rgba(34,197,94,0.65)] backdrop-blur"
+        >
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-black">Supplier Sign In</h2>
+            <p className="mt-2 text-sm text-slate-600">
+              Access your supplier dashboard and manage your business.
+            </p>
+          </div>
+
+          {error && (
+            <div className="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-600">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSignIn} className="space-y-5">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                Email Address
+              </label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="supplier@company.com"
+                className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                Password
+              </label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                required
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="mr-2 h-4 w-4 rounded border-slate-300 text-green-600 focus:ring-green-500"
+                />
+                <span className="text-slate-700">Remember me</span>
+              </label>
+              <Link href="/forgot-password" className="text-green-600 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-green-600 hover:bg-green-700 px-6 py-3 font-semibold text-white shadow-lg shadow-green-500/30 transition duration-300 hover:scale-[1.01] hover:shadow-green-400/40"
+            >
+              {loading ? (
+                <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path
+                    className="opacity-90"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
+                </svg>
+              ) : null}
+              {loading ? "Signing in..." : "Sign In"}
+            </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-slate-500">New to our platform?</span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full rounded-2xl border-slate-300 bg-white/5 text-slate-700 hover:bg-slate-50"
+              onClick={() => router.push("/register/supplier")}
+            >
+              Register as Supplier
+            </Button>
+          </form>
+
+          <div className="mt-8 text-center">
+            <p className="text-xs text-slate-700">
+              Different role?{" "}
+              <Link href="/pharmacy-signin" className="text-green-600 hover:underline">
+                Pharmacy Owner
+              </Link>{" "}
+              |{" "}
+              <Link href="/affiliate-login" className="text-green-600 hover:underline">
+                Affiliate
+              </Link>
+            </p>
+          </div>
+
+          <p className="mt-6 text-center text-[11px] text-slate-700">
+            Protected by industry-standard security.{" "}
+            <Link href="/privacy" className="text-green-600 hover:underline">
+              Privacy Policy
+            </Link>
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  );
+}

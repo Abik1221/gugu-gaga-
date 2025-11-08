@@ -13,6 +13,8 @@ __turbopack_context__.s([
     ()=>AuthAPI,
     "BillingAPI",
     ()=>BillingAPI,
+    "BranchAPI",
+    ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
     "IntegrationsAPI",
@@ -41,6 +43,8 @@ __turbopack_context__.s([
     ()=>UploadAPI,
     "authFetch",
     ()=>authFetch,
+    "deleteAuthJSON",
+    ()=>deleteAuthJSON,
     "getAccessToken",
     ()=>getAccessToken,
     "getAuthJSON",
@@ -292,6 +296,24 @@ async function postAuthJSON(path, bodyData, tenantId) {
     }
     return await res.json();
 }
+async function deleteAuthJSON(path, tenantId) {
+    const res = await authFetch(path, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }, true, tenantId);
+    if (!res.ok) {
+        const data = await res.text().catch(()=>"");
+        throw new Error(data || `Request failed with ${res.status}`);
+    }
+    // For DELETE requests, we might not have a response body
+    try {
+        return await res.json();
+    } catch  {
+        return undefined;
+    }
+}
 const AuthAPI = {
     registerAffiliate: (body)=>postJSON("/api/v1/auth/register/affiliate", body),
     registerPharmacy: (body)=>postJSON("/api/v1/auth/register/pharmacy", body),
@@ -419,17 +441,17 @@ const IntegrationsAPI = {
         }, tenantId)
 };
 const AffiliateAPI = {
-    getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
-    createLink: ()=>getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
-    deactivate: (token)=>postAuthJSON(`/api/v1/affiliate/links/${encodeURIComponent(token)}/deactivate`, {}),
-    rotate: (token)=>postAuthJSON(`/api/v1/affiliate/links/${encodeURIComponent(token)}/rotate`, {}),
-    dashboard: ()=>getAuthJSON("/api/v1/affiliate/dashboard"),
-    payouts: (status)=>getAuthJSON(`/api/v1/affiliate/payouts${status ? `?status_filter=${encodeURIComponent(status)}` : ""}`),
+    getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link", ""),
+    createLink: ()=>getAuthJSON("/api/v1/affiliate/register-link?create_new=true", ""),
+    deactivate: (token)=>postAuthJSON(`/api/v1/affiliate/links/${encodeURIComponent(token)}/deactivate`, {}, ""),
+    rotate: (token)=>postAuthJSON(`/api/v1/affiliate/links/${encodeURIComponent(token)}/rotate`, {}, ""),
+    dashboard: ()=>getAuthJSON("/api/v1/affiliate/dashboard", ""),
+    payouts: (status)=>getAuthJSON(`/api/v1/affiliate/payouts${status ? `?status_filter=${encodeURIComponent(status)}` : ""}`, ""),
     requestPayout: (month, percent = 5)=>postAuthJSON("/api/v1/affiliate/payouts/request", {
             month,
             percent
-        }),
-    updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body)
+        }, ""),
+    updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body, "")
 };
 const AdminAPI = {
     analyticsOverview: (days = 30)=>getAuthJSON(`/api/v1/admin/analytics/overview?days=${days}`),
@@ -444,7 +466,16 @@ const AdminAPI = {
             code: code || null
         }, tenantId),
     approveAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
-    rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {})
+    rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {}),
+    affiliates: (page = 1, pageSize = 20, q = "")=>getAuthJSON(`/api/v1/admin/affiliates?page=${page}&page_size=${pageSize}&q=${encodeURIComponent(q)}`),
+    usage: (days = 14)=>getAuthJSON(`/api/v1/admin/usage?days=${days}`),
+    audit: (params)=>{
+        const query = new URLSearchParams();
+        if (params.tenant_id) query.set('tenant_id', params.tenant_id);
+        if (params.action) query.set('action', params.action);
+        if (params.limit) query.set('limit', params.limit.toString());
+        return getAuthJSON(`/api/v1/admin/audit${query.toString() ? `?${query.toString()}` : ''}`);
+    }
 };
 const StaffAPI = {
     createCashier: (tenantId, body)=>postAuthJSON("/api/v1/staff", body, tenantId),
@@ -509,6 +540,16 @@ const PharmaciesAPI = {
             if (!res.ok) throw new Error(await res.text());
             return await res.json();
         })
+};
+const BranchAPI = {
+    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
+    list: (tenantId, pharmacyId)=>{
+        const query = pharmacyId ? `?pharmacy_id=${pharmacyId}` : '';
+        return getAuthJSON(`/api/v1/branches${query}`, tenantId);
+    },
+    get: (tenantId, id)=>getAuthJSON(`/api/v1/branches/${id}`, tenantId),
+    update: (tenantId, id, payload)=>putAuthJSON(`/api/v1/branches/${id}`, payload, tenantId),
+    delete: (tenantId, id)=>deleteAuthJSON(`/api/v1/branches/${id}`, tenantId)
 };
 const ChatAPI = {
     listThreads: (tenantId)=>getAuthJSON(`/api/v1/chat/threads`, tenantId),

@@ -32,7 +32,8 @@ const ROLE_LABELS: Record<string, string> = {
 
 const ROLE_TONE: Record<string, string> = {
   user: "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20",
-  owner: "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20",
+  owner:
+    "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20",
   assistant: "bg-white/90 border border-white/40 text-slate-900 backdrop-blur",
 };
 
@@ -71,41 +72,45 @@ function AssistantContent({ payload }: { payload: any }) {
   const isOverLimit = remaining < 0;
 
   return (
-    <div className="space-y-3 text-sm">
+    <div className="space-y-4 text-sm">
       {payload.intent && (
-        <div className="flex items-center gap-2 rounded border border-emerald-100 bg-emerald-50 px-3 py-2 text-emerald-700">
-          <span className="text-xs font-semibold uppercase tracking-wide">Intent</span>
+        <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800">
+          <span className="text-xs font-semibold uppercase tracking-wider">
+            Intent
+          </span>
           <span className="font-medium">{String(payload.intent)}</span>
         </div>
       )}
       {payload.error && (
-        <div className="rounded border border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
           Unable to run the analysis at the moment. ({String(payload.error)})
         </div>
       )}
       {payload.answer && typeof payload.answer === "string" && (
-        <p className="whitespace-pre-wrap leading-relaxed text-gray-800">{payload.answer}</p>
+        <p className="whitespace-pre-wrap leading-relaxed text-slate-800">
+          {payload.answer}
+        </p>
       )}
       {hasRows ? (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 text-xs">
-            <thead className="bg-gray-50">
+        <div className="overflow-x-auto rounded-lg border border-slate-200">
+          <table className="min-w-full divide-y divide-slate-200 text-sm">
+            <thead className="bg-slate-50">
               <tr>
                 {Object.keys(rows![0]).map((key) => (
                   <th
                     key={key}
-                    className="px-3 py-2 text-left font-semibold uppercase tracking-wide text-gray-500"
+                    className="px-4 py-3 text-left font-semibold uppercase tracking-wider text-slate-900"
                   >
                     {key}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 bg-white">
+            <tbody className="divide-y divide-slate-100 bg-white">
               {rows!.map((row, idx) => (
-                <tr key={idx}>
+                <tr key={idx} className="hover:bg-slate-50">
                   {Object.keys(rows![0]).map((key) => (
-                    <td key={key} className="px-3 py-2 text-gray-700">
+                    <td key={key} className="px-4 py-3 text-slate-700">
                       {row[key] === null || row[key] === undefined
                         ? "—"
                         : typeof row[key] === "number"
@@ -120,7 +125,7 @@ function AssistantContent({ payload }: { payload: any }) {
         </div>
       ) : null}
       {!payload.error && rows && rows.length === 0 && (
-        <div className="rounded border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600">
+        <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
           The query completed but returned no rows.
         </div>
       )}
@@ -149,7 +154,7 @@ export default function OwnerAgentPage() {
 
   const selectedThread = useMemo(
     () => threads.find((thread) => thread.id === selectedThreadId) || null,
-    [threads, selectedThreadId],
+    [threads, selectedThreadId]
   );
 
   const loadThreads = useCallback(
@@ -173,7 +178,7 @@ export default function OwnerAgentPage() {
         setThreadsLoading(false);
       }
     },
-    [],
+    []
   );
 
   const loadMessages = useCallback(
@@ -193,7 +198,7 @@ export default function OwnerAgentPage() {
         setMessagesLoading(false);
       }
     },
-    [show],
+    [show]
   );
 
   useEffect(() => {
@@ -224,7 +229,10 @@ export default function OwnerAgentPage() {
   }, [loadThreads]);
 
   useEffect(() => {
-    if (selectedThreadId && !threads.some((thread) => thread.id === selectedThreadId)) {
+    if (
+      selectedThreadId &&
+      !threads.some((thread) => thread.id === selectedThreadId)
+    ) {
       setSelectedThreadId(threads[0]?.id ?? null);
     } else if (!selectedThreadId && threads.length > 0) {
       setSelectedThreadId(threads[0].id);
@@ -291,7 +299,9 @@ export default function OwnerAgentPage() {
         const created = await ChatAPI.createThread(tenantId);
         const refreshed = await loadThreads(tenantId);
         threadIdToUse =
-          (created && typeof created.id === "number" ? created.id : undefined) ??
+          (created && typeof created.id === "number"
+            ? created.id
+            : undefined) ??
           (refreshed.length > 0 ? refreshed[0].id : undefined);
         if (threadIdToUse) {
           setSelectedThreadId(threadIdToUse);
@@ -317,7 +327,9 @@ export default function OwnerAgentPage() {
     }
   };
 
-  const handleComposerKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleComposerKeyDown = (
+    event: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       handleSendMessage();
@@ -329,11 +341,14 @@ export default function OwnerAgentPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-3 rounded-3xl border border-white/15 bg-white/10 p-6 shadow-[0_28px_120px_-60px_rgba(16,185,129,0.75)] backdrop-blur-xl">
-        <h1 className="text-3xl font-semibold leading-tight text-white">Zemen AI Assistant</h1>
-        <p className="max-w-3xl text-sm leading-relaxed text-emerald-100/80">
-          Ask questions about sales, inventory, and staff performance. The assistant runs read-only
-          analytics on your tenant data and summarises the results for quick insight.
+      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-md">
+        <h1 className="text-3xl font-semibold leading-tight text-slate-900">
+          Zemen AI Assistant
+        </h1>
+        <p className="max-w-3xl text-sm leading-relaxed text-slate-600">
+          Ask questions about sales, inventory, and staff performance. The
+          assistant runs read-only analytics on your tenant data and summarises
+          the results for quick insight.
         </p>
       </div>
 
@@ -344,9 +359,11 @@ export default function OwnerAgentPage() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-[320px,1fr]">
-        <div className="flex flex-col gap-5 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_24px_90px_-50px_rgba(14,165,233,0.45)] backdrop-blur-xl">
-          <div className="flex items-center justify-between text-emerald-100/80">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-100">Conversations</h2>
+        <div className="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-md">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900">
+              Conversations
+            </h2>
             <div className="flex items-center gap-2">
               <Button
                 size="sm"
@@ -366,13 +383,17 @@ export default function OwnerAgentPage() {
             </div>
           </div>
           <div className="space-y-3">
-            <Button onClick={handleCreateThread} disabled={!tenantId || creatingThread}>
+            <Button
+              onClick={handleCreateThread}
+              disabled={!tenantId || creatingThread}
+              className="bg-emerald-700 hover:bg-emerald-800 text-white"
+            >
               {creatingThread ? "Creating…" : "Start new conversation"}
             </Button>
           </div>
           {showHistory ? (
             <>
-              <div className="h-px w-full bg-gray-100" />
+              <div className="h-px w-full bg-slate-200" />
               {isLoadingThreads ? (
                 <div className="space-y-2">
                   {Array.from({ length: 5 }).map((_, index) => (
@@ -380,8 +401,9 @@ export default function OwnerAgentPage() {
                   ))}
                 </div>
               ) : threads.length === 0 ? (
-                <div className="rounded-2xl border border-white/15 bg-white/5 p-4 text-center text-sm text-emerald-100/80">
-                  No conversations yet. Start a new one to ask the assistant anything about your pharmacy.
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-600">
+                  No conversations yet. Start a new one to ask the assistant
+                  anything about your pharmacy.
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -393,14 +415,16 @@ export default function OwnerAgentPage() {
                         key={thread.id}
                         type="button"
                         onClick={() => setSelectedThreadId(thread.id)}
-                        className={`group w-full rounded-2xl border px-3 py-2 text-left text-sm font-medium transition ${
+                        className={`group w-full rounded-lg border px-3 py-2 text-left text-sm font-medium transition ${
                           isActive
-                            ? "border-transparent bg-gradient-to-r from-emerald-500/25 via-teal-500/20 to-sky-500/25 text-white shadow-lg"
-                            : "border-white/15 bg-white/5 text-emerald-100/80 hover:border-emerald-200/50 hover:bg-white/10"
+                            ? "border-emerald-300 bg-emerald-50 text-emerald-900 shadow-sm"
+                            : "border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50"
                         }`}
                       >
-                        <div className="font-semibold text-white/90">{title}</div>
-                        <div className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Thread #{thread.id}</div>
+                        <div className="font-semibold">{title}</div>
+                        <div className="text-xs uppercase tracking-wider text-slate-500">
+                          Thread #{thread.id}
+                        </div>
                       </button>
                     );
                   })}
@@ -408,36 +432,41 @@ export default function OwnerAgentPage() {
               )}
             </>
           ) : (
-            <div className="rounded-2xl border border-white/15 bg-white/5 p-4 text-center text-sm text-emerald-100/80">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-600">
               Tap “Show history” to browse your previous conversations.
             </div>
           )}
         </div>
 
-        <div className="flex flex-col gap-5 rounded-3xl border border-white/15 bg-white/10 p-5 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.7)] backdrop-blur-xl">
+        <div className="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-md">
           <div className="flex flex-col gap-1">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-100">
-                {selectedThread ? normalizeThreadTitle(selectedThread, 0) : "Conversation"}
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900">
+                {selectedThread
+                  ? normalizeThreadTitle(selectedThread, 0)
+                  : "Conversation"}
               </h2>
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => tenantId && selectedThreadId && loadMessages(tenantId, selectedThreadId)}
+                  onClick={() =>
+                    tenantId &&
+                    selectedThreadId &&
+                    loadMessages(tenantId, selectedThreadId)
+                  }
                   disabled={!tenantId || !selectedThreadId || isLoadingMessages}
                 >
                   Refresh
                 </Button>
               </div>
             </div>
-            <p className="text-xs text-emerald-100/70">
-              The assistant uses safe, read-only queries. Ask for sales summaries, inventory gaps, or staff
-              performance insights.
+            <p className="text-xs text-slate-600">
+              The assistant uses safe, read-only queries. Ask for sales
+              summaries, inventory gaps, or staff performance insights.
             </p>
           </div>
-
-          <div className="flex-1 overflow-hidden rounded-3xl border border-white/15 bg-white/5">
+          <div className="flex-1 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
             {isLoadingMessages ? (
               <div className="p-4 space-y-3">
                 {Array.from({ length: 5 }).map((_, index) => (
@@ -445,31 +474,36 @@ export default function OwnerAgentPage() {
                 ))}
               </div>
             ) : !selectedThreadId ? (
-              <div className="flex h-full items-center justify-center p-6 text-sm text-emerald-100/70">
+              <div className="flex h-full items-center justify-center p-6 text-sm text-slate-600">
                 Select a conversation to view messages.
               </div>
             ) : messages.length === 0 ? (
-              <div className="flex h-full items-center justify-center p-6 text-sm text-emerald-100/70">
+              <div className="flex h-full items-center justify-center p-6 text-sm text-slate-600">
                 Ask your first question to begin.
               </div>
             ) : (
               <div className="flex h-[55vh] flex-col gap-3 overflow-y-auto p-4 pr-6">
                 {messages.map((message) => {
-                  const roleClass = ROLE_TONE[message.role] || ROLE_TONE.assistant;
+                  const roleClass =
+                    ROLE_TONE[message.role] || ROLE_TONE.assistant;
                   const label = ROLE_LABELS[message.role] || message.role;
                   const assistantPayload =
-                    message.role === "assistant" ? parseAssistantPayload(message.content) : null;
+                    message.role === "assistant"
+                      ? parseAssistantPayload(message.content)
+                      : null;
                   return (
                     <div
                       key={message.id}
                       className={`flex ${
-                        message.role === "assistant" ? "justify-start" : "justify-end"
+                        message.role === "assistant"
+                          ? "justify-start"
+                          : "justify-end"
                       }`}
                     >
                       <div
                         className={`max-w-xl rounded-2xl px-3 py-2 text-sm shadow ${roleClass}`}
                       >
-                        <div className="mb-1 text-xs font-semibold uppercase tracking-wide opacity-70">
+                        <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-600">
                           {label}
                         </div>
                         {assistantPayload ? (
@@ -485,7 +519,7 @@ export default function OwnerAgentPage() {
                 })}
                 {assistantThinking && (
                   <div className="flex justify-start">
-                    <div className="max-w-xs rounded-2xl border border-white/20 bg-white/80 px-3 py-2 text-sm text-emerald-800 shadow">
+                    <div className="max-w-xs rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-700 shadow-sm">
                       Assistant is analysing your data…
                     </div>
                   </div>
@@ -494,28 +528,38 @@ export default function OwnerAgentPage() {
               </div>
             )}
           </div>
-
-          <form
-            className="flex flex-col gap-3 rounded-3xl border border-white/15 bg-white/10 p-4 backdrop-blur-xl"
-          >
-            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/80">
+          <form className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-700">
               <span>Ask a question</span>
-              <span className={`tracking-normal ${isOverLimit ? "text-red-300" : "text-emerald-200"}`}>
-                {remaining >= 0 ? `${remaining} characters left` : `${Math.abs(remaining)} over limit`}
+              <span
+                className={`tracking-normal ${
+                  isOverLimit ? "text-red-600" : "text-emerald-600"
+                }`}
+              >
+                {remaining >= 0
+                  ? `${remaining} characters left`
+                  : `${Math.abs(remaining)} over limit`}
               </span>
             </div>
             <textarea
-              className="min-h-[120px] w-full resize-y rounded-2xl border border-white/15 bg-white/10 p-3 text-sm text-emerald-100/90 shadow-inner backdrop-blur focus:border-emerald-300/60 focus:outline-none focus:ring-2 focus:ring-emerald-200/40"
+              className="min-h-[120px] w-full resize-y rounded-lg border border-slate-300 bg-white p-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
               placeholder="e.g. Show me the top selling medicines this week"
               value={messageDraft}
               maxLength={MAX_PROMPT_LENGTH + 100}
               onChange={(event) => setMessageDraft(event.target.value)}
               onKeyDown={handleComposerKeyDown}
             />
-            <Button onClick={handleSendMessage} disabled={!tenantId || !selectedThreadId || sending || isOverLimit}>
+            <Button
+              onClick={handleSendMessage}
+              disabled={
+                !tenantId || !selectedThreadId || sending || isOverLimit
+              }
+              className="bg-emerald-700 hover:bg-emerald-800 text-white"
+            >
               {sending ? "Sending…" : "Send"}
             </Button>
           </form>
+          )
         </div>
       </div>
     </div>

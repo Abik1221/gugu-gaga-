@@ -1,12 +1,13 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { DialogTrigger } from "../ui/dialog";
+import { TrialDialog } from "@/components/ui/trial-dialog";
+import { RoleSelectionDialog } from "@/components/ui/role-selection-dialog";
 
-export default function Navbar({ onOpenDialog }: { onOpenDialog: () => void }) {
+export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -28,10 +29,11 @@ export default function Navbar({ onOpenDialog }: { onOpenDialog: () => void }) {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-        ? "bg-white text-black opacity-80 shadow-lg border-b border-gray-200"
-        : "bg-white/95 backdrop-blur-sm border-b border-gray-200"
-        }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white text-black opacity-80 shadow-lg border-b border-gray-200"
+          : "bg-white/95 backdrop-blur-sm border-b border-gray-200"
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -41,38 +43,60 @@ export default function Navbar({ onOpenDialog }: { onOpenDialog: () => void }) {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <h1 className="text-emerald-600 text-lg sm:text-xl">Mesob AI</h1>
+              <h1 className="text-emerald-600 text-lg sm:text-xl">Mesob</h1>
             </motion.div>
             <div className="hidden lg:block ml-10">
               <div className="flex items-baseline space-x-1 xl:space-x-3">
-                <a href="#features" className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm">
+                <a
+                  href="#features"
+                  className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
+                >
                   Features
                 </a>
-                <a href="#how-it-works" className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm">
+                <a
+                  href="#how-it-works"
+                  className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
+                >
                   How It Works
                 </a>
-                <a href="#security" className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm">
+                <a
+                  href="#security"
+                  className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
+                >
                   Security
                 </a>
-                <a href="#pricing" className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm">
+                <a
+                  href="#pricing"
+                  className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
+                >
                   Pricing
                 </a>
-                <a href="#integrations" className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm">
+                <a
+                  href="#integrations"
+                  className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
+                >
                   Integrations
                 </a>
-                <Link href="/register?tab=affiliate" className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm">
+                <Link
+                  href="/register?tab=affiliate"
+                  className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
+                >
                   Affiliate
                 </Link>
               </div>
             </div>
           </div>
           <div className="hidden lg:flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="text-black">Sign In</Button>
-            <span onClick={() => console.log("hello")}>
-
-              <Button variant="outline" className="bg-black hover:bg-slate-700" onClick={onOpenDialog} >Start Free Trial</Button>
-
-            </span>
+            <RoleSelectionDialog>
+              <Button variant="ghost" size="sm" className="text-black">
+                Sign In
+              </Button>
+            </RoleSelectionDialog>
+            <TrialDialog>
+              <Button className="bg-emerald-600 hover:bg-emerald-700">
+                Start Free Trial
+              </Button>
+            </TrialDialog>
           </div>
           <div className="lg:hidden">
             <button
@@ -139,8 +163,16 @@ export default function Navbar({ onOpenDialog }: { onOpenDialog: () => void }) {
                 Affiliate Program
               </a>
               <div className="px-3 py-2 space-y-2 pt-4 border-t border-gray-200">
-                <Button variant="outline" className="w-full">Sign In</Button>
-                <Button className="w-full bg-emerald-600 hover:bg-emerald-700">Start Free Trial</Button>
+                <RoleSelectionDialog>
+                  <Button variant="outline" className="w-full">
+                    Sign In
+                  </Button>
+                </RoleSelectionDialog>
+                <TrialDialog>
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                    Start Free Trial
+                  </Button>
+                </TrialDialog>
               </div>
             </div>
           </motion.div>

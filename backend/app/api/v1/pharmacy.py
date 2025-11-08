@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.deps.auth import require_role
 from app.deps.tenant import require_tenant, enforce_user_tenant, enforce_subscription_active
@@ -22,6 +22,13 @@ from app.schemas.pharmacy_cms import (
     BranchComparisonResponse,
     RefundsResponse,
 )
+from app.schemas.supplier import (
+    SupplierResponse, SupplierProductResponse, OrderCreate, OrderResponse,
+    PaymentCodeSubmit, OrderReviewCreate, OrderReviewResponse
+)
+from app.services.supplier import SupplierService
+from app.services.order import OrderService
+from typing import List
 
 router = APIRouter(prefix="/pharmacy", tags=["pharmacy_cms"])
 
@@ -244,3 +251,100 @@ def refunds_summary(
         q = q.filter(Sale.branch == branch)
     refunds = float(q.scalar() or 0.0)
     return {"tenant_id": tenant_id, "days": days, "branch": branch, "refunds_total": refunds}
+
+
+# Owner Supplier Management
+@router.get("/suppliers", response_model=List[SupplierResponse])
+def get_suppliers(
+    tenant_id: str = Depends(require_tenant),
+    user=Depends(require_role(Role.admin, Role.pharmacy_owner)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+):
+    """Get all active suppliers for browsing"""
+    return SupplierService.get_active_suppliers(db)
+
+
+@router.get("/suppliers/{supplier_id}/products", response_model=List[SupplierProductResponse])
+def get_supplier_products(
+    supplier_id: int,
+    tenant_id: str = Depends(require_tenant),
+    user=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+):
+    """Get products from a specific supplier"""
+    return SupplierService.get_supplier_products(db, supplier_id, active_only=True)
+
+
+# Owner Order Management
+@router.post("/orders", response_model=OrderResponse)
+def create_order(
+    order_data: OrderCreate,
+    tenant_id: str = Depends(require_tenant),
+    current_user: User = Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+):
+    """Create a new order"""
+    return OrderService.create_order(db, current_user.id, tenant_id, order_data)
+
+
+@router.get("/orders", response_model=List[OrderResponse])
+def get_orders(
+    tenant_id: str = Depends(require_tenant),
+    current_user: User = Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+):
+    """Get customer's orders"""
+    return OrderService.get_customer_orders(db, current_user.id, tenant_id)
+
+
+@router.put("/orders/{order_id}/payment-code")
+def submit_payment_code(
+    order_id: int,
+    payment_data: PaymentCodeSubmit,
+    tenant_id: str = Depends(require_tenant),
+    current_user: User = Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+):
+    """Submit payment code for an order"""
+    OrderService.submit_payment_code(db, order_id, current_user.id, tenant_id, payment_data.code)
+    return {"message": "Payment code submitted successfully"}
+
+
+@router.post("/orders/{order_id}/review", response_model=OrderReviewResponse)
+def create_order_review(
+    order_id: int,
+    review_data: OrderReviewCreate,
+    tenant_id: str = Depends(require_tenant),
+    current_user: User = Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+):
+    """Create a review for a delivered order"""
+    return OrderService.create_order_review(db, order_id, current_user.id, tenant_id, review_data)
+
+
+@router.get("/orders/{order_id}/review", response_model=OrderReviewResponse)
+def get_order_review(
+    order_id: int,
+    tenant_id: str = Depends(require_tenant),
+    current_user: User = Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+):
+    """Get review for an order"""
+    review = OrderService.get_order_review(db, order_id, current_user.id)
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
+    return review

@@ -491,7 +491,16 @@ const AdminAPI = {
             code: code || null
         }, tenantId),
     approveAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/approve`, {}),
-    rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {})
+    rejectAffiliate: (userId)=>postAuthJSON(`/api/v1/admin/affiliates/${userId}/reject`, {}),
+    affiliates: (page = 1, pageSize = 20, q = "")=>getAuthJSON(`/api/v1/admin/affiliates?page=${page}&page_size=${pageSize}&q=${encodeURIComponent(q)}`),
+    usage: (days = 14)=>getAuthJSON(`/api/v1/admin/usage?days=${days}`),
+    audit: (params)=>{
+        const query = new URLSearchParams();
+        if (params.tenant_id) query.set('tenant_id', params.tenant_id);
+        if (params.action) query.set('action', params.action);
+        if (params.limit) query.set('limit', params.limit.toString());
+        return getAuthJSON(`/api/v1/admin/audit${query.toString() ? `?${query.toString()}` : ''}`);
+    }
 };
 const StaffAPI = {
     createCashier: (tenantId, body)=>postAuthJSON("/api/v1/staff", body, tenantId),
@@ -2121,7 +2130,7 @@ function PharmacyRegisterPage() {
                                         "Already have an owner account?",
                                         " ",
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                                            href: "/auth?tab=signin",
+                                            href: "/pharmacy-signin",
                                             className: "font-medium text-emerald-400 hover:underline",
                                             children: "Sign in"
                                         }, void 0, false, {

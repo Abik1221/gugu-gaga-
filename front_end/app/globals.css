@@ -119,9 +119,6 @@
 
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.08), transparent 45%),
-      radial-gradient(circle at 80% 0%, rgba(14, 116, 144, 0.08), transparent 55%),
-      linear-gradient(to bottom right, rgb(2, 6, 23), rgb(15, 23, 42));
-    background-attachment: fixed;
+    background: rgb(248, 250, 252);
   }
 }

@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/habtamusemagn/Desktop/last/gugu-gaga-/front_end/app/%28dashboard%29/dashboard/owner/kyc/layout.tsx"],"sourcesContent":["import React from \"react\";\n\nexport default function KycLayout({ children }: { children: React.ReactNode }) {\n  return <section className=\"p-6\">{children}</section>;\n}\n"],"names":[],"mappings":";;;;;;AAEe,SAAS,UAAU,EAAE,QAAQ,EAAiC;IAC3E,qBAAO,8OAAC;QAAQ,WAAU;kBAAO;;;;;;AACnC","debugId":null}}]
+}

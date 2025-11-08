@@ -66,14 +66,14 @@ export default function Hero({
         className="relative z-10"
       >
         <h1 className="text-5xl font-extrabold text-emerald-700 mb-4">
-          Zemen Inventory
+          Mesob Business
         </h1>
         <h2 className="text-2xl font-semibold text-emerald-900 mb-6">
-          The integration-first control center for modern inventory teams
+          The integration-first control center for modern business teams
         </h2>
         <p className="text-lg text-gray-400 mb-8 max-w-2xl">
           Connect Zoho Books, Odoo, Notion, and Google Sheets in minutes. Let the
-          LangGraph assistant surface real-time sales and inventory insights, while
+          LangGraph assistant surface real-time sales and business insights, while
           admins steer trials, payments, and multi-branch growth from one place.
         </p>
         <div className="flex flex-col items-center gap-4">

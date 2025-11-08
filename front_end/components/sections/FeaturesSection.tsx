@@ -1,9 +1,9 @@
-"use client"
+"use client";
 import { Card } from "@/components/ui/card";
-import branch1 from '@/public/branch1.jpeg';
-import branch2 from '@/public/branch2.jpeg';
-import branch3 from '@/public/branch3.jpeg';
-import branch4 from '@/public/branch4.jpeg';
+import branch1 from "@/public/branch1.jpeg";
+import branch2 from "@/public/branch2.jpeg";
+import branch3 from "@/public/branch3.jpeg";
+import branch4 from "@/public/suppliermarketplace.jpeg";
 
 import {
   Building2,
@@ -15,7 +15,7 @@ import {
   BarChart3,
   ShoppingBag,
   GitBranch,
-  Zap
+  Zap,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -25,26 +25,30 @@ export default function FeaturesSection() {
     {
       icon: Building2,
       title: "Multi-Branch Management",
-      description: "Manage all your store locations from a single, unified dashboard. Get real-time visibility into stock levels, sales, and performance across every branch.",
-      image: branch1
+      description:
+        "Manage all your store locations from a single, unified dashboard. Get real-time visibility into stock levels, sales, and performance across every branch.",
+      image: branch1,
     },
     {
       icon: Users,
       title: "Staff & Team Management",
-      description: "Create staff accounts with custom permissions, track activities, and ensure accountability across your organization with role-based access control.",
-      image: branch2
+      description:
+        "Create staff accounts with custom permissions, track activities, and ensure accountability across your organization with role-based access control.",
+      image: branch2,
     },
     {
       icon: Plug,
       title: "One-Click Integrations",
-      description: "Seamlessly connect with Google Sheets, ERP systems, accounting software, and more. No technical knowledge required—just one click to integrate your existing tools.",
-      image: branch3
+      description:
+        "Seamlessly connect with Google Sheets, ERP systems, accounting software, and more. No technical knowledge required—just one click to integrate your existing tools.",
+      image: branch3,
     },
     {
       icon: ShoppingBag,
       title: "Supplier Marketplace",
-      description: "Connect directly with verified suppliers who promote their products on your dashboard. Discover new products, compare prices, and order with confidence.",
-      image: branch4
+      description:
+        "Connect directly with verified suppliers who promote their products on your dashboard. Discover new products, compare prices, and order with confidence.",
+      image: branch4,
     },
     // {
     //   icon: Share2,
@@ -64,7 +68,7 @@ export default function FeaturesSection() {
     { icon: BarChart3, text: "Real-time Analytics" },
     { icon: Zap, text: "Automated Alerts" },
     { icon: GitBranch, text: "Stock Transfers" },
-    { icon: TrendingUp, text: "Sales Forecasting" }
+    { icon: TrendingUp, text: "Sales Forecasting" },
   ];
 
   return (
@@ -78,11 +82,12 @@ export default function FeaturesSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl text-gray-900 mb-4">
-            Everything You Need in <span className="text-emerald-600">One Platform</span>
+            Everything You Need in{" "}
+            <span className="text-emerald-600">One Platform</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            A complete, modern inventory management system designed specifically for
-            Ethiopian shops, pharmacies, and retail businesses.
+            A complete, modern inventory management system designed specifically
+            for Ethiopian shops, pharmacies, and retail businesses.
           </p>
         </motion.div>
 
@@ -98,14 +103,16 @@ export default function FeaturesSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className={`grid lg:grid-cols-2 gap-12 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}
+                className={`grid lg:grid-cols-2 gap-12 items-center ${
+                  !isEven ? "lg:flex-row-reverse" : ""
+                }`}
               >
                 <motion.div
                   initial={{ opacity: 0, x: isEven ? -30 : 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.2 }}
-                  className={`space-y-6 ${!isEven ? 'lg:order-2' : ''}`}
+                  className={`space-y-6 ${!isEven ? "lg:order-2" : ""}`}
                 >
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-100">
                     <Icon className="w-8 h-8 text-emerald-600" />
@@ -120,13 +127,13 @@ export default function FeaturesSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className={!isEven ? 'lg:order-1' : ''}
+                  className={!isEven ? "lg:order-1" : ""}
                 >
                   <Image
                     src={feature.image}
                     width={10}
                     height={10}
-                    alt='super market image'
+                    alt="super market image"
                     placeholder="empty"
                     className="rounded-2xl shadow-xl w-full"
                   />

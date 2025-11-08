@@ -47,9 +47,9 @@ function sanitizePayloadValue(value: string) {
 
 function ProfileField({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/10 p-3 text-emerald-50 backdrop-blur">
-      <span className="text-[11px] uppercase tracking-[0.35em] text-emerald-100/70">{label}</span>
-      <span className="break-words text-sm font-semibold text-white">{value}</span>
+    <div className="flex flex-col gap-1 rounded-lg border border-slate-200 bg-slate-50 p-3">
+      <span className="text-xs font-medium text-slate-600">{label}</span>
+      <span className="break-words text-sm font-semibold text-slate-900">{value}</span>
     </div>
   );
 }
@@ -401,501 +401,558 @@ export default function OwnerSettingsPage() {
   };
 
   return (
-    <div className="space-y-6 text-emerald-50">
-      <div className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-[0_36px_140px_-70px_rgba(16,185,129,0.75)] backdrop-blur-xl">
-        <h1 className="text-2xl font-bold text-white">Owner settings</h1>
-        <p className="mt-1 text-sm text-emerald-100/80">Control profile details, monitor your team, and keep subscription data in one place.</p>
-      </div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="mx-auto max-w-7xl space-y-8">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h1 className="text-3xl font-bold text-slate-900">Owner Settings</h1>
+          <p className="mt-2 text-slate-600">Control profile details, monitor your team, and keep subscription data in one place.</p>
+        </div>
 
-      {loading ? (
-        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.6)] backdrop-blur-xl">
-          <CardHeader>
-            <CardTitle className="text-white">Loading profile…</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-3 md:grid-cols-2">
-              {Array.from({ length: 4 }).map((_, idx) => (
-                <Skeleton key={`form-${idx}`} className="h-16 w-full rounded-2xl bg-white/10" />
-              ))}
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              {Array.from({ length: 4 }).map((_, idx) => (
-                <Skeleton key={`summary-${idx}`} className="h-16 w-full rounded-2xl bg-white/10" />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      ) : error ? (
-        <Card className="rounded-3xl border border-red-400/30 bg-red-500/15 shadow-[0_30px_120px_-70px_rgba(248,113,113,0.6)] backdrop-blur">
-          <CardHeader>
-            <CardTitle className="text-red-100">Unable to load profile</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm text-red-100">{error}</div>
-          </CardContent>
-        </Card>
-      ) : !profile ? (
-        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(16,185,129,0.6)] backdrop-blur-xl">
-          <CardHeader>
-            <CardTitle className="text-white">No profile data</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm text-emerald-100/80">We could not retrieve your owner profile. Please refresh or contact support.</div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-6 xl:grid-cols-2">
-          <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(16,185,129,0.7)] backdrop-blur-xl">
+        {loading ? (
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-white">Edit owner profile</CardTitle>
+              <CardTitle className="text-slate-900">Loading profile…</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-3 md:grid-cols-2">
+                {Array.from({ length: 4 }).map((_, idx) => (
+                  <Skeleton key={`form-${idx}`} className="h-16 w-full rounded-xl bg-slate-100" />
+                ))}
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                {Array.from({ length: 4 }).map((_, idx) => (
+                  <Skeleton key={`summary-${idx}`} className="h-16 w-full rounded-xl bg-slate-100" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ) : error ? (
+          <Card className="rounded-2xl border border-red-200 bg-red-50 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-red-800">Unable to load profile</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <p className="text-xs text-emerald-100/70">
-                  Update how your name and contact information appear across every pharmacy tool. Leave a field blank to clear it.
-                </p>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium uppercase tracking-[0.3em] text-emerald-100/70">Username</label>
-                    <Input value={form.username} onChange={handleChange("username")} placeholder="Preferred username" maxLength={64} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+              <div className="text-sm text-red-700">{error}</div>
+            </CardContent>
+          </Card>
+        ) : !profile ? (
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-slate-900">No profile data</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm text-slate-600">We could not retrieve your owner profile. Please refresh or contact support.</div>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-6 xl:grid-cols-2">
+            <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-slate-900">Edit Owner Profile</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <p className="text-sm text-slate-600">
+                    Update how your name and contact information appear across every pharmacy tool. Leave a field blank to clear it.
+                  </p>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700">Username</label>
+                      <Input 
+                        value={form.username} 
+                        onChange={handleChange("username")} 
+                        placeholder="Preferred username" 
+                        maxLength={64} 
+                        className="rounded-lg border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700">First Name</label>
+                      <Input 
+                        value={form.first_name} 
+                        onChange={handleChange("first_name")} 
+                        placeholder="e.g. Alex" 
+                        maxLength={120} 
+                        className="rounded-lg border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700">Last Name</label>
+                      <Input 
+                        value={form.last_name} 
+                        onChange={handleChange("last_name")} 
+                        placeholder="e.g. Bekele" 
+                        maxLength={120} 
+                        className="rounded-lg border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-700">Phone</label>
+                      <Input 
+                        value={form.phone} 
+                        onChange={handleChange("phone")} 
+                        placeholder="e.g. +2519…" 
+                        maxLength={32} 
+                        className="rounded-lg border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500" 
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium uppercase tracking-[0.3em] text-emerald-100/70">First name</label>
-                    <Input value={form.first_name} onChange={handleChange("first_name")} placeholder="e.g. Alex" maxLength={120} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+                  <div className="flex flex-wrap items-center justify-end gap-3">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={resetForm} 
+                      disabled={!isDirty || saving} 
+                      className="rounded-lg border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                    >
+                      Reset
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      disabled={!isDirty || saving} 
+                      className="rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+                    >
+                      {saving ? "Saving..." : "Save Changes"}
+                    </Button>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium uppercase tracking-[0.3em] text-emerald-100/70">Last name</label>
-                    <Input value={form.last_name} onChange={handleChange("last_name")} placeholder="e.g. Bekele" maxLength={120} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium uppercase tracking-[0.3em] text-emerald-100/70">Phone</label>
-                    <Input value={form.phone} onChange={handleChange("phone")} placeholder="e.g. +2519…" maxLength={32} className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60" />
+                </form>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-slate-900">Tenant & Subscription Overview</CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-3">
+                {summaryFields.map((item) => (
+                  <ProfileField key={item.label} label={item.label} value={item.value} />
+                ))}
+                <Link
+                  href="/dashboard/owner/payment"
+                  className="inline-flex items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                >
+                  Review Subscription & Payments
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-slate-900">Team Insights</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {staffLoading ? (
+              <div className="grid gap-3 md:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, idx) => (
+                  <Skeleton key={`staff-${idx}`} className="h-20 w-full rounded-xl bg-slate-100" />
+                ))}
+              </div>
+            ) : staffError ? (
+              <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{staffError}</div>
+            ) : staff.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+                No staff members found for this tenant yet. Invite your first cashier or manager to get started.
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-3 md:grid-cols-3">
+                  <ProfileField label="Total staff" value={staffStats.total} />
+                  <ProfileField label="Active" value={staffStats.active} />
+                  <ProfileField label="Inactive" value={staffStats.inactive} />
+                </div>
+                <div className="space-y-3">
+                  <div className="text-sm font-semibold text-slate-700">Recent Members</div>
+                  <div className="space-y-2">
+                    {topStaff.map((member) => (
+                      <div
+                        key={member.id}
+                        className="flex flex-col gap-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 md:flex-row md:items-center md:justify-between"
+                      >
+                        <div>
+                          <div className="font-semibold text-slate-900">{member.email}</div>
+                          <div className="text-xs text-slate-500 capitalize">{(member.role || "staff").toLowerCase()}</div>
+                        </div>
+                        <span
+                          className={`inline-flex h-6 items-center justify-center rounded-full px-3 text-xs font-medium ${
+                            member.is_active === false
+                              ? "border border-red-200 bg-red-100 text-red-700"
+                              : "border border-green-200 bg-green-100 text-green-700"
+                          }`}
+                        >
+                          {member.is_active === false ? "Suspended" : "Active"}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center justify-end gap-2">
-                  <Button type="button" variant="outline" onClick={resetForm} disabled={!isDirty || saving} className="rounded-full border-white/25 bg-white/10 text-emerald-100 hover:border-emerald-300/40 hover:bg-white/20">
-                    Reset
-                  </Button>
-                  <Button type="submit" disabled={!isDirty || saving} className="rounded-full bg-emerald-500/80 text-white shadow-[0_20px_60px_-30px_rgba(16,185,129,0.7)] transition hover:bg-emerald-500">
-                    {saving ? "Saving..." : "Save changes"}
-                  </Button>
-                </div>
-              </form>
+              </>
+            )}
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/dashboard/owner/staff"
+                className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                Manage Staff Access
+              </Link>
+              <Link
+                href="/dashboard/owner/staff/new"
+                className="inline-flex items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
+              >
+                Invite New Member
+              </Link>
+              <Link
+                href="/dashboard/inventory"
+                className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                Review Inventory Settings
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid gap-6 xl:grid-cols-2">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-slate-900">Appearance</CardTitle>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="rounded-lg text-slate-600 hover:bg-slate-100" 
+                  onClick={() => handleThemeChange("system")}
+                >
+                  Reset
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-slate-600">Choose how the dashboard looks across the app.</p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {[
+                  { value: "light", label: "Light" },
+                  { value: "dark", label: "Dark" },
+                  { value: "system", label: "System" },
+                ].map((option) => {
+                  const active = theme === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleThemeChange(option.value as ThemeOption)}
+                      className={`rounded-lg border px-4 py-2 text-sm font-semibold transition ${
+                        active
+                          ? "border-emerald-300 bg-emerald-100 text-emerald-800"
+                          : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.6)] backdrop-blur-xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-white">Tenant & subscription overview</CardTitle>
+              <CardTitle className="text-slate-900">Notifications</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-3">
-              {summaryFields.map((item) => (
-                <ProfileField key={item.label} label={item.label} value={item.value} />
-              ))}
-              <Link
-                href="/dashboard/owner/payment"
-                className="inline-flex items-center justify-center rounded-full border border-emerald-300/40 bg-emerald-500/20 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:bg-emerald-500/30"
-              >
-                Review subscription & payments
-              </Link>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-slate-600">Preferences are stored locally while backend delivery is in progress.</p>
+              <div className="space-y-3">
+                <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                  <span className="text-slate-700">Product updates</span>
+                  <input 
+                    type="checkbox" 
+                    className="h-4 w-4 accent-emerald-600" 
+                    checked={notifications.productUpdates} 
+                    onChange={() => handleNotificationToggle("productUpdates")} 
+                  />
+                </label>
+                <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                  <span className="text-slate-700">Inventory alerts</span>
+                  <input 
+                    type="checkbox" 
+                    className="h-4 w-4 accent-emerald-600" 
+                    checked={notifications.inventoryAlerts} 
+                    onChange={() => handleNotificationToggle("inventoryAlerts")} 
+                  />
+                </label>
+                <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                  <span className="text-slate-700">Security emails</span>
+                  <input 
+                    type="checkbox" 
+                    className="h-4 w-4 accent-emerald-600" 
+                    checked={notifications.securityEmails} 
+                    onChange={() => handleNotificationToggle("securityEmails")} 
+                  />
+                </label>
+              </div>
             </CardContent>
           </Card>
         </div>
-      )}
 
-      <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.55)] backdrop-blur-xl">
-        <CardHeader>
-          <CardTitle className="text-white">Team insights</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 text-sm text-emerald-50/85">
-          {staffLoading ? (
-            <div className="grid gap-3 md:grid-cols-3">
-              {Array.from({ length: 3 }).map((_, idx) => (
-                <Skeleton key={`staff-${idx}`} className="h-20 w-full rounded-2xl bg-white/10" />
-              ))}
-            </div>
-          ) : staffError ? (
-            <div className="rounded-2xl border border-red-400/30 bg-red-500/15 p-3 text-sm text-red-100">{staffError}</div>
-          ) : staff.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-4 text-sm text-emerald-100/70">
-              No staff members found for this tenant yet. Invite your first cashier or manager to get started.
-            </div>
-          ) : (
-            <>
-              <div className="grid gap-3 md:grid-cols-3">
-                <ProfileField label="Total staff" value={staffStats.total} />
-                <ProfileField label="Active" value={staffStats.active} />
-                <ProfileField label="Inactive" value={staffStats.inactive} />
-              </div>
-              <div className="space-y-2">
-                <div className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100/70">Recent members</div>
-                <div className="space-y-2">
-                  {topStaff.map((member) => (
-                    <div
-                      key={member.id}
-                      className="flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/10 px-3 py-2 text-sm text-emerald-100/80 backdrop-blur md:flex-row md:items-center md:justify-between"
-                    >
-                      <div>
-                        <div className="font-semibold text-white">{member.email}</div>
-                        <div className="text-xs uppercase tracking-[0.25em] text-emerald-100/60">{(member.role || "staff").toLowerCase()}</div>
-                      </div>
-                      <span
-                        className={`inline-flex h-6 items-center justify-center rounded-full px-3 text-xs font-medium ${
-                          member.is_active === false
-                            ? "border border-red-400/40 bg-red-500/20 text-red-100"
-                            : "border border-emerald-300/40 bg-emerald-500/15 text-emerald-100"
-                        }`}
-                      >
-                        {member.is_active === false ? "Suspended" : "Active"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-          <div className="flex flex-wrap gap-2">
-            <Link
-              href="/dashboard/owner/staff"
-              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/20"
-            >
-              Manage staff access
-            </Link>
-            <Link
-              href="/dashboard/owner/staff/new"
-              className="inline-flex items-center justify-center rounded-full border border-emerald-300/40 bg-emerald-500/20 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:bg-emerald-500/30"
-            >
-              Invite new member
-            </Link>
-            <Link
-              href="/dashboard/inventory"
-              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/20"
-            >
-              Review inventory settings
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(14,116,144,0.65)] backdrop-blur-xl">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-white">Appearance</CardTitle>
-              <Button variant="ghost" size="sm" className="rounded-full text-emerald-100 hover:bg-white/10" onClick={() => handleThemeChange("system")}>
-                Reset
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4 text-sm text-emerald-100/75">
-            <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Choose how the dashboard looks across the app.</p>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {[
-                { value: "light", label: "Light" },
-                { value: "dark", label: "Dark" },
-                { value: "system", label: "System" },
-              ].map((option) => {
-                const active = theme === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => handleThemeChange(option.value as ThemeOption)}
-                    className={`rounded-2xl border px-3 py-2 text-sm font-semibold uppercase tracking-[0.2em] transition ${
-                      active
-                        ? "border-emerald-300/50 bg-emerald-500/20 text-white shadow-[0_20px_60px_-30px_rgba(16,185,129,0.7)]"
-                        : "border-white/15 bg-white/5 text-emerald-100/80 hover:border-emerald-300/40 hover:bg-white/15"
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.6)] backdrop-blur-xl">
-          <CardHeader>
-            <CardTitle className="text-white">Notifications</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm text-emerald-100/80">
-            <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Preferences are stored locally while backend delivery is in progress.</p>
-            <label className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/8 px-3 py-2 backdrop-blur">
-              <span>Product updates</span>
-              <input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={notifications.productUpdates} onChange={() => handleNotificationToggle("productUpdates")} />
-            </label>
-            <label className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/8 px-3 py-2 backdrop-blur">
-              <span>Inventory alerts</span>
-              <input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={notifications.inventoryAlerts} onChange={() => handleNotificationToggle("inventoryAlerts")} />
-            </label>
-            <label className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/8 px-3 py-2 backdrop-blur">
-              <span>Security emails</span>
-              <input type="checkbox" className="h-4 w-4 accent-emerald-500" checked={notifications.securityEmails} onChange={() => handleNotificationToggle("securityEmails")} />
-            </label>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(14,116,144,0.7)] backdrop-blur-xl">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-white">Account security</CardTitle>
-              <div className="flex items-center gap-2">
+        <div className="grid gap-6 xl:grid-cols-2">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-slate-900">Account Security</CardTitle>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={refreshSessions}
                   disabled={sessionsLoading}
-                  className="rounded-full border-white/25 bg-white/10 text-emerald-100 hover:border-emerald-300/40 hover:bg-white/20"
+                  className="rounded-lg border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
                 >
-                  Refresh sessions
+                  Refresh Sessions
                 </Button>
               </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4 text-sm text-emerald-100/80">
-            <form onSubmit={handlePasswordChange} className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">
-                Change your password. All other active sessions will be signed out immediately.
-              </p>
-              <div className="grid gap-2 sm:grid-cols-3">
-                <Input
-                  type="password"
-                  placeholder="Current password"
-                  value={passwordCurrent}
-                  onChange={(e) => setPasswordCurrent(e.target.value)}
-                  required
-                  className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60"
-                />
-                <Input
-                  type="password"
-                  placeholder="New password"
-                  value={passwordNew}
-                  onChange={(e) => setPasswordNew(e.target.value)}
-                  required
-                  className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60"
-                />
-                <Input
-                  type="password"
-                  placeholder="Confirm new password"
-                  value={passwordConfirm}
-                  onChange={(e) => setPasswordConfirm(e.target.value)}
-                  required
-                  className="rounded-xl border-white/15 bg-white/10 text-white placeholder:text-emerald-100/60"
-                />
-              </div>
-              {passwordError ? <div className="text-xs text-red-200">{passwordError}</div> : null}
-              <div className="flex justify-end">
-                <Button
-                  type="submit"
-                  disabled={changingPassword}
-                  className="rounded-full bg-emerald-500/80 text-white shadow-[0_20px_60px_-30px_rgba(16,185,129,0.7)] transition hover:bg-emerald-500"
-                >
-                  {changingPassword ? "Updating…" : "Change password"}
-                </Button>
-              </div>
-            </form>
-            <div className="space-y-3">
-              {sessionsLoading ? (
-                <div className="space-y-2">
-                  {Array.from({ length: 2 }).map((_, idx) => (
-                    <Skeleton key={`session-${idx}`} className="h-16 w-full rounded-2xl bg-white/10" />
-                  ))}
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                <p className="text-sm text-slate-600">
+                  Change your password. All other active sessions will be signed out immediately.
+                </p>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <Input
+                    type="password"
+                    placeholder="Current password"
+                    value={passwordCurrent}
+                    onChange={(e) => setPasswordCurrent(e.target.value)}
+                    required
+                    className="rounded-lg border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                  />
+                  <Input
+                    type="password"
+                    placeholder="New password"
+                    value={passwordNew}
+                    onChange={(e) => setPasswordNew(e.target.value)}
+                    required
+                    className="rounded-lg border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                  />
+                  <Input
+                    type="password"
+                    placeholder="Confirm new password"
+                    value={passwordConfirm}
+                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                    required
+                    className="rounded-lg border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                  />
                 </div>
-              ) : sessionsError ? (
-                <div className="rounded-2xl border border-red-400/30 bg-red-500/15 p-3 text-sm text-red-100">{sessionsError}</div>
-              ) : sessions.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-4 text-sm text-emerald-100/70">
-                  No active sessions found. Devices will appear here after logging in.
+                {passwordError ? <div className="text-sm text-red-600">{passwordError}</div> : null}
+                <div className="flex justify-end">
+                  <Button
+                    type="submit"
+                    disabled={changingPassword}
+                    className="rounded-lg bg-emerald-600 text-white hover:bg-emerald-700"
+                  >
+                    {changingPassword ? "Updating…" : "Change Password"}
+                  </Button>
                 </div>
-              ) : (
-                <div className="rounded-2xl border border-white/15 bg-white/8 p-4">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Active session</p>
-                      <div className="mt-1 text-sm font-semibold text-white">
-                        {currentSession?.user_agent || "Unknown device"}
-                      </div>
-                      <div className="text-xs text-emerald-100/60">
-                        {currentSession?.ip_address ? `IP ${currentSession.ip_address}` : "IP unknown"}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {currentSession?.is_current && (
-                        <span className="rounded-full border border-emerald-300/40 bg-emerald-500/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-100">
-                          Current
-                        </span>
-                      )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={currentSession?.is_current || !currentSession || currentSession.is_revoked || revokingSessionId === currentSession.id}
-                        onClick={() => currentSession && handleRevokeSession(currentSession.id)}
-                        className="rounded-full border-white/25 bg-white/10 text-emerald-100 hover:border-emerald-300/40 hover:bg-white/20"
-                      >
-                        {currentSession?.is_revoked
-                          ? "Revoked"
-                          : revokingSessionId === currentSession?.id
-                          ? "Revoking…"
-                          : "Sign out"}
-                      </Button>
-                    </div>
+              </form>
+              
+              <div className="space-y-4">
+                {sessionsLoading ? (
+                  <div className="space-y-2">
+                    {Array.from({ length: 2 }).map((_, idx) => (
+                      <Skeleton key={`session-${idx}`} className="h-16 w-full rounded-xl bg-slate-100" />
+                    ))}
                   </div>
-                  {currentSession ? (
-                    <div className="mt-3 grid gap-2 text-[11px] text-emerald-100/70 sm:grid-cols-3">
-                      <span>Created: {new Date(currentSession.created_at).toLocaleString()}</span>
-                      <span>Last seen: {new Date(currentSession.last_seen_at).toLocaleString()}</span>
-                      <span>Expires: {new Date(currentSession.expires_at).toLocaleString()}</span>
-                    </div>
-                  ) : null}
-                  {sessions.length > 1 && (
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">
-                        {sessions.length - 1} other session{sessions.length - 1 === 1 ? "" : "s"}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowSessionDetails((prev) => !prev)}
-                        className="rounded-full text-emerald-100 hover:bg-white/10"
-                      >
-                        {showSessionDetails ? "Hide details" : "View details"}
-                      </Button>
-                    </div>
-                  )}
-                  {showSessionDetails && (
-                    <div className="mt-4 space-y-3">
-                      {sessions.map((session) => (
-                        <div
-                          key={session.id}
-                          className={`rounded-2xl border px-3 py-3 text-sm backdrop-blur ${
-                            session.is_current
-                              ? "border-emerald-300/40 bg-emerald-500/15"
-                              : "border-white/12 bg-white/5"
-                          }`}
+                ) : sessionsError ? (
+                  <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{sessionsError}</div>
+                ) : sessions.length === 0 ? (
+                  <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+                    No active sessions found. Devices will appear here after logging in.
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-medium text-slate-600">Active Session</p>
+                        <div className="mt-1 text-sm font-semibold text-slate-900">
+                          {currentSession?.user_agent || "Unknown device"}
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          {currentSession?.ip_address ? `IP ${currentSession.ip_address}` : "IP unknown"}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {currentSession?.is_current && (
+                          <span className="rounded-full border border-green-200 bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                            Current
+                          </span>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={currentSession?.is_current || !currentSession || currentSession.is_revoked || revokingSessionId === currentSession.id}
+                          onClick={() => currentSession && handleRevokeSession(currentSession.id)}
+                          className="rounded-lg border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
                         >
-                          <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                              <div className="font-semibold text-white">{session.user_agent || "Unknown device"}</div>
-                              <div className="text-xs text-emerald-100/60">
-                                {session.ip_address ? `IP ${session.ip_address}` : "IP unknown"}
+                          {currentSession?.is_revoked
+                            ? "Revoked"
+                            : revokingSessionId === currentSession?.id
+                            ? "Revoking…"
+                            : "Sign Out"}
+                        </Button>
+                      </div>
+                    </div>
+                    {currentSession ? (
+                      <div className="mt-3 grid gap-2 text-xs text-slate-500 sm:grid-cols-3">
+                        <span>Created: {new Date(currentSession.created_at).toLocaleString()}</span>
+                        <span>Last seen: {new Date(currentSession.last_seen_at).toLocaleString()}</span>
+                        <span>Expires: {new Date(currentSession.expires_at).toLocaleString()}</span>
+                      </div>
+                    ) : null}
+                    {sessions.length > 1 && (
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-sm text-slate-600">
+                          {sessions.length - 1} other session{sessions.length - 1 === 1 ? "" : "s"}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowSessionDetails((prev) => !prev)}
+                          className="rounded-lg text-slate-600 hover:bg-slate-100"
+                        >
+                          {showSessionDetails ? "Hide Details" : "View Details"}
+                        </Button>
+                      </div>
+                    )}
+                    {showSessionDetails && (
+                      <div className="mt-4 space-y-3">
+                        {sessions.map((session) => (
+                          <div
+                            key={session.id}
+                            className={`rounded-xl border px-3 py-3 text-sm ${
+                              session.is_current
+                                ? "border-green-200 bg-green-50"
+                                : "border-slate-200 bg-white"
+                            }`}
+                          >
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                              <div>
+                                <div className="font-semibold text-slate-900">{session.user_agent || "Unknown device"}</div>
+                                <div className="text-xs text-slate-500">
+                                  {session.ip_address ? `IP ${session.ip_address}` : "IP unknown"}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {session.is_current && (
+                                  <span className="rounded-full border border-green-200 bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">
+                                    Current
+                                  </span>
+                                )}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  disabled={session.is_current || session.is_revoked || revokingSessionId === session.id}
+                                  onClick={() => handleRevokeSession(session.id)}
+                                  className="rounded-lg text-slate-600 hover:bg-slate-100"
+                                >
+                                  {session.is_revoked ? "Revoked" : revokingSessionId === session.id ? "Revoking…" : "Revoke"}
+                                </Button>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              {session.is_current && (
-                                <span className="rounded-full border border-emerald-300/40 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-100">
-                                  Current
-                                </span>
-                              )}
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                disabled={session.is_current || session.is_revoked || revokingSessionId === session.id}
-                                onClick={() => handleRevokeSession(session.id)}
-                                className="rounded-full text-emerald-100 hover:bg-white/10"
-                              >
-                                {session.is_revoked ? "Revoked" : revokingSessionId === session.id ? "Revoking…" : "Revoke"}
-                              </Button>
+                            <div className="mt-2 grid gap-1 text-xs text-slate-500 sm:grid-cols-3">
+                              <span>Created: {new Date(session.created_at).toLocaleString()}</span>
+                              <span>Last seen: {new Date(session.last_seen_at).toLocaleString()}</span>
+                              <span>Expires: {new Date(session.expires_at).toLocaleString()}</span>
                             </div>
                           </div>
-                          <div className="mt-2 grid gap-1 text-[11px] text-emerald-100/60 sm:grid-cols-3">
-                            <span>Created: {new Date(session.created_at).toLocaleString()}</span>
-                            <span>Last seen: {new Date(session.last_seen_at).toLocaleString()}</span>
-                            <span>Expires: {new Date(session.expires_at).toLocaleString()}</span>
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-slate-900">Activity Log</CardTitle>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={refreshActivity}
+                  disabled={activityLoading}
+                  className="rounded-lg border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                >
+                  Refresh
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-slate-600">
+                Monitor recent sessions, staff updates, and tenant-level actions.
+              </p>
+              {activityLoading ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 4 }).map((_, idx) => (
+                    <Skeleton key={`activity-${idx}`} className="h-14 w-full rounded-xl bg-slate-100" />
+                  ))}
+                </div>
+              ) : activityError ? (
+                <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{activityError}</div>
+              ) : activity.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+                  No activity recorded yet. Actions such as staff changes or logins will appear here.
+                </div>
+              ) : (
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-medium text-slate-600">Latest Event</p>
+                      <div className="mt-1 text-sm font-semibold text-slate-900">{latestActivity?.message}</div>
+                      <div className="text-xs text-slate-500">
+                        {latestActivity?.action} • {latestActivity ? new Date(latestActivity.created_at).toLocaleString() : ""}
+                      </div>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowActivityDetails((prev) => !prev)}
+                      className="rounded-lg text-slate-600 hover:bg-slate-100"
+                    >
+                      {showActivityDetails ? "Hide Log" : "View Log"}
+                    </Button>
+                  </div>
+                  {showActivityDetails && (
+                    <ul className="mt-4 space-y-3">
+                      {activity.map((item) => (
+                        <li key={item.id} className="rounded-xl border border-slate-200 bg-white p-3 text-sm">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="text-xs font-semibold uppercase text-slate-600">{item.action}</span>
+                            <span className="text-xs text-slate-500">{new Date(item.created_at).toLocaleString()}</span>
+                          </div>
+                          <div className="mt-1 font-semibold text-slate-900">{item.message}</div>
+                          <div className="mt-1 space-y-1 text-xs text-slate-500">
+                            {item.target_type && (
+                              <div>
+                                Target: {item.target_type}
+                                {item.target_id ? ` • ${item.target_id}` : ""}
+                              </div>
+                            )}
+                            {item.actor_user_id ? <div>Actor ID: {item.actor_user_id}</div> : null}
+                            {item.metadata ? (
+                              <pre className="whitespace-pre-wrap rounded-lg border border-slate-200 bg-slate-50 p-2 text-xs text-slate-600">
+                                {JSON.stringify(item.metadata, null, 2)}
+                              </pre>
+                            ) : null}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-3xl border border-white/10 bg-white/10 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.6)] backdrop-blur-xl">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-white">Activity log</CardTitle>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={refreshActivity}
-                disabled={activityLoading}
-                className="rounded-full border-white/25 bg-white/10 text-emerald-100 hover:border-emerald-300/40 hover:bg-white/20"
-              >
-                Refresh
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm text-emerald-100/80">
-            <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">
-              Monitor recent sessions, staff updates, and tenant-level actions.
-            </p>
-            {activityLoading ? (
-              <div className="space-y-2">
-                {Array.from({ length: 4 }).map((_, idx) => (
-                  <Skeleton key={`activity-${idx}`} className="h-14 w-full rounded-2xl bg-white/10" />
-                ))}
-              </div>
-            ) : activityError ? (
-              <div className="rounded-2xl border border-red-400/30 bg-red-500/15 p-3 text-sm text-red-100">{activityError}</div>
-            ) : activity.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 p-4 text-sm text-emerald-100/70">
-                No activity recorded yet. Actions such as staff changes or logins will appear here.
-              </div>
-            ) : (
-              <div className="rounded-2xl border border-white/15 bg-white/8 p-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Latest event</p>
-                    <div className="mt-1 text-sm font-semibold text-white">{latestActivity?.message}</div>
-                    <div className="text-xs text-emerald-100/60">
-                      {latestActivity?.action} • {latestActivity ? new Date(latestActivity.created_at).toLocaleString() : ""}
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowActivityDetails((prev) => !prev)}
-                    className="rounded-full text-emerald-100 hover:bg-white/10"
-                  >
-                    {showActivityDetails ? "Hide log" : "View log"}
-                  </Button>
-                </div>
-                {showActivityDetails && (
-                  <ul className="mt-4 space-y-3">
-                    {activity.map((item) => (
-                      <li key={item.id} className="rounded-2xl border border-white/12 bg-white/5 p-3 text-sm text-emerald-100/80 backdrop-blur">
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="text-[11px] uppercase tracking-[0.35em] text-emerald-100">{item.action}</span>
-                          <span className="text-xs text-emerald-100/60">{new Date(item.created_at).toLocaleString()}</span>
-                        </div>
-                        <div className="mt-1 font-semibold text-white">{item.message}</div>
-                        <div className="mt-1 space-y-1 text-[11px] text-emerald-100/60">
-                          {item.target_type && (
-                            <div>
-                              Target: {item.target_type}
-                              {item.target_id ? ` • ${item.target_id}` : ""}
-                            </div>
-                          )}
-                          {item.actor_user_id ? <div>Actor ID: {item.actor_user_id}</div> : null}
-                          {item.metadata ? (
-                            <pre className="whitespace-pre-wrap rounded-2xl border border-white/10 bg-white/8 p-2 text-[10px] text-emerald-100/70">
-                              {JSON.stringify(item.metadata, null, 2)}
-                            </pre>
-                          ) : null}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

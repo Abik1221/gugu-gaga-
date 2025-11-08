@@ -8,7 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Sheet,
   SheetContent,
@@ -40,9 +46,10 @@ export default function StaffListPage() {
   const [error, setError] = useState<string | null>(null);
   const [staff, setStaff] = useState<StaffMember[]>([]);
 
-  const [search, setSearch] = useState(""
-  );
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all");
 
   const [mutatingId, setMutatingId] = useState<number | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
@@ -61,13 +68,17 @@ export default function StaffListPage() {
       } catch (err: any) {
         const message = err?.message || "Unable to load staff";
         setError(message);
-        show({ variant: "destructive", title: "Failed to load staff", description: message });
+        show({
+          variant: "destructive",
+          title: "Failed to load staff",
+          description: message,
+        });
       } finally {
         setLoading(false);
         setRefreshing(false);
       }
     },
-    [show],
+    [show]
   );
 
   useEffect(() => {
@@ -83,7 +94,9 @@ export default function StaffListPage() {
         if (tid) {
           await loadStaff(tid);
         } else {
-          setError("No tenant attached to this account. Please contact support.");
+          setError(
+            "No tenant attached to this account. Please contact support."
+          );
         }
       } catch (err: any) {
         if (!active) return;
@@ -102,8 +115,10 @@ export default function StaffListPage() {
     const query = search.trim().toLowerCase();
     return staff
       .filter((member) => {
-        if (statusFilter === "active" && member.is_active === false) return false;
-        if (statusFilter === "inactive" && member.is_active !== false) return false;
+        if (statusFilter === "active" && member.is_active === false)
+          return false;
+        if (statusFilter === "inactive" && member.is_active !== false)
+          return false;
         if (!query) return true;
         return (
           member.email?.toLowerCase().includes(query) ||
@@ -125,7 +140,10 @@ export default function StaffListPage() {
     };
   }, [staff]);
 
-  const handleToggleActive = async (member: StaffMember, nextActive: boolean) => {
+  const handleToggleActive = async (
+    member: StaffMember,
+    nextActive: boolean
+  ) => {
     if (!tenantId) return;
     setMutatingId(member.id);
     try {
@@ -137,7 +155,11 @@ export default function StaffListPage() {
       });
       await loadStaff(tenantId, { silent: true });
     } catch (err: any) {
-      show({ variant: "destructive", title: "Update failed", description: err?.message || "Please try again." });
+      show({
+        variant: "destructive",
+        title: "Update failed",
+        description: err?.message || "Please try again.",
+      });
     } finally {
       setMutatingId(null);
     }
@@ -145,15 +167,25 @@ export default function StaffListPage() {
 
   const handleRemove = async (member: StaffMember) => {
     if (!tenantId) return;
-    const confirmed = window.confirm(`Remove ${member.email}? This cannot be undone.`);
+    const confirmed = window.confirm(
+      `Remove ${member.email}? This cannot be undone.`
+    );
     if (!confirmed) return;
     setMutatingId(member.id);
     try {
       await StaffAPI.remove(tenantId, member.id);
-      show({ variant: "success", title: "Staff removed", description: member.email });
+      show({
+        variant: "success",
+        title: "Staff removed",
+        description: member.email,
+      });
       await loadStaff(tenantId, { silent: true });
     } catch (err: any) {
-      show({ variant: "destructive", title: "Removal failed", description: err?.message || "Please try again." });
+      show({
+        variant: "destructive",
+        title: "Removal failed",
+        description: err?.message || "Please try again.",
+      });
     } finally {
       setMutatingId(null);
     }
@@ -162,12 +194,13 @@ export default function StaffListPage() {
   const isBusy = loading && !refreshing;
 
   return (
-    <div className="space-y-10 text-emerald-50">
-      <header className="rounded-3xl border border-white/10 bg-white/10 px-6 py-6 shadow-[0_36px_140px_-70px_rgba(16,185,129,0.7)] backdrop-blur-xl lg:flex lg:items-center lg:justify-between">
+    <div className="space-y-8">
+      <header className="rounded-2xl border border-slate-200 bg-white px-6 py-6 shadow-md lg:flex lg:items-center lg:justify-between">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold text-white">Team management</h1>
-          <p className="text-sm text-emerald-100/75">
-            Invite cashiers or managers, grant the right permissions, and keep your operations compliant at all times.
+          <h1 className="text-3xl font-semibold text-slate-900">Team management</h1>
+          <p className="text-sm text-slate-600">
+            Invite cashiers or managers, grant the right permissions, and keep
+            your operations compliant at all times.
           </p>
         </div>
         <div className="mt-6 flex flex-wrap items-center gap-3 lg:mt-0">
@@ -176,7 +209,6 @@ export default function StaffListPage() {
             size="sm"
             onClick={() => tenantId && loadStaff(tenantId, { silent: true })}
             disabled={!tenantId || refreshing}
-            className="rounded-full border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/15 hover:text-white"
           >
             {refreshing ? "Refreshing..." : "Refresh"}
           </Button>
@@ -184,7 +216,7 @@ export default function StaffListPage() {
             size="sm"
             onClick={() => setInviteOpen(true)}
             disabled={!tenantId}
-            className="rounded-full bg-gradient-to-r from-emerald-500 via-emerald-400 to-sky-500 px-5 py-2 text-sm font-semibold text-white shadow-[0_22px_60px_-30px_rgba(16,185,129,0.75)] transition hover:from-emerald-500/90 hover:to-sky-500/90"
+            className="bg-emerald-700 hover:bg-emerald-800 text-white"
           >
             Invite staff
           </Button>
@@ -192,94 +224,147 @@ export default function StaffListPage() {
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Card className="border border-white/15 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
+        <Card className="border border-slate-200 bg-white shadow-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-[0.35em] text-emerald-100/80">
+            <CardTitle className="text-xs uppercase tracking-wider text-slate-600">
               Total team members
             </CardTitle>
-            {isBusy ? <Skeleton className="h-7 w-12" /> : <div className="text-3xl font-semibold text-white">{stats.total}</div>}
+            {isBusy ? (
+              <Skeleton className="h-7 w-12" />
+            ) : (
+              <div className="text-3xl font-semibold text-slate-900">
+                {stats.total}
+              </div>
+            )}
           </CardHeader>
         </Card>
-        <Card className="border border-white/15 bg-white/10 text-emerald-50 shadow-[0_28px_110px_-60px_rgba(16,185,129,0.6)] backdrop-blur-xl">
+        <Card className="border border-slate-200 bg-white shadow-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-[0.35em] text-emerald-100/80">
+            <CardTitle className="text-xs uppercase tracking-wider text-slate-600">
               Active
             </CardTitle>
-            {isBusy ? <Skeleton className="h-7 w-12" /> : <div className="text-3xl font-semibold text-white">{stats.active}</div>}
+            {isBusy ? (
+              <Skeleton className="h-7 w-12" />
+            ) : (
+              <div className="text-3xl font-semibold text-emerald-700">
+                {stats.active}
+              </div>
+            )}
           </CardHeader>
         </Card>
-        <Card className="border border-amber-400/30 bg-amber-500/15 text-amber-50 shadow-[0_28px_110px_-60px_rgba(245,158,11,0.55)] backdrop-blur-xl">
+        <Card className="border border-amber-200 bg-amber-50 shadow-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xs uppercase tracking-[0.35em] text-amber-200/80">
+            <CardTitle className="text-xs uppercase tracking-wider text-amber-700">
               Suspended
             </CardTitle>
-            {isBusy ? <Skeleton className="h-7 w-10" /> : <div className="text-3xl font-semibold text-amber-100">{stats.inactive}</div>}
+            {isBusy ? (
+              <Skeleton className="h-7 w-10" />
+            ) : (
+              <div className="text-3xl font-semibold text-amber-700">
+                {stats.inactive}
+              </div>
+            )}
           </CardHeader>
         </Card>
       </section>
 
       <section>
-        <Card className="border border-white/10 bg-white/10 text-emerald-50 shadow-[0_36px_140px_-70px_rgba(59,130,246,0.55)] backdrop-blur-xl">
+        <Card className="border border-slate-200 bg-white shadow-md">
           <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <CardTitle className="text-white">Directory</CardTitle>
-              <p className="text-xs uppercase tracking-[0.3em] text-emerald-100/60">Search, filter, and manage access in seconds</p>
+              <CardTitle className="text-slate-900">Directory</CardTitle>
+              <p className="text-xs uppercase tracking-wider text-slate-600">
+                Search, filter, and manage access in seconds
+              </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Input
                 placeholder="Search email, phone, role"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                className="w-60 rounded-full border border-white/15 bg-white/10 px-5 text-sm text-white placeholder:text-emerald-100/50 focus-visible:border-emerald-300 focus-visible:ring-emerald-300"
+                className="w-60 border border-slate-300 bg-white text-sm text-slate-900 placeholder:text-slate-500 focus-visible:border-emerald-500 focus-visible:ring-emerald-200"
               />
               <select
                 value={statusFilter}
-                onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}
-                className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-emerald-100/80 shadow-[0_14px_45px_-30px_rgba(16,185,129,0.55)] transition focus:outline-none focus:ring focus:ring-emerald-300/40"
+                onChange={(event) =>
+                  setStatusFilter(event.target.value as typeof statusFilter)
+                }
+                className="border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500"
               >
-                <option className="bg-slate-900 text-emerald-100" value="all">All statuses</option>
-                <option className="bg-slate-900 text-emerald-100" value="active">Active only</option>
-                <option className="bg-slate-900 text-emerald-100" value="inactive">Suspended only</option>
+                <option value="all">
+                  All statuses
+                </option>
+                <option value="active">
+                  Active only
+                </option>
+                <option value="inactive">
+                  Suspended only
+                </option>
               </select>
             </div>
           </CardHeader>
-          <CardContent className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-0">
+          <CardContent className="overflow-hidden border border-slate-200 bg-slate-50 p-0">
             {isBusy ? (
               <Skeleton className="h-64 w-full" />
             ) : error ? (
-              <div className="p-6 text-sm text-red-200">{error}</div>
+              <div className="p-6 text-sm text-red-600">{error}</div>
             ) : filteredStaff.length === 0 ? (
-              <div className="p-6 text-sm text-emerald-100/70">
+              <div className="p-6 text-sm text-slate-600">
                 No staff match your filters. Invite a teammate to get started.
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-white/10 text-sm text-emerald-100/85">
-                  <thead className="bg-white/5 text-emerald-100">
+                <table className="min-w-full divide-y divide-slate-200 text-sm text-slate-800">
+                  <thead className="bg-slate-100">
                     <tr>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Email</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Phone</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Role</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Branch</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Status</th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.3em]">Actions</th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Email
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Phone
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Role
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Branch
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Status
+                      </th>
+                      <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-900">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/10 bg-white/5">
+                  <tbody className="divide-y divide-slate-100 bg-white">
                     {filteredStaff.map((member) => {
                       const active = member.is_active !== false;
                       return (
                         <tr key={member.id}>
-                          <td className="px-3 py-3 font-semibold text-white">{member.email}</td>
-                          <td className="px-3 py-3 text-emerald-100/70">{member.phone || "—"}</td>
-                          <td className="px-3 py-3 text-emerald-100/70">{member.role}</td>
-                          <td className="px-3 py-3 text-emerald-100/70">
-                            {member.assigned_branch_name || (member.assigned_branch_id ? `#${member.assigned_branch_id}` : "—")}
+                          <td className="px-3 py-3 font-semibold text-slate-900">
+                            {member.email}
+                          </td>
+                          <td className="px-3 py-3 text-slate-600">
+                            {member.phone || "—"}
+                          </td>
+                          <td className="px-3 py-3 text-slate-600">
+                            {member.role}
+                          </td>
+                          <td className="px-3 py-3 text-slate-600">
+                            {member.assigned_branch_name ||
+                              (member.assigned_branch_id
+                                ? `#${member.assigned_branch_id}`
+                                : "—")}
                           </td>
                           <td className="px-3 py-3">
                             <Badge
                               variant={active ? "default" : "secondary"}
-                              className={active ? "border border-emerald-300/40 bg-emerald-500/15 text-emerald-100" : "border border-white/20 bg-white/10 text-emerald-100"}
+                              className={
+                                active
+                                  ? "border border-emerald-300 bg-emerald-100 text-emerald-800"
+                                  : "border border-amber-300 bg-amber-100 text-amber-800"
+                              }
                             >
                               {active ? "Active" : "Suspended"}
                             </Badge>
@@ -289,9 +374,11 @@ export default function StaffListPage() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => handleToggleActive(member, !active)}
+                                onClick={() =>
+                                  handleToggleActive(member, !active)
+                                }
                                 disabled={mutatingId === member.id}
-                                className="rounded-full border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-100 transition hover:border-emerald-300/40 hover:bg-white/20 hover:text-white"
+                                className="text-xs font-semibold"
                               >
                                 {active ? "Suspend" : "Activate"}
                               </Button>
@@ -300,7 +387,7 @@ export default function StaffListPage() {
                                 size="sm"
                                 onClick={() => handleRemove(member)}
                                 disabled={mutatingId === member.id}
-                                className="rounded-full border border-red-400/40 bg-red-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-red-100 transition hover:bg-red-500/30"
+                                className="text-xs font-semibold"
                               >
                                 Remove
                               </Button>
@@ -314,8 +401,10 @@ export default function StaffListPage() {
               </div>
             )}
           </CardContent>
-          <CardFooter className="flex flex-col gap-2 border-t border-white/10 bg-white/5 p-4 text-xs text-emerald-100/70 md:flex-row md:items-center md:justify-between">
-            <div>Showing {filteredStaff.length} of {staff.length} team members</div>
+          <CardFooter className="flex flex-col gap-2 border-t border-slate-200 bg-slate-50 p-4 text-xs text-slate-600 md:flex-row md:items-center md:justify-between">
+            <div>
+              Showing {filteredStaff.length} of {staff.length} team members
+            </div>
             <div>Tenant: {profile?.tenant_id || "—"}</div>
           </CardFooter>
         </Card>
@@ -325,7 +414,9 @@ export default function StaffListPage() {
         open={inviteOpen}
         onOpenChange={setInviteOpen}
         tenantId={tenantId ?? undefined}
-        onInvited={async () => tenantId && loadStaff(tenantId, { silent: true })}
+        onInvited={async () =>
+          tenantId && loadStaff(tenantId, { silent: true })
+        }
       />
     </div>
   );
@@ -338,7 +429,12 @@ type InviteStaffSheetProps = {
   onInvited: () => void;
 };
 
-function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteStaffSheetProps) {
+function InviteStaffSheet({
+  open,
+  onOpenChange,
+  tenantId,
+  onInvited,
+}: InviteStaffSheetProps) {
   const { show } = useToast();
 
   const [email, setEmail] = useState("");
@@ -363,7 +459,10 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
       .then((res: any) => {
         if (!active) return;
         const items = Array.isArray(res?.items)
-          ? res.items.map((it: any) => ({ id: Number(it.id), name: String(it.name) }))
+          ? res.items.map((it: any) => ({
+              id: Number(it.id),
+              name: String(it.name),
+            }))
           : Array.isArray(res)
           ? res.map((it: any) => ({ id: Number(it.id), name: String(it.name) }))
           : [];
@@ -378,14 +477,24 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
     };
   }, [open, tenantId]);
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
     if (!tenantId) {
-      show({ variant: "destructive", title: "No tenant context", description: "Reload and try again." });
+      show({
+        variant: "destructive",
+        title: "No tenant context",
+        description: "Reload and try again.",
+      });
       return;
     }
     if (!email || !password) {
-      show({ variant: "destructive", title: "Missing fields", description: "Email and password are required." });
+      show({
+        variant: "destructive",
+        title: "Missing fields",
+        description: "Email and password are required.",
+      });
       return;
     }
     setSubmitting(true);
@@ -397,12 +506,20 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
         role,
         assigned_branch_id: branchId ? Number(branchId) : undefined,
       });
-      show({ variant: "success", title: "Invitation sent", description: email });
+      show({
+        variant: "success",
+        title: "Invitation sent",
+        description: email,
+      });
       resetForm();
       onOpenChange(false);
       onInvited();
     } catch (err: any) {
-      show({ variant: "destructive", title: "Failed to invite", description: err?.message || "Please try again." });
+      show({
+        variant: "destructive",
+        title: "Failed to invite",
+        description: err?.message || "Please try again.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -421,14 +538,19 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
         className="max-w-md space-y-5 overflow-y-auto border border-white/10 bg-gradient-to-br from-slate-950/95 via-slate-900/90 to-slate-950/95 p-6 text-emerald-50 backdrop-blur-2xl shadow-[0_36px_140px_-70px_rgba(16,185,129,0.6)]"
       >
         <SheetHeader className="space-y-2 text-left">
-          <SheetTitle className="text-2xl font-semibold text-white">Invite staff member</SheetTitle>
+          <SheetTitle className="text-2xl font-semibold text-white">
+            Invite staff member
+          </SheetTitle>
           <SheetDescription className="text-sm text-emerald-100/70">
-            Create credentials for a cashier or manager. They will update their profile on first login.
+            Create credentials for a cashier or manager. They will update their
+            profile on first login.
           </SheetDescription>
         </SheetHeader>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-1">
-            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Tenant ID</label>
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">
+              Tenant ID
+            </label>
             <Input
               value={tenantId ?? ""}
               readOnly
@@ -437,7 +559,9 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Email</label>
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">
+              Email
+            </label>
             <Input
               type="email"
               value={email}
@@ -448,7 +572,9 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Temporary password</label>
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">
+              Temporary password
+            </label>
             <Input
               type="password"
               value={password}
@@ -457,10 +583,14 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
               placeholder="Min 6 characters with a capital letter"
               className="rounded-2xl border border-white/10 bg-white/10 text-sm text-white placeholder:text-emerald-100/50 focus-visible:border-emerald-300 focus-visible:ring-emerald-300"
             />
-            <p className="text-xs text-emerald-100/60">Share securely and remind them to reset on first sign-in.</p>
+            <p className="text-xs text-emerald-100/60">
+              Share securely and remind them to reset on first sign-in.
+            </p>
           </div>
           <div className="space-y-1">
-            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Phone (optional)</label>
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">
+              Phone (optional)
+            </label>
             <Input
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
@@ -469,13 +599,17 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Role</label>
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">
+              Role
+            </label>
             <div className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm text-emerald-100/80 shadow-[0_18px_55px_-35px_rgba(16,185,129,0.5)]">
               Staff
             </div>
           </div>
           <div className="space-y-1">
-            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">Assign to branch</label>
+            <label className="text-xs uppercase tracking-[0.25em] text-emerald-100/70">
+              Assign to branch
+            </label>
             <select
               value={branchId}
               onChange={(event) => setBranchId(event.target.value)}
@@ -485,14 +619,19 @@ function InviteStaffSheet({ open, onOpenChange, tenantId, onInvited }: InviteSta
                 Unassigned (all branches)
               </option>
               {branches.map((branch) => (
-                <option key={branch.id} value={branch.id} className="bg-slate-900 text-emerald-100">
+                <option
+                  key={branch.id}
+                  value={branch.id}
+                  className="bg-slate-900 text-emerald-100"
+                >
                   {branch.name}
                 </option>
               ))}
             </select>
             {branches.length === 0 && (
               <p className="text-xs text-emerald-100/60">
-                No branches found for this tenant yet. Create one first to tie staff to a location.
+                No branches found for this tenant yet. Create one first to tie
+                staff to a location.
               </p>
             )}
           </div>

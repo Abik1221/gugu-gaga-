@@ -187,11 +187,11 @@ export default function OwnerIntegrationsPage() {
   const loading = loadingProfile || providersLoading;
 
   return (
-    <div className="space-y-10">
-      <header className="flex flex-col gap-4 rounded-3xl border border-white/15 bg-white/10 p-6 shadow-[0_32px_120px_-60px_rgba(16,185,129,0.75)] backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between">
+    <div className="space-y-8">
+      <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-md lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold text-white">Tool integrations</h1>
-          <p className="max-w-2xl text-sm leading-relaxed text-emerald-100/80">
+          <h1 className="text-3xl font-semibold text-slate-900">Tool integrations</h1>
+          <p className="max-w-2xl text-sm leading-relaxed text-slate-600">
             Connect your favourite tools to keep inventory, sales, and supplier data perfectly in sync. You stay in control—connect, import, and disconnect with a single click.
           </p>
         </div>
@@ -207,7 +207,7 @@ export default function OwnerIntegrationsPage() {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Available tools</h2>
+          <h2 className="text-lg font-semibold text-slate-900">Available tools</h2>
         </div>
         {loading ? (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -216,7 +216,7 @@ export default function OwnerIntegrationsPage() {
             ))}
           </div>
         ) : providers.length === 0 ? (
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-emerald-100/70">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">
             No integrations are available yet. Check back soon!
           </div>
         ) : (
@@ -226,21 +226,21 @@ export default function OwnerIntegrationsPage() {
                 ? "Two-way sync available"
                 : "Manual import & export";
               return (
-                <Card key={provider.key} className="border-white/10 bg-white/10 text-emerald-50 shadow-[0_25px_100px_-60px_rgba(16,185,129,0.6)]">
+                <Card key={provider.key} className="border border-slate-200 bg-white shadow-md">
                   <CardHeader>
-                    <CardTitle className="text-xl text-white">{provider.name}</CardTitle>
-                    <p className="text-sm text-emerald-100/70 capitalize">{provider.category}</p>
+                    <CardTitle className="text-xl text-slate-900">{provider.name}</CardTitle>
+                    <p className="text-sm text-slate-600 capitalize">{provider.category}</p>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="text-xs uppercase tracking-[0.3em] text-emerald-200/80">Resources</div>
-                    <ul className="space-y-1 text-sm text-emerald-100/80">
+                    <div className="text-xs uppercase tracking-wider text-slate-700 font-semibold">Resources</div>
+                    <ul className="space-y-1 text-sm text-slate-700">
                       {provider.capability.resources.map((resource) => (
                         <li key={resource}>{resource}</li>
                       ))}
                     </ul>
-                    <p className="text-xs text-emerald-200/70">{description}</p>
-                    <Button className="w-full" onClick={() => openConnectSheet(provider)} disabled={!tenantId}>
-                      Connect
+                    <p className="text-xs text-slate-600">{description}</p>
+                    <Button className="w-full bg-gray-400 hover:bg-gray-500 text-white" disabled>
+                      Coming Soon
                     </Button>
                   </CardContent>
                 </Card>
@@ -252,7 +252,7 @@ export default function OwnerIntegrationsPage() {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Connected tools</h2>
+          <h2 className="text-lg font-semibold text-slate-900">Connected tools</h2>
         </div>
         {connectionsLoading ? (
           <div className="space-y-3">
@@ -261,7 +261,7 @@ export default function OwnerIntegrationsPage() {
             ))}
           </div>
         ) : connections.length === 0 ? (
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-emerald-100/70">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">
             You have not connected any tools yet. Pick one above to get started.
           </div>
         ) : (
@@ -270,33 +270,33 @@ export default function OwnerIntegrationsPage() {
               const provider = providerMap.get(connection.provider_key);
               const resources = provider?.capability.resources || [];
               return (
-                <Card key={connection.id} className="border-white/10 bg-white/10 text-emerald-50">
+                <Card key={connection.id} className="border border-slate-200 bg-white shadow-md">
                   <CardHeader className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                     <div>
-                      <CardTitle className="text-white">{connection.provider_name}</CardTitle>
-                      <p className="text-sm text-emerald-100/70">Connected as {connection.display_name}</p>
+                      <CardTitle className="text-slate-900">{connection.provider_name}</CardTitle>
+                      <p className="text-sm text-slate-600">Connected as {connection.display_name}</p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-emerald-100/60">
-                      <span>Status: <strong className="text-emerald-100">{connection.status}</strong></span>
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                      <span>Status: <strong className="text-emerald-700">{connection.status}</strong></span>
                       {connection.updated_at && <span>Updated {new Date(connection.updated_at).toLocaleString()}</span>}
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {resources.length === 0 ? (
-                      <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-emerald-100/70">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
                         This provider is connected but no data resources are available yet.
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        <div className="text-xs uppercase tracking-[0.25em] text-emerald-200/70">Sync actions</div>
+                        <div className="text-xs uppercase tracking-wider text-slate-700 font-semibold">Sync actions</div>
                         {resources.map((resource) => {
                           const incomingKey = `${connection.id}-${resource}-incoming`;
                           const outgoingKey = `${connection.id}-${resource}-outgoing`;
                           return (
-                            <div key={resource} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
+                            <div key={resource} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
                               <div>
-                                <div className="text-sm font-semibold text-white">{resource}</div>
-                                <p className="text-xs text-emerald-100/70">Import data into Zemen or push updates back to {connection.provider_name}.</p>
+                                <div className="text-sm font-semibold text-slate-900">{resource}</div>
+                                <p className="text-xs text-slate-600">Import data into Zemen or push updates back to {connection.provider_name}.</p>
                               </div>
                               <div className="flex flex-wrap items-center gap-2">
                                 <Button
@@ -352,7 +352,7 @@ export default function OwnerIntegrationsPage() {
                 {connectSheet.provider.capability.resources.map((resource) => {
                   const checked = connectSheet.selectedResources.has(resource);
                   return (
-                    <label key={resource} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-emerald-50">
+                    <label key={resource} className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-900">
                       <input
                         type="checkbox"
                         className="h-4 w-4 rounded border-white/40 bg-transparent"
