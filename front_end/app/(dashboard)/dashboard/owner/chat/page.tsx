@@ -80,26 +80,11 @@ export default function ChatThreadsPage() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-lg font-semibold text-slate-900">Chat Threads</h1>
           <div className="flex flex-wrap gap-2 items-center">
-            <select
-              className="border border-slate-300 rounded px-3 py-1 text-sm text-slate-900 bg-white focus:border-emerald-500 focus:outline-none"
-              value={tenantId ?? ""}
-              onChange={async (e) => {
-                const tid = e.target.value || null;
-                setTenantId(tid);
-                if (tid) await refresh(tid);
-              }}
-            >
-              {pharmacies.map((p: any) => (
-                <option key={p.tenant_id} value={p.tenant_id}>
-                  {p.name} ({p.tenant_id})
-                </option>
-              ))}
-            </select>
             <Input
-              placeholder="Thread title"
+              placeholder="Ask about your business data..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-40 border-slate-300 focus:border-emerald-500"
+              className="w-64 border-slate-300 focus:border-emerald-500"
             />
             <Button 
               onClick={createThread} 
@@ -107,7 +92,7 @@ export default function ChatThreadsPage() {
               size="sm"
               className="bg-emerald-700 hover:bg-emerald-800 text-white"
             >
-              Create
+              Start Chat
             </Button>
           </div>
         </div>

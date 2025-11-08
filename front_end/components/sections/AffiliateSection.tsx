@@ -1,37 +1,45 @@
-"use client"
+"use client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Link2, DollarSign, Users, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import personImg from '@/public/personImg.jpeg';
+import personImg from "@/public/personImg.jpeg";
+import Link from "next/link";
 export default function AffiliateSection() {
   const benefits = [
     {
       icon: DollarSign,
       title: "Earn Generous Commissions",
-      description: "Receive competitive commissions for every successful referral, whether it's a supplier or inventory owner."
+      description:
+        "Receive competitive commissions for every successful referral, whether it's a supplier or inventory owner.",
     },
     {
       icon: Link2,
       title: "Simple Link Sharing",
-      description: "Generate your unique referral link instantly and share it anywhere—social media, email, or your website."
+      description:
+        "Generate your unique referral link instantly and share it anywhere—social media, email, or your website.",
     },
     {
       icon: Users,
       title: "Dual Revenue Streams",
-      description: "Earn from both supplier referrals and inventory owner sign-ups. Double your earning potential."
+      description:
+        "Earn from both supplier referrals and inventory owner sign-ups. Double your earning potential.",
     },
     {
       icon: TrendingUp,
       title: "Real-Time Tracking",
-      description: "Monitor your referrals, conversions, and earnings in real-time through your dedicated affiliate dashboard."
-    }
+      description:
+        "Monitor your referrals, conversions, and earnings in real-time through your dedicated affiliate dashboard.",
+    },
   ];
 
   return (
-    <section id="affiliate" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-600 to-emerald-800 text-white">
+    <section
+      id="affiliate"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-600 to-emerald-800 text-white"
+    >
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -41,11 +49,13 @@ export default function AffiliateSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl mb-4">
-            Turn Your Network into <span className="text-emerald-200">Revenue</span>
+            Turn Your Network into{" "}
+            <span className="text-emerald-200">Revenue</span>
           </h2>
           <p className="text-xl text-emerald-100 max-w-3xl mx-auto">
-            Join our affiliate program and earn money by connecting suppliers with
-            inventory owners. No inventory, no upfront costs—just share and earn.
+            Join our affiliate program and earn money by connecting suppliers
+            with inventory owners. No inventory, no upfront costs—just share and
+            earn.
           </p>
         </motion.div>
 
@@ -66,7 +76,10 @@ export default function AffiliateSection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Sign Up for Free</h4>
-                    <p className="text-emerald-100">Create your affiliate account in minutes. No application process.</p>
+                    <p className="text-emerald-100">
+                      Create your affiliate account in minutes. No application
+                      process.
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-4">
@@ -75,7 +88,10 @@ export default function AffiliateSection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Generate Your Link</h4>
-                    <p className="text-emerald-100">Get your unique referral link with one click from your dashboard.</p>
+                    <p className="text-emerald-100">
+                      Get your unique referral link with one click from your
+                      dashboard.
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-4">
@@ -84,7 +100,10 @@ export default function AffiliateSection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Share & Promote</h4>
-                    <p className="text-emerald-100">Share your link with suppliers and business owners in your network.</p>
+                    <p className="text-emerald-100">
+                      Share your link with suppliers and business owners in your
+                      network.
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-4">
@@ -93,14 +112,22 @@ export default function AffiliateSection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Earn Commissions</h4>
-                    <p className="text-emerald-100">Get paid for every successful subscription through your referral link.</p>
+                    <p className="text-emerald-100">
+                      Get paid for every successful subscription through your
+                      referral link.
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-            <Button size="lg" className="bg-white text-emerald-600 hover:bg-emerald-50 w-full">
-              Become an Affiliate Partner
-            </Button>
+            <Link href="/register/affiliate">
+              <Button
+                size="lg"
+                className="bg-white text-emerald-600 hover:bg-emerald-50 w-full"
+              >
+                Become an Affiliate Partner
+              </Button>
+            </Link>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 30 }}

@@ -538,7 +538,22 @@ const AdminAPI = {
             code: code || null
         }, tenantId),
     approveAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/approve"), {}),
-    rejectAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/reject"), {})
+    rejectAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/reject"), {}),
+    affiliates: function() {
+        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "";
+        return getAuthJSON("/api/v1/admin/affiliates?page=".concat(page, "&page_size=").concat(pageSize, "&q=").concat(encodeURIComponent(q)));
+    },
+    usage: function() {
+        let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 14;
+        return getAuthJSON("/api/v1/admin/usage?days=".concat(days));
+    },
+    audit: (params)=>{
+        const query = new URLSearchParams();
+        if (params.tenant_id) query.set('tenant_id', params.tenant_id);
+        if (params.action) query.set('action', params.action);
+        if (params.limit) query.set('limit', params.limit.toString());
+        return getAuthJSON("/api/v1/admin/audit".concat(query.toString() ? "?".concat(query.toString()) : ''));
+    }
 };
 const StaffAPI = {
     createCashier: (tenantId, body)=>postAuthJSON("/api/v1/staff", body, tenantId),

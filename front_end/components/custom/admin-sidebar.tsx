@@ -19,6 +19,7 @@ import {
   LayoutDashboard,
   Users,
   Wallet,
+  Truck,
 } from "lucide-react";
 
 const navItems = [
@@ -51,6 +52,11 @@ const navItems = [
     label: "Segments",
     href: "/dashboard/admin/segments",
     icon: <Boxes />, // for grouping, categorization, or segments
+  },
+  {
+    label: "Suppliers",
+    href: "/dashboard/admin/suppliers",
+    icon: <Truck />, // supplier management
   },
   {
     label: "Users",

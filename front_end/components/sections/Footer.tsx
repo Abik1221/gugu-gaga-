@@ -27,15 +27,11 @@ export default function Footer() {
       <div className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-12 md:grid-cols-5">
         <div className="space-y-4 md:col-span-2">
           <Link href="/" className="inline-flex items-center gap-2 text-white">
-            <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-sky-500 shadow-[0_18px_45px_-25px_rgba(16,185,129,0.8)]">
-              <Brain className="h-5 w-5" />
-            </span>
-            <span className="text-lg font-semibold">Mesob AI</span>
+            <span className="text-lg font-semibold">Mesob</span>
           </Link>
           <p className="max-w-sm text-sm text-emerald-100">
-            Multi-tenant, AI-powered management for modern pharmacies.
-            Insightful dashboards, secure workflows, and delightful patient
-            experiences.
+            Multi-tenant, AI-powered management for modern bussiness. Insightful
+            dashboards, secure workflows, and supplier experiences.
           </p>
           <div className="flex gap-3 text-emerald-100">
             <a
@@ -114,7 +110,7 @@ export default function Footer() {
 
       <div className="border-t border-white bg-black">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-6 py-6 text-xs text-emerald-100/60 md:flex-row md:items-center md:justify-between">
-          <p>© {year} Zemen Pharma. All rights reserved.</p>
+          <p>© {year} Mesob. All rights reserved.</p>
           <div className="flex gap-4">
             <Link href="/privacy" className="transition hover:text-emerald-200">
               Privacy

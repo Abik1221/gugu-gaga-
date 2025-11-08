@@ -25,6 +25,8 @@ __turbopack_context__.s([
     ()=>KYCAPI,
     "MedicinesAPI",
     ()=>MedicinesAPI,
+    "OrderAPI",
+    ()=>OrderAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
     "OwnerChatAPI",
@@ -35,6 +37,14 @@ __turbopack_context__.s([
     ()=>SalesAPI,
     "StaffAPI",
     ()=>StaffAPI,
+    "SupplierAPI",
+    ()=>SupplierAPI,
+    "SupplierAdminAPI",
+    ()=>SupplierAdminAPI,
+    "SupplierAnalyticsAPI",
+    ()=>SupplierAnalyticsAPI,
+    "SupplierOnboardingAPI",
+    ()=>SupplierOnboardingAPI,
     "TENANT_HEADER",
     ()=>TENANT_HEADER,
     "TenantAPI",
@@ -505,7 +515,22 @@ const AdminAPI = {
             code: code || null
         }, tenantId),
     approveAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/approve"), {}),
-    rejectAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/reject"), {})
+    rejectAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/reject"), {}),
+    affiliates: function() {
+        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "";
+        return getAuthJSON("/api/v1/admin/affiliates?page=".concat(page, "&page_size=").concat(pageSize, "&q=").concat(encodeURIComponent(q)));
+    },
+    usage: function() {
+        let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 14;
+        return getAuthJSON("/api/v1/admin/usage?days=".concat(days));
+    },
+    audit: (params)=>{
+        const query = new URLSearchParams();
+        if (params.tenant_id) query.set('tenant_id', params.tenant_id);
+        if (params.action) query.set('action', params.action);
+        if (params.limit) query.set('limit', params.limit.toString());
+        return getAuthJSON("/api/v1/admin/audit".concat(query.toString() ? "?".concat(query.toString()) : ''));
+    }
 };
 const StaffAPI = {
     createCashier: (tenantId, body)=>postAuthJSON("/api/v1/staff", body, tenantId),
@@ -602,9 +627,19 @@ const OwnerAnalyticsAPI = {
         const params = new URLSearchParams();
         if (options === null || options === void 0 ? void 0 : options.horizon) params.set("horizon", options.horizon);
         if (options === null || options === void 0 ? void 0 : options.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+        if (options === null || options === void 0 ? void 0 : options.days) params.set("days", String(options.days));
         const query = params.toString();
-        const path = "/api/v1/owner/analytics/overview".concat(query ? "?".concat(query) : "");
+        const path = "/api/v1/analytics/owner/overview".concat(query ? "?".concat(query) : "");
         return getAuthJSON(path, tenantId);
+    }
+};
+const SupplierAnalyticsAPI = {
+    overview: (days)=>{
+        const params = new URLSearchParams();
+        if (days) params.set("days", String(days));
+        const query = params.toString();
+        const path = "/api/v1/analytics/supplier/overview".concat(query ? "?".concat(query) : "");
+        return getAuthJSON(path);
     }
 };
 const OwnerChatAPI = {
@@ -734,6 +769,56 @@ const SalesAPI = {
         const path = "/api/v1/sales/pos".concat(query);
         return postAuthJSON(path, lines, tenantId);
     }
+};
+const SupplierAPI = {
+    // Profile management
+    getProfile: ()=>getAuthJSON("/api/v1/suppliers/profile"),
+    createProfile: (data)=>postAuthJSON("/api/v1/suppliers/profile", data),
+    updateProfile: (data)=>putAuthJSON("/api/v1/suppliers/profile", data),
+    // Product management
+    getProducts: ()=>getAuthJSON("/api/v1/suppliers/products"),
+    createProduct: (data)=>postAuthJSON("/api/v1/suppliers/products", data),
+    updateProduct: (id, data)=>putAuthJSON("/api/v1/suppliers/products/".concat(id), data),
+    deleteProduct: (id)=>deleteAuthJSON("/api/v1/suppliers/products/".concat(id)),
+    // Order management
+    getOrders: ()=>getAuthJSON("/api/v1/suppliers/orders"),
+    approveOrder: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/approve"), {}),
+    rejectOrder: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/reject"), {}),
+    verifyPayment: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/verify-payment"), {}),
+    markDelivered: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/mark-delivered"), {}),
+    // Public endpoints for customers
+    browse: (tenantId)=>getAuthJSON("/api/v1/suppliers/browse", tenantId),
+    getSupplierProducts: (supplierId, tenantId)=>getAuthJSON("/api/v1/suppliers/".concat(supplierId, "/products"), tenantId)
+};
+const OrderAPI = {
+    create: (data, tenantId)=>postAuthJSON("/api/v1/orders", data, tenantId),
+    list: (tenantId)=>getAuthJSON("/api/v1/orders", tenantId),
+    get: (id, tenantId)=>getAuthJSON("/api/v1/orders/".concat(id), tenantId),
+    submitPaymentCode: (id, code, tenantId)=>putAuthJSON("/api/v1/orders/".concat(id, "/payment-code"), {
+            code
+        }, tenantId),
+    createReview: (id, data, tenantId)=>postAuthJSON("/api/v1/orders/".concat(id, "/review"), data, tenantId),
+    getReview: (id, tenantId)=>getAuthJSON("/api/v1/orders/".concat(id, "/review"), tenantId)
+};
+const SupplierOnboardingAPI = {
+    getStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/status"),
+    submitKYC: (data)=>postAuthJSON("/api/v1/supplier-onboarding/kyc/submit", data),
+    getKYCStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/kyc/status"),
+    submitPayment: (data)=>postAuthJSON("/api/v1/supplier-onboarding/payment/submit", data),
+    getPaymentStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/payment/status")
+};
+const SupplierAdminAPI = {
+    getSuppliers: ()=>getAuthJSON("/api/v1/admin/suppliers"),
+    getPendingKYC: ()=>getAuthJSON("/api/v1/admin/suppliers/kyc/pending"),
+    approveKYC: (supplierId)=>postAuthJSON("/api/v1/admin/suppliers/".concat(supplierId, "/kyc/approve"), {}),
+    rejectKYC: (supplierId, notes)=>postAuthJSON("/api/v1/admin/suppliers/".concat(supplierId, "/kyc/reject"), {
+            notes
+        }),
+    getPendingPayments: ()=>getAuthJSON("/api/v1/admin/suppliers/payments/pending"),
+    verifyPayment: (code)=>postAuthJSON("/api/v1/admin/suppliers/payments/".concat(code, "/verify"), {}),
+    rejectPayment: (code, notes)=>postAuthJSON("/api/v1/admin/suppliers/payments/".concat(code, "/reject"), {
+            notes
+        })
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
@@ -1330,40 +1415,14 @@ function ChatThreadsPage() {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex flex-wrap gap-2 items-center",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                        className: "border border-slate-300 rounded px-3 py-1 text-sm text-slate-900 bg-white focus:border-emerald-500 focus:outline-none",
-                                        value: tenantId !== null && tenantId !== void 0 ? tenantId : "",
-                                        onChange: async (e)=>{
-                                            const tid = e.target.value || null;
-                                            setTenantId(tid);
-                                            if (tid) await refresh(tid);
-                                        },
-                                        children: pharmacies.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
-                                                value: p.tenant_id,
-                                                children: [
-                                                    p.name,
-                                                    " (",
-                                                    p.tenant_id,
-                                                    ")"
-                                                ]
-                                            }, p.tenant_id, true, {
-                                                fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                                                lineNumber: 93,
-                                                columnNumber: 17
-                                            }, this))
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
+                                        placeholder: "Ask about your business data...",
+                                        value: title,
+                                        onChange: (e)=>setTitle(e.target.value),
+                                        className: "w-64 border-slate-300 focus:border-emerald-500"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
                                         lineNumber: 83,
-                                        columnNumber: 13
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                                        placeholder: "Thread title",
-                                        value: title,
-                                        onChange: (e)=>setTitle(e.target.value),
-                                        className: "w-40 border-slate-300 focus:border-emerald-500"
-                                    }, void 0, false, {
-                                        fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                                        lineNumber: 98,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1371,10 +1430,10 @@ function ChatThreadsPage() {
                                         disabled: !tenantId,
                                         size: "sm",
                                         className: "bg-emerald-700 hover:bg-emerald-800 text-white",
-                                        children: "Create"
+                                        children: "Start Chat"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                                        lineNumber: 104,
+                                        lineNumber: 89,
                                         columnNumber: 13
                                     }, this)
                                 ]
@@ -1398,13 +1457,13 @@ function ChatThreadsPage() {
                                 children: tenantId
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                                lineNumber: 116,
+                                lineNumber: 101,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                        lineNumber: 115,
+                        lineNumber: 100,
                         columnNumber: 11
                     }, this)
                 ]
@@ -1417,14 +1476,14 @@ function ChatThreadsPage() {
                 className: "h-32 rounded-lg"
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                lineNumber: 122,
+                lineNumber: 107,
                 columnNumber: 9
             }, this) : error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800",
                 children: error
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                lineNumber: 124,
+                lineNumber: 109,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "grid gap-2",
@@ -1438,7 +1497,7 @@ function ChatThreadsPage() {
                                     children: t.title
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                                    lineNumber: 133,
+                                    lineNumber: 118,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1449,13 +1508,13 @@ function ChatThreadsPage() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                                    lineNumber: 134,
+                                    lineNumber: 119,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, t.id, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                            lineNumber: 128,
+                            lineNumber: 113,
                             columnNumber: 13
                         }, this)),
                     threads.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1463,13 +1522,13 @@ function ChatThreadsPage() {
                         children: "No threads yet. Create your first chat thread."
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                        lineNumber: 138,
+                        lineNumber: 123,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/dashboard/owner/chat/page.tsx",
-                lineNumber: 126,
+                lineNumber: 111,
                 columnNumber: 9
             }, this)
         ]

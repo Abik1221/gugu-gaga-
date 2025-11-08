@@ -26,6 +26,9 @@ import {
   Settings,
   UserCog,
   Users,
+  Truck,
+  ClipboardList,
+  BarChart3,
 } from "lucide-react";
 
 interface NavItem {
@@ -36,6 +39,7 @@ interface NavItem {
 
 const navItems = [
   { href: "/dashboard/owner", label: "Dashboard", icon: <LayoutDashboard /> },
+  { href: "/dashboard/owner/analytics", label: "Analytics", icon: <BarChart3 /> },
   { href: "/dashboard/owner/agent", label: "Agent", icon: <Users /> },
   { href: "/dashboard/owner/branches", label: "Branches", icon: <Building2 /> },
   { href: "/dashboard/owner/chat", label: "Chat", icon: <MessageSquare /> },
@@ -46,6 +50,8 @@ const navItems = [
   },
   { href: "/dashboard/owner/staff", label: "Staff", icon: <UserCog /> },
   { href: "/dashboard/owner/inventory", label: "Inventory", icon: <Package /> },
+  { href: "/dashboard/owner/suppliers", label: "Suppliers", icon: <Truck /> },
+  { href: "/dashboard/owner/order-status", label: "Order Status", icon: <ClipboardList /> },
   { href: "/dashboard/owner/settings", label: "Settings", icon: <Settings /> },
 ];
 

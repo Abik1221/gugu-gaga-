@@ -1,7 +1,7 @@
-"use client"
+"use client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import connectImg from '@/public/connect.jpeg';
+import connectImg from "@/public/connect.jpeg";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -12,7 +12,7 @@ export default function IntegrationsSection() {
     { name: "Odoo", category: "ERP" },
   ];
 
-  const categories = [...new Set(integrations.map(i => i.category))];
+  const categories = [...new Set(integrations.map((i) => i.category))];
 
   return (
     <section id="integrations" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
@@ -25,10 +25,11 @@ export default function IntegrationsSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl text-gray-900 mb-4">
-            Connect with <span className="text-emerald-600">Your Favorite Tools</span>
+            Connect with{" "}
+            <span className="text-emerald-600">Your Favorite Tools</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            One-click integrations with 100+ business tools. No coding required.
+            One-click integrations with business tools. No coding required.
             Seamlessly sync your data across all platforms.
           </p>
         </motion.div>
@@ -55,33 +56,42 @@ export default function IntegrationsSection() {
           >
             <h3 className="text-3xl text-gray-900">Effortless Integration</h3>
             <p className="text-lg text-gray-600">
-              Stop juggling multiple platforms. Mesob AI connects seamlessly with
-              your existing tools, creating a unified ecosystem for your business operations.
+              Stop juggling multiple platforms. Mesob AI connects seamlessly
+              with your existing tools, creating a unified ecosystem for your
+              business operations.
             </p>
             <ul className="space-y-3">
               <li className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
                   <Check className="w-4 h-4 text-emerald-600" />
                 </div>
-                <span className="text-gray-700">One-click setup for all integrations</span>
+                <span className="text-gray-700">
+                  One-click setup for all integrations
+                </span>
               </li>
               <li className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
                   <Check className="w-4 h-4 text-emerald-600" />
                 </div>
-                <span className="text-gray-700">Real-time data synchronization</span>
+                <span className="text-gray-700">
+                  Real-time data synchronization
+                </span>
               </li>
               <li className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
                   <Check className="w-4 h-4 text-emerald-600" />
                 </div>
-                <span className="text-gray-700">Secure, encrypted connections</span>
+                <span className="text-gray-700">
+                  Secure, encrypted connections
+                </span>
               </li>
               <li className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
                   <Check className="w-4 h-4 text-emerald-600" />
                 </div>
-                <span className="text-gray-700">No technical knowledge required</span>
+                <span className="text-gray-700">
+                  No technical knowledge required
+                </span>
               </li>
             </ul>
           </motion.div>
@@ -101,7 +111,7 @@ export default function IntegrationsSection() {
               </Badge>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {integrations
-                  .filter(int => int.category === category)
+                  .filter((int) => int.category === category)
                   .map((integration, intIndex) => (
                     <motion.div
                       key={intIndex}
@@ -110,9 +120,7 @@ export default function IntegrationsSection() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: intIndex * 0.05 }}
                     >
-                      <Card
-                        className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
-                      >
+                      <Card className="p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
                         <div className="w-12 h-12 rounded-xl bg-gray-100 mx-auto mb-3 flex items-center justify-center">
                           <span className="text-2xl">🔗</span>
                         </div>
@@ -127,7 +135,10 @@ export default function IntegrationsSection() {
 
         <div className="text-center mt-12">
           <p className="text-gray-600">
-            Don't see your tool? <a href="#contact" className="text-emerald-600 underline">Request a custom integration</a>
+            Don't see your tool?{" "}
+            <a href="#contact" className="text-emerald-600 underline">
+              Request a custom integration
+            </a>
           </p>
         </div>
       </div>
@@ -137,8 +148,18 @@ export default function IntegrationsSection() {
 
 function Check({ className }: { className?: string }) {
   return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M5 13l4 4L19 7"
+      />
     </svg>
   );
 }

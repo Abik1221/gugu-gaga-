@@ -25,6 +25,9 @@ from .uploads import router as uploads_router
 from .tenant_activity import router as tenant_activity_router
 from .integrations import router as integrations_router
 from .customers import router as customers_router
+from .suppliers import router as suppliers_router
+from .orders import router as orders_router
+from .supplier_onboarding import router as supplier_onboarding_router
 
 api_router = APIRouter()
 
@@ -60,3 +63,6 @@ api_router.include_router(uploads_router)
 api_router.include_router(tenant_activity_router)
 api_router.include_router(integrations_router, prefix="/integrations", tags=["integrations"])
 api_router.include_router(customers_router)
+api_router.include_router(suppliers_router, prefix="/suppliers", tags=["suppliers"])
+api_router.include_router(orders_router, prefix="/orders", tags=["orders"])
+api_router.include_router(supplier_onboarding_router, tags=["supplier_onboarding"])

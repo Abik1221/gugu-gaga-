@@ -81,21 +81,21 @@ function AffiliateOverviewPage() {
                     className: "pointer-events-none absolute -top-28 right-[-10%] h-72 w-72 rounded-full bg-emerald-100/70 blur-3xl"
                 }, void 0, false, {
                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                    lineNumber: 56,
+                    lineNumber: 64,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "pointer-events-none absolute -bottom-36 left-[-12%] h-80 w-80 rounded-full bg-slate-100 blur-[120px]"
                 }, void 0, false, {
                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                    lineNumber: 57,
+                    lineNumber: 65,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "pointer-events-none absolute inset-x-0 top-1/3 h-24 bg-gradient-to-r from-emerald-50 via-transparent to-emerald-100/60 blur-2xl"
                 }, void 0, false, {
                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                    lineNumber: 58,
+                    lineNumber: 66,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -109,7 +109,7 @@ function AffiliateOverviewPage() {
                                     children: "Affiliate dashboard"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                    lineNumber: 62,
+                                    lineNumber: 70,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -120,21 +120,21 @@ function AffiliateOverviewPage() {
                                             children: "Grow partner revenue with the same polish as your landing page."
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                            lineNumber: 66,
+                                            lineNumber: 74,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             className: "text-base text-slate-600",
-                                            children: "Keep your pharmacy partners engaged with a calm, minimal control center. Review earnings, generate links, and submit payout requests with live numbers pulled directly from the partner API."
+                                            children: "Keep your bussiness partners engaged with a calm, minimal control center. Review earnings, generate links, and submit payout requests with live numbers pulled directly from the partner API."
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                            lineNumber: 69,
+                                            lineNumber: 77,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                    lineNumber: 65,
+                                    lineNumber: 73,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -149,7 +149,7 @@ function AffiliateOverviewPage() {
                                             children: "Create referral link"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                            lineNumber: 74,
+                                            lineNumber: 85,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -161,24 +161,24 @@ function AffiliateOverviewPage() {
                                                 children: "Request payout"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                                lineNumber: 88,
+                                                lineNumber: 99,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                            lineNumber: 83,
+                                            lineNumber: 94,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                    lineNumber: 73,
+                                    lineNumber: 84,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                            lineNumber: 61,
+                            lineNumber: 69,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -189,7 +189,7 @@ function AffiliateOverviewPage() {
                                     children: "Why teams stay"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                    lineNumber: 94,
+                                    lineNumber: 105,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -199,35 +199,35 @@ function AffiliateOverviewPage() {
                                             children: item
                                         }, item, false, {
                                             fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                            lineNumber: 97,
+                                            lineNumber: 110,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                                    lineNumber: 95,
+                                    lineNumber: 108,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                            lineNumber: 93,
+                            lineNumber: 104,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-                    lineNumber: 60,
+                    lineNumber: 68,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-            lineNumber: 50,
+            lineNumber: 58,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/(dashboard)/dashboard/affiliate/page.tsx",
-        lineNumber: 49,
+        lineNumber: 57,
         columnNumber: 5
     }, this);
 }

@@ -799,72 +799,101 @@ export const ChatAPI = {
 };
 
 export type OwnerAnalyticsResponse = {
-  horizon: string;
-  totals: {
+  summary: {
     total_revenue: number;
-    average_ticket: number;
-    units_sold: number;
-    sale_count: number;
-    active_cashiers: number;
-    total_customers: number;
-    active_customers: number;
-    upcoming_refills: number;
+    total_orders: number;
+    unique_customers: number;
+    low_stock_items: number;
+    avg_order_value: number;
   };
-  deltas: {
-    revenue_vs_last_period: number;
-    avg_ticket_vs_last_period: number;
-    units_vs_last_period: number;
-  };
-  revenue_trend: { period: string; revenue: number }[];
-  top_products: { name: string; revenue: number; quantity: number }[];
-  inventory_health: { label: string; count: number }[];
-  recent_payments: {
-    id: number;
-    status: string;
-    status_label: string;
-    code?: string | null;
-    created_at: string;
-    created_at_formatted: string;
-  }[];
-  branch_comparison: {
-    branch: string | null;
+  revenue_trends: {
+    date: string;
     revenue: number;
-    sale_count: number;
-    units_sold: number;
+    orders: number;
+    customers: number;
   }[];
-  staff_productivity: {
-    user_id: number;
+  inventory_health: {
+    category: string;
+    current_stock: number;
+    avg_reorder_level: number;
+    low_stock_items: number;
+    total_items: number;
+    status: string;
+  }[];
+  supplier_performance: {
     name: string;
-    email?: string | null;
-    role: string;
-    total_sales: number;
-    transactions: number;
-    units_sold: number;
+    total_orders: number;
+    on_time_rate: number;
+    total_value: number;
+    avg_rating: number;
   }[];
-  staff_activity: {
-    id: number;
-    action: string;
-    actor_user_id?: number | null;
-    actor_name?: string | null;
-    actor_role?: string | null;
-    target_type?: string | null;
-    target_id?: string | null;
-    metadata?: Record<string, any> | null;
-    created_at: string;
+  staff_performance: {
+    name: string;
+    role: string;
+    transactions: number;
+    total_sales: number;
+    avg_transaction: number;
+    efficiency: number;
+  }[];
+};
+
+export type SupplierAnalyticsResponse = {
+  summary: {
+    total_orders: number;
+    fulfilled_orders: number;
+    fulfillment_rate: number;
+    total_revenue: number;
+    avg_order_value: number;
+    avg_rating: number;
+  };
+  order_trends: {
+    date: string;
+    total_orders: number;
+    fulfilled_orders: number;
+    revenue: number;
+  }[];
+  product_performance: {
+    name: string;
+    units_sold: number;
+    revenue: number;
+    avg_price: number;
+    margin: number;
+  }[];
+  customer_insights: {
+    name: string;
+    total_orders: number;
+    total_value: number;
+    satisfaction: number;
+  }[];
+  delivery_metrics: {
+    status: string;
+    count: number;
+    percentage: number;
   }[];
 };
 
 export const OwnerAnalyticsAPI = {
   overview: (
     tenantId: string,
-    options?: { horizon?: string; trendWeeks?: number }
+    options?: { horizon?: string; trendWeeks?: number; days?: number }
   ) => {
     const params = new URLSearchParams();
     if (options?.horizon) params.set("horizon", options.horizon);
     if (options?.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+    if (options?.days) params.set("days", String(options.days));
     const query = params.toString();
-    const path = `/api/v1/owner/analytics/overview${query ? `?${query}` : ""}`;
+    const path = `/api/v1/analytics/owner/overview${query ? `?${query}` : ""}`;
     return getAuthJSON<OwnerAnalyticsResponse>(path, tenantId);
+  },
+};
+
+export const SupplierAnalyticsAPI = {
+  overview: (days?: number) => {
+    const params = new URLSearchParams();
+    if (days) params.set("days", String(days));
+    const query = params.toString();
+    const path = `/api/v1/analytics/supplier/overview${query ? `?${query}` : ""}`;
+    return getAuthJSON(path);
   },
 };
 
@@ -1108,6 +1137,127 @@ export const SalesAPI = {
     const path = `/api/v1/sales/pos${query}`;
     return postAuthJSON<{ id: number; total: number }>(path, lines, tenantId);
   },
+};
+
+// ----------------- SupplierAPI -----------------
+export type SupplierProfile = {
+  id: number;
+  user_id: number;
+  business_name: string;
+  contact_person?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  business_license?: string | null;
+  tax_certificate?: string | null;
+  is_verified: boolean;
+  created_at: string;
+};
+
+export type SupplierProduct = {
+  id: number;
+  supplier_id: number;
+  name: string;
+  description?: string | null;
+  category?: string | null;
+  unit_price: number;
+  minimum_order_quantity: number;
+  stock_quantity: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type Order = {
+  id: number;
+  customer_id: number;
+  supplier_id: number;
+  tenant_id: string;
+  status: string;
+  total_amount: number;
+  payment_method?: string | null;
+  payment_code?: string | null;
+  notes?: string | null;
+  created_at: string;
+  updated_at: string;
+  items: OrderItem[];
+  supplier?: SupplierProfile;
+};
+
+export type OrderItem = {
+  id: number;
+  order_id: number;
+  product_id: number;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  product?: SupplierProduct;
+};
+
+export type OrderReview = {
+  id: number;
+  order_id: number;
+  customer_id: number;
+  rating: number;
+  comment?: string | null;
+  created_at: string;
+};
+
+export const SupplierAPI = {
+  // Profile management
+  getProfile: () => getAuthJSON<SupplierProfile>("/api/v1/suppliers/profile"),
+  createProfile: (data: any) => postAuthJSON<SupplierProfile>("/api/v1/suppliers/profile", data),
+  updateProfile: (data: any) => putAuthJSON<SupplierProfile>("/api/v1/suppliers/profile", data),
+  
+  // Product management
+  getProducts: () => getAuthJSON<SupplierProduct[]>("/api/v1/suppliers/products"),
+  createProduct: (data: any) => postAuthJSON<SupplierProduct>("/api/v1/suppliers/products", data),
+  updateProduct: (id: number, data: any) => putAuthJSON<SupplierProduct>(`/api/v1/suppliers/products/${id}`, data),
+  deleteProduct: (id: number) => deleteAuthJSON(`/api/v1/suppliers/products/${id}`),
+  
+  // Order management
+  getOrders: () => getAuthJSON<Order[]>("/api/v1/suppliers/orders"),
+  approveOrder: (id: number) => putAuthJSON(`/api/v1/suppliers/orders/${id}/approve`, {}),
+  rejectOrder: (id: number) => putAuthJSON(`/api/v1/suppliers/orders/${id}/reject`, {}),
+  verifyPayment: (id: number) => putAuthJSON(`/api/v1/suppliers/orders/${id}/verify-payment`, {}),
+  markDelivered: (id: number) => putAuthJSON(`/api/v1/suppliers/orders/${id}/mark-delivered`, {}),
+  
+  // Public endpoints for customers
+  browse: (tenantId: string) => getAuthJSON<SupplierProfile[]>("/api/v1/suppliers/browse", tenantId),
+  getSupplierProducts: (supplierId: number, tenantId: string) => 
+    getAuthJSON<SupplierProduct[]>(`/api/v1/suppliers/${supplierId}/products`, tenantId),
+};
+
+export const OrderAPI = {
+  create: (data: any, tenantId: string) => postAuthJSON<Order>("/api/v1/orders", data, tenantId),
+  list: (tenantId: string) => getAuthJSON<Order[]>("/api/v1/orders", tenantId),
+  get: (id: number, tenantId: string) => getAuthJSON<Order>(`/api/v1/orders/${id}`, tenantId),
+  submitPaymentCode: (id: number, code: string, tenantId: string) => 
+    putAuthJSON(`/api/v1/orders/${id}/payment-code`, { code }, tenantId),
+  createReview: (id: number, data: any, tenantId: string) => 
+    postAuthJSON<OrderReview>(`/api/v1/orders/${id}/review`, data, tenantId),
+  getReview: (id: number, tenantId: string) => 
+    getAuthJSON<OrderReview>(`/api/v1/orders/${id}/review`, tenantId),
+};
+
+export const SupplierOnboardingAPI = {
+  getStatus: () => getAuthJSON("/api/v1/supplier-onboarding/status"),
+  submitKYC: (data: any) => postAuthJSON("/api/v1/supplier-onboarding/kyc/submit", data),
+  getKYCStatus: () => getAuthJSON("/api/v1/supplier-onboarding/kyc/status"),
+  submitPayment: (data: any) => postAuthJSON("/api/v1/supplier-onboarding/payment/submit", data),
+  getPaymentStatus: () => getAuthJSON("/api/v1/supplier-onboarding/payment/status"),
+};
+
+// Update AdminAPI with supplier management
+export const SupplierAdminAPI = {
+  getSuppliers: () => getAuthJSON("/api/v1/admin/suppliers"),
+  getPendingKYC: () => getAuthJSON("/api/v1/admin/suppliers/kyc/pending"),
+  approveKYC: (supplierId: number) => postAuthJSON(`/api/v1/admin/suppliers/${supplierId}/kyc/approve`, {}),
+  rejectKYC: (supplierId: number, notes?: string) => 
+    postAuthJSON(`/api/v1/admin/suppliers/${supplierId}/kyc/reject`, { notes }),
+  getPendingPayments: () => getAuthJSON("/api/v1/admin/suppliers/payments/pending"),
+  verifyPayment: (code: string) => postAuthJSON(`/api/v1/admin/suppliers/payments/${code}/verify`, {}),
+  rejectPayment: (code: string, notes?: string) => 
+    postAuthJSON(`/api/v1/admin/suppliers/payments/${code}/reject`, { notes }),
 };
 
 // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged

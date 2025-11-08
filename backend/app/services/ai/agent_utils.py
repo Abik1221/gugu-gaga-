@@ -26,11 +26,12 @@ SUPPORTIVE_KEYWORDS = {
 }
 
 ROLE_INTENT_MATRIX: Dict[str, Iterable[str]] = {
-    "pharmacy_owner": {"auto", "top_selling", "low_stock", "sales_last_7_days", "inventory_health", "integration_health"},
-    "owner": {"auto", "top_selling", "low_stock", "sales_last_7_days", "inventory_health", "integration_health"},
-    "admin": {"auto", "integration_health", "sales_last_7_days"},
-    "cashier": {"auto", "top_selling", "sales_last_7_days"},
-    "staff": {"auto", "top_selling", "sales_last_7_days"},
+    "pharmacy_owner": {"auto", "top_selling", "low_stock", "sales_last_7_days", "inventory_health", "integration_health", "monthly_revenue", "daily_revenue", "staff_performance", "inventory_summary", "inventory_low_stock", "inventory_expiring", "inventory_value", "inventory_by_branch", "supplier_orders", "supplier_products", "supplier_performance", "supplier_payments", "supplier_list", "recent_activity", "business_overview"},
+    "owner": {"auto", "top_selling", "low_stock", "sales_last_7_days", "inventory_health", "integration_health", "monthly_revenue", "daily_revenue", "staff_performance", "inventory_summary", "inventory_low_stock", "inventory_expiring", "inventory_value", "inventory_by_branch", "supplier_orders", "supplier_products", "supplier_performance", "supplier_payments", "supplier_list", "recent_activity", "business_overview"},
+    "supplier": {"auto", "supplier_orders", "supplier_products", "supplier_pending_orders", "supplier_performance", "supplier_payments", "supplier_list", "inventory_summary", "inventory_low_stock", "recent_activity", "business_overview"},
+    "admin": {"auto", "integration_health", "sales_last_7_days", "staff_performance", "monthly_revenue", "daily_revenue"},
+    "cashier": {"auto", "top_selling", "sales_last_7_days", "recent_activity"},
+    "staff": {"auto", "top_selling", "sales_last_7_days", "recent_activity"},
 }
 
 

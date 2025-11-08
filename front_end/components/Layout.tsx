@@ -38,14 +38,21 @@ function Loading() {
   );
 }
 
-export function Layout({ children, nav, pathname, user, isAffiliate, isAdmin }: LayoutProps) {
+export function Layout({
+  children,
+  nav,
+  pathname,
+  user,
+  isAffiliate,
+  isAdmin,
+}: LayoutProps) {
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-50">
       <SidebarProvider>
         <Sidebar className="border-r border-neutral-200 bg-white fixed">
           <SidebarHeader className="flex h-16 items-center border-b border-neutral-200 px-6">
             <div className="flex items-center gap-2 py-3">
-              {isAffiliate ? "Affiliate Console" : "Mesob AI"}
+              {isAffiliate ? "Affiliate Console" : "Mesob"}
             </div>
           </SidebarHeader>
 
@@ -65,10 +72,14 @@ export function Layout({ children, nav, pathname, user, isAffiliate, isAdmin }: 
                     <SidebarMenuButton
                       asChild
                       isActive={isActive}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-150 ${isActive ? activeClasses : inactiveClasses
-                        }`}
+                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-150 ${
+                        isActive ? activeClasses : inactiveClasses
+                      }`}
                     >
-                      <Link href={item.href} className="flex w-full items-center gap-3">
+                      <Link
+                        href={item.href}
+                        className="flex w-full items-center gap-3"
+                      >
                         {item?.icon}
                         <span>{item.label}</span>
                       </Link>
@@ -107,7 +118,8 @@ export function Layout({ children, nav, pathname, user, isAffiliate, isAdmin }: 
                 <div className="flex items-center gap-4">
                   <SidebarTrigger className="text-neutral-600" />
                   <span className="text-neutral-900">
-                    {nav.find((n) => pathname?.startsWith(n.href))?.label || "Overview"}
+                    {nav.find((n) => pathname?.startsWith(n.href))?.label ||
+                      "Overview"}
                   </span>
                 </div>
                 {!isAffiliate && !isAdmin && user?.tenant_id && (

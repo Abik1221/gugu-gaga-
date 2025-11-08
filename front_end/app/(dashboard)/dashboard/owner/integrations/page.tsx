@@ -239,8 +239,8 @@ export default function OwnerIntegrationsPage() {
                       ))}
                     </ul>
                     <p className="text-xs text-slate-600">{description}</p>
-                    <Button className="w-full bg-emerald-700 hover:bg-emerald-800 text-white" onClick={() => openConnectSheet(provider)} disabled={!tenantId}>
-                      Connect
+                    <Button className="w-full bg-gray-400 hover:bg-gray-500 text-white" disabled>
+                      Coming Soon
                     </Button>
                   </CardContent>
                 </Card>

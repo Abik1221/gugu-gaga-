@@ -1,14 +1,17 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import branch4 from '@/public/branch4.jpeg';
+import branch4 from "@/public/branch4.jpeg";
+import { TrialDialog } from "@/components/ui/trial-dialog";
+import { useRouter } from "next/navigation";
 
-export default function HeroSection({ setModalState }: { setModalState: (state: boolean) => void }) {
+export default function HeroSection() {
+  const router = useRouter();
   return (
-    <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+    <section className="pt-19 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -27,7 +30,7 @@ export default function HeroSection({ setModalState }: { setModalState: (state: 
             >
               <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">
                 <Sparkles className="w-3 h-3 mr-1" />
-                AI-Powered Inventory Revolution
+                Bussiness Revolution with AI
               </Badge>
               <Badge className="bg-blue-100 text-blue-700 border-blue-200">
                 🇪🇹 Built by Ethiopia for Africa
@@ -42,13 +45,9 @@ export default function HeroSection({ setModalState }: { setModalState: (state: 
               className="space-y-4"
             >
               <h1 className="text-5xl lg:text-6xl text-gray-900">
-                Transform Your <span className="text-emerald-600">Inventory Management</span> with AI
+                Transform Your{" "}
+                <span className="text-emerald-600">Business</span> with AI
               </h1>
-              <p className="text-xl text-gray-600">
-                The game-changing inventory management system for Ethiopian businesses.
-                Manage multiple branches, connect with suppliers, and get AI-powered insights
-                that revolutionize how you run your shop or pharmacy.
-              </p>
             </motion.div>
 
             <motion.div
@@ -58,11 +57,21 @@ export default function HeroSection({ setModalState }: { setModalState: (state: 
               transition={{ delay: 0.4, duration: 0.5 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8" onClick={() => setModalState(true)}>
-                Start 30-Day Free Trial
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8">
+              <TrialDialog>
+                <Button
+                  size="lg"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
+                >
+                  Start 30-Day Free Trial
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </TrialDialog>
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8"
+                onClick={() => router.push("/contact")}
+              >
                 Watch Demo
               </Button>
             </motion.div>

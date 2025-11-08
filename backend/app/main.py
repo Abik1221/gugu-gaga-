@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from .core.settings import settings
 from .api.v1.routes import api_router
+from .api.v1.analytics import router as analytics_router
 from .middleware.tenant import TenantContextMiddleware
 from .middleware.logging import LoggingMiddleware
 from fastapi.middleware.cors import CORSMiddleware
@@ -93,3 +94,4 @@ def health():
 
 
 app.include_router(api_router, prefix="/api/v1")
+app.include_router(analytics_router, prefix="/api/v1")

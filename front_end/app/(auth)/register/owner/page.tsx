@@ -1,0 +1,352 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/toast";
+
+type FieldKey = "pharmacyName" | "email" | "password" | "licenseNumber" | "phone" | "address";
+
+const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
+  pharmacyName: null,
+  email: null,
+  password: null,
+  licenseNumber: null,
+  phone: null,
+  address: null,
+});
+
+export default function OwnerRegisterPage() {
+  const router = useRouter();
+  const { show } = useToast();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<FieldKey, string | null>>(() => createEmptyFieldErrors());
+
+  const [pharmacyName, setPharmacyName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+
+  const clearFieldError = (key: FieldKey) =>
+    setFieldErrors((prev) => ({
+      ...prev,
+      [key]: null,
+    }));
+
+  async function submitOwner(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+    setFieldErrors(createEmptyFieldErrors());
+
+    const trimmedPharmacyName = pharmacyName.trim();
+    const trimmedEmail = email.trim();
+    const trimmedLicenseNumber = licenseNumber.trim();
+
+    const validationErrors: Partial<Record<FieldKey, string>> = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!trimmedPharmacyName) {
+      validationErrors.pharmacyName = "Enter your pharmacy name.";
+    }
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      validationErrors.email = "Enter a valid email address.";
+    }
+    if (!password || password.length < 6) {
+      validationErrors.password = "Password must be at least 6 characters.";
+    }
+    if (!trimmedLicenseNumber) {
+      validationErrors.licenseNumber = "Provide your pharmacy license number.";
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(() => {
+        const next = createEmptyFieldErrors();
+        (Object.keys(validationErrors) as FieldKey[]).forEach((key) => {
+          next[key] = validationErrors[key] ?? null;
+        });
+        return next;
+      });
+      setError("Please correct the highlighted fields.");
+      show({ variant: "destructive", title: "Missing information", description: "Fix the highlighted inputs and try again." });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // API call would go here
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      setSuccess("Registration successful! Redirecting to dashboard...");
+      show({
+        variant: "success",
+        title: "Registration Complete",
+        description: "Your pharmacy owner account has been created successfully.",
+      });
+      setTimeout(() => router.replace("/dashboard/owner"), 1500);
+    } catch (err: any) {
+      const message = err?.message || "Failed to register";
+      setError(message);
+      show({ variant: "destructive", title: "Registration Failed", description: message });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const featureBullets = [
+    "Multi-branch pharmacy management",
+    "AI-powered inventory optimization",
+    "Real-time sales analytics",
+    "Staff management system",
+  ];
+
+  return (
+    <div className="relative flex min-h-screen text-white">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-10 left-10 h-80 w-80 rounded-full bg-green-500/15 blur-3xl" />
+        <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
+      </div>
+
+      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden bg-white p-12 lg:flex">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-lg"
+        >
+          <div className="flex items-center gap-3 text-left">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green-400 to-blue-500 blur opacity-70" />
+              <div className="relative rounded-xl p-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="h-6 w-6 text-white"
+                >
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9,22 9,12 15,12 15,22" />
+                </svg>
+              </div>
+            </div>
+            <span className="text-2xl font-semibold tracking-wide text-white/90">
+              Zemen Pharma
+            </span>
+          </div>
+
+          <h1 className="mt-10 text-4xl font-bold leading-tight text-black">
+            Start your pharmacy management journey
+          </h1>
+          <p className="mt-4 text-lg text-slate-500">
+            Join thousands of pharmacy owners who trust our AI-powered platform to streamline their operations and boost profitability.
+          </p>
+
+          <ul className="mt-10 space-y-4 text-slate-700">
+            {featureBullets.map((item) => (
+              <li key={item} className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-black" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="space-y-4 text-sm text-slate-700"
+        >
+          <p>
+            "Zemen Pharma has revolutionized how we manage our pharmacy chain. The AI insights are incredible!"
+          </p>
+          <div className="h-px w-24 bg-white/20" />
+          <p>
+            Need help? <Link href="/contact" className="text-black hover:underline">Contact our support team</Link>
+          </p>
+        </motion.div>
+      </div>
+
+      <div className="relative flex w-full flex-col justify-center px-4 py-16 sm:px-10 lg:w-[560px] lg:px-12 bg-white">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-[0_25px_80px_-40px_rgba(34,197,94,0.65)] backdrop-blur"
+        >
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-black">Register as Pharmacy Owner</h2>
+            <p className="mt-2 text-sm text-slate-600">
+              Create your pharmacy management account today.
+            </p>
+          </div>
+
+          {error && (
+            <div className="mb-4 rounded-xl border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-600">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="mb-4 rounded-xl border border-green-400/30 bg-green-500/10 p-3 text-sm text-green-600">
+              {success}
+            </div>
+          )}
+
+          <form onSubmit={submitOwner} className="space-y-5">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                Pharmacy Name*
+              </label>
+              <Input
+                value={pharmacyName}
+                onChange={(e) => {
+                  clearFieldError("pharmacyName");
+                  setPharmacyName(e.target.value);
+                }}
+                className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.pharmacyName
+                  ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                  : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                  }`}
+              />
+              {fieldErrors.pharmacyName && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.pharmacyName}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                Email Address*
+              </label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  clearFieldError("email");
+                  setEmail(e.target.value);
+                }}
+                className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.email
+                  ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                  : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                  }`}
+              />
+              {fieldErrors.email && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.email}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                Password*
+              </label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  clearFieldError("password");
+                  setPassword(e.target.value);
+                }}
+                className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.password
+                  ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                  : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                  }`}
+              />
+              {fieldErrors.password && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.password}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                Pharmacy License Number*
+              </label>
+              <Input
+                value={licenseNumber}
+                onChange={(e) => {
+                  clearFieldError("licenseNumber");
+                  setLicenseNumber(e.target.value);
+                }}
+                className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.licenseNumber
+                  ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                  : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                  }`}
+              />
+              {fieldErrors.licenseNumber && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.licenseNumber}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                Phone Number
+              </label>
+              <Input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+251..."
+                className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/40"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                Pharmacy Address
+              </label>
+              <Input
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/40"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-green-600 hover:bg-green-700 px-6 py-3 font-semibold text-white shadow-lg shadow-green-500/30 transition duration-300 hover:scale-[1.01] hover:shadow-green-400/40"
+            >
+              {loading ? (
+                <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path
+                    className="opacity-90"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
+                </svg>
+              ) : null}
+              {loading ? "Registering..." : "Register as Owner"}
+            </Button>
+
+            <p className="text-center text-xs text-slate-700">
+              Already have an account?{" "}
+              <Link href="/auth/login" className="font-medium text-green-600 hover:underline">
+                Sign in
+              </Link>
+            </p>
+          </form>
+
+          <p className="mt-8 text-center text-[11px] text-slate-700">
+            By continuing you agree to our{" "}
+            <Link href="/terms" className="text-green-600 hover:underline">
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="text-green-600 hover:underline">
+              Privacy Policy
+            </Link>
+            .
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
