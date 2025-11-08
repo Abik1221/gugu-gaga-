@@ -1,110 +1,123 @@
 import Link from "next/link";
-import MarketingLayout from "@/app/(marketing)/layout";
+import { Shield } from "lucide-react";
+import Footer from "@/components/sections/Footer";
+import Image from "next/image";
+import logoImage from "@/public/mesoblogo.jpeg";
 
 const sections = [
   {
-    heading: "1. Overview",
-    body: `Zemen Pharma respects your privacy and is committed to safeguarding personal data processed through our platform. This Privacy Policy explains the information we collect, how it is used, and the choices you have.`,
+    heading: "Information We Collect",
+    body: `We collect business information you provide during registration including business name, owner details, TIN (Tax Identification Number), trade license, contact information, and bank account details for payment processing. We also collect transaction data, inventory records, and usage logs to provide our services effectively.`,
   },
   {
-    heading: "2. Information we collect",
-    body: `We collect information that you voluntarily provide during onboarding (such as contact details, pharmacy documents, and financial data) and data generated automatically while using the platform (such as access logs, device metadata, and transactions).`,
+    heading: "How We Use Your Information",
+    body: `Your information is used to provide platform services, process payments through Ethiopian banking systems, generate tax-compliant receipts, manage inventory, facilitate supplier connections, and provide AI-powered business insights. We comply with Ethiopian commercial regulations and never sell your personal or business data to third parties.`,
   },
   {
-    heading: "3. Patient information",
-    body: `Patient information entered into the platform is protected health data. We act as a processor on behalf of tenant pharmacies, and we only process patient information to deliver contracted services. Tenants are responsible for obtaining necessary consents and complying with applicable healthcare regulations.`,
+    heading: "Data Storage and Security",
+    body: `Your data is stored securely with encryption both in transit and at rest. We implement multi-factor authentication, regular security audits, and access controls. While our infrastructure may utilize international cloud services, we ensure compliance with Ethiopian data protection standards and maintain data sovereignty where required by law.`,
   },
   {
-    heading: "4. Use of information",
-    body: `We use collected information to provide and improve the platform, personalize dashboards, ensure compliance, prevent fraud, and communicate essential updates. Aggregated and anonymized analytics may be used to improve system reliability and performance.`,
+    heading: "Compliance with Ethiopian Laws",
+    body: `We operate in full compliance with Ethiopian commercial law, tax regulations, and business licensing requirements. We maintain records as required by the Ministry of Trade and Industry and Ethiopian Revenue and Customs Authority. Business transaction data is retained according to Ethiopian legal requirements (minimum 5 years for tax purposes).`,
   },
   {
-    heading: "5. Legal bases",
-    body: `We process personal data based on tenant contracts, legal obligations, vital interests of patients or staff, and Zemen Pharma's legitimate interests in maintaining secure, compliant services.`,
+    heading: "Data Sharing and Disclosure",
+    body: `We share data only with trusted service providers (payment processors, SMS providers, cloud hosting) under strict confidentiality agreements. We may disclose information to Ethiopian government authorities when legally required (tax audits, regulatory compliance, court orders). We do not share your business data with competitors or unauthorized third parties.`,
   },
   {
-    heading: "6. Sharing of information",
-    body: `We share information with trusted service providers (such as hosting, analytics, and payment partners) under strict confidentiality agreements. We may disclose information if required by law or to defend our legal rights. Zemen Pharma does not sell personal data.`,
+    heading: "Payment and Financial Data",
+    body: `Payment processing is handled through licensed Ethiopian payment service providers. We store bank account information securely for subscription billing and supplier payments. All financial transactions comply with National Bank of Ethiopia regulations and anti-money laundering requirements.`,
   },
   {
-    heading: "7. International transfers",
-    body: `If data is transferred outside Ethiopia, we implement appropriate safeguards, including contractual clauses and security controls, to protect personal information.`,
+    heading: "Your Rights",
+    body: `You have the right to access, correct, or delete your personal data. You can export your business data at any time through your account settings. For data deletion requests, we will comply within 30 days while maintaining records required by Ethiopian law. You can withdraw consent for marketing communications at any time.`,
   },
   {
-    heading: "8. Security measures",
-    body: `We employ industry-standard technical and organizational measures, including encryption in transit, access controls, audit logging, and regular security assessments. Tenants must also maintain secure devices and user access policies.`,
+    heading: "Business Data Ownership",
+    body: `You retain full ownership of your business data including inventory records, customer information, sales data, and financial records. Upon account termination, you can export all your data. We act as a data processor on your behalf and do not claim ownership of your business information.`,
   },
   {
-    heading: "9. Data retention",
-    body: `We retain tenant and user data for the duration of active contracts and as required by law. Upon termination, we follow documented retention schedules and can provide exports or delete data upon written request, subject to legal obligations.`,
+    heading: "Cookies and Tracking",
+    body: `We use essential cookies for authentication and session management, and analytics cookies to improve platform performance. No third-party advertising cookies are used. You can manage cookie preferences in your browser settings, though essential cookies are required for platform functionality.`,
   },
   {
-    heading: "10. Data subject rights",
-    body: `Individuals may request access, correction, deletion, or restriction of their personal data, subject to verification and legal limitations. Requests can be made through the tenant administrator or by contacting privacy@zemenpharma.com.`,
-  },
-  {
-    heading: "11. Cookies and tracking",
-    body: `We use essential cookies for authentication and session management, as well as analytics cookies to understand platform performance. You can adjust browser settings to manage cookies, but essential cookies are required for secure access.`,
-  },
-  {
-    heading: "12. Children",
-    body: `The platform is not intended for individuals under 18 unless they are registered as staff by an authorized tenant. We do not knowingly collect personal data from minors outside legitimate pharmacy operations.`,
-  },
-  {
-    heading: "13. Policy changes",
-    body: `We may update this Privacy Policy from time to time. Material updates will be communicated through the platform or email. Continued use after updates constitutes acceptance.`,
-  },
-  {
-    heading: "14. Contact us",
-    body: `If you have questions or concerns about this Privacy Policy, contact privacy@zemenpharma.com or write to Zemen Pharma Privacy Office, Bole, Addis Ababa, Ethiopia.`,
+    heading: "Updates to This Policy",
+    body: `We may update this policy to reflect changes in Ethiopian regulations or our services. Material changes will be communicated via email and in-app notifications at least 14 days before taking effect. Continued use after the effective date constitutes acceptance of the updated policy.`,
   },
 ];
 
 export const metadata = {
-  title: "Privacy Policy | Zemen Pharma",
-  description: "Understand how Zemen Pharma collects, uses, and protects your personal data.",
+  title: "Privacy Policy | Mesob AI",
+  description: "Learn how Mesob AI protects and manages your personal data.",
 };
-
-function PrivacyContent() {
-  return (
-    <div className="relative mx-auto max-w-4xl space-y-12 px-2 text-emerald-50 sm:px-4 lg:px-0">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-blue-500/10 to-transparent" />
-      <header className="relative space-y-4">
-        <h1 className="text-4xl font-bold text-white">Privacy Policy</h1>
-        <p className="text-sm text-emerald-100/80">
-          This Privacy Policy describes how Zemen Pharma collects, uses, discloses, and safeguards personal data when you engage with our platform and services.
-        </p>
-        <p className="text-xs text-emerald-100/60">Last updated: {new Date().toLocaleDateString()}</p>
-      </header>
-
-      <section className="relative space-y-10">
-        {sections.map((section) => (
-          <article
-            key={section.heading}
-            className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_35px_120px_-60px_rgba(59,130,246,0.6)] backdrop-blur"
-          >
-            <h2 className="text-xl font-semibold text-white">{section.heading}</h2>
-            <p className="mt-3 text-sm leading-relaxed text-emerald-100/80">{section.body}</p>
-          </article>
-        ))}
-      </section>
-
-      <footer className="relative flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-emerald-100/80">
-        <Link className="font-semibold text-emerald-200 hover:text-white" href="/terms">
-          Review our Terms of Service
-        </Link>
-        <div>
-          Need assistance? <Link className="font-semibold text-emerald-200 hover:text-white" href="/contact">Contact support</Link>
-        </div>
-      </footer>
-    </div>
-  );
-}
 
 export default function PrivacyPage() {
   return (
-    <MarketingLayout>
-      <PrivacyContent />
-    </MarketingLayout>
+    <>
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="flex items-center gap-2 text-gray-900 hover:text-emerald-600 transition">
+              <Image height={60} width={60} src={logoImage} alt="Mesob logo" />
+            </Link>
+            <div className="flex items-center gap-6">
+              <Link href="/privacy" className="text-emerald-600 font-medium">
+                Privacy
+              </Link>
+              <Link href="/terms" className="text-gray-600 hover:text-gray-900">
+                Terms
+              </Link>
+              <Link href="/contact" className="text-gray-600 hover:text-gray-900">
+                Contact
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-20 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mb-6">
+            <Shield className="w-8 h-8 text-emerald-600" />
+          </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Your privacy matters to us. This policy explains how Mesob AI collects, uses, and protects your personal information.
+          </p>
+          <p className="text-sm text-gray-500 mt-4">Last updated: {new Date().toLocaleDateString()}</p>
+        </div>
+
+        <div className="space-y-6">
+          {sections.map((section, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">{section.heading}</h2>
+              <p className="text-gray-600 leading-relaxed">{section.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 bg-emerald-50 rounded-lg p-6 border border-emerald-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Contact Us</h3>
+          <p className="text-gray-600 mb-4">
+            If you have questions about this Privacy Policy or how we handle your data, please contact us:
+          </p>
+          <div className="space-y-2 text-gray-700">
+            <p>Email: <a href="mailto:privacy@mesob.ai" className="text-emerald-600 hover:underline">privacy@mesob.ai</a></p>
+            <p>Phone: +251 11 XXX XXXX</p>
+            <p>Address: Bole, Addis Ababa, Ethiopia</p>
+            <p className="text-sm text-gray-600 mt-3">Business Hours: Monday - Friday, 8:30 AM - 5:30 PM (East Africa Time)</p>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link href="/terms" className="text-emerald-600 hover:underline font-medium">
+            Read our Terms of Service →
+          </Link>
+        </div>
+      </div>
+    </div>
+    <Footer />
+    </>
   );
 }

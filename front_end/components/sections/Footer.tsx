@@ -8,14 +8,13 @@ const footerNav = {
     { href: "/#pricing", label: "Pricing" },
   ],
   company: [
-    { href: "/#about", label: "About" },
-    { href: "/(marketing)/contact", label: "Contact" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
     { href: "/register?tab=affiliate", label: "Affiliates" },
   ],
   resources: [
     { href: "/privacy", label: "Privacy policy" },
     { href: "/terms", label: "Terms of service" },
-    { href: "/auth?tab=signin", label: "Customer login" },
   ],
 } as const;
 
@@ -118,10 +117,7 @@ export default function Footer() {
             <Link href="/terms" className="transition hover:text-emerald-200">
               Terms
             </Link>
-            <Link
-              href="/(marketing)/contact"
-              className="transition hover:text-emerald-200"
-            >
+            <Link href="/contact" className="transition hover:text-emerald-200">
               Support
             </Link>
           </div>

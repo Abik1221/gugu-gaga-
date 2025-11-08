@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { AuthAPI } from "@/utils/api";
-
+import Image from "next/image";
+import affiliateRegistrationImage from "@/public/affiliateregistration.jpeg";
 export default function AffiliateRegisterPage() {
   const router = useRouter();
   const { show } = useToast();
@@ -106,12 +107,14 @@ export default function AffiliateRegisterPage() {
             </span>
           </div>
 
-          <h1 className="mt-10 text-4xl font-bold leading-tight text-slate-900">
-            Grow with the pharmacies you onboard
-          </h1>
+          <Image
+            src={affiliateRegistrationImage}
+            alt="affiliate registration image"
+            className="my-10"
+          />
           <p className="mt-4 text-lg text-slate-600">
-            Become a trusted partner for pharmacy digitization. Unlock recurring earnings with every successful
-            registration.
+            Become a trusted partner for bussiness digitization. Unlock
+            recurring earnings with every successful registration.
           </p>
 
           <ul className="mt-10 space-y-4 text-slate-600">
@@ -123,24 +126,6 @@ export default function AffiliateRegisterPage() {
             ))}
           </ul>
         </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="space-y-4 text-sm text-slate-600"
-        >
-          <p>
-            “The affiliate dashboard keeps payouts transparent and the training resources help us close pharmacies fast.”
-          </p>
-          <div className="h-px w-24 bg-emerald-100" />
-          <p>
-            Questions? {" "}
-            <Link href="/contact" className="text-emerald-600 hover:underline">
-              Chat with our partner success team
-            </Link>
-          </p>
-        </motion.div>
       </div>
 
       <div className="relative flex w-full flex-col justify-center px-4 py-16 sm:px-10 lg:w-[520px] lg:px-12">
@@ -151,7 +136,9 @@ export default function AffiliateRegisterPage() {
           className="mx-auto w-full max-w-md rounded-3xl border border-emerald-100/80 bg-white/95 p-8 shadow-[0_35px_90px_-55px_rgba(15,118,110,0.55)] backdrop-blur"
         >
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-slate-900">Join the affiliate program</h2>
+            <h2 className="text-3xl font-bold text-slate-900">
+              Join the affiliate program
+            </h2>
             <p className="mt-2 text-sm text-slate-500">
               Earn commissions every time a pharmacy goes live.
             </p>
@@ -242,8 +229,19 @@ export default function AffiliateRegisterPage() {
               className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-black px-6 py-3 font-semibold text-white shadow-lg shadow-emerald-500/30 transition duration-300 hover:translate-y-[-1px] hover:shadow-emerald-400/40"
             >
               {loading ? (
-                <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <svg
+                  className="mr-2 h-4 w-4 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-20"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
                   <path
                     className="opacity-90"
                     fill="currentColor"
@@ -255,19 +253,22 @@ export default function AffiliateRegisterPage() {
             </Button>
 
             <p className="text-center text-xs text-slate-500">
-              Already part of the network? {" "}
-              <Link href="/auth?tab=signin" className="font-medium text-emerald-600 hover:underline">
+              Already part of the network?{" "}
+              <Link
+                href="/auth?tab=signin"
+                className="font-medium text-emerald-600 hover:underline"
+              >
                 Sign in
               </Link>
             </p>
           </form>
 
           <p className="mt-8 text-center text-[11px] text-slate-400">
-            By continuing you agree to our {" "}
+            By continuing you agree to our{" "}
             <Link href="/terms" className="text-emerald-600 hover:underline">
               Terms
             </Link>{" "}
-            and {" "}
+            and{" "}
             <Link href="/privacy" className="text-emerald-600 hover:underline">
               Privacy Policy
             </Link>

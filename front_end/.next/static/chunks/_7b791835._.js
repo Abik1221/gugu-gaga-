@@ -58,6 +58,8 @@ __turbopack_context__.s([
     ()=>KYCAPI,
     "MedicinesAPI",
     ()=>MedicinesAPI,
+    "OrderAPI",
+    ()=>OrderAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
     "OwnerChatAPI",
@@ -68,6 +70,14 @@ __turbopack_context__.s([
     ()=>SalesAPI,
     "StaffAPI",
     ()=>StaffAPI,
+    "SupplierAPI",
+    ()=>SupplierAPI,
+    "SupplierAdminAPI",
+    ()=>SupplierAdminAPI,
+    "SupplierAnalyticsAPI",
+    ()=>SupplierAnalyticsAPI,
+    "SupplierOnboardingAPI",
+    ()=>SupplierOnboardingAPI,
     "TENANT_HEADER",
     ()=>TENANT_HEADER,
     "TenantAPI",
@@ -650,9 +660,19 @@ const OwnerAnalyticsAPI = {
         const params = new URLSearchParams();
         if (options === null || options === void 0 ? void 0 : options.horizon) params.set("horizon", options.horizon);
         if (options === null || options === void 0 ? void 0 : options.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+        if (options === null || options === void 0 ? void 0 : options.days) params.set("days", String(options.days));
         const query = params.toString();
-        const path = "/api/v1/owner/analytics/overview".concat(query ? "?".concat(query) : "");
+        const path = "/api/v1/analytics/owner/overview".concat(query ? "?".concat(query) : "");
         return getAuthJSON(path, tenantId);
+    }
+};
+const SupplierAnalyticsAPI = {
+    overview: (days)=>{
+        const params = new URLSearchParams();
+        if (days) params.set("days", String(days));
+        const query = params.toString();
+        const path = "/api/v1/analytics/supplier/overview".concat(query ? "?".concat(query) : "");
+        return getAuthJSON(path);
     }
 };
 const OwnerChatAPI = {
@@ -782,6 +802,56 @@ const SalesAPI = {
         const path = "/api/v1/sales/pos".concat(query);
         return postAuthJSON(path, lines, tenantId);
     }
+};
+const SupplierAPI = {
+    // Profile management
+    getProfile: ()=>getAuthJSON("/api/v1/suppliers/profile"),
+    createProfile: (data)=>postAuthJSON("/api/v1/suppliers/profile", data),
+    updateProfile: (data)=>putAuthJSON("/api/v1/suppliers/profile", data),
+    // Product management
+    getProducts: ()=>getAuthJSON("/api/v1/suppliers/products"),
+    createProduct: (data)=>postAuthJSON("/api/v1/suppliers/products", data),
+    updateProduct: (id, data)=>putAuthJSON("/api/v1/suppliers/products/".concat(id), data),
+    deleteProduct: (id)=>deleteAuthJSON("/api/v1/suppliers/products/".concat(id)),
+    // Order management
+    getOrders: ()=>getAuthJSON("/api/v1/suppliers/orders"),
+    approveOrder: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/approve"), {}),
+    rejectOrder: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/reject"), {}),
+    verifyPayment: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/verify-payment"), {}),
+    markDelivered: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/mark-delivered"), {}),
+    // Public endpoints for customers
+    browse: (tenantId)=>getAuthJSON("/api/v1/suppliers/browse", tenantId),
+    getSupplierProducts: (supplierId, tenantId)=>getAuthJSON("/api/v1/suppliers/".concat(supplierId, "/products"), tenantId)
+};
+const OrderAPI = {
+    create: (data, tenantId)=>postAuthJSON("/api/v1/orders", data, tenantId),
+    list: (tenantId)=>getAuthJSON("/api/v1/orders", tenantId),
+    get: (id, tenantId)=>getAuthJSON("/api/v1/orders/".concat(id), tenantId),
+    submitPaymentCode: (id, code, tenantId)=>putAuthJSON("/api/v1/orders/".concat(id, "/payment-code"), {
+            code
+        }, tenantId),
+    createReview: (id, data, tenantId)=>postAuthJSON("/api/v1/orders/".concat(id, "/review"), data, tenantId),
+    getReview: (id, tenantId)=>getAuthJSON("/api/v1/orders/".concat(id, "/review"), tenantId)
+};
+const SupplierOnboardingAPI = {
+    getStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/status"),
+    submitKYC: (data)=>postAuthJSON("/api/v1/supplier-onboarding/kyc/submit", data),
+    getKYCStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/kyc/status"),
+    submitPayment: (data)=>postAuthJSON("/api/v1/supplier-onboarding/payment/submit", data),
+    getPaymentStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/payment/status")
+};
+const SupplierAdminAPI = {
+    getSuppliers: ()=>getAuthJSON("/api/v1/admin/suppliers"),
+    getPendingKYC: ()=>getAuthJSON("/api/v1/admin/suppliers/kyc/pending"),
+    approveKYC: (supplierId)=>postAuthJSON("/api/v1/admin/suppliers/".concat(supplierId, "/kyc/approve"), {}),
+    rejectKYC: (supplierId, notes)=>postAuthJSON("/api/v1/admin/suppliers/".concat(supplierId, "/kyc/reject"), {
+            notes
+        }),
+    getPendingPayments: ()=>getAuthJSON("/api/v1/admin/suppliers/payments/pending"),
+    verifyPayment: (code)=>postAuthJSON("/api/v1/admin/suppliers/payments/".concat(code, "/verify"), {}),
+    rejectPayment: (code, notes)=>postAuthJSON("/api/v1/admin/suppliers/payments/".concat(code, "/reject"), {
+            notes
+        })
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
