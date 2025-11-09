@@ -3,6 +3,7 @@ import "./globals.css";
 import { ToastProvider } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
 import { ServiceWorkerProvider } from "@/components/providers/service-worker-provider";
+import logoImage from "@/public/mesoblogo.jpeg";
 
 export const metadata: Metadata = {
   title: {
@@ -52,10 +53,12 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
+      { url: logoImage.src },
       { url: "/icons/icon-192x192.jpg", sizes: "192x192" },
       { url: "/icons/icon-512x512.jpg", sizes: "512x512" },
     ],
-    apple: [{ url: "/icons/icon-192x192.jpg" }],
+    apple: [{ url: logoImage.src }],
+    shortcut: logoImage.src,
   },
   other: {
     "mobile-web-app-capable": "yes",
@@ -77,6 +80,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/mesoblogo.jpeg" type="image/jpeg" sizes="any" />
+        <link rel="icon" href="/mesoblogo.jpeg" type="image/jpeg" sizes="32x32" />
+        <link rel="icon" href="/mesoblogo.jpeg" type="image/jpeg" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/mesoblogo.jpeg" sizes="180x180" />
+        <link rel="shortcut icon" href="/mesoblogo.jpeg" type="image/jpeg" />
         <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID} />
         <meta name="geo.region" content="ET" />
         <meta name="geo.country" content="Ethiopia" />
