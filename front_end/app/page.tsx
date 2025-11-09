@@ -14,24 +14,7 @@ import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { GoogleAds } from "@/components/ads/google-ads";
-import { useState } from "react";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
 export default function App() {
-  const [modalState, setModalState] = useState(false);
-  console.log("modal state ", modalState);
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       <Navbar />
