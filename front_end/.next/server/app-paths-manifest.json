@@ -1,3 +1,19 @@
 {
+  "/(auth)/affiliate-signin/page": "app/(auth)/affiliate-signin/page.js",
+  "/(auth)/register/owner/page": "app/(auth)/register/owner/page.js",
+  "/(dashboard)/dashboard/(supplier-flow)/supplier-kyc/page": "app/(dashboard)/dashboard/(supplier-flow)/supplier-kyc/page.js",
+  "/(dashboard)/dashboard/(supplier-flow)/supplier/page": "app/(dashboard)/dashboard/(supplier-flow)/supplier/page.js",
+  "/(dashboard)/dashboard/admin/affiliates/page": "app/(dashboard)/dashboard/admin/affiliates/page.js",
+  "/(dashboard)/dashboard/admin/audit/page": "app/(dashboard)/dashboard/admin/audit/page.js",
+  "/(dashboard)/dashboard/admin/page": "app/(dashboard)/dashboard/admin/page.js",
+  "/(dashboard)/dashboard/affiliate/commissions/page": "app/(dashboard)/dashboard/affiliate/commissions/page.js",
+  "/(dashboard)/dashboard/affiliate/generate-link/page": "app/(dashboard)/dashboard/affiliate/generate-link/page.js",
+  "/(dashboard)/dashboard/affiliate/page": "app/(dashboard)/dashboard/affiliate/page.js",
+  "/(dashboard)/dashboard/affiliate/payouts/page": "app/(dashboard)/dashboard/affiliate/payouts/page.js",
+  "/(dashboard)/dashboard/kyc/page": "app/(dashboard)/dashboard/kyc/page.js",
+  "/(dashboard)/dashboard/owner/order-status/page": "app/(dashboard)/dashboard/owner/order-status/page.js",
+  "/(dashboard)/dashboard/owner/page": "app/(dashboard)/dashboard/owner/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js"
 }

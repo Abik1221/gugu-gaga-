@@ -8,15 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 
-type FieldKey = "pharmacyName" | "email" | "password" | "licenseNumber" | "phone" | "address";
+type FieldKey = "businessName" | "email" | "password" | "tinNumber" | "phone" | "address" | "licenseFile";
 
 const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
-  pharmacyName: null,
+  businessName: null,
   email: null,
   password: null,
-  licenseNumber: null,
+  tinNumber: null,
   phone: null,
   address: null,
+  licenseFile: null,
 });
 
 export default function OwnerRegisterPage() {
@@ -27,13 +28,17 @@ export default function OwnerRegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<FieldKey, string | null>>(() => createEmptyFieldErrors());
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
-  const [pharmacyName, setPharmacyName] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [licenseNumber, setLicenseNumber] = useState("");
+  const [tinNumber, setTinNumber] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [licenseFile, setLicenseFile] = useState<File | null>(null);
 
   const clearFieldError = (key: FieldKey) =>
     setFieldErrors((prev) => ({
@@ -47,15 +52,15 @@ export default function OwnerRegisterPage() {
     setSuccess(null);
     setFieldErrors(createEmptyFieldErrors());
 
-    const trimmedPharmacyName = pharmacyName.trim();
+    const trimmedBusinessName = businessName.trim();
     const trimmedEmail = email.trim();
-    const trimmedLicenseNumber = licenseNumber.trim();
+    const trimmedTinNumber = tinNumber.trim();
 
     const validationErrors: Partial<Record<FieldKey, string>> = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!trimmedPharmacyName) {
-      validationErrors.pharmacyName = "Enter your pharmacy name.";
+    if (!trimmedBusinessName) {
+      validationErrors.businessName = "Enter your business name.";
     }
     if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       validationErrors.email = "Enter a valid email address.";
@@ -63,8 +68,11 @@ export default function OwnerRegisterPage() {
     if (!password || password.length < 6) {
       validationErrors.password = "Password must be at least 6 characters.";
     }
-    if (!trimmedLicenseNumber) {
-      validationErrors.licenseNumber = "Provide your pharmacy license number.";
+    if (!trimmedTinNumber) {
+      validationErrors.tinNumber = "Provide your TIN number.";
+    }
+    if (!licenseFile) {
+      validationErrors.licenseFile = "Business license document is required.";
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -82,16 +90,51 @@ export default function OwnerRegisterPage() {
 
     setLoading(true);
     try {
-      // API call would go here
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      let licenseBase64 = "";
+      let licenseMime = "";
+      let licenseName = "";
       
-      setSuccess("Registration successful! Redirecting to dashboard...");
+      if (licenseFile) {
+        const reader = new FileReader();
+        licenseBase64 = await new Promise<string>((resolve, reject) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(licenseFile);
+        });
+        licenseMime = licenseFile.type;
+        licenseName = licenseFile.name;
+      }
+
+      const response = await fetch("http://localhost:8000/api/v1/auth/register/owner", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pharmacy_name: trimmedBusinessName,
+          owner_email: trimmedEmail,
+          owner_password: password,
+          pharmacy_license_number: trimmedTinNumber,
+          owner_phone: phone || undefined,
+          address: address || undefined,
+          id_number: trimmedTinNumber,
+          license_document_base64: licenseBase64,
+          license_document_mime: licenseMime,
+          license_document_name: licenseName,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Registration failed");
+      }
+
+      setRegisteredEmail(trimmedEmail);
+      setOtpSent(true);
+      setSuccess("Registration successful! Check your email for verification code.");
       show({
         variant: "success",
         title: "Registration Complete",
-        description: "Your pharmacy owner account has been created successfully.",
+        description: "Check your email for the verification code.",
       });
-      setTimeout(() => router.replace("/dashboard/owner"), 1500);
     } catch (err: any) {
       const message = err?.message || "Failed to register";
       setError(message);
@@ -101,8 +144,42 @@ export default function OwnerRegisterPage() {
     }
   }
 
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    if (!otp || otp.length < 4) {
+      setError("Please enter the verification code.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/auth/register/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: registeredEmail, code: otp }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Invalid verification code");
+      }
+
+      show({
+        variant: "success",
+        title: "Verified",
+        description: "Redirecting to sign in...",
+      });
+      setTimeout(() => router.push("/owner-signin"), 1500);
+    } catch (err: any) {
+      setError(err.message || "Invalid verification code");
+      show({ variant: "destructive", title: "Verification Failed", description: err.message });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const featureBullets = [
-    "Multi-branch pharmacy management",
+    "Multi-branch business management",
     "AI-powered inventory optimization",
     "Real-time sales analytics",
     "Staff management system",
@@ -140,15 +217,15 @@ export default function OwnerRegisterPage() {
               </div>
             </div>
             <span className="text-2xl font-semibold tracking-wide text-white/90">
-              Zemen Pharma
+              Mesob AI
             </span>
           </div>
 
           <h1 className="mt-10 text-4xl font-bold leading-tight text-black">
-            Start your pharmacy management journey
+            Start your business management journey
           </h1>
           <p className="mt-4 text-lg text-slate-500">
-            Join thousands of pharmacy owners who trust our AI-powered platform to streamline their operations and boost profitability.
+            Join thousands of business owners who trust our AI-powered platform to streamline their operations and boost profitability.
           </p>
 
           <ul className="mt-10 space-y-4 text-slate-700">
@@ -168,7 +245,7 @@ export default function OwnerRegisterPage() {
           className="space-y-4 text-sm text-slate-700"
         >
           <p>
-            "Zemen Pharma has revolutionized how we manage our pharmacy chain. The AI insights are incredible!"
+            "Mesob has revolutionized how we manage our business. The AI insights are incredible!"
           </p>
           <div className="h-px w-24 bg-white/20" />
           <p>
@@ -185,9 +262,9 @@ export default function OwnerRegisterPage() {
           className="mx-auto w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-[0_25px_80px_-40px_rgba(34,197,94,0.65)] backdrop-blur"
         >
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-black">Register as Pharmacy Owner</h2>
+            <h2 className="text-3xl font-bold text-black">Register as Business Owner</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Create your pharmacy management account today.
+              Create your business management account today.
             </p>
           </div>
 
@@ -202,24 +279,49 @@ export default function OwnerRegisterPage() {
             </div>
           )}
 
-          <form onSubmit={submitOwner} className="space-y-5">
+          {otpSent ? (
+            <form onSubmit={handleVerifyOtp} className="space-y-5">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                  Verification Code*
+                </label>
+                <Input
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter 6-digit code"
+                  maxLength={6}
+                  className="mt-2 border border-slate-200 bg-white/5 text-slate-700 text-center text-2xl tracking-widest"
+                />
+                <p className="mt-2 text-xs text-slate-600">Check your email for the verification code</p>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-green-600 hover:bg-green-700 px-6 py-3 font-semibold text-white shadow-lg shadow-green-500/30 transition duration-300 hover:scale-[1.01] hover:shadow-green-400/40"
+              >
+                {loading ? "Verifying..." : "Verify Code"}
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={submitOwner} className="space-y-5">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                Pharmacy Name*
+                Business Name*
               </label>
               <Input
-                value={pharmacyName}
+                value={businessName}
                 onChange={(e) => {
-                  clearFieldError("pharmacyName");
-                  setPharmacyName(e.target.value);
+                  clearFieldError("businessName");
+                  setBusinessName(e.target.value);
                 }}
-                className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.pharmacyName
+                className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.businessName
                   ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                   : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                   }`}
               />
-              {fieldErrors.pharmacyName && (
-                <p className="mt-1 text-xs text-red-500">{fieldErrors.pharmacyName}</p>
+              {fieldErrors.businessName && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.businessName}</p>
               )}
             </div>
 
@@ -267,21 +369,22 @@ export default function OwnerRegisterPage() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                Pharmacy License Number*
+                TIN Number*
               </label>
               <Input
-                value={licenseNumber}
+                value={tinNumber}
                 onChange={(e) => {
-                  clearFieldError("licenseNumber");
-                  setLicenseNumber(e.target.value);
+                  clearFieldError("tinNumber");
+                  setTinNumber(e.target.value);
                 }}
-                className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.licenseNumber
+                placeholder="Tax Identification Number"
+                className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.tinNumber
                   ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                   : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                   }`}
               />
-              {fieldErrors.licenseNumber && (
-                <p className="mt-1 text-xs text-red-500">{fieldErrors.licenseNumber}</p>
+              {fieldErrors.tinNumber && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.tinNumber}</p>
               )}
             </div>
 
@@ -299,13 +402,34 @@ export default function OwnerRegisterPage() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                Pharmacy Address
+                Business Address
               </label>
               <Input
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/40"
               />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                Business License Document*
+              </label>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  clearFieldError("licenseFile");
+                  setLicenseFile(e.target.files?.[0] || null);
+                }}
+                className={`mt-2 w-full text-xs text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 ${fieldErrors.licenseFile ? 'border border-red-400' : ''}`}
+              />
+              {licenseFile && (
+                <p className="mt-1 text-xs text-slate-600">Selected: {licenseFile.name}</p>
+              )}
+              {fieldErrors.licenseFile && (
+                <p className="mt-1 text-xs text-red-500">{fieldErrors.licenseFile}</p>
+              )}
             </div>
 
             <Button
@@ -326,13 +450,17 @@ export default function OwnerRegisterPage() {
               {loading ? "Registering..." : "Register as Owner"}
             </Button>
 
-            <p className="text-center text-xs text-slate-700">
+          </form>
+          )}
+
+          {!otpSent && (
+            <p className="mt-4 text-center text-xs text-slate-700">
               Already have an account?{" "}
-              <Link href="/auth/login" className="font-medium text-green-600 hover:underline">
+              <Link href="/owner-signin" className="font-medium text-green-600 hover:underline">
                 Sign in
               </Link>
             </p>
-          </form>
+          )}
 
           <p className="mt-8 text-center text-[11px] text-slate-700">
             By continuing you agree to our{" "}

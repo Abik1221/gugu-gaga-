@@ -13,7 +13,8 @@ class SupplierKYC(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     supplier_id: Mapped[int] = mapped_column(Integer, ForeignKey("suppliers.id", ondelete="CASCADE"), nullable=False, index=True)
     status: Mapped[str] = mapped_column(String(16), default="pending", index=True)  # pending, approved, rejected
-    business_license_number: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    national_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    business_license_image: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     tax_certificate_number: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     documents_path: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)

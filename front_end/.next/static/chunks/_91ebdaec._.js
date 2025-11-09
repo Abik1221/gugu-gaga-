@@ -226,12 +226,7 @@ async function postMultipart(path, formData, tenantId) {
 function getAccessToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
-    return localStorage.getItem("access_token");
-}
-function getTenantId() {
-    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-    ;
-    return localStorage.getItem("tenant_id");
+    return localStorage.getItem("access_token") || localStorage.getItem("token");
 }
 function getRefreshToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
@@ -267,14 +262,12 @@ async function refreshTokens() {
 async function authFetch(path, init) {
     let retry = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true, tenantId = arguments.length > 3 ? arguments[3] : void 0;
     const token = getAccessToken();
-    var _ref;
-    const activeTenantId = (_ref = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref !== void 0 ? _ref : undefined;
     const headers = buildHeaders({
         ...(init === null || init === void 0 ? void 0 : init.headers) || {},
         ...token ? {
             Authorization: "Bearer ".concat(token)
         } : {}
-    }, activeTenantId);
+    }, tenantId);
     let res = await fetch(resolveApiUrl(path), {
         ...init || {},
         headers
@@ -283,14 +276,12 @@ async function authFetch(path, init) {
         const ok = await refreshTokens();
         if (ok) {
             const newToken = getAccessToken();
-            var _ref1;
-            const retryTenantId = (_ref1 = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref1 !== void 0 ? _ref1 : undefined;
             const retryHeaders = buildHeaders({
                 ...(init === null || init === void 0 ? void 0 : init.headers) || {},
                 ...newToken ? {
                     Authorization: "Bearer ".concat(newToken)
                 } : {}
-            }, retryTenantId);
+            }, tenantId);
             res = await fetch(resolveApiUrl(path), {
                 ...init || {},
                 headers: retryHeaders
@@ -380,9 +371,6 @@ const AuthAPI = {
             if ("TURBOPACK compile-time truthy", 1) {
                 localStorage.setItem("access_token", resp.access_token);
                 localStorage.setItem("refresh_token", resp.refresh_token);
-                if (tenantId) {
-                    localStorage.setItem("tenant_id", tenantId);
-                }
             }
             return resp;
         }),
@@ -398,9 +386,6 @@ const AuthAPI = {
             if ("TURBOPACK compile-time truthy", 1) {
                 localStorage.setItem("access_token", resp.access_token);
                 localStorage.setItem("refresh_token", resp.refresh_token);
-                if (tenantId) {
-                    localStorage.setItem("tenant_id", tenantId);
-                }
             }
             return resp;
         }),
@@ -414,17 +399,10 @@ const AuthAPI = {
             if (!res.ok) throw new Error("Failed to revoke session");
         }),
     changePassword: (body)=>postAuthJSON("/api/v1/auth/change-password", body),
-    me: ()=>getAuthJSON("/api/v1/auth/me").then((profile)=>{
-            if ("TURBOPACK compile-time truthy", 1) {
-                if (profile === null || profile === void 0 ? void 0 : profile.tenant_id) {
-                    localStorage.setItem("tenant_id", profile.tenant_id);
-                }
-            }
-            return profile;
-        })
+    me: ()=>getAuthJSON("/api/v1/auth/me")
 };
 const TenantAPI = {
-    activity: async (params)=>{
+    activity: async (params, tenantId)=>{
         var _params_action;
         const searchParams = new URLSearchParams();
         if (params === null || params === void 0 ? void 0 : params.limit) searchParams.set("limit", params.limit.toString());
@@ -432,8 +410,6 @@ const TenantAPI = {
         params === null || params === void 0 ? void 0 : (_params_action = params.action) === null || _params_action === void 0 ? void 0 : _params_action.forEach((action)=>searchParams.append("action", action));
         const qs = searchParams.toString();
         const url = "/api/v1/tenant/activity".concat(qs ? "?".concat(qs) : "");
-        var _getTenantId;
-        const tenantId = (_getTenantId = getTenantId()) !== null && _getTenantId !== void 0 ? _getTenantId : undefined;
         const res = await authFetch(url, undefined, true, tenantId);
         if (res.status === 404 || res.status === 204) {
             return [];
@@ -1390,13 +1366,13 @@ async function getSupplierFlowStatus() {
 function getRedirectPath(status) {
     switch(status.step){
         case 'kyc_pending':
-            return '/register/supplier';
+            return '/dashboard/supplier-kyc';
         case 'payment_pending':
             return '/dashboard/supplier-payment';
         case 'approved':
             return '/dashboard/supplier';
         default:
-            return '/register/supplier';
+            return '/dashboard/supplier-kyc';
     }
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
@@ -1609,14 +1585,7 @@ function SupplierFlowLayout(param) {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$supplier$2d$flow$2d$guard$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SupplierFlowGuard"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "min-h-screen bg-gray-50",
-            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "container mx-auto px-4 py-8",
-                children: children
-            }, void 0, false, {
-                fileName: "[project]/app/(dashboard)/dashboard/(supplier-flow)/layout.tsx",
-                lineNumber: 13,
-                columnNumber: 9
-            }, this)
+            children: children
         }, void 0, false, {
             fileName: "[project]/app/(dashboard)/dashboard/(supplier-flow)/layout.tsx",
             lineNumber: 12,

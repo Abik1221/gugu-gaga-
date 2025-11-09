@@ -102,6 +102,17 @@ export default function OwnerDashboardPage() {
       try {
         const profile = await AuthAPI.me();
         if (!active) return;
+        
+        // Check flow status
+        if (profile?.kyc_status !== "approved") {
+          window.location.href = "/dashboard/kyc";
+          return;
+        }
+        if (profile?.subscription_status !== "active") {
+          window.location.href = "/dashboard/payment";
+          return;
+        }
+        
         setMe(profile);
         const tid = profile?.tenant_id || null;
         setTenantId(tid);

@@ -14,7 +14,7 @@ type FieldKey =
   | "password"
   | "nationalId"
   | "tinNumber"
-  | "licenseNumber";
+  | "licenseImage";
 
 const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
   supplierName: null,
@@ -22,7 +22,7 @@ const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
   password: null,
   nationalId: null,
   tinNumber: null,
-  licenseNumber: null,
+  licenseImage: null,
 });
 
 export default function SupplierRegisterPage() {
@@ -33,13 +33,16 @@ export default function SupplierRegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<FieldKey, string | null>>(() => createEmptyFieldErrors());
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
   const [supplierName, setSupplierName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nationalId, setNationalId] = useState("");
   const [tinNumber, setTinNumber] = useState("");
-  const [licenseNumber, setLicenseNumber] = useState("");
+  const [licenseImage, setLicenseImage] = useState<File | null>(null);
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
 
@@ -59,7 +62,6 @@ export default function SupplierRegisterPage() {
     const trimmedEmail = email.trim();
     const trimmedNationalId = nationalId.trim();
     const trimmedTinNumber = tinNumber.trim();
-    const trimmedLicenseNumber = licenseNumber.trim();
 
     const validationErrors: Partial<Record<FieldKey, string>> = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -79,8 +81,8 @@ export default function SupplierRegisterPage() {
     if (!trimmedTinNumber) {
       validationErrors.tinNumber = "Provide your TIN (Tax Identification Number).";
     }
-    if (!trimmedLicenseNumber) {
-      validationErrors.licenseNumber = "Include your supplier license number.";
+    if (!licenseImage) {
+      validationErrors.licenseImage = "Upload your supplier license image.";
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -98,20 +100,76 @@ export default function SupplierRegisterPage() {
 
     setLoading(true);
     try {
-      // API call would go here
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await fetch("http://localhost:8000/api/v1/auth/register/supplier", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: trimmedEmail,
+          password: password,
+          supplier_name: trimmedSupplierName,
+          national_id: trimmedNationalId,
+          tin_number: trimmedTinNumber,
+          business_license_image: `/uploads/${licenseImage.name}`,
+          phone: phone.trim() || null,
+          address: address.trim() || null,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Registration failed");
+      }
       
-      setSuccess("Registration successful! Redirecting to verification page...");
+      setSuccess("Registration successful! Redirecting to KYC page...");
       show({
         variant: "success",
         title: "Registration Complete",
-        description: "Your supplier account has been created. Please wait for verification.",
+        description: "Your supplier account has been created. Redirecting to KYC verification.",
       });
-      setTimeout(() => router.replace("/dashboard/supplier/kyc"), 1500);
+      
+      setRegisteredEmail(trimmedEmail);
+      setOtpSent(true);
+      setSuccess("Registration successful! Please verify your email.");
     } catch (err: any) {
       const message = err?.message || "Failed to register";
       setError(message);
       show({ variant: "destructive", title: "Registration Failed", description: message });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    if (!otp || otp.length < 4) {
+      setError("Please enter the verification code.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/auth/register/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: registeredEmail, code: otp }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Invalid verification code");
+      }
+
+      setSuccess("Email verified! Redirecting to sign in...");
+      show({
+        variant: "success",
+        title: "Verification Complete",
+        description: "Your account has been verified. Please sign in.",
+      });
+      setTimeout(() => router.replace("/supplier-signin"), 1500);
+    } catch (err: any) {
+      const message = err?.message || "Verification failed";
+      setError(message);
+      show({ variant: "destructive", title: "Verification Failed", description: message });
     } finally {
       setLoading(false);
     }
@@ -184,7 +242,7 @@ export default function SupplierRegisterPage() {
           className="space-y-4 text-sm text-slate-700"
         >
           <p>
-            "Zemen Pharma's supplier platform has streamlined our operations and connected us with quality pharmacy partners nationwide."
+            "Mesob's business management platform has streamlined our operations and connected us with quality business partners nationwide."
           </p>
           <div className="h-px w-24 bg-white/20" />
           <p>
@@ -218,7 +276,22 @@ export default function SupplierRegisterPage() {
             </div>
           )}
 
-          <form onSubmit={submitSupplier} className="space-y-5">
+          <form onSubmit={otpSent ? handleVerifyOtp : submitSupplier} className="space-y-5">
+            {otpSent ? (
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                  Verification Code
+                </label>
+                <Input
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter 6-digit code"
+                  className="mt-2 border border-slate-200 bg-white/5 text-slate-700"
+                  maxLength={6}
+                />
+                <p className="mt-1 text-xs text-slate-500">Check your email ({registeredEmail}) for the verification code.</p>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
@@ -329,22 +402,46 @@ export default function SupplierRegisterPage() {
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                  Supplier License Number*
+                  Supplier License Image*
                 </label>
-                <Input
-                  value={licenseNumber}
-                  onChange={(e) => {
-                    clearFieldError("licenseNumber");
-                    setLicenseNumber(e.target.value);
-                  }}
-                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.licenseNumber
-                    ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                    : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                <div className="relative mt-2">
+                  <input
+                    type="file"
+                    id="license-upload"
+                    accept="image/*"
+                    onChange={(e) => {
+                      clearFieldError("licenseImage");
+                      setLicenseImage(e.target.files?.[0] || null);
+                    }}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="license-upload"
+                    className={`flex items-center justify-between px-4 py-2.5 border rounded-lg cursor-pointer transition bg-white/5 ${fieldErrors.licenseImage
+                      ? "border-red-400/60 hover:border-red-300"
+                      : "border-slate-200 hover:border-green-400"
                     }`}
-                />
-                <p className="mt-1 text-xs text-slate-500">Official pharmaceutical supplier license.</p>
-                {fieldErrors.licenseNumber && (
-                  <p className="mt-1 text-xs text-red-500">{fieldErrors.licenseNumber}</p>
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      {licenseImage && (
+                        <div className="w-10 h-10 rounded bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                          <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                      <span className="text-sm text-slate-700 truncate">
+                        {licenseImage ? licenseImage.name : "No file selected"}
+                      </span>
+                    </div>
+                    <span className="px-4 py-1.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition ml-3 flex-shrink-0">
+                      BROWSE
+                    </span>
+                  </label>
+                </div>
+                <p className="mt-1 text-xs text-slate-500">Upload official pharmaceutical supplier license image.</p>
+                {fieldErrors.licenseImage && (
+                  <p className="mt-1 text-xs text-red-500">{fieldErrors.licenseImage}</p>
                 )}
               </div>
 
@@ -373,6 +470,7 @@ export default function SupplierRegisterPage() {
                 <p className="mt-1 text-xs text-slate-500">Optional business location.</p>
               </div>
             </div>
+            )}
 
             <Button
               type="submit"
@@ -389,7 +487,7 @@ export default function SupplierRegisterPage() {
                   />
                 </svg>
               ) : null}
-              {loading ? "Registering..." : "Register as Supplier"}
+              {loading ? (otpSent ? "Verifying..." : "Registering...") : (otpSent ? "Verify Email" : "Register as Supplier")}
             </Button>
 
             <p className="text-center text-xs text-slate-700">

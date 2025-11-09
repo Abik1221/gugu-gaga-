@@ -16,10 +16,12 @@ router = APIRouter(prefix="/supplier-onboarding", tags=["supplier_onboarding"])
 
 
 class SupplierKYCSubmit(BaseModel):
-    business_license_number: Optional[str] = None
-    tax_certificate_number: Optional[str] = None
-    documents_path: Optional[str] = None
-    notes: Optional[str] = None
+    supplier_name: Optional[str] = None
+    national_id: Optional[str] = None
+    tin_number: Optional[str] = None
+    business_license_image: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
 
 
 class SupplierPaymentSubmit(BaseModel):
@@ -98,25 +100,47 @@ def submit_kyc(
         raise HTTPException(status_code=400, detail="KYC already approved")
     
     if existing_kyc:
-        # Update existing KYC
-        existing_kyc.business_license_number = kyc_data.business_license_number
-        existing_kyc.tax_certificate_number = kyc_data.tax_certificate_number
-        existing_kyc.documents_path = kyc_data.documents_path
-        existing_kyc.notes = kyc_data.notes
+        # Update existing KYC and supplier profile
+        if kyc_data.supplier_name:
+            supplier.company_name = kyc_data.supplier_name
+        if kyc_data.phone:
+            supplier.phone = kyc_data.phone
+        if kyc_data.address:
+            supplier.address = kyc_data.address
+        if kyc_data.tin_number:
+            supplier.tax_id = kyc_data.tin_number
+        if kyc_data.national_id:
+            existing_kyc.national_id = kyc_data.national_id
+        if kyc_data.business_license_image:
+            existing_kyc.business_license_image = kyc_data.business_license_image
+            supplier.business_license = kyc_data.business_license_image
+        if kyc_data.tin_number:
+            existing_kyc.tax_certificate_number = kyc_data.tin_number
         existing_kyc.status = "pending"
         existing_kyc.submitted_at = datetime.utcnow()
         db.add(existing_kyc)
+        db.add(supplier)
     else:
-        # Create new KYC
+        # Create new KYC and update supplier profile
+        if kyc_data.supplier_name:
+            supplier.company_name = kyc_data.supplier_name
+        if kyc_data.phone:
+            supplier.phone = kyc_data.phone
+        if kyc_data.address:
+            supplier.address = kyc_data.address
+        if kyc_data.tin_number:
+            supplier.tax_id = kyc_data.tin_number
+        if kyc_data.business_license_image:
+            supplier.business_license = kyc_data.business_license_image
         kyc = SupplierKYC(
             supplier_id=supplier.id,
-            business_license_number=kyc_data.business_license_number,
-            tax_certificate_number=kyc_data.tax_certificate_number,
-            documents_path=kyc_data.documents_path,
-            notes=kyc_data.notes,
+            national_id=kyc_data.national_id,
+            business_license_image=kyc_data.business_license_image,
+            tax_certificate_number=kyc_data.tin_number,
             status="pending"
         )
         db.add(kyc)
+        db.add(supplier)
     
     db.commit()
     return {"message": "KYC application submitted successfully"}
@@ -128,19 +152,26 @@ def get_kyc_status(
     db: Session = Depends(get_db)
 ):
     """Get KYC application status"""
-    supplier = SupplierService.get_supplier_by_user_id(db, current_user.id)
-    if not supplier:
-        raise HTTPException(status_code=404, detail="Supplier profile not found")
+    from app.models.supplier import Supplier
     
-    kyc = db.query(SupplierKYC).filter(SupplierKYC.supplier_id == supplier.id).first()
-    if not kyc:
+    supplier = db.query(Supplier).filter(Supplier.user_id == current_user.id).first()
+    if not supplier:
         return {"status": "not_submitted"}
     
+    kyc = db.query(SupplierKYC).filter(SupplierKYC.supplier_id == supplier.id).first()
+    
+    # Return supplier data even if KYC not submitted yet
     return {
-        "status": kyc.status,
-        "submitted_at": kyc.submitted_at.isoformat(),
-        "reviewed_at": kyc.reviewed_at.isoformat() if kyc.reviewed_at else None,
-        "admin_notes": kyc.admin_notes
+        "status": kyc.status if kyc else "not_submitted",
+        "supplier_name": supplier.company_name or "",
+        "national_id": kyc.national_id if kyc else "",
+        "tin_number": supplier.tax_id or "",
+        "business_license_image": (kyc.business_license_image if kyc else supplier.business_license) or "",
+        "phone": supplier.phone or "",
+        "address": supplier.address or "",
+        "submitted_at": kyc.submitted_at.isoformat() if kyc and kyc.submitted_at else None,
+        "reviewed_at": kyc.reviewed_at.isoformat() if kyc and kyc.reviewed_at else None,
+        "admin_notes": kyc.admin_notes if kyc else None
     }
 
 

@@ -88,12 +88,12 @@ export async function getSupplierFlowStatus(): Promise<SupplierFlowStatus> {
 export function getRedirectPath(status: SupplierFlowStatus): string {
   switch (status.step) {
     case 'kyc_pending':
-      return '/register/supplier';
+      return '/dashboard/supplier-kyc';
     case 'payment_pending':
       return '/dashboard/supplier-payment';
     case 'approved':
       return '/dashboard/supplier';
     default:
-      return '/register/supplier';
+      return '/dashboard/supplier-kyc';
   }
 }

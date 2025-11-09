@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import AffiliateLoginPage from "../affiliate-login/page";
+import AffiliateLoginPage from "../affiliate-signin/page";
 import AffiliateRegisterPage from "../register/affiliate/page";
 
 export default function AuthRouterPage() {

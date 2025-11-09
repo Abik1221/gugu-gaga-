@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/mesob/gugu-gaga-/front_end/app/%28dashboard%29/dashboard/%28owner-flow%29/owner/page.tsx"],"sourcesContent":["\"use client\";\n\nimport { useEffect } from \"react\";\nimport { useRouter } from \"next/navigation\";\n\nexport default function OwnerDashboardRedirect() {\n  const router = useRouter();\n\n  useEffect(() => {\n    router.replace(\"/dashboard/owner\");\n  }, [router]);\n\n  return (\n    <div className=\"flex items-center justify-center h-screen\">\n      <div className=\"text-center\">\n        <div className=\"animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4\"></div>\n        <p>Redirecting to dashboard...</p>\n      </div>\n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;AAEA;AACA;AAHA;;;;AAKe,SAAS;IACtB,MAAM,SAAS,IAAA,+IAAS;IAExB,IAAA,kNAAS,EAAC;QACR,OAAO,OAAO,CAAC;IACjB,GAAG;QAAC;KAAO;IAEX,qBACE,8OAAC;QAAI,WAAU;kBACb,cAAA,8OAAC;YAAI,WAAU;;8BACb,8OAAC;oBAAI,WAAU;;;;;;8BACf,8OAAC;8BAAE;;;;;;;;;;;;;;;;;AAIX","debugId":null}}]
+}

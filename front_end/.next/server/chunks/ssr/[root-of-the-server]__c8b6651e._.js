@@ -951,21 +951,21 @@ function RoleSelectionDialog({ children }) {
             title: "Business Owner",
             description: "Manage your business operations and staff",
             icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$store$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Store$3e$__["Store"],
-            route: "/signin/owner"
+            route: "/owner-signin"
         },
         {
             id: "affiliate",
             title: "Affiliate",
             description: "Access your affiliate dashboard and commissions",
             icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$users$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Users$3e$__["Users"],
-            route: "/signin/affiliate"
+            route: "/affiliate-signin"
         },
         {
             id: "supplier",
             title: "Supplier",
             description: "Manage your supply chain and inventory",
             icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$truck$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Truck$3e$__["Truck"],
-            route: "/dashboard/supplier-status"
+            route: "/supplier-signin"
         }
     ];
     const handleRoleSelect = (route)=>{

@@ -259,7 +259,7 @@ async function postMultipart(path, formData, tenantId) {
 function getAccessToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
-    return localStorage.getItem("access_token");
+    return localStorage.getItem("access_token") || localStorage.getItem("token");
 }
 function getTenantId() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable

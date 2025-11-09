@@ -89,6 +89,7 @@ def _kyc_to_response(app: KYCApplication) -> KYCStatusResponse:
         status=app.status,
         pharmacy_name=app.pharmacy_name,
         pharmacy_address=app.pharmacy_address,
+        owner_email=app.owner_email,
         owner_phone=app.owner_phone,
         id_number=app.id_number,
         pharmacy_license_number=app.pharmacy_license_number,
@@ -136,8 +137,23 @@ def kyc_status(
     tenant_id: str = Depends(require_tenant),
     current_user: User = Depends(get_current_user),
     _rl=Depends(rate_limit_user("kyc_status_user")),
-    _ten=Depends(enforce_user_tenant),
 ):
+    # Check tenant access - allow if user's tenant_id matches or UserTenant link exists
+    if current_user.role != Role.admin.value and current_user.tenant_id != tenant_id:
+        from app.models.user_tenant import UserTenant
+        link = db.query(UserTenant).filter(
+            UserTenant.user_id == current_user.id,
+            UserTenant.tenant_id == tenant_id
+        ).first()
+        if not link:
+            # Create UserTenant link if user's tenant_id matches
+            if current_user.tenant_id == tenant_id:
+                link = UserTenant(user_id=current_user.id, tenant_id=tenant_id)
+                db.add(link)
+                db.commit()
+            else:
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant access denied")
+    
     app = (
         db.query(KYCApplication)
         .filter(KYCApplication.tenant_id == tenant_id, KYCApplication.applicant_user_id == current_user.id)
@@ -145,7 +161,16 @@ def kyc_status(
         .first()
     )
     if not app:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No KYC submission found")
+        # Create empty KYC record if none exists
+        app = KYCApplication(
+            tenant_id=tenant_id,
+            applicant_user_id=current_user.id,
+            status="not_submitted",
+            created_at=datetime.utcnow(),
+        )
+        db.add(app)
+        db.commit()
+        db.refresh(app)
     return _kyc_to_response(app)
 
 

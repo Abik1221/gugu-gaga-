@@ -35,6 +35,8 @@ interface Supplier {
   logo?: string;
   description: string;
   certifications: string[];
+  upfront_payment_percent?: number;
+  after_delivery_percent?: number;
 }
 
 interface Product {
@@ -51,6 +53,8 @@ interface Product {
   brand: string;
   sku: string;
   stock_quantity: number;
+  upfront_percent?: number;
+  after_delivery_percent?: number;
 }
 
 export default function SuppliersMarketplace() {
@@ -122,7 +126,9 @@ export default function SuppliersMarketplace() {
           min_order: 500,
           verified: true,
           description: "Leading pharmaceutical supplier with 20+ years experience. ISO certified with global distribution network.",
-          certifications: ["ISO 9001", "FDA Approved", "WHO GMP"]
+          certifications: ["ISO 9001", "FDA Approved", "WHO GMP"],
+          upfront_payment_percent: 50,
+          after_delivery_percent: 50
         },
         {
           id: 2,
@@ -138,7 +144,9 @@ export default function SuppliersMarketplace() {
           min_order: 300,
           verified: true,
           description: "Specialized in generic pharmaceuticals and over-the-counter medications. Fast delivery and competitive pricing.",
-          certifications: ["FDA Approved", "cGMP Certified"]
+          certifications: ["FDA Approved", "cGMP Certified"],
+          upfront_payment_percent: 30,
+          after_delivery_percent: 70
         },
         {
           id: 3,
@@ -154,7 +162,9 @@ export default function SuppliersMarketplace() {
           min_order: 1000,
           verified: true,
           description: "Specialized in temperature-sensitive biologics and specialty pharmaceuticals. Advanced cold chain logistics.",
-          certifications: ["ISO 15378", "GDP Certified", "IATA Certified"]
+          certifications: ["ISO 15378", "GDP Certified", "IATA Certified"],
+          upfront_payment_percent: 60,
+          after_delivery_percent: 40
         }
       ];
 
@@ -172,7 +182,9 @@ export default function SuppliersMarketplace() {
           description: "Fast-acting pain relief tablets for headaches, fever, and minor aches",
           brand: "MediCore",
           sku: "MC-PAR-500",
-          stock_quantity: 5000
+          stock_quantity: 5000,
+          upfront_percent: 40,
+          after_delivery_percent: 60
         },
         { 
           id: 2, 
@@ -187,7 +199,9 @@ export default function SuppliersMarketplace() {
           description: "Non-steroidal anti-inflammatory drug for pain and inflammation",
           brand: "PharmaTech",
           sku: "PT-IBU-200",
-          stock_quantity: 3200
+          stock_quantity: 3200,
+          upfront_percent: 50,
+          after_delivery_percent: 50
         },
         { 
           id: 3, 
@@ -202,7 +216,9 @@ export default function SuppliersMarketplace() {
           description: "Broad-spectrum antibiotic for bacterial infections",
           brand: "BioMed",
           sku: "BM-AMX-250",
-          stock_quantity: 150
+          stock_quantity: 150,
+          upfront_percent: 30,
+          after_delivery_percent: 70
         },
         { 
           id: 4, 
@@ -217,7 +233,9 @@ export default function SuppliersMarketplace() {
           description: "Proton pump inhibitor for acid reflux and gastric ulcers",
           brand: "GastroMed",
           sku: "GM-OME-20",
-          stock_quantity: 800
+          stock_quantity: 800,
+          upfront_percent: 25,
+          after_delivery_percent: 75
         },
         { 
           id: 5, 
@@ -232,7 +250,9 @@ export default function SuppliersMarketplace() {
           description: "Long-acting insulin for diabetes management",
           brand: "DiabetCare",
           sku: "DC-INS-GLR",
-          stock_quantity: 200
+          stock_quantity: 200,
+          upfront_percent: 60,
+          after_delivery_percent: 40
         },
       ];
       
@@ -541,6 +561,15 @@ export default function SuppliersMarketplace() {
                         <span>Delivery: <strong className="text-black">{supplier.delivery_time}</strong></span>
                         <span>Contact: <strong className="text-black">{supplier.email}</strong></span>
                       </div>
+                      {supplier.upfront_payment_percent !== undefined && supplier.after_delivery_percent !== undefined && (
+                        <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                          <p className="text-sm font-medium text-blue-900 mb-1">Payment Terms:</p>
+                          <div className="flex gap-4 text-sm text-blue-800">
+                            <span>Upfront: <strong>{supplier.upfront_payment_percent}%</strong></span>
+                            <span>After Delivery: <strong>{supplier.after_delivery_percent}%</strong></span>
+                          </div>
+                        </div>
+                      )}
                     </DialogHeader>
                     
                     <div className="space-y-4">
@@ -590,6 +619,15 @@ export default function SuppliersMarketplace() {
                                         <span>Stock: {product.stock_quantity}</span>
                                         <span>Min Order: {product.min_quantity}</span>
                                       </div>
+                                      {product.upfront_percent !== undefined && product.after_delivery_percent !== undefined && (
+                                        <div className="mt-2 p-2 bg-blue-50 rounded border border-blue-200">
+                                          <p className="text-xs font-medium text-blue-900 mb-1">Payment Terms:</p>
+                                          <div className="flex gap-3 text-xs text-blue-800">
+                                            <span>Upfront: <strong>{product.upfront_percent}%</strong></span>
+                                            <span>After Delivery: <strong>{product.after_delivery_percent}%</strong></span>
+                                          </div>
+                                        </div>
+                                      )}
                                     </div>
                                     
                                     <div className="text-right space-y-2">

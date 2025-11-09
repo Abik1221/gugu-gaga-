@@ -46,7 +46,7 @@ export default function HeroSection() {
             >
               <h1 className="text-5xl lg:text-6xl text-gray-900">
                 Transform Your{" "}
-                <span className="text-emerald-600">Business</span> with AI
+                <span className="text-emerald-600">Business</span> with AI-Powered Management Software
               </h1>
             </motion.div>
 

@@ -25,6 +25,8 @@ __turbopack_context__.s([
     ()=>KYCAPI,
     "MedicinesAPI",
     ()=>MedicinesAPI,
+    "OrderAPI",
+    ()=>OrderAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
     "OwnerChatAPI",
@@ -35,6 +37,14 @@ __turbopack_context__.s([
     ()=>SalesAPI,
     "StaffAPI",
     ()=>StaffAPI,
+    "SupplierAPI",
+    ()=>SupplierAPI,
+    "SupplierAdminAPI",
+    ()=>SupplierAdminAPI,
+    "SupplierAnalyticsAPI",
+    ()=>SupplierAnalyticsAPI,
+    "SupplierOnboardingAPI",
+    ()=>SupplierOnboardingAPI,
     "TENANT_HEADER",
     ()=>TENANT_HEADER,
     "TenantAPI",
@@ -216,7 +226,7 @@ async function postMultipart(path, formData, tenantId) {
 function getAccessToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
-    return localStorage.getItem("access_token");
+    return localStorage.getItem("access_token") || localStorage.getItem("token");
 }
 function getTenantId() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
@@ -617,9 +627,19 @@ const OwnerAnalyticsAPI = {
         const params = new URLSearchParams();
         if (options === null || options === void 0 ? void 0 : options.horizon) params.set("horizon", options.horizon);
         if (options === null || options === void 0 ? void 0 : options.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+        if (options === null || options === void 0 ? void 0 : options.days) params.set("days", String(options.days));
         const query = params.toString();
-        const path = "/api/v1/owner/analytics/overview".concat(query ? "?".concat(query) : "");
+        const path = "/api/v1/analytics/owner/overview".concat(query ? "?".concat(query) : "");
         return getAuthJSON(path, tenantId);
+    }
+};
+const SupplierAnalyticsAPI = {
+    overview: (days)=>{
+        const params = new URLSearchParams();
+        if (days) params.set("days", String(days));
+        const query = params.toString();
+        const path = "/api/v1/analytics/supplier/overview".concat(query ? "?".concat(query) : "");
+        return getAuthJSON(path);
     }
 };
 const OwnerChatAPI = {
@@ -749,6 +769,56 @@ const SalesAPI = {
         const path = "/api/v1/sales/pos".concat(query);
         return postAuthJSON(path, lines, tenantId);
     }
+};
+const SupplierAPI = {
+    // Profile management
+    getProfile: ()=>getAuthJSON("/api/v1/suppliers/profile"),
+    createProfile: (data)=>postAuthJSON("/api/v1/suppliers/profile", data),
+    updateProfile: (data)=>putAuthJSON("/api/v1/suppliers/profile", data),
+    // Product management
+    getProducts: ()=>getAuthJSON("/api/v1/suppliers/products"),
+    createProduct: (data)=>postAuthJSON("/api/v1/suppliers/products", data),
+    updateProduct: (id, data)=>putAuthJSON("/api/v1/suppliers/products/".concat(id), data),
+    deleteProduct: (id)=>deleteAuthJSON("/api/v1/suppliers/products/".concat(id)),
+    // Order management
+    getOrders: ()=>getAuthJSON("/api/v1/suppliers/orders"),
+    approveOrder: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/approve"), {}),
+    rejectOrder: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/reject"), {}),
+    verifyPayment: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/verify-payment"), {}),
+    markDelivered: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/mark-delivered"), {}),
+    // Public endpoints for customers
+    browse: (tenantId)=>getAuthJSON("/api/v1/suppliers/browse", tenantId),
+    getSupplierProducts: (supplierId, tenantId)=>getAuthJSON("/api/v1/suppliers/".concat(supplierId, "/products"), tenantId)
+};
+const OrderAPI = {
+    create: (data, tenantId)=>postAuthJSON("/api/v1/orders", data, tenantId),
+    list: (tenantId)=>getAuthJSON("/api/v1/orders", tenantId),
+    get: (id, tenantId)=>getAuthJSON("/api/v1/orders/".concat(id), tenantId),
+    submitPaymentCode: (id, code, tenantId)=>putAuthJSON("/api/v1/orders/".concat(id, "/payment-code"), {
+            code
+        }, tenantId),
+    createReview: (id, data, tenantId)=>postAuthJSON("/api/v1/orders/".concat(id, "/review"), data, tenantId),
+    getReview: (id, tenantId)=>getAuthJSON("/api/v1/orders/".concat(id, "/review"), tenantId)
+};
+const SupplierOnboardingAPI = {
+    getStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/status"),
+    submitKYC: (data)=>postAuthJSON("/api/v1/supplier-onboarding/kyc/submit", data),
+    getKYCStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/kyc/status"),
+    submitPayment: (data)=>postAuthJSON("/api/v1/supplier-onboarding/payment/submit", data),
+    getPaymentStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/payment/status")
+};
+const SupplierAdminAPI = {
+    getSuppliers: ()=>getAuthJSON("/api/v1/admin/suppliers"),
+    getPendingKYC: ()=>getAuthJSON("/api/v1/admin/suppliers/kyc/pending"),
+    approveKYC: (supplierId)=>postAuthJSON("/api/v1/admin/suppliers/".concat(supplierId, "/kyc/approve"), {}),
+    rejectKYC: (supplierId, notes)=>postAuthJSON("/api/v1/admin/suppliers/".concat(supplierId, "/kyc/reject"), {
+            notes
+        }),
+    getPendingPayments: ()=>getAuthJSON("/api/v1/admin/suppliers/payments/pending"),
+    verifyPayment: (code)=>postAuthJSON("/api/v1/admin/suppliers/payments/".concat(code, "/verify"), {}),
+    rejectPayment: (code, notes)=>postAuthJSON("/api/v1/admin/suppliers/payments/".concat(code, "/reject"), {
+            notes
+        })
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
@@ -3049,17 +3119,27 @@ function Layout(param) {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarProvider"], {
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Sidebar"], {
-                    className: "border-r border-neutral-200 bg-white fixed",
+                    className: "border-r fixed ".concat(isAffiliate ? 'bg-gray-900 border-gray-800' : 'bg-white border-neutral-200'),
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarHeader"], {
-                            className: "flex h-16 items-center border-b border-neutral-200 px-6",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex items-center gap-2 py-3",
-                                children: isAffiliate ? "Affiliate Console" : "Mesob"
+                            className: "flex h-16 items-center justify-center border-b px-6 ".concat(isAffiliate ? 'border-gray-800' : 'border-neutral-200'),
+                            children: isAffiliate ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                src: "/mesoblogo.jpeg",
+                                alt: "Mesob Logo",
+                                width: 80,
+                                height: 80,
+                                className: "rounded"
                             }, void 0, false, {
                                 fileName: "[project]/components/Layout.tsx",
-                                lineNumber: 54,
-                                columnNumber: 13
+                                lineNumber: 55,
+                                columnNumber: 15
+                            }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex items-center gap-2 py-3 font-semibold text-neutral-900",
+                                children: "Mesob"
+                            }, void 0, false, {
+                                fileName: "[project]/components/Layout.tsx",
+                                lineNumber: 57,
+                                columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/components/Layout.tsx",
@@ -3069,17 +3149,27 @@ function Layout(param) {
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarGroupContent"], {
                             className: "p-4",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenu"], {
+                                className: "space-y-2",
                                 children: nav.map((item)=>{
-                                    const isActive = pathname === null || pathname === void 0 ? void 0 : pathname.startsWith(item.href);
-                                    const activeClasses = isAffiliate ? "bg-white border border-neutral-200 text-neutral-900 hover:bg-neutral-50" : "bg-neutral-900 text-white hover:bg-neutral-800";
-                                    const inactiveClasses = isAffiliate ? "text-neutral-600 hover:bg-neutral-50" : "text-neutral-600 hover:bg-neutral-100";
+                                    const isActive = pathname === item.href || item.href !== "/dashboard/affiliate" && (pathname === null || pathname === void 0 ? void 0 : pathname.startsWith(item.href));
+                                    const activeClasses = isAffiliate ? "bg-emerald-600 text-white hover:bg-emerald-700" : "bg-neutral-900 text-white hover:bg-neutral-800";
+                                    const inactiveClasses = isAffiliate ? "text-gray-300 hover:bg-gray-800 hover:text-white" : "text-neutral-600 hover:bg-neutral-100";
+                                    const handleClick = (e)=>{
+                                        if (item.label === "Sign out") {
+                                            e.preventDefault();
+                                            localStorage.removeItem('token');
+                                            localStorage.removeItem('access_token');
+                                            window.location.href = item.href;
+                                        }
+                                    };
                                     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenuItem"], {
                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$sidebar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SidebarMenuButton"], {
                                             asChild: true,
                                             isActive: isActive,
-                                            className: "w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-150 ".concat(isActive ? activeClasses : inactiveClasses),
+                                            className: "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-150 text-sm ".concat(isActive ? activeClasses : inactiveClasses),
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                                 href: item.href,
+                                                onClick: handleClick,
                                                 className: "flex w-full items-center gap-3",
                                                 children: [
                                                     item === null || item === void 0 ? void 0 : item.icon,
@@ -3087,82 +3177,82 @@ function Layout(param) {
                                                         children: item.label
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/Layout.tsx",
-                                                        lineNumber: 84,
+                                                        lineNumber: 98,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/Layout.tsx",
-                                                lineNumber: 79,
+                                                lineNumber: 92,
                                                 columnNumber: 23
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/components/Layout.tsx",
-                                            lineNumber: 72,
+                                            lineNumber: 85,
                                             columnNumber: 21
                                         }, this)
                                     }, item.label, false, {
                                         fileName: "[project]/components/Layout.tsx",
-                                        lineNumber: 71,
+                                        lineNumber: 84,
                                         columnNumber: 19
                                     }, this);
                                 })
                             }, void 0, false, {
                                 fileName: "[project]/components/Layout.tsx",
-                                lineNumber: 60,
+                                lineNumber: 64,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/components/Layout.tsx",
-                            lineNumber: 59,
+                            lineNumber: 63,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "mt-auto p-4 border-t border-neutral-200",
+                            className: "mt-auto p-4 border-t ".concat(isAffiliate ? 'border-gray-800' : 'border-neutral-200'),
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex items-center gap-3 px-3 py-2",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "w-8 h-8 bg-neutral-200 rounded-full flex-shrink-0"
+                                        className: "w-8 h-8 rounded-full flex-shrink-0 ".concat(isAffiliate ? 'bg-gray-700' : 'bg-neutral-200')
                                     }, void 0, false, {
                                         fileName: "[project]/components/Layout.tsx",
-                                        lineNumber: 96,
+                                        lineNumber: 110,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "flex-1 min-w-0",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-neutral-900 text-sm truncate",
+                                                className: "text-sm truncate ".concat(isAffiliate ? 'text-white' : 'text-neutral-900'),
                                                 children: (user === null || user === void 0 ? void 0 : user.name) || "User"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Layout.tsx",
-                                                lineNumber: 98,
+                                                lineNumber: 112,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                className: "text-neutral-500 text-xs truncate",
+                                                className: "text-xs truncate ".concat(isAffiliate ? 'text-gray-400' : 'text-neutral-500'),
                                                 children: (user === null || user === void 0 ? void 0 : user.email) || "user@example.com"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/Layout.tsx",
-                                                lineNumber: 101,
+                                                lineNumber: 115,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/Layout.tsx",
-                                        lineNumber: 97,
+                                        lineNumber: 111,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/Layout.tsx",
-                                lineNumber: 95,
+                                lineNumber: 109,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/components/Layout.tsx",
-                            lineNumber: 94,
+                            lineNumber: 108,
                             columnNumber: 11
                         }, this)
                     ]
@@ -3175,7 +3265,7 @@ function Layout(param) {
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Suspense"], {
                         fallback: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Loading, {}, void 0, false, {
                             fileName: "[project]/components/Layout.tsx",
-                            lineNumber: 110,
+                            lineNumber: 124,
                             columnNumber: 31
                         }, void 0),
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -3203,7 +3293,7 @@ function Layout(param) {
                                                     className: "text-neutral-600"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Layout.tsx",
-                                                    lineNumber: 119,
+                                                    lineNumber: 133,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3211,13 +3301,13 @@ function Layout(param) {
                                                     children: ((_nav_find = nav.find((n)=>pathname === null || pathname === void 0 ? void 0 : pathname.startsWith(n.href))) === null || _nav_find === void 0 ? void 0 : _nav_find.label) || "Overview"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/Layout.tsx",
-                                                    lineNumber: 120,
+                                                    lineNumber: 134,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/Layout.tsx",
-                                            lineNumber: 118,
+                                            lineNumber: 132,
                                             columnNumber: 17
                                         }, this),
                                         !isAffiliate && !isAdmin && (user === null || user === void 0 ? void 0 : user.tenant_id) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3228,13 +3318,13 @@ function Layout(param) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/Layout.tsx",
-                                            lineNumber: 126,
+                                            lineNumber: 140,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/Layout.tsx",
-                                    lineNumber: 117,
+                                    lineNumber: 131,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -3242,23 +3332,23 @@ function Layout(param) {
                                     children: children
                                 }, void 0, false, {
                                     fileName: "[project]/components/Layout.tsx",
-                                    lineNumber: 131,
+                                    lineNumber: 145,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/Layout.tsx",
-                            lineNumber: 111,
+                            lineNumber: 125,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/Layout.tsx",
-                        lineNumber: 110,
+                        lineNumber: 124,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/components/Layout.tsx",
-                    lineNumber: 109,
+                    lineNumber: 123,
                     columnNumber: 9
                 }, this)
             ]
@@ -3289,8 +3379,9 @@ __turbopack_context__.s([
     ()=>App
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_context$2f$affiliate$2d$dashboard$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/app/(dashboard)/dashboard/affiliate/_context/affiliate-dashboard-context.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_context$2f$affiliate$2d$dashboard$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/app/(dashboard)/dashboard/affiliate/_context/affiliate-dashboard-context.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Layout$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/Layout.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$layout$2d$dashboard$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LayoutDashboard$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/layout-dashboard.js [app-client] (ecmascript) <export default as LayoutDashboard>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LinkIcon$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/link.js [app-client] (ecmascript) <export default as LinkIcon>");
@@ -3300,6 +3391,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
 ;
 ;
 ;
@@ -3343,12 +3435,12 @@ const navigation = [
         }, ("TURBOPACK compile-time value", void 0))
     },
     {
-        href: "/signout",
+        href: "/affiliate-signin",
         label: "Sign out",
         icon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__["LogOut"], {}, void 0, false, {
             fileName: "[project]/app/(dashboard)/dashboard/affiliate/layout.tsx",
             lineNumber: 15,
-            columnNumber: 46
+            columnNumber: 55
         }, ("TURBOPACK compile-time value", void 0))
     }
 ];
@@ -3361,27 +3453,89 @@ const mockUser = {
 function App(param) {
     let { children } = param;
     _s();
-    const [currentPath] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("/dashboard");
+    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    const [user, setUser] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].useState(mockUser);
+    const [loading, setLoading] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].useState(true);
+    __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].useEffect({
+        "App.useEffect": ()=>{
+            const fetchUser = {
+                "App.useEffect.fetchUser": async ()=>{
+                    const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+                    if (!token) {
+                        router.push('/affiliate-signin');
+                        return;
+                    }
+                    try {
+                        const response = await fetch('http://localhost:8000/api/v1/auth/me', {
+                            headers: {
+                                'Authorization': "Bearer ".concat(token)
+                            }
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            setUser({
+                                name: data.email.split('@')[0],
+                                email: data.email,
+                                tenant_id: data.tenant_id
+                            });
+                        } else {
+                            router.push('/affiliate-signin');
+                        }
+                    } catch (error) {
+                        console.error('Failed to fetch user:', error);
+                        router.push('/affiliate-signin');
+                    } finally{
+                        setLoading(false);
+                    }
+                }
+            }["App.useEffect.fetchUser"];
+            fetchUser();
+        }
+    }["App.useEffect"], [
+        router
+    ]);
+    if (loading) {
+        return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "flex items-center justify-center min-h-screen",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"
+            }, void 0, false, {
+                fileName: "[project]/app/(dashboard)/dashboard/affiliate/layout.tsx",
+                lineNumber: 65,
+                columnNumber: 75
+            }, this)
+        }, void 0, false, {
+            fileName: "[project]/app/(dashboard)/dashboard/affiliate/layout.tsx",
+            lineNumber: 65,
+            columnNumber: 12
+        }, this);
+    }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$Layout$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Layout"], {
         nav: navigation,
-        pathname: currentPath,
-        user: mockUser,
-        isAffiliate: false,
+        pathname: pathname,
+        user: user,
+        isAffiliate: true,
         isAdmin: false,
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f28$dashboard$292f$dashboard$2f$affiliate$2f$_context$2f$affiliate$2d$dashboard$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AffiliateDashboardProvider"], {
             children: children
         }, void 0, false, {
             fileName: "[project]/app/(dashboard)/dashboard/affiliate/layout.tsx",
-            lineNumber: 41,
+            lineNumber: 77,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/(dashboard)/dashboard/affiliate/layout.tsx",
-        lineNumber: 33,
+        lineNumber: 69,
         columnNumber: 5
     }, this);
 }
-_s(App, "4iVEzA10q214+dVnHgQ4ZVufQRw=");
+_s(App, "5A4xKBq90wdpvB4PvCcRRc3y8nQ=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
+    ];
+});
 _c = App;
 var _c;
 __turbopack_context__.k.register(_c, "App");

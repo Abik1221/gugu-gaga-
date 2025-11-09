@@ -594,21 +594,21 @@ function RoleSelectionDialog({ children }) {
             title: "Business Owner",
             description: "Manage your business operations and staff",
             icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$store$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Store$3e$__["Store"],
-            route: "/signin/owner"
+            route: "/owner-signin"
         },
         {
             id: "affiliate",
             title: "Affiliate",
             description: "Access your affiliate dashboard and commissions",
             icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$users$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Users$3e$__["Users"],
-            route: "/signin/affiliate"
+            route: "/affiliate-signin"
         },
         {
             id: "supplier",
             title: "Supplier",
             description: "Manage your supply chain and inventory",
             icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$truck$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Truck$3e$__["Truck"],
-            route: "/dashboard/supplier-status"
+            route: "/supplier-signin"
         }
     ];
     const handleRoleSelect = (route)=>{
@@ -1347,7 +1347,7 @@ function HeroSection() {
                                             lineNumber: 49,
                                             columnNumber: 17
                                         }, this),
-                                        " with AI"
+                                        " with AI-Powered Management Software"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/sections/HeroSection.tsx",
@@ -6283,34 +6283,46 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 "use client";
 ;
 ;
-function GoogleAds({ adSlot, adFormat = "auto", fullWidthResponsive = true, className = "" }) {
+function GoogleAds({ adSlot, className = "" }) {
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         try {
-            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-            ;
-        } catch (error) {
-            console.error("Google Ads error:", error);
+            // @ts-ignore
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (err) {
+            console.error("AdSense error:", err);
         }
     }, []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: className,
-        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ins", {
-            className: "adsbygoogle",
-            style: {
-                display: "block"
-            },
-            "data-ad-client": "ca-pub-XXXXXXXXXXXXXXXX",
-            "data-ad-slot": adSlot,
-            "data-ad-format": adFormat,
-            "data-full-width-responsive": fullWidthResponsive.toString()
-        }, void 0, false, {
-            fileName: "[project]/components/ads/google-ads.tsx",
-            lineNumber: 29,
-            columnNumber: 7
-        }, this)
-    }, void 0, false, {
+        className: `text-center ${className}`,
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ins", {
+                className: "adsbygoogle",
+                style: {
+                    display: "block",
+                    minHeight: "250px",
+                    backgroundColor: "#f3f4f6"
+                },
+                "data-ad-client": ("TURBOPACK compile-time value", "ca-pub-9109859769022445"),
+                "data-ad-slot": adSlot,
+                "data-ad-format": "auto",
+                "data-full-width-responsive": "true"
+            }, void 0, false, {
+                fileName: "[project]/components/ads/google-ads.tsx",
+                lineNumber: 21,
+                columnNumber: 7
+            }, this),
+            ("TURBOPACK compile-time value", "development") === "development" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "text-gray-500 text-sm p-4",
+                children: "Ad Space (will show after AdSense approval)"
+            }, void 0, false, {
+                fileName: "[project]/components/ads/google-ads.tsx",
+                lineNumber: 30,
+                columnNumber: 9
+            }, this)
+        ]
+    }, void 0, true, {
         fileName: "[project]/components/ads/google-ads.tsx",
-        lineNumber: 28,
+        lineNumber: 20,
         columnNumber: 5
     }, this);
 }
@@ -6400,7 +6412,7 @@ function App() {
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ads$2f$google$2d$ads$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["GoogleAds"], {
-                adSlot: "1234567890",
+                adSlot: ("TURBOPACK compile-time value", "1234567890") || "1234567890",
                 className: "my-8"
             }, void 0, false, {
                 fileName: "[project]/app/page.tsx",

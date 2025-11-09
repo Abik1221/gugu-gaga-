@@ -16,6 +16,8 @@ export default function SupplierSignInPage() {
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -38,14 +40,63 @@ export default function SupplierSignInPage() {
 
     setLoading(true);
     try {
-      // API call would go here
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock successful login
-      if (typeof window !== "undefined") {
-        localStorage.setItem("access_token", "mock_supplier_token");
-        localStorage.setItem("user_role", "supplier");
+      const formData = new URLSearchParams();
+      formData.append("username", trimmedEmail);
+      formData.append("password", password);
+      formData.append("grant_type", "password");
+
+      const response = await fetch("http://localhost:8000/api/v1/auth/login/request-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Invalid credentials");
       }
+
+      setOtpSent(true);
+      show({
+        variant: "success",
+        title: "OTP Sent",
+        description: "Check your email for the verification code.",
+      });
+    } catch (err: any) {
+      const message = err?.message || "Invalid credentials";
+      setError(message);
+      show({ variant: "destructive", title: "Sign In Failed", description: message });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    if (!otp || otp.length < 4) {
+      setError("Please enter the verification code.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/api/v1/auth/login/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), code: otp }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Invalid verification code");
+      }
+
+      const data = await response.json();
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
 
       show({
         variant: "success",
@@ -53,11 +104,11 @@ export default function SupplierSignInPage() {
         description: "Redirecting to your supplier dashboard...",
       });
       
-      setTimeout(() => router.replace("/dashboard/supplier"), 1000);
+      setTimeout(() => router.replace("/dashboard/supplier-kyc"), 1000);
     } catch (err: any) {
-      const message = err?.message || "Invalid credentials";
+      const message = err?.message || "Invalid verification code";
       setError(message);
-      show({ variant: "destructive", title: "Sign In Failed", description: message });
+      show({ variant: "destructive", title: "Verification Failed", description: message });
     } finally {
       setLoading(false);
     }
@@ -159,34 +210,54 @@ export default function SupplierSignInPage() {
             </div>
           )}
 
-          <form onSubmit={handleSignIn} className="space-y-5">
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                Email Address
-              </label>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="supplier@company.com"
-                className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                required
-              />
-            </div>
+          <form onSubmit={otpSent ? handleVerifyOtp : handleSignIn} className="space-y-5">
+            {!otpSent ? (
+              <>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                    Email Address
+                  </label>
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="supplier@company.com"
+                    className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                    required
+                  />
+                </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                Password
-              </label>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                required
-              />
-            </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                    Password
+                  </label>
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                    required
+                  />
+                </div>
+              </>
+            ) : (
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
+                  Verification Code
+                </label>
+                <Input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter 6-digit code"
+                  className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                  required
+                  maxLength={6}
+                />
+                <p className="mt-2 text-xs text-slate-600">Check your email for the verification code</p>
+              </div>
+            )}
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center">
@@ -216,7 +287,7 @@ export default function SupplierSignInPage() {
                   />
                 </svg>
               ) : null}
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? (otpSent ? "Verifying..." : "Sending code...") : (otpSent ? "Verify Code" : "Sign In")}
             </Button>
 
             <div className="relative">

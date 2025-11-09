@@ -47,6 +47,8 @@ class SupplierProduct(Base):
     unit: Mapped[str] = mapped_column(String(50), default="piece")
     min_order_quantity: Mapped[int] = mapped_column(Integer, default=1)
     stock_quantity: Mapped[int] = mapped_column(Integer, default=0)
+    upfront_payment_percent: Mapped[int] = mapped_column(Integer, default=50)
+    after_delivery_percent: Mapped[int] = mapped_column(Integer, default=50)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     image_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

@@ -27,21 +27,21 @@ export function RoleSelectionDialog({ children }: RoleSelectionDialogProps) {
       title: "Business Owner",
       description: "Manage your business operations and staff",
       icon: Store,
-      route: "/signin/owner",
+      route: "/owner-signin",
     },
     {
       id: "affiliate",
       title: "Affiliate",
       description: "Access your affiliate dashboard and commissions",
       icon: Users,
-      route: "/signin/affiliate",
+      route: "/affiliate-signin",
     },
     {
       id: "supplier",
       title: "Supplier",
       description: "Manage your supply chain and inventory",
       icon: Truck,
-      route: "/dashboard/supplier-status",
+      route: "/supplier-signin",
     },
   ];
 

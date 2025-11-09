@@ -11,12 +11,12 @@ import { Package, Plus, Trash2 } from "lucide-react";
 
 export default function SupplierProducts() {
   const [products, setProducts] = useState([
-    { id: 1, name: "Sample Product", description: "Product description here", price: 99.99 }
+    { id: 1, name: "Sample Product", description: "Product description here", price: 99.99, upfront_percent: 50, after_delivery_percent: 50 }
   ]);
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: "", description: "", price: "" });
+  const [formData, setFormData] = useState({ name: "", description: "", price: "", upfront_percent: "50", after_delivery_percent: "50" });
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [deletingProduct, setDeletingProduct] = useState<any>(null);
 
@@ -26,10 +26,12 @@ export default function SupplierProducts() {
       id: products.length + 1,
       name: formData.name,
       description: formData.description,
-      price: parseFloat(formData.price)
+      price: parseFloat(formData.price),
+      upfront_percent: parseFloat(formData.upfront_percent),
+      after_delivery_percent: parseFloat(formData.after_delivery_percent)
     };
     setProducts([...products, newProduct]);
-    setFormData({ name: "", description: "", price: "" });
+    setFormData({ name: "", description: "", price: "", upfront_percent: "50", after_delivery_percent: "50" });
     setOpen(false);
   };
 
@@ -38,7 +40,9 @@ export default function SupplierProducts() {
     setFormData({
       name: product.name,
       description: product.description,
-      price: product.price.toString()
+      price: product.price.toString(),
+      upfront_percent: product.upfront_percent.toString(),
+      after_delivery_percent: product.after_delivery_percent.toString()
     });
     setEditOpen(true);
   };
@@ -47,10 +51,10 @@ export default function SupplierProducts() {
     e.preventDefault();
     setProducts(products.map(p => 
       p.id === editingProduct.id 
-        ? { ...p, name: formData.name, description: formData.description, price: parseFloat(formData.price) }
+        ? { ...p, name: formData.name, description: formData.description, price: parseFloat(formData.price), upfront_percent: parseFloat(formData.upfront_percent), after_delivery_percent: parseFloat(formData.after_delivery_percent) }
         : p
     ));
-    setFormData({ name: "", description: "", price: "" });
+    setFormData({ name: "", description: "", price: "", upfront_percent: "50", after_delivery_percent: "50" });
     setEditingProduct(null);
     setEditOpen(false);
   };
@@ -126,6 +130,34 @@ export default function SupplierProducts() {
                   required
                 />
               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="upfront" className="text-black">Upfront Payment (%)</Label>
+                  <Input
+                    id="upfront"
+                    type="number"
+                    min="0"
+                    max="100"
+                    className="bg-white text-black border-gray-300"
+                    value={formData.upfront_percent}
+                    onChange={(e) => setFormData({...formData, upfront_percent: e.target.value, after_delivery_percent: (100 - parseFloat(e.target.value || "0")).toString()})}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="after" className="text-black">After Delivery (%)</Label>
+                  <Input
+                    id="after"
+                    type="number"
+                    min="0"
+                    max="100"
+                    className="bg-white text-black border-gray-300"
+                    value={formData.after_delivery_percent}
+                    onChange={(e) => setFormData({...formData, after_delivery_percent: e.target.value, upfront_percent: (100 - parseFloat(e.target.value || "0")).toString()})}
+                    required
+                  />
+                </div>
+              </div>
               <div className="flex gap-2">
                 <Button type="submit" className="bg-green-600 hover:bg-green-700">Add Product</Button>
                 <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
@@ -144,6 +176,13 @@ export default function SupplierProducts() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-600 mb-4">{product.description}</p>
+              <div className="mb-3 p-2 bg-blue-50 rounded border border-blue-200">
+                <p className="text-xs font-medium text-blue-900 mb-1">Payment Terms:</p>
+                <div className="flex gap-3 text-xs text-blue-800">
+                  <span>Upfront: <strong>{product.upfront_percent}%</strong></span>
+                  <span>After: <strong>{product.after_delivery_percent}%</strong></span>
+                </div>
+              </div>
               <div className="flex justify-between items-center">
                 <span className="font-semibold">${product.price.toFixed(2)}</span>
                 <div className="flex gap-2">
@@ -195,6 +234,34 @@ export default function SupplierProducts() {
                 onChange={(e) => setFormData({...formData, price: e.target.value})}
                 required
               />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-upfront" className="text-black">Upfront Payment (%)</Label>
+                <Input
+                  id="edit-upfront"
+                  type="number"
+                  min="0"
+                  max="100"
+                  className="bg-white text-black border-gray-300"
+                  value={formData.upfront_percent}
+                  onChange={(e) => setFormData({...formData, upfront_percent: e.target.value, after_delivery_percent: (100 - parseFloat(e.target.value || "0")).toString()})}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-after" className="text-black">After Delivery (%)</Label>
+                <Input
+                  id="edit-after"
+                  type="number"
+                  min="0"
+                  max="100"
+                  className="bg-white text-black border-gray-300"
+                  value={formData.after_delivery_percent}
+                  onChange={(e) => setFormData({...formData, after_delivery_percent: e.target.value, upfront_percent: (100 - parseFloat(e.target.value || "0")).toString()})}
+                  required
+                />
+              </div>
             </div>
             <div className="flex gap-2">
               <Button type="submit" className="bg-green-600 hover:bg-green-700">Update Product</Button>

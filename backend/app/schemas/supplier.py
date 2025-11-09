@@ -56,6 +56,8 @@ class SupplierProductBase(BaseModel):
     unit: str = Field(default="piece", max_length=50)
     min_order_quantity: int = Field(default=1, ge=1)
     stock_quantity: int = Field(default=0, ge=0)
+    upfront_payment_percent: int = Field(default=50, ge=0, le=100)
+    after_delivery_percent: int = Field(default=50, ge=0, le=100)
     image_url: Optional[str] = None
 
 
@@ -72,6 +74,8 @@ class SupplierProductUpdate(BaseModel):
     unit: Optional[str] = None
     min_order_quantity: Optional[int] = Field(None, ge=1)
     stock_quantity: Optional[int] = Field(None, ge=0)
+    upfront_payment_percent: Optional[int] = Field(None, ge=0, le=100)
+    after_delivery_percent: Optional[int] = Field(None, ge=0, le=100)
     is_active: Optional[bool] = None
     image_url: Optional[str] = None
 
@@ -79,6 +83,8 @@ class SupplierProductUpdate(BaseModel):
 class SupplierProductResponse(SupplierProductBase):
     id: int
     supplier_id: int
+    upfront_payment_percent: int
+    after_delivery_percent: int
     is_active: bool
     created_at: datetime
     updated_at: datetime

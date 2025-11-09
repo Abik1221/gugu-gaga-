@@ -183,8 +183,8 @@ def _issue_session_tokens(db: Session, user: User, request: Request) -> TokenWit
     )
 
 
-@router.post("/register/pharmacy")
-def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
+@router.post("/register/owner")
+def register_owner(payload: PharmacyRegister, db: Session = Depends(get_db)):
     # Ensure owner email unused
     if db.query(User).filter(User.email == payload.owner_email).first():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Owner email already registered")
@@ -247,7 +247,7 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
             license_mime = "application/octet-stream"
 
     if not license_data and not payload.pharmacy_license_document_path:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Pharmacy license document is required")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Business license document is required")
 
     app = KYCApplication(
         tenant_id=tenant_id,
@@ -339,6 +339,82 @@ def register_pharmacy(payload: PharmacyRegister, db: Session = Depends(get_db)):
             "license_document_mime": app.license_document_mime,
             "documents_path": app.documents_path,
         },
+    }
+
+
+@router.post("/register/supplier")
+def register_supplier(payload: dict, db: Session = Depends(get_db)):
+    email = payload.get("email")
+    password = payload.get("password")
+    supplier_name = payload.get("supplier_name")
+    national_id = payload.get("national_id")
+    tin_number = payload.get("tin_number")
+    phone = payload.get("phone")
+    address = payload.get("address")
+    license_image = payload.get("business_license_image")
+    
+    if db.query(User).filter(User.email == email).first():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+    
+    try:
+        password_hash = hash_password(password)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    
+    # Create user
+    user = User(
+        email=email,
+        phone=phone,
+        role=Role.supplier.value,
+        tenant_id=None,
+        password_hash=password_hash,
+        is_active=True,
+        is_approved=False,
+        is_verified=False,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    
+    # Create supplier profile
+    from app.models.supplier import Supplier
+    supplier = Supplier(
+        user_id=user.id,
+        company_name=supplier_name,
+        tax_id=tin_number,
+        phone=phone,
+        address=address,
+        business_license=license_image,
+        is_verified=False,
+        is_active=True,
+    )
+    db.add(supplier)
+    db.commit()
+    db.refresh(supplier)
+    
+    # Create KYC record
+    from app.models.supplier_kyc import SupplierKYC
+    kyc = SupplierKYC(
+        supplier_id=supplier.id,
+        national_id=national_id,
+        business_license_image=license_image,
+        tax_certificate_number=tin_number,
+        status="pending",
+    )
+    db.add(kyc)
+    db.commit()
+    
+    # Send verification code
+    try:
+        code = issue_code(db, email=user.email, purpose="register")
+        if user.email:
+            send_email(user.email, "Verify your account", f"Your verification code is: {code}")
+    except Exception:
+        pass
+    
+    return {
+        "user": _user_with_status(db, user),
+        "message": "Registration successful. Please verify your email."
     }
 
 

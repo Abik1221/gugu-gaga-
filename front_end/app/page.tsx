@@ -25,7 +25,7 @@ export default function App() {
       <HowItWorks />
       <SecuritySection />
       <PricingSection />
-      <GoogleAds adSlot="1234567890" className="my-8" />
+      {/* <GoogleAds adSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT || "1234567890"} className="my-8" /> */}
       <IntegrationsSection />
       <AffiliateSection />
       <TestimonialsSection />

@@ -20,6 +20,7 @@ class KYCStatusResponse(BaseModel):
     status: str
     pharmacy_name: Optional[str] = None
     pharmacy_address: Optional[str] = None
+    owner_email: Optional[str] = None
     owner_phone: Optional[str] = None
     id_number: Optional[str] = None
     pharmacy_license_number: Optional[str] = None

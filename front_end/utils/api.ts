@@ -205,13 +205,10 @@ export async function postMultipart<T = any>(
 
 export function getAccessToken(): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("access_token");
+  return localStorage.getItem("access_token") || localStorage.getItem("token");
 }
 
-function getTenantId(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("tenant_id");
-}
+
 
 function getRefreshToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -251,13 +248,12 @@ export async function authFetch<T>(
   tenantId?: string
 ): Promise<Response> {
   const token = getAccessToken();
-  const activeTenantId = tenantId ?? getTenantId() ?? undefined;
   const headers: HeadersInit = buildHeaders(
     {
       ...(init?.headers || {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    activeTenantId
+    tenantId
   );
   let res = await fetch(resolveApiUrl(path), { ...(init || {}), headers });
 
@@ -265,13 +261,12 @@ export async function authFetch<T>(
     const ok = await refreshTokens();
     if (ok) {
       const newToken = getAccessToken();
-      const retryTenantId = tenantId ?? getTenantId() ?? undefined;
       const retryHeaders: HeadersInit = buildHeaders(
         {
           ...(init?.headers || {}),
           ...(newToken ? { Authorization: `Bearer ${newToken}` } : {}),
         },
-        retryTenantId
+        tenantId
       );
       res = await fetch(resolveApiUrl(path), {
         ...(init || {}),
@@ -437,9 +432,6 @@ export const AuthAPI = {
         if (typeof window !== "undefined") {
           localStorage.setItem("access_token", resp.access_token);
           localStorage.setItem("refresh_token", resp.refresh_token);
-          if (tenantId) {
-            localStorage.setItem("tenant_id", tenantId);
-          }
         }
         return resp;
       }
@@ -455,9 +447,6 @@ export const AuthAPI = {
       if (typeof window !== "undefined") {
         localStorage.setItem("access_token", resp.access_token);
         localStorage.setItem("refresh_token", resp.refresh_token);
-        if (tenantId) {
-          localStorage.setItem("tenant_id", tenantId);
-        }
       }
       return resp;
     }),
@@ -470,26 +459,17 @@ export const AuthAPI = {
     }),
   changePassword: (body: { current_password: string; new_password: string }) =>
     postAuthJSON<{ status: string }>("/api/v1/auth/change-password", body),
-  me: () =>
-    getAuthJSON<AuthProfile>("/api/v1/auth/me").then((profile) => {
-      if (typeof window !== "undefined") {
-        if (profile?.tenant_id) {
-          localStorage.setItem("tenant_id", profile.tenant_id);
-        }
-      }
-      return profile;
-    }),
+  me: () => getAuthJSON<AuthProfile>("/api/v1/auth/me"),
 };
 
 export const TenantAPI = {
-  activity: async (params?: { action?: string[]; limit?: number; offset?: number }) => {
+  activity: async (params?: { action?: string[]; limit?: number; offset?: number }, tenantId?: string) => {
     const searchParams = new URLSearchParams();
     if (params?.limit) searchParams.set("limit", params.limit.toString());
     if (params?.offset) searchParams.set("offset", params.offset.toString());
     params?.action?.forEach((action) => searchParams.append("action", action));
     const qs = searchParams.toString();
     const url = `/api/v1/tenant/activity${qs ? `?${qs}` : ""}`;
-    const tenantId = getTenantId() ?? undefined;
     const res = await authFetch(url, undefined, true, tenantId);
     if (res.status === 404 || res.status === 204) {
       return [];

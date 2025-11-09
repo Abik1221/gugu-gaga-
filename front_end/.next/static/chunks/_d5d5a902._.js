@@ -13,6 +13,8 @@ __turbopack_context__.s([
     ()=>AuthAPI,
     "BillingAPI",
     ()=>BillingAPI,
+    "BranchAPI",
+    ()=>BranchAPI,
     "ChatAPI",
     ()=>ChatAPI,
     "IntegrationsAPI",
@@ -23,6 +25,8 @@ __turbopack_context__.s([
     ()=>KYCAPI,
     "MedicinesAPI",
     ()=>MedicinesAPI,
+    "OrderAPI",
+    ()=>OrderAPI,
     "OwnerAnalyticsAPI",
     ()=>OwnerAnalyticsAPI,
     "OwnerChatAPI",
@@ -33,6 +37,14 @@ __turbopack_context__.s([
     ()=>SalesAPI,
     "StaffAPI",
     ()=>StaffAPI,
+    "SupplierAPI",
+    ()=>SupplierAPI,
+    "SupplierAdminAPI",
+    ()=>SupplierAdminAPI,
+    "SupplierAnalyticsAPI",
+    ()=>SupplierAnalyticsAPI,
+    "SupplierOnboardingAPI",
+    ()=>SupplierOnboardingAPI,
     "TENANT_HEADER",
     ()=>TENANT_HEADER,
     "TenantAPI",
@@ -41,6 +53,8 @@ __turbopack_context__.s([
     ()=>UploadAPI,
     "authFetch",
     ()=>authFetch,
+    "deleteAuthJSON",
+    ()=>deleteAuthJSON,
     "getAccessToken",
     ()=>getAccessToken,
     "getAuthJSON",
@@ -212,7 +226,7 @@ async function postMultipart(path, formData, tenantId) {
 function getAccessToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
-    return localStorage.getItem("access_token");
+    return localStorage.getItem("access_token") || localStorage.getItem("token");
 }
 function getTenantId() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
@@ -306,6 +320,24 @@ async function postAuthJSON(path, bodyData, tenantId) {
         throw new Error(data || "Request failed with ".concat(res.status));
     }
     return await res.json();
+}
+async function deleteAuthJSON(path, tenantId) {
+    const res = await authFetch(path, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }, true, tenantId);
+    if (!res.ok) {
+        const data = await res.text().catch(()=>"");
+        throw new Error(data || "Request failed with ".concat(res.status));
+    }
+    // For DELETE requests, we might not have a response body
+    try {
+        return await res.json();
+    } catch (e) {
+        return undefined;
+    }
 }
 const AuthAPI = {
     registerAffiliate: (body)=>postJSON("/api/v1/auth/register/affiliate", body),
@@ -449,20 +481,20 @@ const IntegrationsAPI = {
         }, tenantId)
 };
 const AffiliateAPI = {
-    getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link"),
-    createLink: ()=>getAuthJSON("/api/v1/affiliate/register-link?create_new=true"),
-    deactivate: (token)=>postAuthJSON("/api/v1/affiliate/links/".concat(encodeURIComponent(token), "/deactivate"), {}),
-    rotate: (token)=>postAuthJSON("/api/v1/affiliate/links/".concat(encodeURIComponent(token), "/rotate"), {}),
-    dashboard: ()=>getAuthJSON("/api/v1/affiliate/dashboard"),
-    payouts: (status)=>getAuthJSON("/api/v1/affiliate/payouts".concat(status ? "?status_filter=".concat(encodeURIComponent(status)) : "")),
+    getLinks: ()=>getAuthJSON("/api/v1/affiliate/register-link", ""),
+    createLink: ()=>getAuthJSON("/api/v1/affiliate/register-link?create_new=true", ""),
+    deactivate: (token)=>postAuthJSON("/api/v1/affiliate/links/".concat(encodeURIComponent(token), "/deactivate"), {}, ""),
+    rotate: (token)=>postAuthJSON("/api/v1/affiliate/links/".concat(encodeURIComponent(token), "/rotate"), {}, ""),
+    dashboard: ()=>getAuthJSON("/api/v1/affiliate/dashboard", ""),
+    payouts: (status)=>getAuthJSON("/api/v1/affiliate/payouts".concat(status ? "?status_filter=".concat(encodeURIComponent(status)) : ""), ""),
     requestPayout: function(month) {
         let percent = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 5;
         return postAuthJSON("/api/v1/affiliate/payouts/request", {
             month,
             percent
-        });
+        }, "");
     },
-    updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body)
+    updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body, "")
 };
 const AdminAPI = {
     analyticsOverview: function() {
@@ -483,7 +515,22 @@ const AdminAPI = {
             code: code || null
         }, tenantId),
     approveAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/approve"), {}),
-    rejectAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/reject"), {})
+    rejectAffiliate: (userId)=>postAuthJSON("/api/v1/admin/affiliates/".concat(userId, "/reject"), {}),
+    affiliates: function() {
+        let page = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1, pageSize = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 20, q = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "";
+        return getAuthJSON("/api/v1/admin/affiliates?page=".concat(page, "&page_size=").concat(pageSize, "&q=").concat(encodeURIComponent(q)));
+    },
+    usage: function() {
+        let days = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 14;
+        return getAuthJSON("/api/v1/admin/usage?days=".concat(days));
+    },
+    audit: (params)=>{
+        const query = new URLSearchParams();
+        if (params.tenant_id) query.set('tenant_id', params.tenant_id);
+        if (params.action) query.set('action', params.action);
+        if (params.limit) query.set('limit', params.limit.toString());
+        return getAuthJSON("/api/v1/admin/audit".concat(query.toString() ? "?".concat(query.toString()) : ''));
+    }
 };
 const StaffAPI = {
     createCashier: (tenantId, body)=>postAuthJSON("/api/v1/staff", body, tenantId),
@@ -551,6 +598,16 @@ const PharmaciesAPI = {
             return await res.json();
         })
 };
+const BranchAPI = {
+    create: (tenantId, payload)=>postAuthJSON("/api/v1/branches", payload, tenantId),
+    list: (tenantId, pharmacyId)=>{
+        const query = pharmacyId ? "?pharmacy_id=".concat(pharmacyId) : '';
+        return getAuthJSON("/api/v1/branches".concat(query), tenantId);
+    },
+    get: (tenantId, id)=>getAuthJSON("/api/v1/branches/".concat(id), tenantId),
+    update: (tenantId, id, payload)=>putAuthJSON("/api/v1/branches/".concat(id), payload, tenantId),
+    delete: (tenantId, id)=>deleteAuthJSON("/api/v1/branches/".concat(id), tenantId)
+};
 const ChatAPI = {
     listThreads: (tenantId)=>getAuthJSON("/api/v1/chat/threads", tenantId),
     createThread: (tenantId, title)=>postAuthJSON("/api/v1/chat/threads", title ? {
@@ -570,9 +627,19 @@ const OwnerAnalyticsAPI = {
         const params = new URLSearchParams();
         if (options === null || options === void 0 ? void 0 : options.horizon) params.set("horizon", options.horizon);
         if (options === null || options === void 0 ? void 0 : options.trendWeeks) params.set("trend_weeks", String(options.trendWeeks));
+        if (options === null || options === void 0 ? void 0 : options.days) params.set("days", String(options.days));
         const query = params.toString();
-        const path = "/api/v1/owner/analytics/overview".concat(query ? "?".concat(query) : "");
+        const path = "/api/v1/analytics/owner/overview".concat(query ? "?".concat(query) : "");
         return getAuthJSON(path, tenantId);
+    }
+};
+const SupplierAnalyticsAPI = {
+    overview: (days)=>{
+        const params = new URLSearchParams();
+        if (days) params.set("days", String(days));
+        const query = params.toString();
+        const path = "/api/v1/analytics/supplier/overview".concat(query ? "?".concat(query) : "");
+        return getAuthJSON(path);
     }
 };
 const OwnerChatAPI = {
@@ -702,6 +769,56 @@ const SalesAPI = {
         const path = "/api/v1/sales/pos".concat(query);
         return postAuthJSON(path, lines, tenantId);
     }
+};
+const SupplierAPI = {
+    // Profile management
+    getProfile: ()=>getAuthJSON("/api/v1/suppliers/profile"),
+    createProfile: (data)=>postAuthJSON("/api/v1/suppliers/profile", data),
+    updateProfile: (data)=>putAuthJSON("/api/v1/suppliers/profile", data),
+    // Product management
+    getProducts: ()=>getAuthJSON("/api/v1/suppliers/products"),
+    createProduct: (data)=>postAuthJSON("/api/v1/suppliers/products", data),
+    updateProduct: (id, data)=>putAuthJSON("/api/v1/suppliers/products/".concat(id), data),
+    deleteProduct: (id)=>deleteAuthJSON("/api/v1/suppliers/products/".concat(id)),
+    // Order management
+    getOrders: ()=>getAuthJSON("/api/v1/suppliers/orders"),
+    approveOrder: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/approve"), {}),
+    rejectOrder: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/reject"), {}),
+    verifyPayment: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/verify-payment"), {}),
+    markDelivered: (id)=>putAuthJSON("/api/v1/suppliers/orders/".concat(id, "/mark-delivered"), {}),
+    // Public endpoints for customers
+    browse: (tenantId)=>getAuthJSON("/api/v1/suppliers/browse", tenantId),
+    getSupplierProducts: (supplierId, tenantId)=>getAuthJSON("/api/v1/suppliers/".concat(supplierId, "/products"), tenantId)
+};
+const OrderAPI = {
+    create: (data, tenantId)=>postAuthJSON("/api/v1/orders", data, tenantId),
+    list: (tenantId)=>getAuthJSON("/api/v1/orders", tenantId),
+    get: (id, tenantId)=>getAuthJSON("/api/v1/orders/".concat(id), tenantId),
+    submitPaymentCode: (id, code, tenantId)=>putAuthJSON("/api/v1/orders/".concat(id, "/payment-code"), {
+            code
+        }, tenantId),
+    createReview: (id, data, tenantId)=>postAuthJSON("/api/v1/orders/".concat(id, "/review"), data, tenantId),
+    getReview: (id, tenantId)=>getAuthJSON("/api/v1/orders/".concat(id, "/review"), tenantId)
+};
+const SupplierOnboardingAPI = {
+    getStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/status"),
+    submitKYC: (data)=>postAuthJSON("/api/v1/supplier-onboarding/kyc/submit", data),
+    getKYCStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/kyc/status"),
+    submitPayment: (data)=>postAuthJSON("/api/v1/supplier-onboarding/payment/submit", data),
+    getPaymentStatus: ()=>getAuthJSON("/api/v1/supplier-onboarding/payment/status")
+};
+const SupplierAdminAPI = {
+    getSuppliers: ()=>getAuthJSON("/api/v1/admin/suppliers"),
+    getPendingKYC: ()=>getAuthJSON("/api/v1/admin/suppliers/kyc/pending"),
+    approveKYC: (supplierId)=>postAuthJSON("/api/v1/admin/suppliers/".concat(supplierId, "/kyc/approve"), {}),
+    rejectKYC: (supplierId, notes)=>postAuthJSON("/api/v1/admin/suppliers/".concat(supplierId, "/kyc/reject"), {
+            notes
+        }),
+    getPendingPayments: ()=>getAuthJSON("/api/v1/admin/suppliers/payments/pending"),
+    verifyPayment: (code)=>postAuthJSON("/api/v1/admin/suppliers/payments/".concat(code, "/verify"), {}),
+    rejectPayment: (code, notes)=>postAuthJSON("/api/v1/admin/suppliers/payments/".concat(code, "/reject"), {
+            notes
+        })
 }; // Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
  // export const API_BASE =
  //   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
