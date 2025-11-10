@@ -15,25 +15,38 @@ branch_labels = None
 depends_on = None
 
 def upgrade() -> None:
+    # Check if tables exist before altering
+    conn = op.get_bind()
+    inspector = sa.inspect(conn)
+    
     # KYCApplication additions
-    with op.batch_alter_table('kyc_applications') as batch_op:
-        batch_op.add_column(sa.Column('id_number', sa.String(length=64), nullable=True))
-        batch_op.add_column(sa.Column('pharmacy_license_number', sa.String(length=64), nullable=True))
+    if 'kyc_applications' in inspector.get_table_names():
+        with op.batch_alter_table('kyc_applications') as batch_op:
+            batch_op.add_column(sa.Column('id_number', sa.String(length=64), nullable=True))
+            batch_op.add_column(sa.Column('pharmacy_license_number', sa.String(length=64), nullable=True))
+    
     # AffiliateProfile additions
-    with op.batch_alter_table('affiliate_profiles') as batch_op:
-        batch_op.add_column(sa.Column('full_name', sa.String(length=255), nullable=True))
-        batch_op.add_column(sa.Column('bank_name', sa.String(length=255), nullable=True))
-        batch_op.add_column(sa.Column('bank_account_name', sa.String(length=255), nullable=True))
-        batch_op.add_column(sa.Column('bank_account_number', sa.String(length=64), nullable=True))
-        batch_op.add_column(sa.Column('iban', sa.String(length=64), nullable=True))
+    if 'affiliate_profiles' in inspector.get_table_names():
+        with op.batch_alter_table('affiliate_profiles') as batch_op:
+            batch_op.add_column(sa.Column('full_name', sa.String(length=255), nullable=True))
+            batch_op.add_column(sa.Column('bank_name', sa.String(length=255), nullable=True))
+            batch_op.add_column(sa.Column('bank_account_name', sa.String(length=255), nullable=True))
+            batch_op.add_column(sa.Column('bank_account_number', sa.String(length=64), nullable=True))
+            batch_op.add_column(sa.Column('iban', sa.String(length=64), nullable=True))
 
 def downgrade() -> None:
-    with op.batch_alter_table('affiliate_profiles') as batch_op:
-        batch_op.drop_column('iban')
-        batch_op.drop_column('bank_account_number')
-        batch_op.drop_column('bank_account_name')
-        batch_op.drop_column('bank_name')
-        batch_op.drop_column('full_name')
-    with op.batch_alter_table('kyc_applications') as batch_op:
-        batch_op.drop_column('pharmacy_license_number')
-        batch_op.drop_column('id_number')
+    conn = op.get_bind()
+    inspector = sa.inspect(conn)
+    
+    if 'affiliate_profiles' in inspector.get_table_names():
+        with op.batch_alter_table('affiliate_profiles') as batch_op:
+            batch_op.drop_column('iban')
+            batch_op.drop_column('bank_account_number')
+            batch_op.drop_column('bank_account_name')
+            batch_op.drop_column('bank_name')
+            batch_op.drop_column('full_name')
+    
+    if 'kyc_applications' in inspector.get_table_names():
+        with op.batch_alter_table('kyc_applications') as batch_op:
+            batch_op.drop_column('pharmacy_license_number')
+            batch_op.drop_column('id_number')
