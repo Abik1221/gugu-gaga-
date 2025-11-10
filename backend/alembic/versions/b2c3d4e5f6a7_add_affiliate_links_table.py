@@ -20,7 +20,7 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer(), primary_key=True, autoincrement=True),
         sa.Column('affiliate_user_id', sa.Integer(), nullable=False, index=True),
         sa.Column('token', sa.String(length=64), nullable=False, unique=True, index=True),
-        sa.Column('active', sa.Boolean(), nullable=False, server_default=sa.text('1')),
+        sa.Column('active', sa.Boolean(), nullable=False, server_default=sa.text('true')),
         sa.Column('created_at', sa.DateTime(), nullable=False, server_default=sa.text('(CURRENT_TIMESTAMP)')),
     )
 
