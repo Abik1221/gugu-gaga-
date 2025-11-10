@@ -93,63 +93,41 @@ export default function OrdersPage() {
       // Fallback to mock data if API returns empty
       if (!ordersData || ordersData.length === 0) {
         const mockOrders: Order[] = [
-        {
-          id: 1,
-          order_number: "ORD-2024-001",
-          supplier_name: "MediSupply Global",
-          product_name: "Paracetamol 500mg",
-          product_image: "/api/placeholder/100/100",
-          quantity: 500,
-          unit_price: 0.25,
-          total_amount: 125.00,
-          status: "payment_required",
-          order_date: "2024-01-15",
-          delivery_address: "123 Main St, City, State",
-          payment_method: "bank_transfer",
-          supplier_notes: "Order approved. Please proceed with payment to complete the order.",
-          estimated_delivery: "2024-01-25"
-        },
-        {
-          id: 2,
-          order_number: "ORD-2024-002",
-          supplier_name: "PharmaCore Solutions",
-          product_name: "Ibuprofen 200mg",
-          product_image: "/api/placeholder/100/100",
-          quantity: 300,
-          unit_price: 0.18,
-          total_amount: 54.00,
-          status: "shipped",
-          order_date: "2024-01-12",
-          delivery_address: "456 Oak Ave, City, State",
-          payment_method: "credit_card",
-          transaction_code: "TXN123456789",
-          estimated_delivery: "2024-01-20"
-        }
-      ];
-
-      const mockNotifications: Notification[] = [
-        {
-          id: 1,
-          order_id: 1,
-          type: "payment_required",
-          title: "Payment Required",
-          message: "Your order ORD-2024-001 has been approved. Please proceed with payment.",
-          timestamp: "2024-01-16T10:30:00Z",
-          read: false
-        },
-        {
-          id: 2,
-          order_id: 2,
-          type: "shipped",
-          title: "Order Shipped",
-          message: "Your order ORD-2024-002 has been shipped and is on its way.",
-          timestamp: "2024-01-17T14:20:00Z",
-          read: false
-        }
-      ];
-      
-      setOrders(mockOrders);
-      setNotifications(mockNotifications);
+          {
+            id: 1,
+            order_number: "ORD-2024-001",
+            supplier_name: "MediSupply Global",
+            product_name: "Paracetamol 500mg",
+            product_image: "/api/placeholder/100/100",
+            quantity: 500,
+            unit_price: 0.25,
+            total_amount: 125.00,
+            status: "payment_required",
+            order_date: "2024-01-15",
+            delivery_address: "123 Main St, City, State",
+            payment_method: "bank_transfer",
+            supplier_notes: "Order approved. Please proceed with payment to complete the order.",
+            estimated_delivery: "2024-01-25"
+          },
+          {
+            id: 2,
+            order_number: "ORD-2024-002",
+            supplier_name: "PharmaCore Solutions",
+            product_name: "Ibuprofen 200mg",
+            product_image: "/api/placeholder/100/100",
+            quantity: 300,
+            unit_price: 0.18,
+            total_amount: 54.00,
+            status: "shipped",
+            order_date: "2024-01-12",
+            delivery_address: "456 Oak Ave, City, State",
+            payment_method: "credit_card",
+            transaction_code: "TXN123456789",
+            estimated_delivery: "2024-01-20"
+          }
+        ];
+        setOrders(mockOrders);
+      }
     } catch (err: any) {
       show({
         variant: "destructive",
