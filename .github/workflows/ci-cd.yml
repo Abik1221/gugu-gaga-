@@ -47,30 +47,73 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Deploy to EC2
+      - name: Upload deployment files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "backend/.env.production,backend/docker-compose.prod.yml"
+          target: "/home/${{ secrets.EC2_USERNAME }}/"
+          strip_components: 1
+
+      - name: Deploy to EC2 with Docker Compose
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Check if Docker is installed, if not install it
+            if ! command -v docker &> /dev/null; then
+              echo "Docker not found. Installing Docker..."
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sudo sh get-docker.sh
+              sudo usermod -aG docker ${{ secrets.EC2_USERNAME }}
+              sudo systemctl enable docker
+              sudo systemctl start docker
+              rm get-docker.sh
+              echo "Docker installed successfully"
+            fi
+            
+            # Install Docker Compose if not present
+            if ! command -v docker-compose &> /dev/null; then
+              echo "Installing Docker Compose..."
+              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+              echo "Docker Compose installed successfully"
+            fi
+            
+            # Ensure Docker service is running
+            sudo systemctl start docker || true
+            
+            # Secure .env.production file
+            chmod 600 ~/.env.production
+            
             # Login to Docker Hub
             echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             
+            # Set Docker image environment variable
+            export DOCKER_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            
             # Pull latest image
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            docker pull $DOCKER_IMAGE
             
-            # Stop and remove old container
-            docker stop zemen-backend || true
-            docker rm zemen-backend || true
+            # Stop and remove old containers
+            docker-compose -f docker-compose.prod.yml down || true
             
-            # Run new container
-            docker run -d \
-              --name zemen-backend \
-              --restart unless-stopped \
-              -p 8000:8000 \
-              --env-file /home/${{ secrets.EC2_USERNAME }}/.env.production \
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            # Start services with Docker Compose
+            docker-compose -f docker-compose.prod.yml up -d
+            
+            # Wait for services to be healthy
+            echo "Waiting for services to start..."
+            sleep 10
+            
+            # Show container status
+            docker-compose -f docker-compose.prod.yml ps
+            
+            # Show backend logs
+            docker-compose -f docker-compose.prod.yml logs --tail=50 backend
             
             # Clean up old images
             docker image prune -af

@@ -1,9 +1,8 @@
 {
-  "/(auth)/auth/page": "app/(auth)/auth/page.js",
+  "/(auth)/affiliate-signin/page": "app/(auth)/affiliate-signin/page.js",
   "/(auth)/forgot-password/page": "app/(auth)/forgot-password/page.js",
   "/(auth)/register/affiliate/page": "app/(auth)/register/affiliate/page.js",
   "/(auth)/register/page": "app/(auth)/register/page.js",
   "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
-  "/page": "app/page.js",
-  "/privacy/page": "app/privacy/page.js"
+  "/page": "app/page.js"
 }

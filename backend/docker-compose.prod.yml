@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: zemen-postgres
+    environment:
+      POSTGRES_DB: zemen_pharma
+      POSTGRES_USER: zemen_user
+      POSTGRES_PASSWORD: zemen_secure_password_2024
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zemen_user -d zemen_pharma"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: ${DOCKER_IMAGE}
+    container_name: zemen-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://zemen_user:zemen_secure_password_2024@postgres:5432/zemen_pharma
+    env_file:
+      - .env.production
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo '⏳ Waiting for database...' &&
+        sleep 5 &&
+        echo '🔄 Running database migrations...' &&
+        alembic upgrade head &&
+        echo '✅ Migrations complete!' &&
+        echo '🚀 Starting application...' &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000
+      "
+
+volumes:
+  postgres_data:
+    driver: local
