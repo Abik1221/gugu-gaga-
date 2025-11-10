@@ -57,11 +57,6 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ steps.vars.outputs.tag }}
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
-          build-args: |
-            NEXT_PUBLIC_API_BASE=https://mymesob.com/api/v1
-            NEXT_PUBLIC_TENANT_HEADER=X-Tenant-ID
-            NEXT_PUBLIC_GOOGLE_ADSENSE_ID=ca-pub-9109859769022445
-            NEXT_PUBLIC_GOOGLE_AD_SLOT=1234567890
 
       - name: Upload deployment files to EC2
         uses: appleboy/scp-action@v0.1.7
