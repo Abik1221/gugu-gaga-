@@ -94,16 +94,16 @@ jobs:
             echo ${{ secrets.DOCKERHUB_TOKEN }} | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             
             # Set Docker image environment variable
-            export DOCKER_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            DOCKER_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             
             # Pull latest image
             sudo docker pull $DOCKER_IMAGE
             
             # Stop and remove old containers
-            sudo docker-compose -f docker-compose.prod.yml down || true
+            sudo DOCKER_IMAGE=$DOCKER_IMAGE docker-compose -f docker-compose.prod.yml down || true
             
             # Start services with Docker Compose
-            sudo docker-compose -f docker-compose.prod.yml up -d
+            sudo DOCKER_IMAGE=$DOCKER_IMAGE docker-compose -f docker-compose.prod.yml up -d
             
             # Wait for services to be healthy
             echo "Waiting for services to start..."
