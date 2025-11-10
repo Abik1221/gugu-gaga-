@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { LogOut, DollarSign, Clock, CheckCircle, AlertCircle } from "lucide-react";
-import { getAuthJSON, postAuthForm } from "@/utils/api";
+import { getAuthJSON, postForm } from "@/utils/api";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -110,7 +110,7 @@ export default function OwnerPaymentPage() {
     setIsSubmitting(true);
     
     try {
-      await postAuthForm(`/api/v1/billing/payment-code?tenant_id=${tenantId}`, { code: paymentCode });
+      await postForm(`/api/v1/billing/payment-code?tenant_id=${tenantId}`, { code: paymentCode });
       show({ title: "Success", description: "Payment code submitted successfully. Awaiting admin verification.", variant: "success" });
       setPaymentCode("");
       await loadStatus();
