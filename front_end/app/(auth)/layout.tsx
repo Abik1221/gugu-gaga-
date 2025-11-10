@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import Footer from "@/components/sections/Footer";
 import Navbar from "@/components/sections/Navbar";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-// Auth layout (no header maybe)
+
+export const dynamic = 'force-dynamic';
+
 export default function AuthLayout({
   children,
 }: {
