@@ -90,33 +90,33 @@ jobs:
             # Secure .env.production file
             chmod 600 ~/.env.production
             
-            # Login to Docker Hub
-            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            # Login to Docker Hub (use sudo for first time)
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             
             # Set Docker image environment variable
             export DOCKER_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             
             # Pull latest image
-            docker pull $DOCKER_IMAGE
+            sudo docker pull $DOCKER_IMAGE
             
             # Stop and remove old containers
-            docker-compose -f docker-compose.prod.yml down || true
+            sudo docker-compose -f docker-compose.prod.yml down || true
             
             # Start services with Docker Compose
-            docker-compose -f docker-compose.prod.yml up -d
+            sudo docker-compose -f docker-compose.prod.yml up -d
             
             # Wait for services to be healthy
             echo "Waiting for services to start..."
             sleep 10
             
             # Show container status
-            docker-compose -f docker-compose.prod.yml ps
+            sudo docker-compose -f docker-compose.prod.yml ps
             
             # Show backend logs
-            docker-compose -f docker-compose.prod.yml logs --tail=50 backend
+            sudo docker-compose -f docker-compose.prod.yml logs --tail=50 backend
             
             # Clean up old images
-            docker image prune -af
+            sudo docker image prune -af
 
       - name: Deployment summary
         run: |
