@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { AuthAPI, UploadAPI } from "@/utils/api";
 
+export const dynamic = 'force-dynamic';
+
 type FieldKey =
   | "pharmacyName"
   | "ownerEmail"
