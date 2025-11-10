@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { ServiceWorkerProvider } from "@/components/providers/service-worker-provider";
 import logoImage from "@/public/mesoblogo.jpeg";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: {
     default: "Mesob - AI-Powered Business Management Software | Ethiopia",
