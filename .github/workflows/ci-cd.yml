@@ -53,7 +53,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "backend/.env.production,backend/docker-compose.prod.yml"
+          source: "backend/.env.production,backend/docker-compose.prod.yml,backend/nginx.conf"
           target: "/home/${{ secrets.EC2_USERNAME }}/"
           strip_components: 1
 
