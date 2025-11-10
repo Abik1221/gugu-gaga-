@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { AuthAPI } from "@/utils/api";
 
+export const dynamic = 'force-dynamic';
+
 const highlights = [
   {
     icon: <ShieldCheck className="h-4 w-4" />,
