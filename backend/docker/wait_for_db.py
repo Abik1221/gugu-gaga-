@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 DB_URL = os.getenv("DATABASE_URL")
 if not DB_URL or DB_URL.startswith("sqlite"):
@@ -12,9 +12,9 @@ attempts = 0
 while True:
     attempts += 1
     try:
-        engine = create_engine(DB_URL, future=True)
+        engine = create_engine(DB_URL)
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
+            conn.execute(text("SELECT 1"))
         print("Database is ready.")
         sys.exit(0)
     except Exception as e:
