@@ -66,21 +66,21 @@ jobs:
           script: |
             # Check if Docker is installed, if not install it
             if ! command -v docker &> /dev/null; then
-              echo "Docker not found. Installing Docker..."
-              curl -fsSL https://get.docker.com -o get-docker.sh
-              sudo sh get-docker.sh
+              echo "Docker not found. Installing Docker for Amazon Linux..."
+              sudo yum update -y
+              sudo yum install docker -y
               sudo usermod -aG docker ${{ secrets.EC2_USERNAME }}
               sudo systemctl enable docker
               sudo systemctl start docker
-              rm get-docker.sh
               echo "Docker installed successfully"
             fi
             
             # Install Docker Compose if not present
             if ! command -v docker-compose &> /dev/null; then
               echo "Installing Docker Compose..."
-              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
               sudo chmod +x /usr/local/bin/docker-compose
+              sudo ln -sf /usr/local/bin/docker-compose /usr/bin/docker-compose
               echo "Docker Compose installed successfully"
             fi
             
