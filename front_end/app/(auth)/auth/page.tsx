@@ -4,6 +4,8 @@ import { useSearchParams } from "next/navigation";
 import AffiliateLoginPage from "../affiliate-signin/page";
 import AffiliateRegisterPage from "../register/affiliate/page";
 
+export const dynamic = 'force-dynamic';
+
 export default function AuthRouterPage() {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab") ?? "signin";
