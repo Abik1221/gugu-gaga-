@@ -8,6 +8,7 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ secrets.DOCKERHUB_REPOSITORY }}
+  FRONTEND_IMAGE_NAME: ${{ secrets.DOCKERHUB_REPOSITORY }}-frontend
 
 jobs:
   build-and-deploy:
@@ -38,7 +39,7 @@ jobs:
             type=raw,value=${{ steps.vars.outputs.tag }}
             type=raw,value=latest
 
-      - name: Build and push Docker image
+      - name: Build and push Backend Docker image
         uses: docker/build-push-action@v5
         with:
           context: ./backend
@@ -46,6 +47,21 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push Frontend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./front_end
+          file: ./front_end/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ steps.vars.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
+          build-args: |
+            NEXT_PUBLIC_API_BASE=https://mymesob.com/api/v1
+            NEXT_PUBLIC_TENANT_HEADER=X-Tenant-ID
+            NEXT_PUBLIC_GOOGLE_ADSENSE_ID=ca-pub-9109859769022445
+            NEXT_PUBLIC_GOOGLE_AD_SLOT=1234567890
 
       - name: Upload deployment files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -93,11 +109,13 @@ jobs:
             # Login to Docker Hub (use sudo for first time)
             echo ${{ secrets.DOCKERHUB_TOKEN }} | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             
-            # Set Docker image environment variable
+            # Set Docker image environment variables
             DOCKER_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
             
-            # Pull latest image
+            # Pull latest images
             sudo docker pull $DOCKER_IMAGE
+            sudo docker pull $FRONTEND_IMAGE
             
             # Install certbot if not present
             if ! command -v certbot &> /dev/null; then
@@ -114,20 +132,23 @@ jobs:
             fi
             
             # Stop and remove old containers
-            sudo DOCKER_IMAGE=$DOCKER_IMAGE docker-compose -f docker-compose.prod.yml down || true
+            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml down || true
             
             # Start services with Docker Compose
-            sudo DOCKER_IMAGE=$DOCKER_IMAGE docker-compose -f docker-compose.prod.yml up -d
+            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml up -d
             
             # Wait for services to be healthy
             echo "Waiting for services to start..."
             sleep 10
             
             # Show container status
-            sudo DOCKER_IMAGE=$DOCKER_IMAGE docker-compose -f docker-compose.prod.yml ps
+            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml ps
             
             # Show backend logs
-            sudo DOCKER_IMAGE=$DOCKER_IMAGE docker-compose -f docker-compose.prod.yml logs --tail=50 backend
+            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml logs --tail=30 backend
+            
+            # Show frontend logs
+            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml logs --tail=30 frontend
             
             # Clean up old images
             sudo docker image prune -af
