@@ -110,10 +110,10 @@ jobs:
             sleep 10
             
             # Show container status
-            sudo docker-compose -f docker-compose.prod.yml ps
+            sudo DOCKER_IMAGE=$DOCKER_IMAGE docker-compose -f docker-compose.prod.yml ps
             
             # Show backend logs
-            sudo docker-compose -f docker-compose.prod.yml logs --tail=50 backend
+            sudo DOCKER_IMAGE=$DOCKER_IMAGE docker-compose -f docker-compose.prod.yml logs --tail=50 backend
             
             # Clean up old images
             sudo docker image prune -af
