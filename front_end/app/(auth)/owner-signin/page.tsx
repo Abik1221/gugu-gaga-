@@ -3,6 +3,7 @@
 import React, { useState, FormEvent } from "react";
 import Image from "next/image";
 import logoImage from "@/public/mesoblogo.jpeg";
+import { ErrorDialog } from "@/components/ui/error-dialog";
 
 type Errors = {
     identifier?: string;
@@ -19,6 +20,12 @@ export default function PharmacySignInPage(): JSX.Element {
     const [loading, setLoading] = useState<boolean>(false);
     const [otpSent, setOtpSent] = useState<boolean>(false);
     const [otp, setOtp] = useState<string>("");
+    const [errorDialog, setErrorDialog] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+        type: "error" | "warning" | "success";
+    }>({ isOpen: false, title: "", message: "", type: "error" });
 
     function validate(): Errors {
         const e: Errors = {};
@@ -52,12 +59,42 @@ export default function PharmacySignInPage(): JSX.Element {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.detail || "Invalid credentials");
+                const message = errorData.detail || "Invalid credentials";
+                
+                if (message.includes("No account")) {
+                    setErrorDialog({
+                        isOpen: true,
+                        title: "Account Not Found",
+                        message: `We couldn't find an account with "${identifier.trim()}". Please check your email/phone and try again.`,
+                        type: "error",
+                    });
+                } else if (message.includes("password")) {
+                    setErrorDialog({
+                        isOpen: true,
+                        title: "Incorrect Password",
+                        message: "The password you entered is incorrect. Please try again or reset your password.",
+                        type: "error",
+                    });
+                } else {
+                    setErrorDialog({
+                        isOpen: true,
+                        title: "Login Failed",
+                        message: message,
+                        type: "error",
+                    });
+                }
+                return;
             }
 
+            setErrorDialog({
+                isOpen: true,
+                title: "Code Sent Successfully!",
+                message: `We've sent a 6-digit verification code to ${identifier.trim()}. Please check your inbox.`,
+                type: "success",
+            });
             setOtpSent(true);
         } catch (err: any) {
-            setErrors({ form: err.message || "Failed to sign in. Check credentials and try again." });
+            // Error already handled above
         } finally {
             setLoading(false);
         }
@@ -80,7 +117,24 @@ export default function PharmacySignInPage(): JSX.Element {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.detail || "Invalid verification code");
+                const message = errorData.detail || "Invalid verification code";
+                
+                if (message.includes("Invalid") || message.includes("expired")) {
+                    setErrorDialog({
+                        isOpen: true,
+                        title: "Invalid Code",
+                        message: "The verification code you entered is invalid or has expired. Please request a new code.",
+                        type: "error",
+                    });
+                } else {
+                    setErrorDialog({
+                        isOpen: true,
+                        title: "Verification Failed",
+                        message: message,
+                        type: "error",
+                    });
+                }
+                return;
             }
 
             const data = await response.json();
@@ -88,16 +142,33 @@ export default function PharmacySignInPage(): JSX.Element {
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem("refresh_token", data.refresh_token);
 
-            window.location.href = "/dashboard/kyc";
+            setErrorDialog({
+                isOpen: true,
+                title: "Welcome Back!",
+                message: "Login successful. Redirecting to your dashboard...",
+                type: "success",
+            });
+            
+            setTimeout(() => {
+                window.location.href = "/dashboard/kyc";
+            }, 1500);
         } catch (err: any) {
-            setErrors({ form: err.message || "Invalid verification code" });
+            // Error already handled above
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <div className="min-h-screen bg-white text-slate-800 flex items-center justify-center px-6 py-12">
+        <>
+            <ErrorDialog
+                isOpen={errorDialog.isOpen}
+                onClose={() => setErrorDialog({ ...errorDialog, isOpen: false })}
+                title={errorDialog.title}
+                message={errorDialog.message}
+                type={errorDialog.type}
+            />
+            <div className="min-h-screen bg-white text-slate-800 flex items-center justify-center px-6 py-12">
             <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 rounded-2xl shadow-2xl overflow-hidden bg-white border border-slate-200">
                 {/* Left: brand area */}
                 <aside className="hidden md:flex flex-col justify-center items-start p-10 bg-gradient-to-br from-emerald-100 to-emerald-50">
@@ -232,5 +303,6 @@ export default function PharmacySignInPage(): JSX.Element {
                 </main>
             </div>
         </div>
+        </>
     );
 }

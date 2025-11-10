@@ -243,11 +243,6 @@ function getAccessToken() {
     //TURBOPACK unreachable
     ;
 }
-function getTenantId() {
-    if ("TURBOPACK compile-time truthy", 1) return null;
-    //TURBOPACK unreachable
-    ;
-}
 function getRefreshToken() {
     if ("TURBOPACK compile-time truthy", 1) return null;
     //TURBOPACK unreachable
@@ -279,13 +274,12 @@ async function refreshTokens() {
 }
 async function authFetch(path, init, retry = true, tenantId) {
     const token = getAccessToken();
-    const activeTenantId = tenantId ?? getTenantId() ?? undefined;
     const headers = buildHeaders({
         ...init?.headers || {},
         ...token ? {
             Authorization: `Bearer ${token}`
         } : {}
-    }, activeTenantId);
+    }, tenantId);
     let res = await fetch(resolveApiUrl(path), {
         ...init || {},
         headers
@@ -294,13 +288,12 @@ async function authFetch(path, init, retry = true, tenantId) {
         const ok = await refreshTokens();
         if (ok) {
             const newToken = getAccessToken();
-            const retryTenantId = tenantId ?? getTenantId() ?? undefined;
             const retryHeaders = buildHeaders({
                 ...init?.headers || {},
                 ...newToken ? {
                     Authorization: `Bearer ${newToken}`
                 } : {}
-            }, retryTenantId);
+            }, tenantId);
             res = await fetch(resolveApiUrl(path), {
                 ...init || {},
                 headers: retryHeaders
@@ -414,21 +407,16 @@ const AuthAPI = {
             if (!res.ok) throw new Error("Failed to revoke session");
         }),
     changePassword: (body)=>postAuthJSON("/api/v1/auth/change-password", body),
-    me: ()=>getAuthJSON("/api/v1/auth/me").then((profile)=>{
-            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-            ;
-            return profile;
-        })
+    me: ()=>getAuthJSON("/api/v1/auth/me")
 };
 const TenantAPI = {
-    activity: async (params)=>{
+    activity: async (params, tenantId)=>{
         const searchParams = new URLSearchParams();
         if (params?.limit) searchParams.set("limit", params.limit.toString());
         if (params?.offset) searchParams.set("offset", params.offset.toString());
         params?.action?.forEach((action)=>searchParams.append("action", action));
         const qs = searchParams.toString();
         const url = `/api/v1/tenant/activity${qs ? `?${qs}` : ""}`;
-        const tenantId = getTenantId() ?? undefined;
         const res = await authFetch(url, undefined, true, tenantId);
         if (res.status === 404 || res.status === 204) {
             return [];

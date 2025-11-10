@@ -228,11 +228,6 @@ function getAccessToken() {
     ;
     return localStorage.getItem("access_token") || localStorage.getItem("token");
 }
-function getTenantId() {
-    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-    ;
-    return localStorage.getItem("tenant_id");
-}
 function getRefreshToken() {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
@@ -267,14 +262,12 @@ async function refreshTokens() {
 async function authFetch(path, init) {
     let retry = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true, tenantId = arguments.length > 3 ? arguments[3] : void 0;
     const token = getAccessToken();
-    var _ref;
-    const activeTenantId = (_ref = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref !== void 0 ? _ref : undefined;
     const headers = buildHeaders({
         ...(init === null || init === void 0 ? void 0 : init.headers) || {},
         ...token ? {
             Authorization: "Bearer ".concat(token)
         } : {}
-    }, activeTenantId);
+    }, tenantId);
     let res = await fetch(resolveApiUrl(path), {
         ...init || {},
         headers
@@ -283,14 +276,12 @@ async function authFetch(path, init) {
         const ok = await refreshTokens();
         if (ok) {
             const newToken = getAccessToken();
-            var _ref1;
-            const retryTenantId = (_ref1 = tenantId !== null && tenantId !== void 0 ? tenantId : getTenantId()) !== null && _ref1 !== void 0 ? _ref1 : undefined;
             const retryHeaders = buildHeaders({
                 ...(init === null || init === void 0 ? void 0 : init.headers) || {},
                 ...newToken ? {
                     Authorization: "Bearer ".concat(newToken)
                 } : {}
-            }, retryTenantId);
+            }, tenantId);
             res = await fetch(resolveApiUrl(path), {
                 ...init || {},
                 headers: retryHeaders
@@ -380,9 +371,6 @@ const AuthAPI = {
             if ("TURBOPACK compile-time truthy", 1) {
                 localStorage.setItem("access_token", resp.access_token);
                 localStorage.setItem("refresh_token", resp.refresh_token);
-                if (tenantId) {
-                    localStorage.setItem("tenant_id", tenantId);
-                }
             }
             return resp;
         }),
@@ -398,9 +386,6 @@ const AuthAPI = {
             if ("TURBOPACK compile-time truthy", 1) {
                 localStorage.setItem("access_token", resp.access_token);
                 localStorage.setItem("refresh_token", resp.refresh_token);
-                if (tenantId) {
-                    localStorage.setItem("tenant_id", tenantId);
-                }
             }
             return resp;
         }),
@@ -414,17 +399,10 @@ const AuthAPI = {
             if (!res.ok) throw new Error("Failed to revoke session");
         }),
     changePassword: (body)=>postAuthJSON("/api/v1/auth/change-password", body),
-    me: ()=>getAuthJSON("/api/v1/auth/me").then((profile)=>{
-            if ("TURBOPACK compile-time truthy", 1) {
-                if (profile === null || profile === void 0 ? void 0 : profile.tenant_id) {
-                    localStorage.setItem("tenant_id", profile.tenant_id);
-                }
-            }
-            return profile;
-        })
+    me: ()=>getAuthJSON("/api/v1/auth/me")
 };
 const TenantAPI = {
-    activity: async (params)=>{
+    activity: async (params, tenantId)=>{
         var _params_action;
         const searchParams = new URLSearchParams();
         if (params === null || params === void 0 ? void 0 : params.limit) searchParams.set("limit", params.limit.toString());
@@ -432,8 +410,6 @@ const TenantAPI = {
         params === null || params === void 0 ? void 0 : (_params_action = params.action) === null || _params_action === void 0 ? void 0 : _params_action.forEach((action)=>searchParams.append("action", action));
         const qs = searchParams.toString();
         const url = "/api/v1/tenant/activity".concat(qs ? "?".concat(qs) : "");
-        var _getTenantId;
-        const tenantId = (_getTenantId = getTenantId()) !== null && _getTenantId !== void 0 ? _getTenantId : undefined;
         const res = await authFetch(url, undefined, true, tenantId);
         if (res.status === 404 || res.status === 204) {
             return [];
@@ -1717,10 +1693,28 @@ function AffiliateLoginPage() {
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                            className: "block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700",
-                                            children: "Password*"
-                                        }, void 0, false, {
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "flex items-center justify-between",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                    className: "block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700",
+                                                    children: "Password*"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
+                                                    lineNumber: 175,
+                                                    columnNumber: 19
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                                    href: "/forgot-password",
+                                                    className: "text-xs font-medium text-emerald-600 hover:text-emerald-700 hover:underline",
+                                                    children: "Forgot password?"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
+                                                    lineNumber: 178,
+                                                    columnNumber: 19
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
                                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
                                             lineNumber: 174,
                                             columnNumber: 17
@@ -1733,7 +1727,7 @@ function AffiliateLoginPage() {
                                             className: "mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                            lineNumber: 177,
+                                            lineNumber: 182,
                                             columnNumber: 17
                                         }, this)
                                     ]
@@ -1761,7 +1755,7 @@ function AffiliateLoginPage() {
                                                     strokeWidth: "4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                                    lineNumber: 193,
+                                                    lineNumber: 198,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -1770,20 +1764,20 @@ function AffiliateLoginPage() {
                                                     d: "M4 12a8 8 0 018-8v8z"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                                    lineNumber: 194,
+                                                    lineNumber: 199,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                            lineNumber: 192,
+                                            lineNumber: 197,
                                             columnNumber: 19
                                         }, this) : null,
                                         loading ? "Sending code..." : "Send login code"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                    lineNumber: 186,
+                                    lineNumber: 191,
                                     columnNumber: 15
                                 }, this)
                             ]
@@ -1802,7 +1796,7 @@ function AffiliateLoginPage() {
                                             children: "Email"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                            lineNumber: 203,
+                                            lineNumber: 208,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1813,13 +1807,13 @@ function AffiliateLoginPage() {
                                             className: "mt-2 border border-emerald-100 bg-emerald-50 text-slate-600"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                            lineNumber: 206,
+                                            lineNumber: 211,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                    lineNumber: 202,
+                                    lineNumber: 207,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1829,7 +1823,7 @@ function AffiliateLoginPage() {
                                             children: "Login code*"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                            lineNumber: 215,
+                                            lineNumber: 220,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1839,13 +1833,13 @@ function AffiliateLoginPage() {
                                             className: "mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                            lineNumber: 218,
+                                            lineNumber: 223,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                    lineNumber: 214,
+                                    lineNumber: 219,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1867,7 +1861,7 @@ function AffiliateLoginPage() {
                                                     strokeWidth: "4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                                    lineNumber: 233,
+                                                    lineNumber: 238,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -1876,20 +1870,20 @@ function AffiliateLoginPage() {
                                                     d: "M4 12a8 8 0 018-8v8z"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                                    lineNumber: 234,
+                                                    lineNumber: 239,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                            lineNumber: 232,
+                                            lineNumber: 237,
                                             columnNumber: 19
                                         }, this) : null,
                                         loading ? "Verifying..." : "Sign in"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                    lineNumber: 226,
+                                    lineNumber: 231,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1902,13 +1896,13 @@ function AffiliateLoginPage() {
                                     children: "Use a different email"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                    lineNumber: 240,
+                                    lineNumber: 245,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                            lineNumber: 201,
+                            lineNumber: 206,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1922,13 +1916,13 @@ function AffiliateLoginPage() {
                                     children: "Register here"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                                    lineNumber: 255,
+                                    lineNumber: 260,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(auth)/affiliate-signin/page.tsx",
-                            lineNumber: 253,
+                            lineNumber: 258,
                             columnNumber: 11
                         }, this)
                     ]

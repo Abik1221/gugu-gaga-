@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy to EC2
 
 on:
   push:
@@ -12,8 +12,6 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -49,7 +47,36 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Summarize deployment
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Login to Docker Hub
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            
+            # Pull latest image
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            
+            # Stop and remove old container
+            docker stop zemen-backend || true
+            docker rm zemen-backend || true
+            
+            # Run new container
+            docker run -d \
+              --name zemen-backend \
+              --restart unless-stopped \
+              -p 8000:8000 \
+              --env-file /home/${{ secrets.EC2_USERNAME }}/.env.production \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            
+            # Clean up old images
+            docker image prune -af
+
+      - name: Deployment summary
         run: |
-          echo "Image pushed: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }}"
-          echo "Latest tag refreshed as well."
+          echo "✅ Image pushed: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }}"
+          echo "✅ Deployed to EC2: ${{ secrets.EC2_HOST }}"
+          echo "✅ Deployment complete!"

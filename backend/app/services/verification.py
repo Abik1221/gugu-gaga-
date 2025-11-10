@@ -19,6 +19,12 @@ def issue_code(db: Session, *, email: str, purpose: str, ttl_minutes: int = 10) 
     vc = VerificationCode(email=email, code=code, purpose=purpose, expires_at=expires, consumed=False)
     db.add(vc)
     db.commit()
+    
+    # Log the code to terminal for development
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning(f"\n{'='*60}\n🔐 VERIFICATION CODE for {email} ({purpose})\nCODE: {code}\nExpires in {ttl_minutes} minutes\n{'='*60}\n")
+    
     return code
 
 

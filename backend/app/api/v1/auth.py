@@ -454,9 +454,10 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
     try:
         if user.email:
             reg_code = issue_code(db, email=user.email, purpose="register")
-            send_email(user.email, "Verify your account", f"Your verification code is: {reg_code}")
-    except Exception:
-        pass
+            result = send_email(user.email, "Verify your account", f"Your verification code is: {reg_code}")
+            print(f"\n✅ Affiliate registration email result: {result}\n")
+    except Exception as e:
+        print(f"\n❌ Affiliate registration email FAILED: {type(e).__name__}: {e}\n")
     return _user_with_status(db, user)
 
 
@@ -545,10 +546,10 @@ def verify_registration(
     db: Session = Depends(get_db),
 ):
     if not verify_code(db, email=payload.email, purpose="register", code=payload.code):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired verification code")
     user = db.query(User).filter(User.email == payload.email).first()
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
     user.is_verified = True
     db.add(user)
     db.commit()
@@ -563,13 +564,19 @@ def login_request_code(
     tenant_id: Optional[str] = Depends(get_optional_tenant_id),
 ):
     user = db.query(User).filter(User.email == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.password_hash):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
+    if not verify_password(form_data.password, user.password_hash):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
     code = issue_code(db, email=user.email, purpose="login")
     if user.email:
-        send_email(user.email, "Login verification code", f"Your login code is: {code}")
+        try:
+            result = send_email(user.email, "Login verification code", f"Your login code is: {code}")
+            print(f"\n✅ Login code email result: {result}\n")
+        except Exception as e:
+            print(f"\n❌ Login code email FAILED: {type(e).__name__}: {e}\n")
     return {"status": "code_sent"}
 
 
@@ -582,7 +589,7 @@ def login_verify(
 ):
     user = db.query(User).filter(User.email == payload.email).first()
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
     if not verify_code(db, email=payload.email, purpose="login", code=payload.code):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code")
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
@@ -603,19 +610,46 @@ def login_verify(
 def password_reset_request(payload: PasswordResetRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email).first()
     if not user:
-        # Avoid user enumeration
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
+    
+    # Allow password reset for all roles: owner, affiliate, supplier, cashier
+    if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.supplier.value, Role.cashier.value, Role.admin.value}:
         return {"status": "sent"}
-    if user.role != Role.pharmacy_owner.value:
-        return {"status": "sent"}
-    if not user.is_approved:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account not yet approved")
+    
+    # Generate reset code (30 min expiry)
     code = issue_code(db, email=user.email, purpose="password_reset", ttl_minutes=30)
+    
+    # Print code to console for development
+    print(f"\n{'='*60}")
+    print(f"🔐 PASSWORD RESET CODE")
+    print(f"Email: {user.email}")
+    print(f"Code: {code}")
+    print(f"Expires in: 30 minutes")
+    print(f"{'='*60}\n")
+    
+    # Send email with reset code
     if user.email:
-        send_email(
-            user.email,
-            "Reset your password",
-            f"Use this code to reset your password: {code}. It expires in 30 minutes.",
-        )
+        try:
+            result = send_email(
+                user.email,
+                "Reset Your Password - Zemen Pharma",
+                f"""Hello,
+
+You requested to reset your password for your Zemen Pharma account.
+
+Your password reset code is: {code}
+
+This code will expire in 30 minutes.
+
+If you didn't request this, please ignore this email.
+
+Best regards,
+Zemen Pharma Team""",
+            )
+            print(f"\n✅ Email send result: {result}\n")
+        except Exception as e:
+            print(f"\n❌ Email send FAILED: {type(e).__name__}: {e}\n")
+    
     return {"status": "sent"}
 
 
@@ -623,20 +657,61 @@ def password_reset_request(payload: PasswordResetRequest, db: Session = Depends(
 def password_reset_confirm(payload: PasswordResetConfirm, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email).first()
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    if user.role != Role.pharmacy_owner.value:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
+    
+    # Allow password reset for all roles
+    if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.supplier.value, Role.cashier.value, Role.admin.value}:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password reset not available for this account")
-    if not user.is_approved:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account not yet approved")
+    
+    # Verify reset code
     if not verify_code(db, email=payload.email, purpose="password_reset", code=payload.code):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired reset code")
+    
+    # Hash and update password
     try:
         user.password_hash = hash_password(payload.new_password)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    
     db.add(user)
     db.commit()
-    return {"status": "reset"}
+    
+    # Revoke all existing sessions for security
+    sessions = db.query(AuthSession).filter(
+        AuthSession.user_id == user.id,
+        AuthSession.is_revoked == False
+    ).all()
+    for session in sessions:
+        revoke_auth_session(db, session)
+    
+    # Send confirmation email
+    if user.email:
+        send_email(
+            user.email,
+            "Password Reset Successful - Zemen Pharma",
+            f"""Hello,
+
+Your password has been successfully reset.
+
+All active sessions have been logged out for security.
+
+If you didn't make this change, please contact support immediately.
+
+Best regards,
+Zemen Pharma Team""",
+        )
+    
+    # Log activity if tenant exists
+    if user.tenant_id:
+        log_activity(
+            db,
+            tenant_id=user.tenant_id,
+            actor_user_id=user.id,
+            action="account.password-reset",
+            message="Password reset via email code",
+        )
+    
+    return {"status": "reset", "message": "Password reset successful. Please login with your new password."}
 
 
 @router.get("/me", response_model=UserOut)

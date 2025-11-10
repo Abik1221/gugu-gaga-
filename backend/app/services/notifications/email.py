@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def send_email(to: str, subject: str, body: str, from_addr: Optional[str] = None) -> bool:
     if not settings.email_enabled:
-        logger.info("Email sending disabled; skipping email to %s", to)
+        logger.warning("⚠️ EMAIL DISABLED - Would send to %s: %s", to, subject)
         return False
 
     host = settings.smtp_host
@@ -22,6 +22,7 @@ def send_email(to: str, subject: str, body: str, from_addr: Optional[str] = None
     password = settings.smtp_password
 
     if not host or not username or not password:
+        logger.error("❌ EMAIL ENABLED but SMTP credentials missing! host=%s, user=%s, pass=%s", host, username, "***" if password else None)
         raise RuntimeError("Email is enabled but SMTP credentials are missing")
 
     sender = from_addr or settings.email_from or username

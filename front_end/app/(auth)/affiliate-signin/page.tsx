@@ -7,6 +7,7 @@ import { AuthAPI } from "@/utils/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { ErrorDialog } from "@/components/ui/error-dialog";
 
 const highlights = [
   "Track referrals and payouts in real time",
@@ -23,6 +24,12 @@ export default function AffiliateLoginPage() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorDialog, setErrorDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: "error" | "warning" | "success";
+  }>({ isOpen: false, title: "", message: "", type: "error" });
 
   async function requestCode(e: React.FormEvent) {
     e.preventDefault();
@@ -31,15 +38,38 @@ export default function AffiliateLoginPage() {
     try {
       await AuthAPI.loginRequestCode(email, password);
       setStep("verify");
-      show({
-        variant: "success",
-        title: "Code sent",
-        description: "Check your email for your login code.",
+      setErrorDialog({
+        isOpen: true,
+        title: "Code Sent Successfully!",
+        message: `We've sent a 6-digit login code to ${email}. Please check your inbox and enter the code below.`,
+        type: "success",
       });
     } catch (e: any) {
       const message = e.message || "Failed to send code";
-      setError(message);
-      show({ variant: "destructive", title: "Error", description: message });
+      setError(null);
+      
+      if (message.includes("No account")) {
+        setErrorDialog({
+          isOpen: true,
+          title: "Account Not Found",
+          message: `We couldn't find an affiliate account with the email "${email}". Please check your email address and try again.`,
+          type: "error",
+        });
+      } else if (message.includes("password")) {
+        setErrorDialog({
+          isOpen: true,
+          title: "Incorrect Password",
+          message: "The password you entered is incorrect. Please try again or reset your password.",
+          type: "error",
+        });
+      } else {
+        setErrorDialog({
+          isOpen: true,
+          title: "Login Failed",
+          message: message,
+          type: "error",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -59,19 +89,47 @@ export default function AffiliateLoginPage() {
       } catch (profileError) {
         console.warn("[affiliate-login] unable to load profile after login", profileError);
       }
-      show({ variant: "success", title: "Welcome", description: "Login successful" });
-      router.replace("/dashboard/affiliate");
+      setErrorDialog({
+        isOpen: true,
+        title: "Welcome Back!",
+        message: "Login successful. Redirecting to your affiliate dashboard...",
+        type: "success",
+      });
+      setTimeout(() => router.replace("/dashboard/affiliate"), 1500);
     } catch (e: any) {
       const message = e.message || "Verification failed";
-      setError(message);
-      show({ variant: "destructive", title: "Error", description: message });
+      setError(null);
+      
+      if (message.includes("Invalid") || message.includes("expired")) {
+        setErrorDialog({
+          isOpen: true,
+          title: "Invalid Code",
+          message: "The verification code you entered is invalid or has expired. Please request a new code and try again.",
+          type: "error",
+        });
+      } else {
+        setErrorDialog({
+          isOpen: true,
+          title: "Verification Failed",
+          message: message,
+          type: "error",
+        });
+      }
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="relative flex min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 text-slate-900">
+    <>
+      <ErrorDialog
+        isOpen={errorDialog.isOpen}
+        onClose={() => setErrorDialog({ ...errorDialog, isOpen: false })}
+        title={errorDialog.title}
+        message={errorDialog.message}
+        type={errorDialog.type}
+      />
+      <div className="relative flex min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 text-slate-900">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-[-6rem] left-[-4rem] h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
         <div className="absolute bottom-[-5rem] right-[-3rem] h-[26rem] w-[26rem] rounded-full bg-blue-200/40 blur-3xl" />
@@ -171,9 +229,14 @@ export default function AffiliateLoginPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                  Password*
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
+                    Password*
+                  </label>
+                  <Link href="/forgot-password" className="text-xs font-medium text-emerald-600 hover:text-emerald-700 hover:underline">
+                    Forgot password?
+                  </Link>
+                </div>
                 <Input
                   type="password"
                   value={password}
@@ -259,5 +322,6 @@ export default function AffiliateLoginPage() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }
