@@ -129,6 +129,14 @@ jobs:
             # Stop and remove old containers
             sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml down || true
             
+            # Reset database for clean migrations (only if postgres is running)
+            if sudo docker ps -a | grep -q zemen-postgres; then
+              echo "Resetting database for clean migrations..."
+              sudo docker exec zemen-postgres psql -U zemen_user -d postgres -c "DROP DATABASE IF EXISTS zemen_pharma;" 2>/dev/null || true
+              sudo docker exec zemen-postgres psql -U zemen_user -d postgres -c "CREATE DATABASE zemen_pharma OWNER zemen_user;" 2>/dev/null || true
+              echo "Database reset complete"
+            fi
+            
             # Start services with Docker Compose
             sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml up -d
             
