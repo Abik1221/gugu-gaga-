@@ -97,6 +97,7 @@ export default function SupplierSignInPage() {
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
+      localStorage.setItem("user_role", "supplier");
 
       show({
         variant: "success",
@@ -104,7 +105,7 @@ export default function SupplierSignInPage() {
         description: "Redirecting to your supplier dashboard...",
       });
       
-      setTimeout(() => router.replace("/dashboard/supplier-kyc"), 1000);
+      setTimeout(() => router.replace("/dashboard/supplier"), 1000);
     } catch (err: any) {
       const message = err?.message || "Invalid verification code";
       setError(message);

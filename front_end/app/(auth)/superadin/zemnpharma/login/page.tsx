@@ -37,6 +37,7 @@ export default function SuperAdminLoginPage() {
       if (typeof window !== "undefined") {
         if (me?.tenant_id) localStorage.setItem("tenant_id", me.tenant_id);
         else localStorage.removeItem("tenant_id");
+        if (me?.role) localStorage.setItem("user_role", me.role);
       }
       if (me.role === "affiliate") router.replace("/dashboard/affiliate");
       else if (me.role === "pharmacy_owner" || me.role === "cashier") router.replace("/dashboard/owner");

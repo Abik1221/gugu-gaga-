@@ -127,6 +127,22 @@ export default function OwnerRegisterPage() {
         throw new Error(errorData.detail || "Registration failed");
       }
 
+      const data = await response.json();
+      
+      // Store tokens immediately after registration
+      if (data.access_token) {
+        localStorage.setItem("access_token", data.access_token);
+      }
+      if (data.refresh_token) {
+        localStorage.setItem("refresh_token", data.refresh_token);
+      }
+      if (data.tenant_id) {
+        localStorage.setItem("tenant_id", data.tenant_id);
+      }
+      if (data.user?.role) {
+        localStorage.setItem("user_role", data.user.role);
+      }
+
       setRegisteredEmail(trimmedEmail);
       setOtpSent(true);
       setSuccess("Registration successful! Check your email for verification code.");
@@ -164,12 +180,28 @@ export default function OwnerRegisterPage() {
         throw new Error(errorData.detail || "Invalid verification code");
       }
 
+      const verifyData = await response.json();
+      
+      // Store tokens from verification response
+      if (verifyData.access_token) {
+        localStorage.setItem("access_token", verifyData.access_token);
+      }
+      if (verifyData.refresh_token) {
+        localStorage.setItem("refresh_token", verifyData.refresh_token);
+      }
+      if (verifyData.user?.tenant_id) {
+        localStorage.setItem("tenant_id", verifyData.user.tenant_id);
+      }
+      if (verifyData.user?.role) {
+        localStorage.setItem("user_role", verifyData.user.role);
+      }
+
       show({
         variant: "success",
         title: "Verified",
-        description: "Redirecting to sign in...",
+        description: "Redirecting to dashboard...",
       });
-      setTimeout(() => router.push("/owner-signin"), 1500);
+      setTimeout(() => router.push("/dashboard/owner"), 1500);
     } catch (err: any) {
       setError(err.message || "Invalid verification code");
       show({ variant: "destructive", title: "Verification Failed", description: err.message });
