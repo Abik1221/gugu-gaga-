@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { AuthAPI, UploadAPI } from "@/utils/api";
-
-export const dynamic = 'force-dynamic';
+import { SimpleLoading } from "@/components/ui/simple-loading";
 
 type FieldKey =
   | "pharmacyName"
@@ -30,7 +29,7 @@ const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
   ownerPhone: null,
 });
 
-export default function PharmacyRegisterPage() {
+function PharmacyRegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const affiliateToken = searchParams.get("token") || searchParams.get("ref") || undefined;
@@ -489,5 +488,13 @@ export default function PharmacyRegisterPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function PharmacyRegisterPage() {
+  return (
+    <Suspense fallback={<SimpleLoading />}>
+      <PharmacyRegisterContent />
+    </Suspense>
   );
 }
