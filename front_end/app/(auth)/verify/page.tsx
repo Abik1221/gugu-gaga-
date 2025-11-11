@@ -77,6 +77,7 @@ function VerifyRegistrationContent() {
         if (typeof window !== "undefined") {
           if (me?.tenant_id) localStorage.setItem("tenant_id", me.tenant_id);
           else localStorage.removeItem("tenant_id");
+          if (me?.role) localStorage.setItem("user_role", me.role);
         }
       } catch (meErr) {
         console.warn("[verify] unable to fetch profile after verification", meErr);
@@ -93,9 +94,18 @@ function VerifyRegistrationContent() {
           "Your account has been verified. Redirecting to your dashboard.",
       });
 
-      // Redirect to affiliate dashboard after a short delay
+      // Redirect to appropriate dashboard based on user role
       setTimeout(() => {
-        router.replace("/dashboard/affiliate");
+        const userRole = verifyRes?.user?.role;
+        if (userRole === "affiliate") {
+          router.replace("/dashboard/affiliate");
+        } else if (userRole === "pharmacy_owner") {
+          router.replace("/dashboard/owner");
+        } else if (userRole === "supplier") {
+          router.replace("/dashboard/supplier");
+        } else {
+          router.replace("/dashboard");
+        }
       }, 2000);
     } catch (err: any) {
       setError(err.message || "Verification failed");
@@ -130,7 +140,18 @@ function VerifyRegistrationContent() {
             Your account has been activated. We’ll send you to the affiliate dashboard in a moment.
           </p>
           <Button
-            onClick={() => router.replace("/dashboard/affiliate")}
+            onClick={() => {
+              const userRole = localStorage.getItem("user_role") || "affiliate";
+              if (userRole === "affiliate") {
+                router.replace("/dashboard/affiliate");
+              } else if (userRole === "pharmacy_owner") {
+                router.replace("/dashboard/owner");
+              } else if (userRole === "supplier") {
+                router.replace("/dashboard/supplier");
+              } else {
+                router.replace("/dashboard");
+              }
+            }}
             className="mt-8 w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 text-sm font-semibold text-white shadow-[0_25px_70px_-50px_rgba(15,118,110,0.45)] hover:translate-y-[-1px]"
           >
             Go now

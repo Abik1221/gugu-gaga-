@@ -141,6 +141,7 @@ export default function PharmacySignInPage(): JSX.Element {
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem("refresh_token", data.refresh_token);
+            localStorage.setItem("user_role", "pharmacy_owner");
 
             setErrorDialog({
                 isOpen: true,
@@ -150,7 +151,7 @@ export default function PharmacySignInPage(): JSX.Element {
             });
             
             setTimeout(() => {
-                window.location.href = "/dashboard/kyc";
+                window.location.href = "/dashboard/owner";
             }, 1500);
         } catch (err: any) {
             // Error already handled above

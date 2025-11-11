@@ -100,6 +100,16 @@ export default function SupplierRegisterPage() {
 
     setLoading(true);
     try {
+      let licenseBase64 = "";
+      if (licenseImage) {
+        const reader = new FileReader();
+        licenseBase64 = await new Promise<string>((resolve, reject) => {
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(licenseImage);
+        });
+      }
+
       const response = await fetch("http://localhost:8000/api/v1/auth/register/supplier", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -109,7 +119,7 @@ export default function SupplierRegisterPage() {
           supplier_name: trimmedSupplierName,
           national_id: trimmedNationalId,
           tin_number: trimmedTinNumber,
-          business_license_image: `/uploads/${licenseImage.name}`,
+          business_license_image: licenseBase64,
           phone: phone.trim() || null,
           address: address.trim() || null,
         }),
@@ -120,16 +130,27 @@ export default function SupplierRegisterPage() {
         throw new Error(errorData.detail || "Registration failed");
       }
       
-      setSuccess("Registration successful! Redirecting to KYC page...");
-      show({
-        variant: "success",
-        title: "Registration Complete",
-        description: "Your supplier account has been created. Redirecting to KYC verification.",
-      });
+      const data = await response.json();
+      
+      // Store tokens immediately after registration
+      if (data.access_token) {
+        localStorage.setItem("access_token", data.access_token);
+      }
+      if (data.refresh_token) {
+        localStorage.setItem("refresh_token", data.refresh_token);
+      }
+      if (data.user?.role) {
+        localStorage.setItem("user_role", data.user.role);
+      }
       
       setRegisteredEmail(trimmedEmail);
       setOtpSent(true);
       setSuccess("Registration successful! Please verify your email.");
+      show({
+        variant: "success",
+        title: "Registration Complete",
+        description: "Check your email for the verification code.",
+      });
     } catch (err: any) {
       const message = err?.message || "Failed to register";
       setError(message);
@@ -159,13 +180,26 @@ export default function SupplierRegisterPage() {
         throw new Error(errorData.detail || "Invalid verification code");
       }
 
-      setSuccess("Email verified! Redirecting to sign in...");
+      const verifyData = await response.json();
+      
+      // Store tokens from verification response
+      if (verifyData.access_token) {
+        localStorage.setItem("access_token", verifyData.access_token);
+      }
+      if (verifyData.refresh_token) {
+        localStorage.setItem("refresh_token", verifyData.refresh_token);
+      }
+      if (verifyData.user?.role) {
+        localStorage.setItem("user_role", verifyData.user.role);
+      }
+      
+      setSuccess("Email verified! Redirecting to dashboard...");
       show({
         variant: "success",
         title: "Verification Complete",
-        description: "Your account has been verified. Please sign in.",
+        description: "Your account has been verified. Redirecting to dashboard.",
       });
-      setTimeout(() => router.replace("/supplier-signin"), 1500);
+      setTimeout(() => router.replace("/dashboard/supplier"), 1500);
     } catch (err: any) {
       const message = err?.message || "Verification failed";
       setError(message);
