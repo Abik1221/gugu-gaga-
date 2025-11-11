@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense } from "react";
-import { AffiliateDashboardProvider } from "./_context/affiliate-dashboard-context";
+
 import { usePathname, useRouter } from "next/navigation";
 import { Layout } from "@/components/Layout";
 import { DashboardContent } from "@/components/DashboardContent";
@@ -43,10 +43,7 @@ export default function App({
     >
       {/* <DashboardContent /> */}
       <Suspense fallback={<Loading />}>
-      <AffiliateDashboardProvider>
         {children}
-
-      </AffiliateDashboardProvider>
       </Suspense>
     </Layout>
   );
