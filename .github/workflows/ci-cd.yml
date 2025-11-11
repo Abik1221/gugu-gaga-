@@ -105,22 +105,29 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          timeout: 90s
+          timeout: 180s
           script: |
-            # Open port 80
+            # Open firewall ports
             sudo ufw allow 80/tcp 2>/dev/null || true
+            sudo ufw allow 443/tcp 2>/dev/null || true
+            
+            # Stop and remove all containers
+            docker stop $(docker ps -aq) 2>/dev/null || true
+            docker rm $(docker ps -aq) 2>/dev/null || true
             
             # Create network
-            docker network create zemen-net 2>/dev/null || true
+            docker network rm zemen-net 2>/dev/null || true
+            docker network create zemen-net
             
-            # Stop old containers
-            docker stop zemen-backend zemen-frontend zemen-nginx 2>/dev/null || true
-            docker rm zemen-backend zemen-frontend zemen-nginx 2>/dev/null || true
+            # Pull latest images
+            docker pull ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
+            docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             
             # Run backend
             docker run -d --name zemen-backend \
               --network zemen-net \
               -e DATABASE_URL=sqlite:///./app.db \
+              -e DEBUG=false \
               --restart unless-stopped \
               ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
               sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
@@ -128,76 +135,57 @@ jobs:
             # Run frontend
             docker run -d --name zemen-frontend \
               --network zemen-net \
-              -e NEXT_PUBLIC_API_BASE=https://mymesob.com/api/v1 \
-              -e NODE_ENV=production \
               --restart unless-stopped \
               ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             
-            # Create nginx config
-            mkdir -p ~/nginx
-            cat > ~/nginx/default.conf << 'EOF'
-            server {
-                listen 80;
-                server_name _;
-                
-                location /api/ {
-                    proxy_pass http://zemen-backend:8000;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                }
-                
-                location /health {
-                    proxy_pass http://zemen-backend:8000;
-                    proxy_set_header Host $host;
-                }
-                
-                location / {
-                    proxy_pass http://zemen-frontend:3000;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                }
-            }
-            EOF
-            
-            # Get SSL cert if not exists
+            # Get SSL certificate
             if [ ! -f /etc/letsencrypt/live/mymesob.com/fullchain.pem ]; then
               sudo apt update && sudo apt install -y certbot
-              sudo certbot certonly --standalone -d mymesob.com --email admin@mymesob.com --agree-tos --non-interactive
+              sudo systemctl stop nginx 2>/dev/null || true
+              sudo certbot certonly --standalone -d mymesob.com -d www.mymesob.com \
+                --email admin@mymesob.com --agree-tos --non-interactive
             fi
             
-            # Update nginx config with SSL and timeouts
-            cat > ~/nginx/default.conf << 'EOF'
+            # Create nginx SSL config
+            sudo mkdir -p /etc/nginx/conf.d
+            sudo tee /etc/nginx/conf.d/app.conf > /dev/null << 'EOF'
             server {
                 listen 80;
-                server_name mymesob.com;
+                server_name mymesob.com www.mymesob.com;
                 return 301 https://$server_name$request_uri;
             }
             
             server {
-                listen 443 ssl;
-                server_name mymesob.com;
+                listen 443 ssl http2;
+                server_name mymesob.com www.mymesob.com;
                 
                 ssl_certificate /etc/letsencrypt/live/mymesob.com/fullchain.pem;
                 ssl_certificate_key /etc/letsencrypt/live/mymesob.com/privkey.pem;
                 
-                proxy_connect_timeout 60s;
-                proxy_send_timeout 60s;
-                proxy_read_timeout 60s;
+                client_max_body_size 50M;
+                proxy_connect_timeout 300s;
+                proxy_send_timeout 300s;
+                proxy_read_timeout 300s;
                 
                 location /api/ {
                     proxy_pass http://zemen-backend:8000;
                     proxy_set_header Host $host;
                     proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header X-Forwarded-Proto $scheme;
                 }
                 
                 location /health {
                     proxy_pass http://zemen-backend:8000;
+                    proxy_set_header Host $host;
                 }
                 
                 location / {
                     proxy_pass http://zemen-frontend:3000;
                     proxy_set_header Host $host;
                     proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header X-Forwarded-Proto $scheme;
                 }
             }
             EOF
@@ -206,22 +194,18 @@ jobs:
             docker run -d --name zemen-nginx \
               --network zemen-net \
               -p 80:80 -p 443:443 \
-              -v ~/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro \
+              -v /etc/nginx/conf.d:/etc/nginx/conf.d:ro \
               -v /etc/letsencrypt:/etc/letsencrypt:ro \
               --restart unless-stopped \
               nginx:alpine
             
-            # Wait for containers to be ready
-            echo "Waiting for containers..."
+            # Wait for services
+            echo "Waiting for services to start..."
             sleep 30
             
-            # Check container health
+            # Show status
             docker ps
-            echo "=== Backend Health ==="
-            docker exec zemen-backend curl -f http://localhost:8000/health || echo "Backend not ready"
-            echo "=== Frontend Health ==="
-            docker exec zemen-frontend curl -f http://localhost:3000 || echo "Frontend not ready"
             
-            # Test from nginx
-            echo "=== Testing via nginx ==="
-            curl -I https://mymesob.com || curl -I http://mymesob.com
+            # Test endpoints
+            curl -I https://mymesob.com/health || echo "Health check failed"
+            curl -I https://mymesob.com || echo "Frontend failed"
