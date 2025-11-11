@@ -1,8 +1,8 @@
-"""initial_migration
+"""final_complete_migration
 
-Revision ID: fb25610973b1
+Revision ID: d84e49e238e0
 Revises: 
-Create Date: 2025-11-11 08:22:39.451219
+Create Date: 2025-11-11 14:25:35.658759
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'fb25610973b1'
+revision: str = 'd84e49e238e0'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -240,6 +240,19 @@ def upgrade() -> None:
     op.create_index(op.f('ix_sales_cashier_user_id'), 'sales', ['cashier_user_id'], unique=False)
     op.create_index(op.f('ix_sales_customer_id'), 'sales', ['customer_id'], unique=False)
     op.create_index(op.f('ix_sales_tenant_id'), 'sales', ['tenant_id'], unique=False)
+    op.create_table('verification_codes',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('email', sa.String(length=255), nullable=False),
+    sa.Column('code', sa.String(length=16), nullable=False),
+    sa.Column('purpose', sa.String(length=32), nullable=False),
+    sa.Column('expires_at', sa.DateTime(), nullable=False),
+    sa.Column('consumed', sa.Boolean(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_verification_codes_code'), 'verification_codes', ['code'], unique=False)
+    op.create_index(op.f('ix_verification_codes_email'), 'verification_codes', ['email'], unique=False)
+    op.create_index(op.f('ix_verification_codes_purpose'), 'verification_codes', ['purpose'], unique=False)
     op.create_table('integration_connections',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('tenant_id', sa.String(length=64), nullable=False),
@@ -558,6 +571,10 @@ def downgrade() -> None:
     op.drop_table('inventory_items')
     op.drop_index(op.f('ix_integration_connections_tenant_id'), table_name='integration_connections')
     op.drop_table('integration_connections')
+    op.drop_index(op.f('ix_verification_codes_purpose'), table_name='verification_codes')
+    op.drop_index(op.f('ix_verification_codes_email'), table_name='verification_codes')
+    op.drop_index(op.f('ix_verification_codes_code'), table_name='verification_codes')
+    op.drop_table('verification_codes')
     op.drop_index(op.f('ix_sales_tenant_id'), table_name='sales')
     op.drop_index(op.f('ix_sales_customer_id'), table_name='sales')
     op.drop_index(op.f('ix_sales_cashier_user_id'), table_name='sales')
