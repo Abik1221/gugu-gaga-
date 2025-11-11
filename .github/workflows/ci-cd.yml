@@ -127,6 +127,8 @@ jobs:
             # Run frontend
             docker run -d --name zemen-frontend \
               --network zemen-net \
+              -e NEXT_PUBLIC_API_BASE=https://mymesob.com/api/v1 \
+              -e NODE_ENV=production \
               --restart unless-stopped \
               ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             
