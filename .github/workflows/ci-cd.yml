@@ -84,6 +84,8 @@ jobs:
           context: ./front_end
           file: ./front_end/Dockerfile
           push: true
+          build-args: |
+            NEXT_PUBLIC_API_BASE=https://mymesob.com/api/v1
           tags: |
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
