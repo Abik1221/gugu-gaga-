@@ -106,6 +106,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           timeout: 90s
           script: |
+            # Open port 80
+            sudo ufw allow 80/tcp 2>/dev/null || true
+            
             # Create network
             docker network create zemen-net 2>/dev/null || true
             
@@ -163,7 +166,20 @@ jobs:
             
             # Wait and show status
             sleep 15
+            echo "=== Container Status ==="
             docker ps --filter name=zemen
             
-            # Test backend health
-            curl -f http://localhost/health || echo "Backend not ready yet"
+            echo "=== Port Check ==="
+            netstat -tlnp | grep :80 || echo "Port 80 not listening"
+            
+            echo "=== Nginx Logs ==="
+            docker logs zemen-nginx --tail 10 || echo "No nginx logs"
+            
+            echo "=== Backend Logs ==="
+            docker logs zemen-backend --tail 10 || echo "No backend logs"
+            
+            echo "=== Network Test ==="
+            curl -v http://localhost:80 || echo "Local connection failed"
+            
+            echo "=== Firewall Check ==="
+            sudo ufw status || echo "UFW not active"
