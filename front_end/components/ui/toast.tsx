@@ -1,6 +1,10 @@
 "use client";
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
 
+export default function Toast() {
+  return null;
+}
+
 export type Toast = {
   id: string;
   title?: string;
