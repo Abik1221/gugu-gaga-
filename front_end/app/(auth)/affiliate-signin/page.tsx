@@ -83,6 +83,7 @@ export default function AffiliateLoginPage() {
       const data = await AuthAPI.loginVerify(email, code);
       if (typeof window !== "undefined") {
         localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("token", data.access_token);
         localStorage.setItem("user_role", "affiliate");
       }
       try {
