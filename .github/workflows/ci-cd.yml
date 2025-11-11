@@ -104,15 +104,18 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          timeout: 60s
+          timeout: 90s
           script: |
+            # Create network
+            docker network create zemen-net 2>/dev/null || true
+            
             # Stop old containers
-            docker stop zemen-backend zemen-frontend 2>/dev/null || true
-            docker rm zemen-backend zemen-frontend 2>/dev/null || true
+            docker stop zemen-backend zemen-frontend zemen-nginx 2>/dev/null || true
+            docker rm zemen-backend zemen-frontend zemen-nginx 2>/dev/null || true
             
             # Run backend
             docker run -d --name zemen-backend \
-              -p 8000:8000 \
+              --network zemen-net \
               -e DATABASE_URL=sqlite:///./app.db \
               --restart unless-stopped \
               ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
@@ -120,9 +123,47 @@ jobs:
             
             # Run frontend
             docker run -d --name zemen-frontend \
-              -p 3000:3000 \
+              --network zemen-net \
               --restart unless-stopped \
               ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             
-            # Show status
+            # Create nginx config
+            mkdir -p ~/nginx
+            cat > ~/nginx/default.conf << 'EOF'
+            server {
+                listen 80;
+                server_name _;
+                
+                location /api/ {
+                    proxy_pass http://zemen-backend:8000;
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                }
+                
+                location /health {
+                    proxy_pass http://zemen-backend:8000;
+                    proxy_set_header Host $host;
+                }
+                
+                location / {
+                    proxy_pass http://zemen-frontend:3000;
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                }
+            }
+            EOF
+            
+            # Run nginx
+            docker run -d --name zemen-nginx \
+              --network zemen-net \
+              -p 80:80 \
+              -v ~/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro \
+              --restart unless-stopped \
+              nginx:alpine
+            
+            # Wait and show status
+            sleep 15
             docker ps --filter name=zemen
+            
+            # Test backend health
+            curl -f http://localhost/health || echo "Backend not ready yet"
