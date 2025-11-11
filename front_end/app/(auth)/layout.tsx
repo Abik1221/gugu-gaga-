@@ -5,7 +5,7 @@ import Footer from "@/components/sections/Footer";
 import Navbar from "@/components/sections/Navbar";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-export const dynamic = 'force-dynamic';
+// Removed force-dynamic for better performance
 
 export default function AuthLayout({
   children,

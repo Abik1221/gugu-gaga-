@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { AuthAPI } from "@/utils/api";
-
-export const dynamic = 'force-dynamic';
+import { SimpleLoading } from "@/components/ui/simple-loading";
 
 const highlights = [
   {
@@ -29,7 +28,7 @@ const highlights = [
   },
 ];
 
-export default function VerifyRegistrationPage() {
+function VerifyRegistrationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { show } = useToast();
@@ -280,5 +279,13 @@ export default function VerifyRegistrationPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyRegistrationPage() {
+  return (
+    <Suspense fallback={<SimpleLoading />}>
+      <VerifyRegistrationContent />
+    </Suspense>
   );
 }
