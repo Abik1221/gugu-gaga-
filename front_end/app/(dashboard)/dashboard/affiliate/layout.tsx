@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Layout } from "@/components/Layout";
 import { DashboardContent } from "@/components/DashboardContent";
 import { Home, BarChart3, Users, Settings, FileText, Package, LayoutDashboard, LinkIcon, Coins, DollarSign, Activity, LogOut } from "lucide-react";
-import Loading from '@/app/\(dashboard\)/dashboard/affiliate/loading';
+import Loading from './loading';
 
 // Navigation configuration
 const navigation = [{ href: "/dashboard/affiliate", label: "Affiliate Dashboard", icon: <LayoutDashboard /> },
