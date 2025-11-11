@@ -104,62 +104,25 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          timeout: 300s
-          command_timeout: 120s
+          timeout: 60s
           script: |
-            set -e
+            # Stop old containers
+            docker stop zemen-backend zemen-frontend 2>/dev/null || true
+            docker rm zemen-backend zemen-frontend 2>/dev/null || true
             
-            # Create deployment directory
-            mkdir -p ~/app && cd ~/app
+            # Run backend
+            docker run -d --name zemen-backend \
+              -p 8000:8000 \
+              -e DATABASE_URL=sqlite:///./app.db \
+              --restart unless-stopped \
+              ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
+              sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
             
-            # Create docker-compose.yml directly
-            cat > docker-compose.yml << 'EOF'
-            version: '3.8'
-            services:
-              backend:
-                image: ${DOCKER_IMAGE}
-                container_name: zemen-backend
-                environment:
-                  DATABASE_URL: sqlite:///./app.db
-                  DEBUG: "false"
-                volumes:
-                  - app_data:/app/data
-                ports:
-                  - "8000:8000"
-                restart: unless-stopped
-                command: >
-                  sh -c "
-                    alembic upgrade head &&
-                    uvicorn app.main:app --host 0.0.0.0 --port 8000
-                  "
-              frontend:
-                image: ${FRONTEND_IMAGE}
-                container_name: zemen-frontend
-                ports:
-                  - "3000:3000"
-                restart: unless-stopped
-            volumes:
-              app_data:
-            EOF
+            # Run frontend
+            docker run -d --name zemen-frontend \
+              -p 3000:3000 \
+              --restart unless-stopped \
+              ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             
-            # Login to Docker Hub
-            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-            
-            # Stop existing containers first
-            docker-compose down || true
-            
-            # Pull images with timeout
-            timeout 180 docker pull ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest || echo "Backend pull timeout, using cached"
-            timeout 180 docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest || echo "Frontend pull timeout, using cached"
-            
-            # Start new containers
-            DOCKER_IMAGE=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
-            FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest \
-            docker-compose up -d
-            
-            # Wait and show status
-            sleep 10
-            docker-compose ps
-            
-            # Clean up
-            docker image prune -f --filter "until=24h" || true
+            # Show status
+            docker ps --filter name=zemen
