@@ -130,7 +130,7 @@ jobs:
               -e DEBUG=false \
               --restart unless-stopped \
               ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
-              sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+              sh -c "rm -f app.db && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
             
             # Run frontend
             docker run -d --name zemen-frontend \
