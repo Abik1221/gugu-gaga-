@@ -102,15 +102,15 @@ function VerifyRegistrationContent() {
       setTimeout(() => {
         const userRole = verifyRes?.user?.role;
         if (userRole === "affiliate") {
-          router.replace("/dashboard/affiliate");
+          window.location.href = "/dashboard/affiliate";
         } else if (userRole === "pharmacy_owner") {
-          router.replace("/dashboard/owner");
+          window.location.href = "/dashboard/owner";
         } else if (userRole === "supplier") {
-          router.replace("/dashboard/supplier");
+          window.location.href = "/dashboard/supplier";
         } else {
-          router.replace("/dashboard");
+          window.location.href = "/dashboard";
         }
-      }, 2000);
+      }, 1000);
     } catch (err: any) {
       setError(err.message || "Verification failed");
       show({
@@ -147,13 +147,13 @@ function VerifyRegistrationContent() {
             onClick={() => {
               const userRole = localStorage.getItem("user_role") || "affiliate";
               if (userRole === "affiliate") {
-                router.replace("/dashboard/affiliate");
+                window.location.href = "/dashboard/affiliate";
               } else if (userRole === "pharmacy_owner") {
-                router.replace("/dashboard/owner");
+                window.location.href = "/dashboard/owner";
               } else if (userRole === "supplier") {
-                router.replace("/dashboard/supplier");
+                window.location.href = "/dashboard/supplier";
               } else {
-                router.replace("/dashboard");
+                window.location.href = "/dashboard";
               }
             }}
             className="mt-8 w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 text-sm font-semibold text-white shadow-[0_25px_70px_-50px_rgba(15,118,110,0.45)] hover:translate-y-[-1px]"

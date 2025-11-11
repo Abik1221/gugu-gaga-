@@ -31,48 +31,7 @@ export default function App({
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = React.useState(mockUser);
-  const [loading, setLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    const fetchUser = async () => {
-      // Wait a bit for token storage to complete
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      const token = localStorage.getItem('access_token') || localStorage.getItem('token');
-      if (!token) {
-        router.push('/affiliate-signin');
-        return;
-      }
-      
-      try {
-        const response = await fetch('http://localhost:8000/api/v1/auth/me', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUser({ name: data.email.split('@')[0], email: data.email, tenant_id: data.tenant_id });
-        } else {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('token');
-          router.push('/affiliate-signin');
-        }
-      } catch (error) {
-        console.error('Failed to fetch user:', error);
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('token');
-        router.push('/affiliate-signin');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, [router]);
-
-  if (loading) {
-    return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div></div>;
-  }
+  const [loading, setLoading] = React.useState(false);
 
   return (
     <Layout

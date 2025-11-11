@@ -203,7 +203,7 @@ export default function OwnerRegisterPage() {
         title: "Verified",
         description: "Redirecting to dashboard...",
       });
-      setTimeout(() => router.push("/dashboard/owner"), 1500);
+      setTimeout(() => window.location.href = "/dashboard/owner", 1500);
     } catch (err: any) {
       setError(err.message || "Invalid verification code");
       show({ variant: "destructive", title: "Verification Failed", description: err.message });

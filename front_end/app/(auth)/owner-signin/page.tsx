@@ -152,7 +152,7 @@ export default function PharmacySignInPage(): JSX.Element {
             
             setTimeout(() => {
                 window.location.href = "/dashboard/owner";
-            }, 1500);
+            }, 1000);
         } catch (err: any) {
             // Error already handled above
         } finally {

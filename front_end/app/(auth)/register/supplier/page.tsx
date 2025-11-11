@@ -201,7 +201,7 @@ export default function SupplierRegisterPage() {
         title: "Verification Complete",
         description: "Your account has been verified. Redirecting to dashboard.",
       });
-      setTimeout(() => router.replace("/dashboard/supplier"), 1500);
+      setTimeout(() => window.location.href = "/dashboard/supplier", 1500);
     } catch (err: any) {
       const message = err?.message || "Verification failed";
       setError(message);
