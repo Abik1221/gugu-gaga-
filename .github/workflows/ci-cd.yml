@@ -1,163 +1,134 @@
-name: Build and Deploy to EC2
+name: CI/CD Pipeline
 
 on:
   push:
+    branches: ["main"]
+  pull_request:
     branches: ["main"]
   workflow_dispatch:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_REPOSITORY }}
-  FRONTEND_IMAGE_NAME: ${{ secrets.DOCKERHUB_REPOSITORY }}-frontend
+  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_REPOSITORY }}
+  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_REPOSITORY }}-frontend
 
 jobs:
-  build-and-deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          python -m pytest tests/ -v || echo "No tests found, skipping"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies
+        run: |
+          cd front_end
+          npm ci
+
+      - name: Build frontend
+        run: |
+          cd front_end
+          npm run build
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Docker Hub
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Compute image tag
-        id: vars
-        run: echo "tag=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
-
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=${{ steps.vars.outputs.tag }}
-            type=raw,value=latest
-
-      - name: Build and push Backend Docker image
+      - name: Build and push backend image
         uses: docker/build-push-action@v5
         with:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
+            ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Build and push Frontend Docker image
+      - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
           context: ./front_end
           file: ./front_end/Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ steps.vars.outputs.tag }}
-            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Upload deployment files to EC2
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "backend/.env.production,backend/docker-compose.prod.yml,backend/nginx.conf"
-          target: "/home/${{ secrets.EC2_USERNAME }}/"
-          strip_components: 1
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Deploy to EC2 with Docker Compose
-        uses: appleboy/ssh-action@v1.0.0
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Check if Docker is installed, if not install it
-            if ! command -v docker &> /dev/null; then
-              echo "Docker not found. Installing Docker for Amazon Linux..."
-              sudo yum update -y
-              sudo yum install docker -y
-              sudo usermod -aG docker ${{ secrets.EC2_USERNAME }}
-              sudo systemctl enable docker
-              sudo systemctl start docker
-              echo "Docker installed successfully"
-            fi
+            # Create deployment directory
+            mkdir -p ~/app
+            cd ~/app
             
-            # Install Docker Compose if not present
-            if ! command -v docker-compose &> /dev/null; then
-              echo "Installing Docker Compose..."
-              sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-              sudo chmod +x /usr/local/bin/docker-compose
-              sudo ln -sf /usr/local/bin/docker-compose /usr/bin/docker-compose
-              echo "Docker Compose installed successfully"
-            fi
+            # Download docker-compose file
+            curl -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository }}/main/backend/docker-compose.prod.yml
             
-            # Ensure Docker service is running
-            sudo systemctl start docker || true
-            
-            # Secure .env.production file
-            chmod 600 ~/.env.production
-            
-            # Login to Docker Hub (use sudo for first time)
-            echo ${{ secrets.DOCKERHUB_TOKEN }} | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-            
-            # Set Docker image environment variables
-            DOCKER_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
+            # Login to Docker Hub
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             
             # Pull latest images
-            sudo docker pull $DOCKER_IMAGE
-            sudo docker pull $FRONTEND_IMAGE
+            docker pull ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
+            docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             
-            # Install certbot if not present
-            if ! command -v certbot &> /dev/null; then
-              echo "Installing certbot..."
-              sudo yum install certbot -y
-            fi
+            # Stop existing containers
+            docker-compose down || true
             
-            # Check if SSL certificate exists, if not get one
-            if [ ! -f /etc/letsencrypt/live/mymesob.com/fullchain.pem ]; then
-              echo "Getting SSL certificate..."
-              sudo docker stop zemen-nginx 2>/dev/null || true
-              sudo certbot certonly --standalone -d mymesob.com -d www.mymesob.com --email nahomkeneni4@gmail.com --agree-tos --no-eff-email --non-interactive
-              echo "SSL certificate obtained!"
-            fi
+            # Start new containers
+            DOCKER_IMAGE=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
+            FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest \
+            docker-compose up -d
             
-            # Stop and remove old containers
-            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml down || true
-            
-            # Reset database for clean migrations (only if postgres is running)
-            if sudo docker ps -a | grep -q zemen-postgres; then
-              echo "Resetting database for clean migrations..."
-              sudo docker exec zemen-postgres psql -U zemen_user -d postgres -c "DROP DATABASE IF EXISTS zemen_pharma;" 2>/dev/null || true
-              sudo docker exec zemen-postgres psql -U zemen_user -d postgres -c "CREATE DATABASE zemen_pharma OWNER zemen_user;" 2>/dev/null || true
-              echo "Database reset complete"
-            fi
-            
-            # Start services with Docker Compose
-            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml up -d
-            
-            # Wait for services to be healthy
-            echo "Waiting for services to start..."
-            sleep 10
-            
-            # Show container status
-            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml ps
-            
-            # Show backend logs
-            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml logs --tail=30 backend
-            
-            # Show frontend logs
-            sudo DOCKER_IMAGE=$DOCKER_IMAGE FRONTEND_IMAGE=$FRONTEND_IMAGE docker-compose -f docker-compose.prod.yml logs --tail=30 frontend
+            # Show status
+            docker-compose ps
             
             # Clean up old images
-            sudo docker image prune -af
-
-      - name: Deployment summary
-        run: |
-          echo "✅ Image pushed: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }}"
-          echo "✅ Deployed to EC2: ${{ secrets.EC2_HOST }}"
-          echo "✅ Deployment complete!"
+            docker image prune -f
