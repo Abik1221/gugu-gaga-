@@ -7,6 +7,7 @@ import { Layout } from "@/components/Layout";
 import { DashboardContent } from "@/components/DashboardContent";
 import { Home, BarChart3, Users, Settings, FileText, Package, LayoutDashboard, LinkIcon, Coins, DollarSign, Activity, LogOut } from "lucide-react";
 import Loading from './loading';
+import { AffiliateDashboardProvider } from "./_context/affiliate-dashboard-context";
 
 // Navigation configuration
 const navigation = [{ href: "/dashboard/affiliate", label: "Affiliate Dashboard", icon: <LayoutDashboard /> },
@@ -34,17 +35,18 @@ export default function App({
   const [loading, setLoading] = React.useState(false);
 
   return (
-    <Layout
-      nav={navigation}
-      pathname={pathname}
-      user={user}
-      isAffiliate={true}
-      isAdmin={false}
-    >
-      {/* <DashboardContent /> */}
-      <Suspense fallback={<Loading />}>
-        {children}
-      </Suspense>
-    </Layout>
+    <AffiliateDashboardProvider>
+      <Layout
+        nav={navigation}
+        pathname={pathname}
+        user={user}
+        isAffiliate={true}
+        isAdmin={false}
+      >
+        <Suspense fallback={<Loading />}>
+          {children}
+        </Suspense>
+      </Layout>
+    </AffiliateDashboardProvider>
   );
 }
