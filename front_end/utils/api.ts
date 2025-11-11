@@ -140,17 +140,6 @@ export async function postJSON<T = any>(
 
     return (await res.json()) as T;
   } catch (error: any) {
-    if (typeof window !== "undefined" && !navigator.onLine) {
-      const { queueRequest } = await import("@/lib/offline/queue");
-      await queueRequest(path, requestInit, {
-        tenantId,
-        requiresAuth: true,
-        description: requestInit.body ? `POST ${path}` : undefined,
-      });
-      const offlineError: any = new Error("Request queued until you are back online.");
-      offlineError.offline = true;
-      throw offlineError;
-    }
     throw error;
   }
 }

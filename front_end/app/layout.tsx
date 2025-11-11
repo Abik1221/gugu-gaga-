@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ServiceWorkerProvider } from "@/components/providers/service-worker-provider";
 import logoImage from "@/public/mesoblogo.jpeg";
 
-export const dynamic = 'force-dynamic';
+// Removed force-dynamic for better performance
 
 export const metadata: Metadata = {
   title: {
@@ -87,53 +87,7 @@ export default function RootLayout({
         <link rel="icon" href="/mesoblogo.jpeg" type="image/jpeg" sizes="16x16" />
         <link rel="apple-touch-icon" href="/mesoblogo.jpeg" sizes="180x180" />
         <link rel="shortcut icon" href="/mesoblogo.jpeg" type="image/jpeg" />
-        <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID} />
-        <meta name="geo.region" content="ET" />
-        <meta name="geo.country" content="Ethiopia" />
-        <meta name="language" content="en" />
-        <link rel="canonical" href="https://zemenpharma.com" />
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_ID}`}
-          crossOrigin="anonymous"
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              "name": "Zemen Pharma Business Management Software",
-              "description": "AI-powered business management platform with multi-tenant architecture, inventory management, billing automation, and business analytics.",
-              "url": "https://zemenpharma.com",
-              "applicationCategory": "BusinessApplication",
-              "operatingSystem": "Web Browser",
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD",
-                "description": "30-day free trial available"
-              },
-              "creator": {
-                "@type": "Organization",
-                "name": "Zemen Pharma",
-                "address": {
-                  "@type": "PostalAddress",
-                  "addressCountry": "ET"
-                }
-              },
-              "featureList": [
-                "AI-powered business automation",
-                "Multi-tenant SaaS architecture",
-                "Inventory management system",
-                "Automated billing and invoicing",
-                "Business analytics dashboard",
-                "Real-time reporting",
-                "Cloud-based platform"
-              ]
-            })
-          }}
-        />
+        {/* Removed heavy scripts for better performance */}
       </head>
       <body
         className="font-sans antialiased overflow-x-hidden"

@@ -22,26 +22,19 @@ router = APIRouter(prefix="/affiliate", tags=["affiliate"])
 def register_link(
     user=Depends(require_role(Role.admin, Role.affiliate)),
     db: Session = Depends(get_db),
-    _rl=Depends(rate_limit_user("affiliate_link_user")),
     create_new: bool = False,
 ):
-    # Ensure profile exists for completeness
-    profile = db.query(AffiliateProfile).filter(AffiliateProfile.user_id == user.id).first()
-    if not profile:
-        code = f"AFF{user.id:06d}"
-        profile = AffiliateProfile(user_id=user.id, code=code)
-        db.add(profile)
-        db.commit()
-        db.refresh(profile)
-    # Fetch active links
-    links = db.query(AffiliateLink).filter(AffiliateLink.affiliate_user_id == user.id, AffiliateLink.active == True).all()
+    # Fetch active links only
+    links = db.query(AffiliateLink).filter(
+        AffiliateLink.affiliate_user_id == user.id, 
+        AffiliateLink.active == True
+    ).all()
     if create_new and len(links) < 2:
         import secrets
         token = secrets.token_urlsafe(12)
         new_link = AffiliateLink(affiliate_user_id=user.id, token=token, active=True)
         db.add(new_link)
         db.commit()
-        db.refresh(new_link)
         links.append(new_link)
     return {
         "max_links": 2,
@@ -59,7 +52,6 @@ def deactivate_link(
     token: str,
     user=Depends(require_role(Role.admin, Role.affiliate)),
     db: Session = Depends(get_db),
-    _rl=Depends(rate_limit_user("affiliate_link_manage_user")),
 ):
     link = (
         db.query(AffiliateLink)
@@ -79,7 +71,6 @@ def rotate_link(
     token: str,
     user=Depends(require_role(Role.admin, Role.affiliate)),
     db: Session = Depends(get_db),
-    _rl=Depends(rate_limit_user("affiliate_link_manage_user")),
 ):
     # Deactivate the old link and create a new one if under limit
     link = (
@@ -111,7 +102,6 @@ def rotate_link(
 def commission_summary(
     user=Depends(require_role(Role.admin, Role.affiliate)),
     db: Session = Depends(get_db),
-    _rl=Depends(rate_limit_user("affiliate_commissions_user")),
 ):
     now = datetime.utcnow()
     data = compute_monthly_commission(db, affiliate_user_id=user.id, year=now.year, month=now.month)
@@ -122,7 +112,6 @@ def commission_summary(
 def dashboard(
     user=Depends(require_role(Role.admin, Role.affiliate)),
     db: Session = Depends(get_db),
-    _rl=Depends(rate_limit_user("affiliate_dashboard_user")),
 ):
     now = datetime.utcnow()
     referrals_count = db.query(AffiliateReferral).filter(AffiliateReferral.affiliate_user_id == user.id).count()

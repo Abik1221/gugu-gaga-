@@ -1,3 +1,5 @@
+import { SimpleLoading } from "@/components/ui/simple-loading";
+
 export default function Loading() {
-    return <div>Loading...</div>
+    return <SimpleLoading />;
 }

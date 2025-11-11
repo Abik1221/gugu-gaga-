@@ -184,7 +184,7 @@ def _issue_session_tokens(db: Session, user: User, request: Request) -> TokenWit
 
 
 @router.post("/register/owner")
-def register_owner(payload: PharmacyRegister, db: Session = Depends(get_db)):
+def register_owner(payload: PharmacyRegister, request: Request, db: Session = Depends(get_db)):
     # Ensure owner email unused
     if db.query(User).filter(User.email == payload.owner_email).first():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Owner email already registered")
@@ -323,9 +323,16 @@ def register_owner(payload: PharmacyRegister, db: Session = Depends(get_db)):
             send_email(owner.email, "Verify your account", f"Your verification code is: {code}")
     except Exception:
         pass
+    
+    # Create session tokens for immediate login after verification
+    tokens = _issue_session_tokens(db, owner, request)
+    
     return {
         "user": _user_with_status(db, owner),
         "tenant_id": tenant_id,
+        "access_token": tokens.access_token,
+        "refresh_token": tokens.refresh_token,
+        "session_id": tokens.session_id,
         "kyc": {
             "id": app.id,
             "status": app.status,
@@ -343,7 +350,7 @@ def register_owner(payload: PharmacyRegister, db: Session = Depends(get_db)):
 
 
 @router.post("/register/supplier")
-def register_supplier(payload: dict, db: Session = Depends(get_db)):
+def register_supplier(payload: dict, request: Request, db: Session = Depends(get_db)):
     email = payload.get("email")
     password = payload.get("password")
     supplier_name = payload.get("supplier_name")
@@ -412,8 +419,14 @@ def register_supplier(payload: dict, db: Session = Depends(get_db)):
     except Exception:
         pass
     
+    # Create session tokens for immediate login after verification
+    tokens = _issue_session_tokens(db, user, request)
+    
     return {
         "user": _user_with_status(db, user),
+        "access_token": tokens.access_token,
+        "refresh_token": tokens.refresh_token,
+        "session_id": tokens.session_id,
         "message": "Registration successful. Please verify your email."
     }
 
@@ -543,6 +556,7 @@ def update_me(
 @router.post("/register/verify")
 def verify_registration(
     payload: RegistrationVerifyRequest,
+    request: Request,
     db: Session = Depends(get_db),
 ):
     if not verify_code(db, email=payload.email, purpose="register", code=payload.code):
@@ -553,8 +567,18 @@ def verify_registration(
     user.is_verified = True
     db.add(user)
     db.commit()
-    token = create_access_token(subject=user.email, role=user.role, tenant_id=user.tenant_id)
-    return {"status": "verified", "access_token": token, "token_type": "bearer"}
+    
+    # Create proper session for the user
+    tokens = _issue_session_tokens(db, user, request)
+    
+    return {
+        "status": "verified", 
+        "access_token": tokens.access_token, 
+        "token_type": "bearer",
+        "refresh_token": tokens.refresh_token,
+        "session_id": tokens.session_id,
+        "user": _user_with_status(db, user)
+    }
 
 
 @router.post("/login/request-code")
