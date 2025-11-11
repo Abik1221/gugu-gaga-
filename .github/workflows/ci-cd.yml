@@ -104,31 +104,62 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          timeout: 300s
+          command_timeout: 120s
           script: |
-            # Create deployment directory
-            mkdir -p ~/app
-            cd ~/app
+            set -e
             
-            # Download docker-compose file
-            curl -o docker-compose.yml https://raw.githubusercontent.com/${{ github.repository }}/main/backend/docker-compose.prod.yml
+            # Create deployment directory
+            mkdir -p ~/app && cd ~/app
+            
+            # Create docker-compose.yml directly
+            cat > docker-compose.yml << 'EOF'
+            version: '3.8'
+            services:
+              backend:
+                image: ${DOCKER_IMAGE}
+                container_name: zemen-backend
+                environment:
+                  DATABASE_URL: sqlite:///./app.db
+                  DEBUG: "false"
+                volumes:
+                  - app_data:/app/data
+                ports:
+                  - "8000:8000"
+                restart: unless-stopped
+                command: >
+                  sh -c "
+                    alembic upgrade head &&
+                    uvicorn app.main:app --host 0.0.0.0 --port 8000
+                  "
+              frontend:
+                image: ${FRONTEND_IMAGE}
+                container_name: zemen-frontend
+                ports:
+                  - "3000:3000"
+                restart: unless-stopped
+            volumes:
+              app_data:
+            EOF
             
             # Login to Docker Hub
             echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             
-            # Pull latest images
-            docker pull ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
-            docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
-            
-            # Stop existing containers
+            # Stop existing containers first
             docker-compose down || true
+            
+            # Pull images with timeout
+            timeout 180 docker pull ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest || echo "Backend pull timeout, using cached"
+            timeout 180 docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest || echo "Frontend pull timeout, using cached"
             
             # Start new containers
             DOCKER_IMAGE=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
             FRONTEND_IMAGE=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest \
             docker-compose up -d
             
-            # Show status
+            # Wait and show status
+            sleep 10
             docker-compose ps
             
-            # Clean up old images
-            docker image prune -f
+            # Clean up
+            docker image prune -f --filter "until=24h" || true
