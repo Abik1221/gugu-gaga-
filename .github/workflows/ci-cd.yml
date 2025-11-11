@@ -156,30 +156,56 @@ jobs:
             }
             EOF
             
-            # Run nginx
+            # Get SSL cert if not exists
+            if [ ! -f /etc/letsencrypt/live/mymesob.com/fullchain.pem ]; then
+              sudo apt update && sudo apt install -y certbot
+              sudo certbot certonly --standalone -d mymesob.com --email admin@mymesob.com --agree-tos --non-interactive
+            fi
+            
+            # Update nginx config with SSL
+            cat > ~/nginx/default.conf << 'EOF'
+            server {
+                listen 80;
+                server_name mymesob.com;
+                return 301 https://$server_name$request_uri;
+            }
+            
+            server {
+                listen 443 ssl;
+                server_name mymesob.com;
+                
+                ssl_certificate /etc/letsencrypt/live/mymesob.com/fullchain.pem;
+                ssl_certificate_key /etc/letsencrypt/live/mymesob.com/privkey.pem;
+                
+                location /api/ {
+                    proxy_pass http://zemen-backend:8000;
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                }
+                
+                location /health {
+                    proxy_pass http://zemen-backend:8000;
+                }
+                
+                location / {
+                    proxy_pass http://zemen-frontend:3000;
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                }
+            }
+            EOF
+            
+            # Run nginx with SSL
             docker run -d --name zemen-nginx \
               --network zemen-net \
-              -p 80:80 \
+              -p 80:80 -p 443:443 \
               -v ~/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro \
+              -v /etc/letsencrypt:/etc/letsencrypt:ro \
               --restart unless-stopped \
               nginx:alpine
             
-            # Wait and show status
+            # Wait and test
             sleep 15
-            echo "=== Container Status ==="
-            docker ps --filter name=zemen
-            
-            echo "=== Port Check ==="
-            netstat -tlnp | grep :80 || echo "Port 80 not listening"
-            
-            echo "=== Nginx Logs ==="
-            docker logs zemen-nginx --tail 10 || echo "No nginx logs"
-            
-            echo "=== Backend Logs ==="
-            docker logs zemen-backend --tail 10 || echo "No backend logs"
-            
-            echo "=== Network Test ==="
-            curl -v http://localhost:80 || echo "Local connection failed"
-            
-            echo "=== Firewall Check ==="
-            sudo ufw status || echo "UFW not active"
+            docker ps
+            docker logs zemen-frontend --tail 5
+            curl -I https://mymesob.com || curl -I http://mymesob.com
