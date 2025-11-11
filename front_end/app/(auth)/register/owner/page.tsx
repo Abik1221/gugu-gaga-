@@ -132,6 +132,7 @@ export default function OwnerRegisterPage() {
       // Store tokens immediately after registration
       if (data.access_token) {
         localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("token", data.access_token); // Also store as 'token'
       }
       if (data.refresh_token) {
         localStorage.setItem("refresh_token", data.refresh_token);
@@ -185,6 +186,7 @@ export default function OwnerRegisterPage() {
       // Store tokens from verification response
       if (verifyData.access_token) {
         localStorage.setItem("access_token", verifyData.access_token);
+        localStorage.setItem("token", verifyData.access_token); // Also store as 'token'
       }
       if (verifyData.refresh_token) {
         localStorage.setItem("refresh_token", verifyData.refresh_token);

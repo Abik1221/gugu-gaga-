@@ -138,8 +138,8 @@ export default function PharmacySignInPage(): JSX.Element {
             }
 
             const data = await response.json();
-            localStorage.setItem("token", data.access_token);
             localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("token", data.access_token);
             localStorage.setItem("refresh_token", data.refresh_token);
             localStorage.setItem("user_role", "pharmacy_owner");
 

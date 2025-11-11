@@ -59,12 +59,16 @@ function VerifyRegistrationContent() {
         throw new Error("Please enter the verification code");
       }
 
+      console.log('Verifying with:', { email, code });
       const verifyRes = await AuthAPI.registerVerify(email, code);
+      console.log('Verify response:', verifyRes);
       const accessToken = verifyRes?.access_token;
       const refreshToken = verifyRes?.refresh_token;
 
       if (accessToken) {
+        console.log('Storing access token:', accessToken.substring(0, 20) + '...');
         localStorage.setItem("access_token", accessToken);
+        localStorage.setItem("token", accessToken); // Also store as 'token' for compatibility
       }
       if (refreshToken) {
         localStorage.setItem("refresh_token", refreshToken);
