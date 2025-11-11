@@ -162,7 +162,7 @@ jobs:
               sudo certbot certonly --standalone -d mymesob.com --email admin@mymesob.com --agree-tos --non-interactive
             fi
             
-            # Update nginx config with SSL
+            # Update nginx config with SSL and timeouts
             cat > ~/nginx/default.conf << 'EOF'
             server {
                 listen 80;
@@ -176,6 +176,10 @@ jobs:
                 
                 ssl_certificate /etc/letsencrypt/live/mymesob.com/fullchain.pem;
                 ssl_certificate_key /etc/letsencrypt/live/mymesob.com/privkey.pem;
+                
+                proxy_connect_timeout 60s;
+                proxy_send_timeout 60s;
+                proxy_read_timeout 60s;
                 
                 location /api/ {
                     proxy_pass http://zemen-backend:8000;
@@ -204,8 +208,17 @@ jobs:
               --restart unless-stopped \
               nginx:alpine
             
-            # Wait and test
-            sleep 15
+            # Wait for containers to be ready
+            echo "Waiting for containers..."
+            sleep 30
+            
+            # Check container health
             docker ps
-            docker logs zemen-frontend --tail 5
+            echo "=== Backend Health ==="
+            docker exec zemen-backend curl -f http://localhost:8000/health || echo "Backend not ready"
+            echo "=== Frontend Health ==="
+            docker exec zemen-frontend curl -f http://localhost:3000 || echo "Frontend not ready"
+            
+            # Test from nginx
+            echo "=== Testing via nginx ==="
             curl -I https://mymesob.com || curl -I http://mymesob.com
