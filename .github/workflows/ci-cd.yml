@@ -128,6 +128,13 @@ jobs:
               --network zemen-net \
               -e DATABASE_URL=sqlite:///./app.db \
               -e DEBUG=false \
+              -e EMAIL_ENABLED=true \
+              -e SMTP_HOST=smtp.gmail.com \
+              -e SMTP_PORT=587 \
+              -e SMTP_USERNAME=nahomkeneni4@gmail.com \
+              -e SMTP_PASSWORD=bajfugnwibkrpgvg \
+              -e SMTP_USE_TLS=true \
+              -e EMAIL_FROM=nahomkeneni4@gmail.com \
               --restart unless-stopped \
               ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
               sh -c "rm -f app.db && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"

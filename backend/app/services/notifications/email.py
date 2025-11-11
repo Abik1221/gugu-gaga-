@@ -12,7 +12,7 @@ from app.core.settings import settings
 logger = logging.getLogger(__name__)
 
 
-def send_email(to: str, subject: str, body: str, from_addr: Optional[str] = None) -> bool:
+def send_email(to: str, subject: str, body: str, from_addr: Optional[str] = None, html_body: Optional[str] = None) -> bool:
     if not settings.email_enabled:
         logger.warning("⚠️ EMAIL DISABLED - Would send to %s: %s", to, subject)
         return False
@@ -32,6 +32,10 @@ def send_email(to: str, subject: str, body: str, from_addr: Optional[str] = None
     message["To"] = to
     message["Subject"] = subject
     message.set_content(body)
+    
+    # Add HTML version if provided
+    if html_body:
+        message.add_alternative(html_body, subtype='html')
 
     try:
         with smtplib.SMTP(host, settings.smtp_port, timeout=30) as smtp:

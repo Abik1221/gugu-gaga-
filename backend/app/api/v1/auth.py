@@ -18,6 +18,7 @@ from app.models.user_tenant import UserTenant
 from app.models.session import AuthSession
 from app.services.verification import issue_code, verify_code
 from app.services.notifications.email import send_email
+from app.services.notifications.verification_email import send_verification_email, send_notification_email
 from app.schemas.auth import (
     Token,
     TokenWithRefresh,
@@ -300,10 +301,10 @@ def register_owner(payload: PharmacyRegister, request: Request, db: Session = De
             body="We have received your pharmacy application. Our team will review it and follow up soon.",
         )
         if owner.email:
-            send_email(
+            send_notification_email(
                 owner.email,
-                "Pharmacy application received",
-                "Thanks for submitting your pharmacy information. Our team is reviewing it now and will contact you soon with next steps.",
+                "Application Received",
+                "Thank you for submitting your pharmacy registration. Our team is reviewing your application and will contact you soon with the next steps."
             )
     except Exception:
         pass
@@ -320,7 +321,7 @@ def register_owner(payload: PharmacyRegister, request: Request, db: Session = De
     try:
         code = issue_code(db, email=owner.email, purpose="register")
         if owner.email:
-            send_email(owner.email, "Verify your account", f"Your verification code is: {code}")
+            send_verification_email(owner.email, code, "register")
     except Exception:
         pass
     
@@ -415,7 +416,7 @@ def register_supplier(payload: dict, request: Request, db: Session = Depends(get
     try:
         code = issue_code(db, email=user.email, purpose="register")
         if user.email:
-            send_email(user.email, "Verify your account", f"Your verification code is: {code}")
+            send_verification_email(user.email, code, "register")
     except Exception:
         pass
     
@@ -467,7 +468,7 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
     try:
         if user.email:
             reg_code = issue_code(db, email=user.email, purpose="register")
-            result = send_email(user.email, "Verify your account", f"Your verification code is: {reg_code}")
+            result = send_verification_email(user.email, reg_code, "register")
             print(f"\n✅ Affiliate registration email result: {result}\n")
     except Exception as e:
         print(f"\n❌ Affiliate registration email FAILED: {type(e).__name__}: {e}\n")
@@ -597,7 +598,7 @@ def login_request_code(
     code = issue_code(db, email=user.email, purpose="login")
     if user.email:
         try:
-            result = send_email(user.email, "Login verification code", f"Your login code is: {code}")
+            result = send_verification_email(user.email, code, "login")
             print(f"\n✅ Login code email result: {result}\n")
         except Exception as e:
             print(f"\n❌ Login code email FAILED: {type(e).__name__}: {e}\n")
@@ -654,22 +655,7 @@ def password_reset_request(payload: PasswordResetRequest, db: Session = Depends(
     # Send email with reset code
     if user.email:
         try:
-            result = send_email(
-                user.email,
-                "Reset Your Password - Zemen Pharma",
-                f"""Hello,
-
-You requested to reset your password for your Zemen Pharma account.
-
-Your password reset code is: {code}
-
-This code will expire in 30 minutes.
-
-If you didn't request this, please ignore this email.
-
-Best regards,
-Zemen Pharma Team""",
-            )
+            result = send_verification_email(user.email, code, "password_reset")
             print(f"\n✅ Email send result: {result}\n")
         except Exception as e:
             print(f"\n❌ Email send FAILED: {type(e).__name__}: {e}\n")
@@ -710,19 +696,10 @@ def password_reset_confirm(payload: PasswordResetConfirm, db: Session = Depends(
     
     # Send confirmation email
     if user.email:
-        send_email(
+        send_notification_email(
             user.email,
-            "Password Reset Successful - Zemen Pharma",
-            f"""Hello,
-
-Your password has been successfully reset.
-
-All active sessions have been logged out for security.
-
-If you didn't make this change, please contact support immediately.
-
-Best regards,
-Zemen Pharma Team""",
+            "Password Reset Successful",
+            "Your password has been successfully reset. All active sessions have been logged out for security. If you didn't make this change, please contact support immediately."
         )
     
     # Log activity if tenant exists
