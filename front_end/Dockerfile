@@ -8,10 +8,11 @@ RUN npm ci
 FROM base AS builder
 WORKDIR /app
 ARG NEXT_PUBLIC_API_BASE=https://mymesob.com/api/v1
-ENV NEXT_PUBLIC_API_BASE=$NEXT_PUBLIC_API_BASE
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN rm -f .env.local
+COPY .env.production .env.production
+ENV NEXT_PUBLIC_API_BASE=$NEXT_PUBLIC_API_BASE
 RUN npm run build
 
 FROM base AS runner
