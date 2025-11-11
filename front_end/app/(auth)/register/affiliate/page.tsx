@@ -52,7 +52,7 @@ export default function AffiliateRegisterPage() {
         description: "Check your email for verification code.",
       });
       setTimeout(
-        () => router.replace(`/verify?email=${encodeURIComponent(affEmail)}`),
+        () => window.location.href = `/verify?email=${encodeURIComponent(affEmail)}`,
         1200
       );
     } catch (err: any) {
