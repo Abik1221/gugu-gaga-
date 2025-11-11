@@ -1,12 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { API_BASE, getAccessToken, getAuthJSON } from "@/utils/api";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
 
 export default function AffiliateRegisterPage() {
-  const { show } = useToast();
+  const show = ({ title, description }: { title: string; description: string; variant?: string }) => {
+    console.log(`${title}: ${description}`);
+  };
   const [me, setMe] = useState<{ id: string; tenant_id?: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -122,57 +121,57 @@ export default function AffiliateRegisterPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm">Full Name</label>
-              <Input value={full_name} onChange={(e)=>setFullName(e.target.value)} required aria-invalid={!!errors.full_name} />
+              <input className="w-full border rounded px-3 py-2 text-sm" value={full_name} onChange={(e)=>setFullName(e.target.value)} required aria-invalid={!!errors.full_name} />
               {errors.full_name && <div className="text-xs text-red-600 mt-1">{errors.full_name}</div>}
             </div>
             <div>
               <label className="text-sm">Username</label>
-              <Input value={username} onChange={(e)=>setUsername(e.target.value)} required aria-invalid={!!errors.username} />
+              <input className="w-full border rounded px-3 py-2 text-sm" value={username} onChange={(e)=>setUsername(e.target.value)} required aria-invalid={!!errors.username} />
               <div className="text-xs text-gray-500 mt-1">Public handle for your affiliate profile</div>
               {errors.username && <div className="text-xs text-red-600 mt-1">{errors.username}</div>}
             </div>
             <div>
               <label className="text-sm">Email</label>
-              <Input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required aria-invalid={!!errors.email} />
+              <input className="w-full border rounded px-3 py-2 text-sm" type="email" value={email} onChange={(e)=>setEmail(e.target.value)} required aria-invalid={!!errors.email} />
               {errors.email && <div className="text-xs text-red-600 mt-1">{errors.email}</div>}
             </div>
             <div>
               <label className="text-sm">Phone</label>
-              <Input value={phone} onChange={(e)=>setPhone(e.target.value)} placeholder="e.g. +2519..." />
+              <input className="w-full border rounded px-3 py-2 text-sm" value={phone} onChange={(e)=>setPhone(e.target.value)} placeholder="e.g. +2519..." />
               <div className="text-xs text-gray-500 mt-1">Optional, used for payout queries</div>
             </div>
             <div>
               <label className="text-sm">Bank Account Name</label>
-              <Input value={bank_account_name} onChange={(e)=>setBankAccountName(e.target.value)} required aria-invalid={!!errors.bank_account_name} />
+              <input className="w-full border rounded px-3 py-2 text-sm" value={bank_account_name} onChange={(e)=>setBankAccountName(e.target.value)} required aria-invalid={!!errors.bank_account_name} />
               {errors.bank_account_name && <div className="text-xs text-red-600 mt-1">{errors.bank_account_name}</div>}
             </div>
             <div>
               <label className="text-sm">Bank Account Number</label>
-              <Input value={bank_account_number} onChange={(e)=>setBankAccountNumber(e.target.value)} required aria-invalid={!!errors.bank_account_number} />
+              <input className="w-full border rounded px-3 py-2 text-sm" value={bank_account_number} onChange={(e)=>setBankAccountNumber(e.target.value)} required aria-invalid={!!errors.bank_account_number} />
               {errors.bank_account_number && <div className="text-xs text-red-600 mt-1">{errors.bank_account_number}</div>}
             </div>
             <div>
               <label className="text-sm">Bank Name</label>
-              <Input value={bank_name} onChange={(e)=>setBankName(e.target.value)} required aria-invalid={!!errors.bank_name} />
+              <input className="w-full border rounded px-3 py-2 text-sm" value={bank_name} onChange={(e)=>setBankName(e.target.value)} required aria-invalid={!!errors.bank_name} />
               {errors.bank_name && <div className="text-xs text-red-600 mt-1">{errors.bank_name}</div>}
             </div>
             <div>
               <label className="text-sm">Country</label>
-              <Input value={country} onChange={(e)=>setCountry(e.target.value)} />
+              <input className="w-full border rounded px-3 py-2 text-sm" value={country} onChange={(e)=>setCountry(e.target.value)} />
             </div>
             <div>
               <label className="text-sm">City</label>
-              <Input value={city} onChange={(e)=>setCity(e.target.value)} />
+              <input className="w-full border rounded px-3 py-2 text-sm" value={city} onChange={(e)=>setCity(e.target.value)} />
             </div>
             <div className="md:col-span-2">
               <label className="text-sm">Address</label>
-              <Input value={address} onChange={(e)=>setAddress(e.target.value)} />
+              <input className="w-full border rounded px-3 py-2 text-sm" value={address} onChange={(e)=>setAddress(e.target.value)} />
               <div className="text-xs text-gray-500 mt-1">Include branch details if applicable</div>
             </div>
           </div>
-          <Button type="submit" disabled={submitting}>
+          <button className="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 disabled:opacity-50" type="submit" disabled={submitting}>
             {submitting ? "Submitting..." : "Register as Affiliate"}
-          </Button>
+          </button>
         </form>
       )}
     </div>
