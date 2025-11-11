@@ -1,12 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import AffiliateLoginPage from "../affiliate-signin/page";
 import AffiliateRegisterPage from "../register/affiliate/page";
+import { SimpleLoading } from "@/components/ui/simple-loading";
 
-export const dynamic = 'force-dynamic';
-
-export default function AuthRouterPage() {
+function AuthContent() {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab") ?? "signin";
 
@@ -15,4 +15,12 @@ export default function AuthRouterPage() {
   }
 
   return <AffiliateLoginPage />;
+}
+
+export default function AuthRouterPage() {
+  return (
+    <Suspense fallback={<SimpleLoading />}>
+      <AuthContent />
+    </Suspense>
+  );
 }

@@ -8,6 +8,7 @@ import logoImage from "@/public/mesoblogo.jpeg";
 // Removed force-dynamic for better performance
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://mymesob.com'),
   title: {
     default: "Mesob - AI-Powered Business Management Software | Ethiopia",
     template: "%s | Mesob - Business Management Software",
