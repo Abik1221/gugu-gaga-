@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { SimpleLoading } from "@/components/ui/simple-loading";
 
-export const dynamic = 'force-dynamic';
-
-export default function RegisterPage() {
+function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -24,4 +23,12 @@ export default function RegisterPage() {
   }, [router, searchParams]);
 
   return null;
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<SimpleLoading />}>
+      <RegisterContent />
+    </Suspense>
+  );
 }
