@@ -152,7 +152,7 @@ export default function BranchManagementPage() {
 
   const handleDelete = async (branch: BranchRecord) => {
     if (!tenantId) return;
-    const confirmed = window.confirm(
+    const confirmed = typeof window !== 'undefined' && window.confirm(
       `Remove branch "${branch.name}"? Associated sales will remain attributed to this branch.`
     );
     if (!confirmed) return;

@@ -100,7 +100,7 @@ export default function AffiliateRegisterPage() {
 
   if (loading) return <div className="p-6 text-sm text-gray-600">Loading...</div>;
 
-  const shareUrl = referralCode ? `${window.location.origin}/register?ref=${encodeURIComponent(referralCode)}` : "";
+  const shareUrl = referralCode && typeof window !== 'undefined' ? `${window.location.origin}/register?ref=${encodeURIComponent(referralCode)}` : "";
 
   return (
     <div className="max-w-2xl">
