@@ -76,8 +76,10 @@ export default function InventoryPage() {
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
 
   useEffect(() => {
-    const handle = window.setTimeout(() => setDebouncedSearch(search.trim()), 300);
-    return () => window.clearTimeout(handle);
+    if (typeof window !== 'undefined') {
+      const handle = window.setTimeout(() => setDebouncedSearch(search.trim()), 300);
+      return () => window.clearTimeout(handle);
+    }
   }, [search]);
 
   useEffect(() => {
@@ -826,7 +828,7 @@ function EditLotSheet({ item, tenantId, onClose, onUpdated, onDeleted }: EditLot
 
   const handleDelete = async () => {
     if (!item || !tenantId) return;
-    const confirmed = window.confirm(
+    const confirmed = typeof window !== 'undefined' && window.confirm(
       "Deleting this lot removes it from inventory history. Continue?",
     );
     if (!confirmed) return;

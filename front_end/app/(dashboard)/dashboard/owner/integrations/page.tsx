@@ -132,7 +132,9 @@ export default function OwnerIntegrationsPage() {
         connectSheet.provider.key,
         resources.length > 0 ? resources : undefined,
       );
-      window.location.href = response.authorization_url;
+      if (typeof window !== 'undefined') {
+        window.location.href = response.authorization_url;
+      }
       show({ variant: "success", title: "Continue in new tab", description: "Complete the provider connection flow and you will be redirected back." });
     } catch (error: any) {
       show({ variant: "destructive", title: "Unable to start connection", description: error?.message || "Check your credentials and try again." });
