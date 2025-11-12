@@ -70,54 +70,55 @@ export default function AffiliateRegisterPage() {
   ];
 
   return (
-    <div className="relative flex min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 text-slate-900">
+    <div className="relative min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 text-slate-900">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-[-6rem] left-[-4rem] h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
         <div className="absolute bottom-[-5rem] right-[-3rem] h-[28rem] w-[28rem] rounded-full bg-blue-200/40 blur-3xl" />
         <div className="absolute inset-x-0 top-[38%] h-24 bg-gradient-to-r from-emerald-100/40 via-transparent to-blue-100/40 blur-2xl" />
       </div>
 
-      <div className="relative flex w-full flex-1 flex-col justify-between overflow-hidden rounded-r-[48px] border border-emerald-100 bg-white/80 p-6 shadow-[0_60px_160px_-90px_rgba(14,116,144,0.55)] backdrop-blur sm:p-12 lg:w-0">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-lg"
-        >
-          <div className="flex items-center gap-3 text-left">
-            <span className="text-2xl font-semibold tracking-wide text-emerald-700">
-              Mesob AI Affiliate Network
-            </span>
-          </div>
+      <div className="flex flex-col lg:flex-row">
+        <div className="relative flex flex-col justify-between overflow-hidden border border-emerald-100 bg-white/80 p-6 shadow-[0_60px_160px_-90px_rgba(14,116,144,0.55)] backdrop-blur sm:p-12 lg:flex-1 lg:rounded-r-[48px]">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-lg mx-auto lg:mx-0"
+          >
+            <div className="flex items-center justify-center lg:justify-start gap-3 text-center lg:text-left">
+              <span className="text-2xl font-semibold tracking-wide text-emerald-700">
+                Mesob AI Affiliate Network
+              </span>
+            </div>
 
-          <Image
-            src={affiliateRegistrationImage}
-            alt="affiliate registration image"
-            className="my-10"
-          />
-          <p className="mt-4 text-lg text-slate-600">
-            Become a trusted partner for bussiness digitization. Unlock
-            recurring earnings with every successful registration.
-          </p>
+            <Image
+              src={affiliateRegistrationImage}
+              alt="affiliate registration image"
+              className="my-10 mx-auto"
+            />
+            <p className="mt-4 text-lg text-slate-600 text-center lg:text-left">
+              Become a trusted partner for bussiness digitization. Unlock
+              recurring earnings with every successful registration.
+            </p>
 
-          <ul className="mt-10 space-y-4 text-slate-600">
-            {programHighlights.map((item) => (
-              <li key={item} className="flex items-start gap-3">
-                <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </motion.div>
-      </div>
+            <ul className="mt-10 space-y-4 text-slate-600">
+              {programHighlights.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
 
-      <div className="relative flex w-full flex-col justify-center px-4 py-8 sm:px-10 sm:py-16 lg:w-[520px] lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mx-auto w-full max-w-md rounded-3xl border border-emerald-100/80 bg-white/95 p-8 shadow-[0_35px_90px_-55px_rgba(15,118,110,0.55)] backdrop-blur"
-        >
+        <div className="relative flex flex-col justify-center px-4 py-8 sm:px-10 sm:py-16 lg:w-[520px] lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto w-full max-w-md rounded-3xl border border-emerald-100/80 bg-white/95 p-8 shadow-[0_35px_90px_-55px_rgba(15,118,110,0.55)] backdrop-blur"
+          >
           <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold text-slate-900">
               Join the affiliate program
@@ -257,7 +258,8 @@ export default function AffiliateRegisterPage() {
             </Link>
             .
           </p>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

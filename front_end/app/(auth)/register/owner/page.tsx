@@ -222,65 +222,66 @@ export default function OwnerRegisterPage() {
   ];
 
   return (
-    <div className="relative flex min-h-screen text-white">
+    <div className="relative min-h-screen text-white">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-10 left-10 h-80 w-80 rounded-full bg-green-500/15 blur-3xl" />
         <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
       </div>
 
-      <div className="relative flex w-full flex-1 flex-col justify-between overflow-hidden bg-white p-6 sm:p-12 lg:w-0">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-lg"
-        >
-          <div className="flex items-center gap-3 text-left">
-            <span className="text-2xl font-semibold tracking-wide text-white/90">
-              Mesob AI
-            </span>
-          </div>
+      <div className="flex flex-col lg:flex-row">
+        <div className="relative flex flex-col justify-between overflow-hidden bg-white p-6 sm:p-12 lg:flex-1">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-lg mx-auto lg:mx-0"
+          >
+            <div className="flex items-center justify-center lg:justify-start gap-3 text-center lg:text-left">
+              <span className="text-2xl font-semibold tracking-wide text-black">
+                Mesob AI
+              </span>
+            </div>
 
-          <h1 className="mt-10 text-4xl font-bold leading-tight text-black">
-            Start your business management journey
-          </h1>
-          <p className="mt-4 text-lg text-slate-500">
-            Join thousands of business owners who trust our AI-powered platform to streamline their operations and boost profitability.
-          </p>
+            <h1 className="mt-10 text-4xl font-bold leading-tight text-black text-center lg:text-left">
+              Start your business management journey
+            </h1>
+            <p className="mt-4 text-lg text-slate-500 text-center lg:text-left">
+              Join thousands of business owners who trust our AI-powered platform to streamline their operations and boost profitability.
+            </p>
 
-          <ul className="mt-10 space-y-4 text-slate-700">
-            {featureBullets.map((item) => (
-              <li key={item} className="flex items-start gap-3">
-                <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-black" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+            <ul className="mt-10 space-y-4 text-slate-700">
+              {featureBullets.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-black" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
 
-          <Image
-            src={ownerRegistrationImage}
-            alt="Business owner registration"
-            className="mt-8 rounded-xl shadow-lg"
-          />
-        </motion.div>
+            <Image
+              src={ownerRegistrationImage}
+              alt="Business owner registration"
+              className="mt-8 rounded-xl shadow-lg mx-auto"
+            />
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="space-y-4 text-sm text-slate-700"
-        >
-          <p>
-            "Mesob has revolutionized how we manage our business. The AI insights are incredible!"
-          </p>
-          <div className="h-px w-24 bg-white/20" />
-          <p>
-            Need help? <Link href="/contact" className="text-black hover:underline">Contact our support team</Link>
-          </p>
-        </motion.div>
-      </div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="space-y-4 text-sm text-slate-700 text-center lg:text-left mt-8 lg:mt-0"
+          >
+            <p>
+              "Mesob has revolutionized how we manage our business. The AI insights are incredible!"
+            </p>
+            <div className="h-px w-24 bg-black/20 mx-auto lg:mx-0" />
+            <p>
+              Need help? <Link href="/contact" className="text-black hover:underline">Contact our support team</Link>
+            </p>
+          </motion.div>
+        </div>
 
-      <div className="relative flex w-full flex-col justify-center px-4 py-16 sm:px-10 lg:w-[560px] lg:px-12 bg-white">
+        <div className="relative flex flex-col justify-center px-4 py-16 sm:px-10 lg:w-[560px] lg:px-12 bg-white">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -499,7 +500,8 @@ export default function OwnerRegisterPage() {
             </Link>
             .
           </p>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
