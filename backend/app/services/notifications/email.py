@@ -3,7 +3,8 @@ from __future__ import annotations
 import logging
 import smtplib
 import ssl
-from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from typing import Optional
 
 from app.core.settings import settings
@@ -25,17 +26,31 @@ def send_email(to: str, subject: str, body: str, from_addr: Optional[str] = None
         logger.error("❌ EMAIL ENABLED but SMTP credentials missing! host=%s, user=%s, pass=%s", host, username, "***" if password else None)
         raise RuntimeError("Email is enabled but SMTP credentials are missing")
 
-    sender = from_addr or settings.email_from or username
+    # Use proper sender format with name
+    sender_name = "Mesob"
+    sender_email = from_addr or settings.email_from or username
+    sender = f"{sender_name} <{sender_email}>"
 
-    message = EmailMessage()
+    # Create multipart message for better deliverability
+    message = MIMEMultipart('alternative')
     message["From"] = sender
     message["To"] = to
     message["Subject"] = subject
-    message.set_content(body)
+    
+    # Add anti-spam headers
+    message["Message-ID"] = f"<{hash(to + subject)}.{hash(body)}@mymesob.com>"
+    message["X-Mailer"] = "Mesob System"
+    message["X-Priority"] = "3"
+    message["Importance"] = "Normal"
+    
+    # Always include plain text version (required to avoid spam)
+    text_part = MIMEText(body, 'plain', 'utf-8')
+    message.attach(text_part)
     
     # Add HTML version if provided
     if html_body:
-        message.add_alternative(html_body, subtype='html')
+        html_part = MIMEText(html_body, 'html', 'utf-8')
+        message.attach(html_part)
 
     try:
         with smtplib.SMTP(host, settings.smtp_port, timeout=30) as smtp:

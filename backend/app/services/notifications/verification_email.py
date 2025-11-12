@@ -6,21 +6,7 @@ from app.services.notifications.email_templates import get_verification_email_te
 
 def send_verification_email(email: str, code: str, purpose: str) -> bool:
     """Send a professional verification email with the given code and purpose."""
-    subject, html_body = get_verification_email_template(code, purpose, email)
-    
-    # Plain text fallback
-    plain_text = f"""
-Zemen Pharma - {subject}
-
-Your verification code is: {code}
-
-This code expires in 10 minutes.
-
-If you didn't request this code, please ignore this email.
-
-Best regards,
-Zemen Pharma Team
-"""
+    subject, plain_text, html_body = get_verification_email_template(code, purpose, email)
     
     return send_email(email, subject, plain_text, html_body=html_body)
 
