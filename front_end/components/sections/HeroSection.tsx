@@ -26,14 +26,14 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3"
+              className="flex flex-wrap gap-2 sm:gap-3"
             >
-              <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 w-fit">
+              <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs sm:text-sm">
                 <Sparkles className="w-3 h-3 mr-1" />
                 Business Revolution with AI
               </Badge>
-              <Badge className="bg-blue-100 text-blue-700 border-blue-200 w-fit">
-                <span className="text-base mr-1">🇪🇹</span>
+              <Badge className="bg-blue-100 text-blue-700 border-blue-200 text-xs sm:text-sm">
+                <span className="text-sm sm:text-base mr-1">🇪🇹</span>
                 Built by Ethiopia for Africa
               </Badge>
             </motion.div>
