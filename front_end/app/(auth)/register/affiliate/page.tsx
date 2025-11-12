@@ -77,7 +77,7 @@ export default function AffiliateRegisterPage() {
         <div className="absolute inset-x-0 top-[38%] h-24 bg-gradient-to-r from-emerald-100/40 via-transparent to-blue-100/40 blur-2xl" />
       </div>
 
-      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden rounded-r-[48px] border border-emerald-100 bg-white/80 p-12 shadow-[0_60px_160px_-90px_rgba(14,116,144,0.55)] backdrop-blur lg:flex">
+      <div className="relative flex w-full flex-1 flex-col justify-between overflow-hidden rounded-r-[48px] border border-emerald-100 bg-white/80 p-6 shadow-[0_60px_160px_-90px_rgba(14,116,144,0.55)] backdrop-blur sm:p-12 lg:w-0">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,21 +85,6 @@ export default function AffiliateRegisterPage() {
           className="max-w-lg"
         >
           <div className="flex items-center gap-3 text-left">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 opacity-30 blur" />
-              <div className="relative rounded-xl bg-gradient-to-br from-emerald-500 to-blue-500 p-3 text-white shadow-lg">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  className="h-6 w-6 text-white"
-                >
-                  <path d="M12 5v14m-7-7h14" />
-                </svg>
-              </div>
-            </div>
             <span className="text-2xl font-semibold tracking-wide text-emerald-700">
               Mesob AI Affiliate Network
             </span>
@@ -126,7 +111,7 @@ export default function AffiliateRegisterPage() {
         </motion.div>
       </div>
 
-      <div className="relative flex w-full flex-col justify-center px-4 py-16 sm:px-10 lg:w-[520px] lg:px-12">
+      <div className="relative flex w-full flex-col justify-center px-4 py-8 sm:px-10 sm:py-16 lg:w-[520px] lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
