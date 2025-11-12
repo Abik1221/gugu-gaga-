@@ -15,8 +15,30 @@ import Footer from "@/components/sections/Footer";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { GoogleAds } from "@/components/ads/google-ads";
 export default function App() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Mesob Tech",
+    "url": "https://mymesob.com",
+    "logo": "https://mymesob.com/mesoblogo.jpeg",
+    "description": "AI-powered business management software built in Ethiopia for African businesses",
+    "foundingLocation": {
+      "@type": "Place",
+      "name": "Ethiopia"
+    },
+    "areaServed": "Africa",
+    "sameAs": [
+      "https://twitter.com/MesobTech",
+      "https://linkedin.com/company/mesob-tech"
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <Navbar />
       <HeroSection />
       <ProblemSolution />
