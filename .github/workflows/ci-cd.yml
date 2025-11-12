@@ -105,7 +105,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          timeout: 300s
+          timeout: 900s
+          command_timeout: 15m
           script: |
             # Open firewall ports
             sudo ufw allow 80/tcp 2>/dev/null || true
@@ -136,6 +137,7 @@ jobs:
               sh -c "alembic upgrade head"
             
             # Run backend
+            echo "Starting backend..."
             docker run -d --name zemen-backend \
               --network zemen-net \
               -v zemen-db-data:/app/data \
@@ -153,7 +155,24 @@ jobs:
               ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
               uvicorn app.main:app --host 0.0.0.0 --port 8000
             
+            # Wait for backend to be healthy
+            echo "Waiting for backend to start..."
+            for i in {1..30}; do
+              if docker logs zemen-backend 2>&1 | grep -q "Application startup complete"; then
+                echo "Backend is healthy"
+                break
+              fi
+              if docker logs zemen-backend 2>&1 | grep -q "died\|error\|Error\|failed"; then
+                echo "Backend failed to start:"
+                docker logs zemen-backend
+                exit 1
+              fi
+              echo "Waiting for backend... ($i/30)"
+              sleep 2
+            done
+            
             # Run frontend
+            echo "Starting frontend..."
             docker run -d --name zemen-frontend \
               --network zemen-net \
               --restart unless-stopped \

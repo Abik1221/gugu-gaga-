@@ -25,7 +25,7 @@ def upgrade() -> None:
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('tenant_id', sa.String(length=64), nullable=False),
         sa.Column('role_override', sa.String(length=32), nullable=True),
-        sa.Column('is_approved', sa.Boolean(), nullable=False, default=False),
+        sa.Column('is_approved', sa.Boolean(), nullable=False, server_default='0'),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('id')
     )
@@ -36,11 +36,11 @@ def upgrade() -> None:
     op.create_table('subscriptions',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('tenant_id', sa.String(length=64), nullable=False),
-        sa.Column('plan', sa.String(length=32), nullable=False, default='basic'),
-        sa.Column('status', sa.String(length=16), nullable=False, default='active'),
-        sa.Column('blocked', sa.Boolean(), nullable=False, default=False),
+        sa.Column('plan', sa.String(length=32), nullable=False, server_default='basic'),
+        sa.Column('status', sa.String(length=16), nullable=False, server_default='active'),
+        sa.Column('blocked', sa.Boolean(), nullable=False, server_default='0'),
         sa.Column('next_due_date', sa.Date(), nullable=True),
-        sa.Column('daily_notice_count', sa.Integer(), nullable=False, default=0),
+        sa.Column('daily_notice_count', sa.Integer(), nullable=False, server_default='0'),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('id')
@@ -54,7 +54,7 @@ def upgrade() -> None:
         sa.Column('tenant_id', sa.String(length=64), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('code', sa.String(length=64), nullable=False),
-        sa.Column('status', sa.String(length=16), nullable=False, default='pending'),
+        sa.Column('status', sa.String(length=16), nullable=False, server_default='pending'),
         sa.Column('amount', sa.Float(), nullable=True),
         sa.Column('notes', sa.Text(), nullable=True),
         sa.Column('admin_notes', sa.Text(), nullable=True),
