@@ -40,7 +40,7 @@ def register_link(
         "max_links": 2,
         "count": len(links),
         "links": [
-            {"token": l.token, "url": f"https://zemen.example/ref/{l.token}", "active": l.active}
+            {"token": l.token, "url": f"https://mymesob.com/ref/{l.token}", "active": l.active}
             for l in links
         ],
         "can_create_more": len(links) < 2,
@@ -95,7 +95,7 @@ def rotate_link(
     new_link = AffiliateLink(affiliate_user_id=user.id, token=new_token, active=True)
     db.add(new_link)
     db.commit()
-    return {"token": new_token, "status": "rotated", "url": f"https://zemen.example/ref/{new_token}"}
+    return {"token": new_token, "status": "rotated", "url": f"https://mymesob.com/ref/{new_token}"}
 
 
 @router.get("/commissions")
