@@ -7,12 +7,14 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { useEmailVerificationToast } from "@/components/ui/email-verification-toast";
 import { AuthAPI } from "@/utils/api";
 import Image from "next/image";
 import affiliateRegistrationImage from "@/public/affiliateregistration.jpeg";
 export default function AffiliateRegisterPage() {
   const router = useRouter();
   const { show } = useToast();
+  const { showEmailSentNotification } = useEmailVerificationToast();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,14 +48,10 @@ export default function AffiliateRegisterPage() {
       });
 
       setSuccess("Affiliate registered. Please verify your email.");
-      show({
-        variant: "success",
-        title: "Registered",
-        description: "Check your email for verification code.",
-      });
+      showEmailSentNotification(affEmail, "register");
       setTimeout(
-        () => window.location.href = `/verify?email=${encodeURIComponent(affEmail)}`,
-        1200
+        () => window.location.href = `/verify?email=${encodeURIComponent(affEmail)}&purpose=register`,
+        2000
       );
     } catch (err: any) {
       const message = err?.message || "Registration failed";

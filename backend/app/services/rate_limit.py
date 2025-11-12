@@ -14,8 +14,8 @@ def _make_key(scope: str, identifier: Optional[str]) -> str:
     return f"rl:{scope}:{identifier or 'anon'}"
 
 
-def allow(scope: str, identifier: Optional[str], limit_per_minute: Optional[int] = None) -> bool:
-    limit = limit_per_minute or settings.rate_limit_general_per_minute
+def allow(scope: str, identifier: Optional[str], per_minute: Optional[int] = None) -> bool:
+    limit = per_minute or settings.rate_limit_general_per_minute
     now = time.time()
 
     r = get_redis()
