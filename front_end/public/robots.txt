@@ -2,18 +2,21 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://zemenpharma.com/sitemap.xml
+Sitemap: https://mymesob.com/sitemap.xml
 
 # Disallow admin and private areas
 Disallow: /admin/
 Disallow: /api/
 Disallow: /_next/
 Disallow: /dashboard/
+Disallow: /.well-known/
 
 # Allow important pages
 Allow: /
-Allow: /features
-Allow: /pricing
+Allow: /register
 Allow: /affiliate
 Allow: /terms
 Allow: /privacy
+
+# Crawl delay
+Crawl-delay: 1
