@@ -116,13 +116,6 @@ jobs:
             docker pull ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
             docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             
-            # Run migrations
-            docker run --rm --network zemen-net \
-              -v zemen-db-data:/app/data \
-              -e DATABASE_URL=sqlite:///./data/app.db \
-              ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
-              alembic upgrade head
-            
             # Start backend
             docker run -d --name zemen-backend \
               --network zemen-net \
