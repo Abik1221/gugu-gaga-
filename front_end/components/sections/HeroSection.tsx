@@ -55,12 +55,12 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 px-4 sm:px-0"
             >
               <TrialDialog>
                 <Button
                   size="lg"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-base sm:text-lg px-4 sm:px-8 w-full sm:w-auto"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-base sm:text-lg px-4 sm:px-8"
                 >
                   Start 30-Day Free Trial
                   <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
@@ -69,7 +69,7 @@ export default function HeroSection() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-base sm:text-lg px-4 sm:px-8 w-full sm:w-auto"
+                className="text-base sm:text-lg px-4 sm:px-8"
                 onClick={() => router.push("/contact")}
               >
                 Watch Demo
