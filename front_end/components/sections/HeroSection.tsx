@@ -11,9 +11,9 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-19 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+    <section className="pt-16 sm:pt-20 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -44,7 +44,7 @@ export default function HeroSection() {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="space-y-4"
             >
-              <h1 className="text-5xl lg:text-6xl text-gray-900">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-900 leading-tight">
                 Transform Your{" "}
                 <span className="text-emerald-600">Business</span> with AI-Powered Management Software
               </h1>
@@ -81,21 +81,23 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5, duration: 0.5 }}
-              className="flex items-center gap-8 pt-4"
+              className="pt-4 overflow-x-auto"
             >
-              <div>
-                <div className="text-3xl text-gray-900">30 Days</div>
-                <div className="text-sm text-gray-600">Free Trial</div>
-              </div>
-              <div className="h-12 w-px bg-gray-300" />
-              <div>
-                <div className="text-3xl text-gray-900">24/7</div>
-                <div className="text-sm text-gray-600">AI Support</div>
-              </div>
-              <div className="h-12 w-px bg-gray-300" />
-              <div>
-                <div className="text-3xl text-gray-900">{">"}99.9%</div>
-                <div className="text-sm text-gray-600">Uptime</div>
+              <div className="flex items-center gap-6 sm:gap-8 min-w-max">
+                <div className="flex-shrink-0">
+                  <div className="text-2xl sm:text-3xl text-gray-900">30 Days</div>
+                  <div className="text-sm text-gray-600">Free Trial</div>
+                </div>
+                <div className="h-12 w-px bg-gray-300 flex-shrink-0" />
+                <div className="flex-shrink-0">
+                  <div className="text-2xl sm:text-3xl text-gray-900">24/7</div>
+                  <div className="text-sm text-gray-600">AI Support</div>
+                </div>
+                <div className="h-12 w-px bg-gray-300 flex-shrink-0" />
+                <div className="flex-shrink-0">
+                  <div className="text-2xl sm:text-3xl text-gray-900">{">"}99.9%</div>
+                  <div className="text-sm text-gray-600">Uptime</div>
+                </div>
               </div>
             </motion.div>
           </motion.div>
