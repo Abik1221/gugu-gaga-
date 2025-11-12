@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -42,6 +42,17 @@ export default function OwnerRegisterPage() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
+  const [affiliateToken, setAffiliateToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check for affiliate token from URL params or localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const refToken = urlParams.get('ref') || localStorage.getItem('affiliate_token');
+    if (refToken) {
+      setAffiliateToken(refToken);
+      localStorage.removeItem('affiliate_token'); // Clean up
+    }
+  }, []);
 
   const clearFieldError = (key: FieldKey) =>
     setFieldErrors((prev) => ({
@@ -119,6 +130,7 @@ export default function OwnerRegisterPage() {
         license_document_base64: licenseBase64,
         license_document_mime: licenseMime,
         license_document_name: licenseName,
+        affiliate_token: affiliateToken,
       });
 
 
@@ -274,6 +286,12 @@ export default function OwnerRegisterPage() {
             <p className="mt-2 text-sm text-slate-600">
               Create your business management account today.
             </p>
+            {affiliateToken && (
+              <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
+                <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+                Referred by affiliate
+              </div>
+            )}
           </div>
 
           {error && (
