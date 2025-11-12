@@ -26,7 +26,7 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex flex-wrap gap-2 sm:gap-3"
+              className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start"
             >
               <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs sm:text-sm">
                 <Sparkles className="w-3 h-3 mr-1" />
