@@ -554,6 +554,63 @@ def update_me(
     return _user_with_status(db, current_user)
 
 
+@router.post("/resend-code")
+def resend_verification_code(
+    payload: dict,
+    db: Session = Depends(get_db),
+    _rl=Depends(rate_limit("resend_code", identify_by="ip", per_minute=3)),
+):
+    email = payload.get("email")
+    purpose = payload.get("purpose", "register")  # register, login, password_reset
+    
+    if not email:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email is required")
+    
+    if purpose not in ["register", "login", "password_reset"]:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid purpose")
+    
+    # Check if user exists
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
+    
+    # Check for recent codes to prevent spam (2-minute cooldown)
+    from datetime import datetime, timedelta
+    from app.models.verification import VerificationCode
+    
+    recent_code = (
+        db.query(VerificationCode)
+        .filter(
+            VerificationCode.email == email,
+            VerificationCode.purpose == purpose,
+            VerificationCode.created_at >= datetime.utcnow() - timedelta(minutes=2)
+        )
+        .order_by(VerificationCode.id.desc())
+        .first()
+    )
+    
+    if recent_code:
+        time_left = 120 - int((datetime.utcnow() - recent_code.created_at).total_seconds())
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS, 
+            detail=f"Please wait {time_left} seconds before requesting a new code"
+        )
+    
+    # Generate new code
+    ttl_minutes = 30 if purpose == "password_reset" else 10
+    code = issue_code(db, email=email, purpose=purpose, ttl_minutes=ttl_minutes)
+    
+    # Send email
+    try:
+        result = send_verification_email(email, code, purpose)
+        print(f"\n✅ Resend code email result: {result}\n")
+    except Exception as e:
+        print(f"\n❌ Resend code email FAILED: {type(e).__name__}: {e}\n")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to send verification code")
+    
+    return {"status": "sent", "message": "Verification code sent successfully"}
+
+
 @router.post("/register/verify")
 def verify_registration(
     payload: RegistrationVerifyRequest,

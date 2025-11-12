@@ -7,8 +7,8 @@ export default function Toast() {
 
 export type Toast = {
   id: string;
-  title?: string;
-  description?: string;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
   variant?: "default" | "success" | "destructive";
   duration?: number;
 };

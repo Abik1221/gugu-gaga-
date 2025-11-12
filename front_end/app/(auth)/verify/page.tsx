@@ -7,6 +7,7 @@ import { CheckCircle2, MailCheck, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { useEmailVerificationToast } from "@/components/ui/email-verification-toast";
 import { AuthAPI } from "@/utils/api";
 import { SimpleLoading } from "@/components/ui/simple-loading";
 
@@ -32,11 +33,14 @@ function VerifyRegistrationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { show } = useToast();
+  const { showEmailSentNotification, showResendCooldown } = useEmailVerificationToast();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   // Pre-fill email from URL params if available
   useEffect(() => {
@@ -45,6 +49,52 @@ function VerifyRegistrationContent() {
       setEmail(emailParam);
     }
   }, [searchParams]);
+
+  // Cooldown timer
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendCooldown]);
+
+  async function handleResendCode() {
+    if (!email || resendCooldown > 0) return;
+    
+    setResendLoading(true);
+    try {
+      const purpose = searchParams.get("purpose") || "register";
+      const response = await fetch("/api/v1/auth/resend-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, purpose })
+      });
+      
+      if (response.status === 429) {
+        const errorData = await response.json();
+        const match = errorData.detail?.match(/(\d+) seconds/);
+        const seconds = match ? parseInt(match[1]) : 120;
+        setResendCooldown(seconds);
+        showResendCooldown(seconds);
+        return;
+      }
+      
+      if (!response.ok) {
+        throw new Error("Failed to resend code");
+      }
+      
+      showEmailSentNotification(email, purpose as any);
+      setResendCooldown(120); // 2 minute cooldown
+    } catch (err: any) {
+      show({
+        variant: "destructive",
+        title: "Resend Failed",
+        description: err.message || "Failed to resend verification code"
+      });
+    } finally {
+      setResendLoading(false);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -141,7 +191,7 @@ function VerifyRegistrationContent() {
           </div>
           <h1 className="mt-6 text-3xl font-semibold text-slate-900">Account verified!</h1>
           <p className="mt-3 text-sm text-slate-600">
-            Your account has been activated. We’ll send you to the affiliate dashboard in a moment.
+            Your account has been activated. We'll send you to the affiliate dashboard in a moment.
           </p>
           <Button
             onClick={() => {
@@ -224,7 +274,7 @@ function VerifyRegistrationContent() {
           className="text-xs text-slate-500"
         >
           <p>Verification keeps your earnings protected.</p>
-          <p className="mt-1">© {new Date().getFullYear()} Zemen Pharma Partners.</p>
+          <p className="mt-1">© {new Date().getFullYear()} Mesob Partners.</p>
         </motion.div>
       </div>
 
@@ -291,14 +341,17 @@ function VerifyRegistrationContent() {
 
           <div className="mt-8 space-y-3 text-center text-xs text-slate-500">
             <p>
-              Didn’t get the code? Check spam or {" "}
-              <Link href="/auth?tab=affiliate" className="text-emerald-600 hover:underline">
-                resend from registration
-              </Link>
-              .
+              Didn't get the code? <strong>Check your spam folder</strong> or{" "}
+              <button
+                onClick={handleResendCode}
+                disabled={resendLoading || resendCooldown > 0 || !email}
+                className="text-emerald-600 hover:underline disabled:text-gray-400 disabled:no-underline"
+              >
+                {resendLoading ? "Sending..." : resendCooldown > 0 ? `resend in ${resendCooldown}s` : "resend code"}
+              </button>
             </p>
             <p>
-              Your login code expires after 10 minutes for security.
+              Your verification code expires after 10 minutes for security.
             </p>
           </div>
         </motion.div>
