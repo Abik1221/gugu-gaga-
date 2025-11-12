@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/habtamusemagn/Desktop/last/gugu-gaga-/front_end/app/%28dashboard%29/dashboard/affiliate/layout.tsx"],"sourcesContent":["\"use client\";\n\nimport React from \"react\";\n\nexport default function AffiliateLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <div>{children}</div>\n  );\n}\n"],"names":[],"mappings":";;;;;AAAA;;AAIe,SAAS,gBAAgB,EAAE,QAAQ,EAAiC;IACjF,qBACE,oZAAC;kBAAK;;;;;;AAEV","debugId":null}}]
-}

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 3, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 15, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/HP/gugu-gaga-/front_end/app/affiliate/page.tsx"],"sourcesContent":["import { redirect } from \"next/navigation\";\n\nexport default function AffiliateRedirectPage() {\n  redirect(\"/register?tab=affiliate\");\n}\n"],"names":[],"mappings":";;;;AAAA;AAAA;;AAEe,SAAS;IACtB,IAAA,iMAAQ,EAAC;AACX","debugId":null}}]
-}
