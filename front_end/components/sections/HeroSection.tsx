@@ -11,8 +11,8 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-16 sm:pt-20 pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
-      <div className="max-w-7xl mx-auto">
+    <section className="pt-16 sm:pt-20 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+      <div className="w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -44,7 +44,7 @@ export default function HeroSection() {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="space-y-4"
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-900 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight">
                 Transform Your{" "}
                 <span className="text-emerald-600">Business</span> with AI-Powered Management Software
               </h1>
@@ -55,21 +55,21 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="flex flex-col sm:flex-row gap-4"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full"
             >
               <TrialDialog>
                 <Button
                   size="lg"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-base sm:text-lg px-4 sm:px-8 w-full sm:w-auto"
                 >
                   Start 30-Day Free Trial
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                  <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </TrialDialog>
               <Button
                 size="lg"
                 variant="outline"
-                className="text-lg px-8"
+                className="text-base sm:text-lg px-4 sm:px-8 w-full sm:w-auto"
                 onClick={() => router.push("/contact")}
               >
                 Watch Demo
