@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import Image from "next/image";
+import ownerRegistrationImage from "@/public/owner_registration.jpeg";
 
 type FieldKey = "businessName" | "email" | "password" | "tinNumber" | "phone" | "address" | "licenseFile";
 
@@ -226,7 +228,7 @@ export default function OwnerRegisterPage() {
         <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
       </div>
 
-      <div className="relative hidden w-0 flex-1 flex-col justify-between overflow-hidden bg-white p-12 lg:flex">
+      <div className="relative flex w-full flex-1 flex-col justify-between overflow-hidden bg-white p-6 sm:p-12 lg:w-0">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -234,22 +236,6 @@ export default function OwnerRegisterPage() {
           className="max-w-lg"
         >
           <div className="flex items-center gap-3 text-left">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-green-400 to-blue-500 blur opacity-70" />
-              <div className="relative rounded-xl p-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  className="h-6 w-6 text-white"
-                >
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                  <polyline points="9,22 9,12 15,12 15,22" />
-                </svg>
-              </div>
-            </div>
             <span className="text-2xl font-semibold tracking-wide text-white/90">
               Mesob AI
             </span>
@@ -270,6 +256,12 @@ export default function OwnerRegisterPage() {
               </li>
             ))}
           </ul>
+
+          <Image
+            src={ownerRegistrationImage}
+            alt="Business owner registration"
+            className="mt-8 rounded-xl shadow-lg"
+          />
         </motion.div>
 
         <motion.div

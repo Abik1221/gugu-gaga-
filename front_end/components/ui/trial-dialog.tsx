@@ -19,8 +19,8 @@ export function TrialDialog({ children }: TrialDialogProps) {
   const userTypes = [
     {
       id: "owner",
-      title: "Pharmacy Owner",
-      description: "Manage your pharmacy operations",
+      title: "Bussiness Owner",
+      description: "Manage your bussiness operations",
       icon: Store,
       route: "/register/owner"
     },
