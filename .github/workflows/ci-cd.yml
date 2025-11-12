@@ -146,52 +146,105 @@ jobs:
               --restart unless-stopped \
               ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             
-            # Setup nginx config
-            sudo mkdir -p /etc/nginx/conf.d
-            sudo tee /etc/nginx/conf.d/app.conf > /dev/null << 'EOF'
-            server {
-                listen 80;
-                server_name mymesob.com www.mymesob.com;
-                return 301 https://$server_name$request_uri;
-            }
-            server {
-                listen 443 ssl http2;
-                server_name mymesob.com www.mymesob.com;
+            # Setup SSL certificates
+            if [ ! -f /etc/letsencrypt/live/mymesob.com/fullchain.pem ]; then
+              echo "Setting up SSL certificates..."
+              sudo apt update -qq
+              sudo apt install -y certbot
+              sudo certbot certonly --standalone --non-interactive --agree-tos \
+                --email admin@mymesob.com \
+                -d mymesob.com -d www.mymesob.com || echo "SSL setup failed, using HTTP"
+            fi
+            
+            # Create nginx config with SSL if available
+            if [ -f /etc/letsencrypt/live/mymesob.com/fullchain.pem ]; then
+              echo "Using HTTPS configuration"
+              cat > /tmp/nginx.conf << 'EOF'
+            events { worker_connections 1024; }
+            http {
+                upstream backend { server zemen-backend:8000; }
+                upstream frontend { server zemen-frontend:3000; }
                 
-                ssl_certificate /etc/letsencrypt/live/mymesob.com/fullchain.pem;
-                ssl_certificate_key /etc/letsencrypt/live/mymesob.com/privkey.pem;
-                
-                client_max_body_size 50M;
-                
-                location /api/ {
-                    proxy_pass http://zemen-backend:8000;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto $scheme;
+                server {
+                    listen 80;
+                    server_name mymesob.com www.mymesob.com;
+                    return 301 https://$server_name$request_uri;
                 }
                 
-                location /health {
-                    proxy_pass http://zemen-backend:8000;
-                    proxy_set_header Host $host;
-                }
-                
-                location / {
-                    proxy_pass http://zemen-frontend:3000;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto $scheme;
+                server {
+                    listen 443 ssl http2;
+                    server_name mymesob.com www.mymesob.com;
+                    
+                    ssl_certificate /etc/letsencrypt/live/mymesob.com/fullchain.pem;
+                    ssl_certificate_key /etc/letsencrypt/live/mymesob.com/privkey.pem;
+                    
+                    location /api/ {
+                        proxy_pass http://backend;
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+                    }
+                    
+                    location /health {
+                        proxy_pass http://backend;
+                        proxy_set_header Host $host;
+                    }
+                    
+                    location / {
+                        proxy_pass http://frontend;
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+                    }
                 }
             }
             EOF
+              NGINX_PORTS="-p 80:80 -p 443:443"
+              NGINX_VOLUMES="-v /tmp/nginx.conf:/etc/nginx/nginx.conf:ro -v /etc/letsencrypt:/etc/letsencrypt:ro"
+            else
+              echo "Using HTTP configuration"
+              cat > /tmp/nginx.conf << 'EOF'
+            events { worker_connections 1024; }
+            http {
+                upstream backend { server zemen-backend:8000; }
+                upstream frontend { server zemen-frontend:3000; }
+                
+                server {
+                    listen 80;
+                    server_name mymesob.com www.mymesob.com;
+                    
+                    location /api/ {
+                        proxy_pass http://backend;
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    }
+                    
+                    location /health {
+                        proxy_pass http://backend;
+                        proxy_set_header Host $host;
+                    }
+                    
+                    location / {
+                        proxy_pass http://frontend;
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    }
+                }
+            }
+            EOF
+              NGINX_PORTS="-p 80:80"
+              NGINX_VOLUMES="-v /tmp/nginx.conf:/etc/nginx/nginx.conf:ro"
+            fi
             
             # Start nginx
             docker run -d --name zemen-nginx \
               --network zemen-net \
-              -p 80:80 -p 443:443 \
-              -v /etc/nginx/conf.d:/etc/nginx/conf.d:ro \
-              -v /etc/letsencrypt:/etc/letsencrypt:ro \
+              $NGINX_PORTS \
+              $NGINX_VOLUMES \
               --restart unless-stopped \
               nginx:alpine
             
