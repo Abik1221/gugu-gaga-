@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { AuthAPI } from "@/utils/api";
 
 type FieldKey =
   | "supplierName"
@@ -110,27 +111,16 @@ export default function SupplierRegisterPage() {
         });
       }
 
-      const response = await fetch("http://localhost:8000/api/v1/auth/register/supplier", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: trimmedEmail,
-          password: password,
-          supplier_name: trimmedSupplierName,
-          national_id: trimmedNationalId,
-          tin_number: trimmedTinNumber,
-          business_license_image: licenseBase64,
-          phone: phone.trim() || null,
-          address: address.trim() || null,
-        }),
+      const data = await AuthAPI.registerSupplier({
+        email: trimmedEmail,
+        password: password,
+        supplier_name: trimmedSupplierName,
+        national_id: trimmedNationalId,
+        tin_number: trimmedTinNumber,
+        business_license_image: licenseBase64,
+        phone: phone.trim() || null,
+        address: address.trim() || null,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Registration failed");
-      }
-      
-      const data = await response.json();
       
       // Store tokens immediately after registration
       if (data.access_token) {
@@ -170,18 +160,7 @@ export default function SupplierRegisterPage() {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/auth/register/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: registeredEmail, code: otp }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Invalid verification code");
-      }
-
-      const verifyData = await response.json();
+      const verifyData = await AuthAPI.registerVerify(registeredEmail, otp);
       
       // Store tokens from verification response
       if (verifyData.access_token) {

@@ -380,6 +380,7 @@ export type TenantActivityRecord = {
 export const AuthAPI = {
   registerAffiliate: (body: any) => postJSON("/api/v1/auth/register/affiliate", body),
   registerPharmacy: (body: any) => postJSON("/api/v1/auth/register/pharmacy", body),
+  registerSupplier: (body: any) => postJSON("/api/v1/auth/register/supplier", body),
 
   registerVerify: async (email: string, code: string) => {
     try {

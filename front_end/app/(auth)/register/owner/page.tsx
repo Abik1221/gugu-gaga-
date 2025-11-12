@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { AuthAPI } from "@/utils/api";
 import Image from "next/image";
 import ownerRegistrationImage from "@/public/owner_registration.jpeg";
 
@@ -107,29 +108,20 @@ export default function OwnerRegisterPage() {
         licenseName = licenseFile.name;
       }
 
-      const response = await fetch("http://localhost:8000/api/v1/auth/register/owner", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pharmacy_name: trimmedBusinessName,
-          owner_email: trimmedEmail,
-          owner_password: password,
-          pharmacy_license_number: trimmedTinNumber,
-          owner_phone: phone || undefined,
-          address: address || undefined,
-          id_number: trimmedTinNumber,
-          license_document_base64: licenseBase64,
-          license_document_mime: licenseMime,
-          license_document_name: licenseName,
-        }),
+      const data = await AuthAPI.registerPharmacy({
+        pharmacy_name: trimmedBusinessName,
+        owner_email: trimmedEmail,
+        owner_password: password,
+        pharmacy_license_number: trimmedTinNumber,
+        owner_phone: phone || undefined,
+        address: address || undefined,
+        id_number: trimmedTinNumber,
+        license_document_base64: licenseBase64,
+        license_document_mime: licenseMime,
+        license_document_name: licenseName,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Registration failed");
-      }
 
-      const data = await response.json();
       
       // Store tokens immediately after registration
       if (data.access_token) {
@@ -172,18 +164,7 @@ export default function OwnerRegisterPage() {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/auth/register/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: registeredEmail, code: otp }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Invalid verification code");
-      }
-
-      const verifyData = await response.json();
+      const verifyData = await AuthAPI.registerVerify(registeredEmail, otp);
       
       // Store tokens from verification response
       if (verifyData.access_token) {
