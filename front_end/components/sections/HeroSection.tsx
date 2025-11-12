@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-16 sm:pt-20 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+    <section className="pt-20 sm:pt-20 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
       <div className="w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <motion.div
@@ -26,7 +26,7 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex flex-wrap gap-3"
+              className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3"
             >
               <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">
                 <Sparkles className="w-3 h-3 mr-1" />
