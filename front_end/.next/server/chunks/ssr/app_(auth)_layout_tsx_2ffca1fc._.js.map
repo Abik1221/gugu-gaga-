@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/habtamusemagn/Music/gugu-gaga-/front_end/app/%28auth%29/layout.tsx"],"sourcesContent":["// Auth layout (no header maybe)\nexport default function AuthLayout({\n  children,\n}: {\n  children: React.ReactNode;\n}) {\n  return (\n    <div>\n      <div>{children}</div>\n    </div>\n  );\n}\n"],"names":[],"mappings":"AAAA,gCAAgC;;;;;;;AACjB,SAAS,WAAW,EACjC,QAAQ,EAGT;IACC,qBACE,6WAAC;kBACC,cAAA,6WAAC;sBAAK;;;;;;;;;;;AAGZ","debugId":null}}]
-}

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 3, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 23, "column": 0}, "map": {"version":3,"sources":["file:///home/habtamusemagn/Desktop/last/gugu-gaga-/front_end/app/%28dashboard%29/dashboard/affiliate/generate-link/page.tsx"],"sourcesContent":["export default function generatelink() {\n    return <div>generate link</div>\n}"],"names":[],"mappings":";;;;;;AAAe,SAAS;IACpB,qBAAO,oZAAC;kBAAI;;;;;;AAChB","debugId":null}}]
-}

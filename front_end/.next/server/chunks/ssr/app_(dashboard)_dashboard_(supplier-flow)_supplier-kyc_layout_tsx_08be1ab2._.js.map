@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/mesob/gugu-gaga-/front_end/app/%28dashboard%29/dashboard/%28supplier-flow%29/supplier-kyc/layout.tsx"],"sourcesContent":["export default function SupplierKYCLayout({\r\n  children,\r\n}: {\r\n  children: React.ReactNode;\r\n}) {\r\n  return (\r\n    <div>\r\n        {children}\r\n    </div>\r\n  );\r\n}"],"names":[],"mappings":";;;;;;AAAe,SAAS,kBAAkB,EACxC,QAAQ,EAGT;IACC,qBACE,8OAAC;kBACI;;;;;;AAGT","debugId":null}}]
-}
