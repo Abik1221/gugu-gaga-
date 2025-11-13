@@ -39,7 +39,7 @@ app.add_middleware(TenantContextMiddleware)
 # Request/response logging middleware
 app.add_middleware(LoggingMiddleware)
 
-# CORS configuration
+# CORS configuration with large request support
 origins = [o.strip() for o in (settings.cors_origins or "").split(",") if o.strip()] or (["*"] if settings.environment != "production" else [])
 app.add_middleware(
     CORSMiddleware,
@@ -47,23 +47,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    max_age=3600,
 )
-
-# Increase request size limit for file uploads
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import Response
-
-class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app, max_size: int = 50 * 1024 * 1024):  # 50MB
-        super().__init__(app)
-        self.max_size = max_size
-
-    async def dispatch(self, request: Request, call_next):
-        # Allow large requests by not checking size
-        return await call_next(request)
-
-app.add_middleware(RequestSizeLimitMiddleware)
 
 # Handle request size errors
 @app.exception_handler(413)

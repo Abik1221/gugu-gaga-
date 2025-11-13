@@ -32,7 +32,11 @@ alembic upgrade head
 ```
 4) Run API
 ```powershell
-uvicorn app.main:app --reload
+# Option 1: Use the configured startup script (recommended)
+python start_server.py
+
+# Option 2: Direct uvicorn with large request support
+uvicorn app.main:app --reload --limit-max-requests 52428800
 ```
 
 ## Quickstart (Docker)
