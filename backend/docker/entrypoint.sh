@@ -17,5 +17,5 @@ print("Created tables via metadata.create_all fallback.")
 PY
 fi
 
-# Start the API server with increased limits
-exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2 --limit-max-requests 0 --limit-concurrency 1000
+# Start the API server
+exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1
