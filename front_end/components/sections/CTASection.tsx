@@ -9,7 +9,7 @@ export default function CTASection() {
   const router = useRouter();
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-emerald-900 to-gray-900 text-white">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white text-gray-900">
       <div className="max-w-5xl mx-auto text-center">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -19,14 +19,14 @@ export default function CTASection() {
           className="text-4xl lg:text-5xl mb-6"
         >
           Ready to Transform Your{" "}
-          <span className="text-emerald-400">Bussiness Management?</span>
+          <span className="text-emerald-700">Bussiness Management?</span>
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto"
+          className="text-xl text-gray-800 mb-8 max-w-3xl mx-auto"
         >
           Join the business management revolution. Start your 30-day free trial
           today— no credit card required, no commitment, just results.
@@ -68,21 +68,21 @@ export default function CTASection() {
           <div className="flex flex-col items-center gap-3">
             <Shield className="w-10 h-10 text-emerald-400" />
             <div className="text-lg">GDPR Compliant</div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-900">
               Enterprise-grade security with complete tenant isolation
             </p>
           </div>
           <div className="flex flex-col items-center gap-3">
             <Zap className="w-10 h-10 text-emerald-400" />
             <div className="text-lg">Quick Setup</div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-900">
               Get started in under an hour with guided onboarding
             </p>
           </div>
           <div className="flex flex-col items-center gap-3">
             <HeadphonesIcon className="w-10 h-10 text-emerald-400" />
             <div className="text-lg">24/7 Support</div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-900">
               AI and human support always available to help
             </p>
           </div>

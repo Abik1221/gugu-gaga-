@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-20 sm:pt-20 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+    <section className="pt-20 sm:pt-20 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white">
       <div className="w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <motion.div
@@ -110,7 +110,7 @@ export default function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-blue-500 rounded-2xl blur-3xl opacity-20" />
+            <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-3xl opacity-20" />
             <Image
               src={branch4}
               alt="AI Dashboard"

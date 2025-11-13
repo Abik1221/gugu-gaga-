@@ -40,7 +40,7 @@ export default function AISection() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-emerald-900 to-gray-900 text-white">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white text-gray-900">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -49,13 +49,13 @@ export default function AISection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-400 mb-4">
+          <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 mb-4">
             Powered by Advanced AI
           </Badge>
           <h2 className="text-4xl mb-4">
-            Meet <span className="text-emerald-400">Mesob AI Assistant</span>
+            Meet <span className="text-emerald-600">Mesob AI Assistant</span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Your 24/7 AI inventory assistant that learns from your business,
             predicts trends, and provides professional insights to help you stay ahead.
           </p>
@@ -81,15 +81,15 @@ export default function AISection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-6"
           >
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
               <div className="flex items-start gap-4 mb-4">
                 <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-gray-300 italic mb-2">"How is my pharmacy inventory performing this month?"</p>
-                  <div className="bg-emerald-500/20 rounded-lg p-4 border border-emerald-400/30">
-                    <p className="text-sm text-emerald-100">
+                  <p className="text-gray-800 italic mb-2">"How is my pharmacy inventory performing this month?"</p>
+                  <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
+                    <p className="text-sm text-emerald-800">
                       Your pharmacy has seen a 23% increase in sales compared to last month.
                       However, I notice you're running low on antibiotics. Based on current trends,
                       I recommend ordering 150 units of Amoxicillin within the next 3 days to avoid stockouts.
@@ -98,15 +98,15 @@ export default function AISection() {
                 </div>
               </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-gray-300 italic mb-2">"Which products are underperforming?"</p>
-                  <div className="bg-emerald-500/20 rounded-lg p-4 border border-emerald-400/30">
-                    <p className="text-sm text-emerald-100">
+                  <p className="text-gray-800 italic mb-2">"Which products are underperforming?"</p>
+                  <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
+                    <p className="text-sm text-emerald-800">
                       I've identified 12 slow-moving items worth 45,000 Birr that haven't sold in 60 days.
                       I suggest running a promotion or adjusting your ordering strategy for these items.
                     </p>
@@ -134,10 +134,10 @@ export default function AISection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
-                <Card className="bg-white/5 backdrop-blur-sm border-white/10 p-6 hover:bg-white/10 transition-colors h-full">
-                  <Icon className="w-10 h-10 text-emerald-400 mb-4" />
-                  <h3 className="text-xl text-white mb-2">{capability.title}</h3>
-                  <p className="text-gray-300">{capability.description}</p>
+                <Card className="bg-white border-gray-200 p-6 hover:bg-gray-50 transition-colors h-full shadow-sm">
+                  <Icon className="w-10 h-10 text-emerald-600 mb-4" />
+                  <h3 className="text-xl text-gray-900 mb-2">{capability.title}</h3>
+                  <p className="text-gray-700">{capability.description}</p>
                 </Card>
               </motion.div>
             );

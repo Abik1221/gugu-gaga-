@@ -111,9 +111,14 @@ jobs:
             set -e
             echo "Starting deployment..."
             
-            # Cleanup existing containers
+            # Cleanup existing containers and images
             docker stop zemen-backend zemen-frontend zemen-nginx 2>/dev/null || true
             docker rm zemen-backend zemen-frontend zemen-nginx 2>/dev/null || true
+            
+            # Remove old images to save space
+            echo "Cleaning up old Docker images..."
+            docker image prune -af --filter="until=24h" 2>/dev/null || true
+            docker system prune -f 2>/dev/null || true
             
             # Setup network
             docker network create zemen-net 2>/dev/null || true

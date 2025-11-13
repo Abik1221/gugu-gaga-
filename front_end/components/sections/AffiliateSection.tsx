@@ -38,7 +38,7 @@ export default function AffiliateSection() {
   return (
     <section
       id="affiliate"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-600 to-emerald-800 text-white"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-white text-gray-900"
     >
       <div className="max-w-7xl mx-auto">
         <motion.div
@@ -50,9 +50,9 @@ export default function AffiliateSection() {
         >
           <h2 className="text-4xl mb-4">
             Turn Your Network into{" "}
-            <span className="text-emerald-200">Revenue</span>
+            <span className="text-emerald-700">Revenue</span>
           </h2>
-          <p className="text-xl text-emerald-100 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-800 max-w-3xl mx-auto">
             Join our affiliate program and earn money by connecting suppliers
             with inventory owners. No inventory, no upfront costs—just share and
             earn.
@@ -76,7 +76,7 @@ export default function AffiliateSection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Sign Up for Free</h4>
-                    <p className="text-emerald-100">
+                    <p className="text-emerald-800">
                       Create your affiliate account in minutes. No application
                       process.
                     </p>
@@ -88,7 +88,7 @@ export default function AffiliateSection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Generate Your Link</h4>
-                    <p className="text-emerald-100">
+                    <p className="text-emerald-800">
                       Get your unique referral link with one click from your
                       dashboard.
                     </p>
@@ -100,7 +100,7 @@ export default function AffiliateSection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Share & Promote</h4>
-                    <p className="text-emerald-100">
+                    <p className="text-emerald-800">
                       Share your link with suppliers and business owners in your
                       network.
                     </p>
@@ -112,7 +112,7 @@ export default function AffiliateSection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Earn Commissions</h4>
-                    <p className="text-emerald-100">
+                    <p className="text-emerald-800">
                       Get paid for every successful subscription through your
                       referral link.
                     </p>
@@ -163,7 +163,7 @@ export default function AffiliateSection() {
                 <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 h-full">
                   <Icon className="w-10 h-10 text-emerald-300 mb-4" />
                   <h3 className="text-xl mb-2">{benefit.title}</h3>
-                  <p className="text-emerald-100">{benefit.description}</p>
+                  <p className="text-emerald-800">{benefit.description}</p>
                 </Card>
               </motion.div>
             );

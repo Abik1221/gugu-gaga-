@@ -168,7 +168,7 @@ export default function PricingSection() {
   return (
     <section
       id="pricing"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-emerald-50"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50"
     >
       <div className="max-w-7xl mx-auto">
         <motion.div

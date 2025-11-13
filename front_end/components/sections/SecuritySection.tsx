@@ -50,7 +50,7 @@ export default function SecuritySection() {
   return (
     <section
       id="security"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-blue-50 to-emerald-50"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50"
     >
       <div className="max-w-7xl mx-auto">
         <motion.div
@@ -144,12 +144,12 @@ export default function SecuritySection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="bg-gradient-to-r from-emerald-600 to-blue-600 rounded-2xl p-8 md:p-12 text-white"
+          className="bg-white rounded-2xl p-8 md:p-12 text-gray-900 border border-gray-200"
         >
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-3xl mb-4">Your Data, Your Control</h3>
-              <p className="text-emerald-100 mb-6">
+              <p className="text-emerald-800 mb-6">
                 We believe in complete transparency and data ownership. Your business data belongs to you, and you have full control over how it's stored, accessed, and managed. We never share or sell your information.
               </p>
               <div className="space-y-3">
@@ -179,7 +179,7 @@ export default function SecuritySection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Built by Ethiopians</h4>
-                    <p className="text-emerald-100 text-sm">
+                    <p className="text-emerald-800 text-sm">
                       Developed by Ethiopian engineers who understand the unique
                       challenges of African businesses.
                     </p>
@@ -193,7 +193,7 @@ export default function SecuritySection() {
                   </div>
                   <div>
                     <h4 className="text-lg mb-1">Made for Africa</h4>
-                    <p className="text-blue-100 text-sm">
+                    <p className="text-blue-800 text-sm">
                       Tailored to meet the specific needs of African markets
                       with local support and infrastructure.
                     </p>

@@ -1,0 +1,8 @@
+{
+  "/(auth)/register/affiliate/page": "app/(auth)/register/affiliate/page.js",
+  "/(auth)/register/page": "app/(auth)/register/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
+  "/page": "app/page.js"
+}

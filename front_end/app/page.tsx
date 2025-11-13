@@ -34,13 +34,15 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50/30 to-white overflow-x-hidden will-change-auto">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <Navbar />
-      <HeroSection />
+      <div className="pt-16">
+        <HeroSection />
+      </div>
       <ProblemSolution />
       <FeaturesSection />
       <AISection />
@@ -50,7 +52,7 @@ export default function App() {
       {/* <GoogleAds adSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT || "1234567890"} className="my-8" /> */}
       <IntegrationsSection />
       <AffiliateSection />
-      <TestimonialsSection />
+
       <CTASection />
       <Footer />
       <CookieConsent />

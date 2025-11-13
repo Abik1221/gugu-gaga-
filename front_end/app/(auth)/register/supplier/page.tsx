@@ -318,7 +318,7 @@ export default function SupplierRegisterPage() {
                     clearFieldError("supplierName");
                     setSupplierName(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.supplierName
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.supplierName
                     ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                     : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                     }`}
@@ -340,7 +340,7 @@ export default function SupplierRegisterPage() {
                     clearFieldError("email");
                     setEmail(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.email
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.email
                     ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                     : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                     }`}
@@ -362,7 +362,7 @@ export default function SupplierRegisterPage() {
                     clearFieldError("password");
                     setPassword(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.password
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.password
                     ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                     : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                     }`}
@@ -383,7 +383,7 @@ export default function SupplierRegisterPage() {
                     clearFieldError("nationalId");
                     setNationalId(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.nationalId
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.nationalId
                     ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                     : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                     }`}
@@ -404,7 +404,7 @@ export default function SupplierRegisterPage() {
                     clearFieldError("tinNumber");
                     setTinNumber(e.target.value);
                   }}
-                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:ring-2 ${fieldErrors.tinNumber
+                  className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.tinNumber
                     ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                     : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                     }`}
@@ -468,7 +468,7 @@ export default function SupplierRegisterPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+251..."
-                  className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/40"
+                  className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:border-green-400 focus-visible:ring-green-400/40"
                 />
                 <p className="mt-1 text-xs text-slate-500">Optional contact number.</p>
               </div>
@@ -480,7 +480,7 @@ export default function SupplierRegisterPage() {
                 <Input
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-green-100/40 transition focus-visible:border-green-400 focus-visible:ring-green-400/40"
+                  className="mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:border-green-400 focus-visible:ring-green-400/40"
                 />
                 <p className="mt-1 text-xs text-slate-500">Optional business location.</p>
               </div>

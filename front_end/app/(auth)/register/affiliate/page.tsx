@@ -150,7 +150,7 @@ export default function AffiliateRegisterPage() {
                   value={affEmail}
                   onChange={(e) => setAffEmail(e.target.value)}
                   required
-                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
@@ -162,7 +162,7 @@ export default function AffiliateRegisterPage() {
                   value={affPassword}
                   onChange={(e) => setAffPassword(e.target.value)}
                   required
-                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
@@ -172,7 +172,7 @@ export default function AffiliateRegisterPage() {
                 <Input
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
@@ -182,7 +182,7 @@ export default function AffiliateRegisterPage() {
                 <Input
                   value={bankName}
                   onChange={(e) => setBankName(e.target.value)}
-                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
@@ -192,7 +192,7 @@ export default function AffiliateRegisterPage() {
                 <Input
                   value={bankAccountName}
                   onChange={(e) => setBankAccountName(e.target.value)}
-                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
@@ -202,7 +202,7 @@ export default function AffiliateRegisterPage() {
                 <Input
                   value={bankAccountNumber}
                   onChange={(e) => setBankAccountNumber(e.target.value)}
-                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500"
+                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
             </div>
