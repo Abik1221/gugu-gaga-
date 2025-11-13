@@ -125,20 +125,11 @@ jobs:
             docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest &
             wait
             
-            # Run migration with timeout
-            echo "Running migrations..."
-            timeout 60 docker run --rm --network zemen-net \
-              -v zemen-db-data:/app/data \
-              -e DATABASE_URL=sqlite:///./data/app.db \
-              ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
-              sh -c "alembic upgrade head && echo 'Migration completed'" || echo "Migration timeout or completed"
-            
-            # Start backend with single worker
+            # Start backend (migrations run automatically on startup)
             echo "Starting backend..."
             docker run -d --name zemen-backend \
               --network zemen-net \
-              --memory=512m \
-              --cpus=0.5 \
+              --memory=1g \
               -v zemen-db-data:/app/data \
               -e DATABASE_URL=sqlite:///./data/app.db \
               -e DEBUG=false \
@@ -151,8 +142,7 @@ jobs:
               -e EMAIL_FROM=nahomkeneni4@gmail.com \
               -e CORS_ORIGINS=http://localhost:3000,http://13.61.24.25:8000,http://mymesob.com,https://mymesob.com,http://www.mymesob.com,https://www.mymesob.com \
               --restart unless-stopped \
-              ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest \
-              uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1
+              ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
             
             # Start frontend
             echo "Starting frontend..."
@@ -193,10 +183,9 @@ jobs:
               --restart unless-stopped \
               nginx:alpine
             
-            # Show final status
-            echo "Checking container status..."
-            docker ps --format "table {{.Names}}\t{{.Status}}" || true
-            echo "Deployment completed successfully!"
+            # Quick status check
+            docker ps --format "table {{.Names}}\t{{.Status}}"
+            echo "Deployment completed!"
 
   setup-ssl:
     needs: deploy
