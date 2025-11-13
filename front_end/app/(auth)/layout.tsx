@@ -46,7 +46,7 @@ export default function AuthLayout({
       {isOpen ? <Dialog>
         <DialogContent>hello dialog</DialogContent>
       </Dialog> : null}
-      <Navbar onOpenDialog={() => setIsOpen(true)} />
+      <Navbar />
       <div className="mt-10">{children}</div>
       <Footer />
     </div>

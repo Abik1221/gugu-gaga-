@@ -58,11 +58,13 @@ function LayoutContent({
         <Sidebar className="border-r fixed !bg-white border-neutral-200">
           <SidebarHeader className="flex h-16 items-center justify-center border-b px-6 border-neutral-200">
             {isAffiliate ? (
-              <img src="/mesoblogo.jpeg" alt="Mesob Logo" width={80} height={80} className="rounded" />
+              <Link href="/">
+                <img src="/mesoblogo.jpeg" alt="Mesob Logo" width={80} height={80} className="rounded cursor-pointer hover:opacity-80 transition-opacity" />
+              </Link>
             ) : (
-              <div className="flex items-center gap-2 py-3 font-semibold text-black">
+              <Link href="/" className="flex items-center gap-2 py-3 font-semibold text-black cursor-pointer hover:opacity-80 transition-opacity">
                 Mesob
-              </div>
+              </Link>
             )}
           </SidebarHeader>
 
