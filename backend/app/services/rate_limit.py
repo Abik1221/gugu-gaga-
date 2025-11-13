@@ -15,24 +15,8 @@ def _make_key(scope: str, identifier: Optional[str]) -> str:
 
 
 def allow(scope: str, identifier: Optional[str], per_minute: Optional[int] = None) -> bool:
-    limit = per_minute or settings.rate_limit_general_per_minute
-    now = time.time()
-
-    r = get_redis()
-    key = _make_key(scope, identifier)
-    if r:
-        # Use Redis INCR with TTL to count within a rolling minute window
-        with r.pipeline() as pipe:
-            try:
-                pipe.incr(key, 1)
-                pipe.expire(key, 60)
-                count, _ = pipe.execute()
-            except Exception:
-                # Fallback to memory on error
-                return _allow_memory(key, limit, now)
-        return int(count) <= int(limit)
-
-    return _allow_memory(key, limit, now)
+    # Disable rate limiting entirely for performance
+    return True
 
 
 def _allow_memory(key: str, limit: int, now: float) -> bool:
