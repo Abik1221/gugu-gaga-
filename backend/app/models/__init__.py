@@ -24,3 +24,6 @@ from app.models.integration import (  # noqa: F401
 from app.models.supplier import Supplier, SupplierProduct, Order, OrderItem, OrderReview  # noqa: F401
 from app.models.supplier_kyc import SupplierKYC, SupplierPaymentSubmission  # noqa: F401
 from app.models.verification import VerificationCode  # noqa: F401
+from app.models.user_tenant import UserTenant  # noqa: F401
+from app.models.subscription import Subscription, PaymentSubmission  # noqa: F401
+from app.models.tenant_activity import TenantActivityLog  # noqa: F401
