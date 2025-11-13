@@ -50,14 +50,14 @@ export default function SecuritySection() {
   return (
     <section
       id="security"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50"
+      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.4 }}
           className="text-center mb-16"
         >
           <Badge className="bg-blue-100 text-blue-700 border-blue-200 mb-4">
@@ -77,10 +77,10 @@ export default function SecuritySection() {
 
         <div className="space-y-6 mb-16">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.3 }}
             className="grid md:grid-cols-2 gap-6"
           >
             {securityFeatures.slice(0, 2).map((feature, index) => {
@@ -88,10 +88,10 @@ export default function SecuritySection() {
               return (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.2 }}
                 >
                   <Card className="p-6 hover:shadow-xl transition-shadow h-full border-2 border-gray-200 hover:border-emerald-300">
                     <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center mb-4">
@@ -154,20 +154,20 @@ export default function SecuritySection() {
               </p>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-300" />
-                  <span className="text-white">End-to-end encryption for all data</span>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <span className="text-gray-700">End-to-end encryption for all data</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-300" />
-                  <span className="text-white">Automatic daily backups</span>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <span className="text-gray-700">Automatic daily backups</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-300" />
-                  <span className="text-white">24/7 security monitoring</span>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <span className="text-gray-700">24/7 security monitoring</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-300" />
-                  <span className="text-white">Secure cloud infrastructure</span>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <span className="text-gray-700">Secure cloud infrastructure</span>
                 </div>
               </div>
             </div>
