@@ -86,7 +86,8 @@ export default function NavBar({
                       return;
                     }
                     if (pathname !== "/") {
-                      router.push(`/#${item.id}`);
+                      router.push("/");
+                      setTimeout(() => handleScrollToSection(item.id), 100);
                     } else {
                       handleScrollToSection(item.id);
                     }
@@ -114,35 +115,7 @@ export default function NavBar({
               </NavigationMenuLink>
             </NavigationMenuItem>
           ))}
-          <NavigationMenuItem className="list-none">
-            <NavigationMenuLink asChild>
-              <motion.button
-                className={[
-                  "group relative rounded-lg px-6 py-3 font-medium text-sm uppercase tracking-wide transition-all duration-300",
-                  "text-emerald-100 ",
-                ].join(" ")}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 5 * 0.1 + 0.3 }}
-              >
-                <span className="relative z-10">
-                  <Link href="/register/affiliate" className="text-white">
-                    Affiliate
-                  </Link>
-                </span>
-                {/* <motion.div
-                  className="absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(16,185,129,0.55), rgba(59,130,246,0.45))",
-                  }}
-                  transition={{ duration: 0.3 }}
-                /> */}
-              </motion.button>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
+
         </NavigationMenu>
       </motion.div>
 
@@ -192,7 +165,8 @@ export default function NavBar({
                       return;
                     }
                     if (pathname !== "/") {
-                      router.push(`/#${item.id}`);
+                      router.push("/");
+                      setTimeout(() => handleScrollToSection(item.id), 100);
                       setIsOpen(false);
                     } else {
                       handleScrollToSection(item.id);

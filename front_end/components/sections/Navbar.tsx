@@ -54,42 +54,37 @@ export default function Navbar() {
             </motion.div>
             <div className="hidden lg:block ml-10">
               <div className="flex items-baseline space-x-1 xl:space-x-3">
-                <a
-                  href="#features"
+                <Link
+                  href="/#features"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
                   Features
-                </a>
-                <a
-                  href="#how-it-works"
+                </Link>
+                <Link
+                  href="/#how-it-works"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
                   How It Works
-                </a>
-                <a
-                  href="#security"
+                </Link>
+                <Link
+                  href="/#security"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
                   Security
-                </a>
-                <a
-                  href="#pricing"
+                </Link>
+                <Link
+                  href="/#pricing"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
                   Pricing
-                </a>
-                <a
-                  href="#integrations"
+                </Link>
+                <Link
+                  href="/#integrations"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
                   Integrations
-                </a>
-                <Link
-                  href="/register?tab=affiliate"
-                  className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
-                >
-                  Affiliate
                 </Link>
+
               </div>
             </div>
           </div>
@@ -128,48 +123,42 @@ export default function Navbar() {
             className="lg:hidden border-t border-gray-200 overflow-hidden"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 bg-white">
-              <a
-                href="#features"
+              <Link
+                href="/#features"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
                 Features
-              </a>
-              <a
-                href="#how-it-works"
+              </Link>
+              <Link
+                href="/#how-it-works"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
                 How It Works
-              </a>
-              <a
-                href="#security"
+              </Link>
+              <Link
+                href="/#security"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
                 Security
-              </a>
-              <a
-                href="#pricing"
+              </Link>
+              <Link
+                href="/#pricing"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
                 Pricing
-              </a>
-              <a
-                href="#integrations"
+              </Link>
+              <Link
+                href="/#integrations"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
                 Integrations
-              </a>
-              <a
-                href="#affiliate"
-                onClick={handleLinkClick}
-                className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
-              >
-                Affiliate Program
-              </a>
+              </Link>
+
               <div className="px-3 py-2 space-y-2 pt-4 border-t border-gray-200">
                 <RoleSelectionDialog>
                   <Button variant="outline" className="w-full">
