@@ -40,18 +40,20 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex itshadowems-center">
-            <motion.div
-              className="flex-shrink-0"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <Image
-                height={60}
-                width={60}
-                src={logoImage}
-                alt="affiliate registration image"
-              />
-            </motion.div>
+            <Link href="/">
+              <motion.div
+                className="flex-shrink-0 cursor-pointer"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Image
+                  height={60}
+                  width={60}
+                  src={logoImage}
+                  alt="Mesob Logo"
+                />
+              </motion.div>
+            </Link>
             <div className="hidden lg:block ml-10">
               <div className="flex items-baseline space-x-1 xl:space-x-3">
                 <Link
