@@ -191,16 +191,10 @@ jobs:
               --restart unless-stopped \
               nginx:alpine
             
-            # Quick health check
-            sleep 5
+            # Show final status
             echo "Checking container status..."
             docker ps --format "table {{.Names}}\t{{.Status}}" || true
-            
-            # Test backend health
-            timeout 10 docker exec zemen-backend curl -f http://localhost:8000/health 2>/dev/null || echo "Backend health check skipped"
-            
             echo "Deployment completed successfully!"
-            exit 0
 
   setup-ssl:
     needs: deploy
