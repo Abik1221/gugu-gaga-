@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-20 sm:pt-20 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white">
+    <section className="pt-2 sm:pt-3 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white">
       <div className="w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <motion.div
