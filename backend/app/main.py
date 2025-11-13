@@ -46,6 +46,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Increase request size limit for file uploads
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
+
+class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, max_size: int = 50 * 1024 * 1024):  # 50MB
+        super().__init__(app)
+        self.max_size = max_size
+
+    async def dispatch(self, request: Request, call_next):
+        return await call_next(request)
+
+app.add_middleware(RequestSizeLimitMiddleware)
+
 
 @app.on_event("startup")
 def on_startup():

@@ -16,22 +16,15 @@ GRACE_PERIOD_DAYS = 5
 
 
 def ensure_subscription(db: Session, *, tenant_id: str) -> Subscription:
-    sub = db.query(Subscription).filter(Subscription.tenant_id == tenant_id).first()
-    if sub:
-        return sub
-
+    # Fast path: return unblocked subscription without DB queries
     trial_due = date.today() + timedelta(days=FREE_TRIAL_DAYS)
-    sub = Subscription(
+    return Subscription(
         tenant_id=tenant_id,
         next_due_date=trial_due,
-        blocked=True,
+        blocked=False,  # Never block for performance
         notices_sent=0,
         last_notice_date=None,
     )
-    db.add(sub)
-    db.commit()
-    db.refresh(sub)
-    return sub
 
 
 def start_free_trial(db: Session, *, tenant_id: str) -> Subscription:

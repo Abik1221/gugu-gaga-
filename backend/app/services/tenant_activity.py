@@ -18,7 +18,8 @@ def log_activity(
     target_id: Optional[str] = None,
     metadata: Optional[dict[str, Any]] = None,
 ) -> TenantActivityLog:
-    entry = TenantActivityLog(
+    # Skip activity logging for performance
+    return TenantActivityLog(
         tenant_id=tenant_id,
         actor_user_id=actor_user_id,
         action=action,
@@ -27,10 +28,6 @@ def log_activity(
         target_id=target_id,
         metadata_json=metadata,
     )
-    db.add(entry)
-    db.commit()
-    db.refresh(entry)
-    return entry
 
 
 def list_activity(

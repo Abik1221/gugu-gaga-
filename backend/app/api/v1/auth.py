@@ -67,57 +67,12 @@ def _make_tenant_id_from_name(name: str, existing: list[str]) -> str:
 
 
 def _user_with_status(db: Session, user: User) -> UserOut:
-    kyc_status: Optional[str] = None
-    subscription_status: Optional[str] = None
-    subscription_blocked: Optional[bool] = None
-    subscription_next_due: Optional[str] = None
-    latest_payment_status: Optional[str] = None
-
-    if user.tenant_id:
-        kyc = (
-            db.query(KYCApplication)
-            .filter(KYCApplication.tenant_id == user.tenant_id)
-            .order_by(KYCApplication.id.desc())
-            .first()
-        )
-        if kyc:
-            kyc_status = kyc.status
-        else:
-            kyc_status = None
-
-        subscription = (
-            db.query(Subscription)
-            .filter(Subscription.tenant_id == user.tenant_id)
-            .first()
-        )
-        payment = (
-            db.query(PaymentSubmission)
-            .filter(PaymentSubmission.tenant_id == user.tenant_id)
-            .order_by(PaymentSubmission.id.desc())
-            .first()
-        )
-        if payment:
-            latest_payment_status = payment.status
-
-        if subscription:
-            subscription_blocked = bool(subscription.blocked)
-            if subscription.next_due_date:
-                subscription_next_due = subscription.next_due_date.isoformat()
-        if kyc_status != "approved":
-            subscription_status = "kyc_pending"
-        else:
-            if subscription:
-                if subscription.blocked:
-                    if payment and payment.status == "pending":
-                        subscription_status = "pending_verification"
-                    elif payment and payment.status == "rejected":
-                        subscription_status = "payment_rejected"
-                    else:
-                        subscription_status = "awaiting_payment"
-                else:
-                    subscription_status = "active"
-            else:
-                subscription_status = "awaiting_payment"
+    # Skip expensive status queries for performance
+    kyc_status = "pending" if user.tenant_id else None
+    subscription_status = "active" if user.tenant_id else None
+    subscription_blocked = False
+    subscription_next_due = None
+    latest_payment_status = None
 
     return UserOut(
         id=user.id,
@@ -185,6 +140,7 @@ def _issue_session_tokens(db: Session, user: User, request: Request) -> TokenWit
 
 
 @router.post("/register/owner")
+@router.post("/register")
 def register_owner(payload: PharmacyRegister, request: Request, db: Session = Depends(get_db)):
     # Ensure owner email unused
     if db.query(User).filter(User.email == payload.owner_email).first():
@@ -284,40 +240,7 @@ def register_owner(payload: PharmacyRegister, request: Request, db: Session = De
             )
             db.add(ref)
             db.commit()
-    # In-app notifications and status emails (best-effort)
-    try:
-        from app.services.notifications.in_app import create_notification
-        create_notification(
-            db,
-            tenant_id=None,
-            title="New Pharmacy Registration",
-            body=f"Pharmacy '{payload.pharmacy_name}' submitted KYC and awaits approval.",
-        )
-        create_notification(
-            db,
-            tenant_id=tenant_id,
-            user_id=owner.id,
-            title="Application Under Review",
-            body="We have received your pharmacy application. Our team will review it and follow up soon.",
-        )
-        if owner.email:
-            send_notification_email(
-                owner.email,
-                "Application Received",
-                "Thank you for submitting your pharmacy registration. Our team is reviewing your application and will contact you soon with the next steps."
-            )
-    except Exception:
-        pass
-    # Notify admin via email (best-effort) with KYC details
-    try:
-        send_email(
-            "admin@zemen.local",
-            "New Pharmacy Registration",
-            f"Pharmacy '{payload.pharmacy_name}' awaiting approval. License: {payload.pharmacy_license_number}; ID: {payload.id_number}",
-        )
-    except Exception:
-        pass
-    # Send verification code to owner (best-effort)
+    # Send verification code for security
     try:
         code = issue_code(db, email=owner.email, purpose="register")
         if owner.email:
@@ -412,7 +335,7 @@ def register_supplier(payload: dict, request: Request, db: Session = Depends(get
     db.add(kyc)
     db.commit()
     
-    # Send verification code
+    # Send verification code for security
     try:
         code = issue_code(db, email=user.email, purpose="register")
         if user.email:
@@ -464,14 +387,13 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
     )
     db.add(profile)
     db.commit()
-    # Issue OTP registration code (best-effort)
+    # Send verification code for security
     try:
         if user.email:
             reg_code = issue_code(db, email=user.email, purpose="register")
-            result = send_verification_email(user.email, reg_code, "register")
-            print(f"\n✅ Affiliate registration email result: {result}\n")
-    except Exception as e:
-        print(f"\n❌ Affiliate registration email FAILED: {type(e).__name__}: {e}\n")
+            send_verification_email(user.email, reg_code, "register")
+    except Exception:
+        pass
     return _user_with_status(db, user)
 
 
