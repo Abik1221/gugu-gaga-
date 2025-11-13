@@ -3,6 +3,7 @@ import "./globals.css";
 import { ToastProvider } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
 import { ServiceWorkerProvider } from "@/components/providers/service-worker-provider";
+import { InstallPWA } from "@/components/pwa/InstallPWA";
 import logoImage from "@/public/mesoblogo.jpeg";
 
 // Removed force-dynamic for better performance
@@ -93,7 +94,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f172a",
+  themeColor: "#10b981",
 };
 
 export default function RootLayout({
@@ -147,6 +148,7 @@ export default function RootLayout({
         <ToastProvider>
           {children}
           <Toaster />
+          <InstallPWA />
         </ToastProvider>
         <ServiceWorkerProvider />
       </body>

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { TrialDialog } from "@/components/ui/trial-dialog";
 import { RoleSelectionDialog } from "@/components/ui/role-selection-dialog";
+import { InstallButton } from "@/components/pwa/InstallPWA";
 import logoImage from "@/public/mesoblogo.jpeg";
 import Image from "next/image";
 export default function Navbar() {
@@ -93,6 +94,7 @@ export default function Navbar() {
             </div>
           </div>
           <div className="hidden lg:flex items-center space-x-4">
+            <InstallButton />
             <RoleSelectionDialog>
               <Button variant="ghost" size="sm" className="text-black">
                 Sign In
