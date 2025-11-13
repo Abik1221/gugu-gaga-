@@ -1,4 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException
+from starlette.responses import JSONResponse
 
 from .core.settings import settings
 from .api.v1.routes import api_router
@@ -57,10 +60,18 @@ class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
         self.max_size = max_size
 
     async def dispatch(self, request: Request, call_next):
+        # Allow large requests by not checking size
         return await call_next(request)
 
 app.add_middleware(RequestSizeLimitMiddleware)
 
+# Handle request size errors
+@app.exception_handler(413)
+async def request_entity_too_large_handler(request: Request, exc):
+    return JSONResponse(
+        status_code=413,
+        content={"detail": "Request entity too large. Please reduce the size of your request."}
+    )
 
 @app.on_event("startup")
 def on_startup():
