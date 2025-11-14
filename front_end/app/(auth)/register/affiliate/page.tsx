@@ -11,6 +11,7 @@ import { useEmailVerificationToast } from "@/components/ui/email-verification-to
 import { AuthAPI } from "@/utils/api";
 import Image from "next/image";
 import affiliateRegistrationImage from "@/public/affiliateregistration.jpeg";
+import logoImage from "@/public/mesoblogo.jpeg";
 export default function AffiliateRegisterPage() {
   const router = useRouter();
   const { show } = useToast();
@@ -74,6 +75,17 @@ export default function AffiliateRegisterPage() {
   ];
 
   return (
+    <>
+      {/* Navigation */}
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link href="/" className="flex items-center text-gray-900 hover:text-emerald-600 transition">
+              <Image height={60} width={60} src={logoImage} alt="MesobAI logo" />
+            </Link>
+          </div>
+        </div>
+      </nav>
     <div className="relative min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 text-slate-900">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-[-6rem] left-[-4rem] h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl" />
@@ -260,5 +272,6 @@ export default function AffiliateRegisterPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
