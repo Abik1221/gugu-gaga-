@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Mesob - Pharmacy Management Platform",
-    short_name: "Mesob",
+    name: "MesobAI - AI-Powered Pharmacy Management",
+    short_name: "MesobAI",
     description:
-      "Mesob - Complete pharmacy management platform for inventory, sales, and operations.",
+      "MesobAI - AI-powered pharmacy management system for Ethiopian businesses. Revolutionary mesob technology meets modern AI.",
     id: "/",
     start_url: "/",
     scope: "/",

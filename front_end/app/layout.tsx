@@ -11,11 +11,11 @@ import logoImage from "@/public/mesoblogo.jpeg";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://mymesob.com'),
   title: {
-    default: "Mesob - AI-Powered Business Management Software | Ethiopia | Africa",
-    template: "%s | Mesob - Business Management Software",
+    default: "MesobAI - AI-Powered Pharmacy Management System | Ethiopia | Africa",
+    template: "%s | MesobAI - AI in Business Solutions",
   },
   description:
-    "Transform your business with Mesob's AI-powered management software. Multi-tenant SaaS platform for inventory management, billing, analytics, and business automation. Built in Ethiopia for African businesses. Start your 30-day free trial today.",
+    "MesobAI: Revolutionary AI in business solution for Ethiopian pharmacies. Advanced mesob technology platform offering AI-powered pharmacy management, inventory control, and business intelligence for Ethiopia's healthcare sector.",
   keywords: [
     "business management software Ethiopia",
     "AI business automation Africa",
@@ -54,22 +54,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://mymesob.com",
-    siteName: "Mesob - AI Business Management Software",
-    title: "AI-Powered Business Management Software - Built in Ethiopia for Africa",
-    description: "Revolutionary business management platform with AI automation, multi-tenant architecture, and comprehensive analytics for modern businesses. 30-day free trial available.",
+    siteName: "MesobAI - AI Business Management Software",
+    title: "MesobAI - AI-Powered Pharmacy Management System for Ethiopia",
+    description: "MesobAI: Revolutionary AI in business solution for Ethiopian pharmacies. Advanced mesob technology platform.",
     images: [{
-      url: "/hero.jpg",
-      width: 1200,
-      height: 630,
-      alt: "Mesob AI Business Management Dashboard - Ethiopian Business Software"
+      url: "/mesoblogo.jpeg",
+      width: 512,
+      height: 512,
+      alt: "MesobAI Logo - AI in Ethiopia Business Solutions"
     }]
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Business Management Software - Built in Ethiopia for Africa",
-    description: "Transform your business operations with AI-powered management tools, analytics, and automation. Start your free trial today.",
-    images: ["/hero.jpg"],
-    creator: "@MesobTech"
+    title: "MesobAI - AI in Ethiopia Business Solutions",
+    description: "Revolutionary mesob AI technology for Ethiopian pharmacy management and healthcare business intelligence.",
+    images: ["/mesoblogo.jpeg"],
+    creator: "@MesobAI"
   },
   alternates: {
     canonical: "https://mymesob.com",
@@ -77,12 +77,11 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
-      { url: logoImage.src },
-      { url: "/icons/icon-192x192.jpg", sizes: "192x192" },
-      { url: "/icons/icon-512x512.jpg", sizes: "512x512" },
+      { url: "/mesoblogo.jpeg", sizes: "192x192" },
+      { url: "/mesoblogo.jpeg", sizes: "512x512" },
     ],
-    apple: [{ url: logoImage.src }],
-    shortcut: logoImage.src,
+    apple: [{ url: "/mesoblogo.jpeg", sizes: "180x180" }],
+    shortcut: "/mesoblogo.jpeg",
   },
   other: {
     "mobile-web-app-capable": "yes",
@@ -117,11 +116,13 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
-              "name": "Mesob AI Business Management Software",
-              "description": "AI-powered business management software built in Ethiopia for African businesses. Multi-tenant SaaS platform for inventory, billing, and analytics.",
+              "name": "MesobAI - AI-Powered Pharmacy Management System",
+              "description": "MesobAI: Revolutionary AI in business solution for Ethiopian pharmacies. Advanced mesob technology platform offering AI-powered pharmacy management.",
               "url": "https://mymesob.com",
               "applicationCategory": "BusinessApplication",
               "operatingSystem": "Web Browser",
+              "image": "https://mymesob.com/mesoblogo.jpeg",
+              "logo": "https://mymesob.com/mesoblogo.jpeg",
               "offers": {
                 "@type": "Offer",
                 "price": "0",
@@ -130,8 +131,9 @@ export default function RootLayout({
               },
               "author": {
                 "@type": "Organization",
-                "name": "Mesob Tech",
-                "url": "https://mymesob.com"
+                "name": "MesobAI Technologies",
+                "url": "https://mymesob.com",
+                "logo": "https://mymesob.com/mesoblogo.jpeg"
               },
               "aggregateRating": {
                 "@type": "AggregateRating",
