@@ -18,40 +18,6 @@ export default function MarketingLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-gray-50 to-emerald-50 text-gray-900">
-      <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur-xl shadow-sm">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4">
-          <Link href="/" className="group inline-flex items-center gap-2 font-medium text-gray-700 hover:text-emerald-600 transition">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Home</span>
-          </Link>
-          <nav className="hidden items-center gap-6 text-sm font-medium text-gray-700 md:flex">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="transition hover:text-emerald-600"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-3 text-sm">
-            <Link
-              href="/auth"
-              className="rounded-full border border-gray-300 px-4 py-2 text-gray-700 transition hover:border-emerald-500 hover:text-emerald-600"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register/pharmacy"
-              className="rounded-full bg-gradient-to-r from-emerald-500 to-sky-500 px-5 py-2 font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:from-emerald-600 hover:to-sky-600"
-            >
-              Get started for free
-            </Link>
-          </div>
-        </div>
-      </header>
-
       <main className="flex-1">
         {children}
       </main>
