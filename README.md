@@ -1,17 +1,45 @@
-## Zemen Pharma – Multi-tenant FastAPI Backend
+# MesobAI - AI-Powered Pharmacy Management System for Ethiopia 🇪🇹
 
-Professional, secure, and tenant-aware backend for managing pharmacies with AI insights, KYC, billing, and notifications.
+**Revolutionary AI in Business Solutions | Mesob Technology for Ethiopian Healthcare**
 
-For a deeper architecture and API reference, see DOCS.md.
+MesobAI is Ethiopia's leading AI-powered pharmacy management platform, combining advanced artificial intelligence with traditional Ethiopian business wisdom (mesob). Our comprehensive solution transforms how pharmacies operate across Ethiopia, delivering intelligent inventory management, business analytics, and automated operations.
 
-## Features
-- Multi-tenancy with strict enforcement (`enforce_user_tenant`).
-- Per-tenant KYC approvals via `UserTenant.is_approved` (admin-controlled).
-- Subscription billing with due-date notices, blocking, and manual unblocking via payment code verification.
-- AI insights (LangGraph-ready) with schema introspection and strict SQL safety.
-- OTP verification for registration and 2-step login.
-- Notifications: in-app feed, email with per-type prefs, optional WebSocket push.
-- Admin: manage user↔tenant links, approve/reject per-tenant access.
+## 🚀 Why MesobAI? AI in Ethiopia Revolution
+
+- **🧠 AI in Business**: Advanced machine learning algorithms optimized for Ethiopian pharmacy operations
+- **🏥 Healthcare AI**: Specialized AI models trained on Ethiopian healthcare patterns and regulations
+- **📊 Business Intelligence**: Real-time analytics and insights powered by MesobAI technology
+- **🔄 Mesob Integration**: Seamlessly connects traditional Ethiopian business practices with modern AI
+- **🌍 Ethiopia-First**: Built specifically for Ethiopian market needs and regulatory requirements
+
+For detailed architecture and API reference, see DOCS.md.
+
+## 🎆 Core Features - MesobAI Technology Stack
+
+### 🧠 AI in Business Intelligence
+- **Smart Analytics**: AI-powered business insights tailored for Ethiopian pharmacy operations
+- **Predictive Inventory**: Machine learning algorithms predict stock needs based on Ethiopian market patterns
+- **Automated Reporting**: AI-generated reports optimized for Ethiopian healthcare regulations
+
+### 🏥 Mesob Multi-Tenant Architecture
+- **Tenant Isolation**: Strict multi-tenancy with `enforce_user_tenant` for secure Ethiopian pharmacy chains
+- **KYC Compliance**: Per-tenant approvals via `UserTenant.is_approved` meeting Ethiopian regulatory standards
+- **Scalable Infrastructure**: Built to handle Ethiopia's growing pharmacy network
+
+### 💳 Ethiopian Business Operations
+- **Local Payment Integration**: Subscription billing with Ethiopian payment methods
+- **Regulatory Compliance**: Automated notices and blocking systems for Ethiopian healthcare laws
+- **Manual Verification**: Payment code verification system adapted for Ethiopian business practices
+
+### 🔒 Security & Authentication
+- **OTP Verification**: Two-factor authentication optimized for Ethiopian mobile networks
+- **JWT Security**: Enterprise-grade token management for Ethiopian healthcare data
+- **Admin Controls**: Comprehensive user↔tenant management for Ethiopian pharmacy chains
+
+### 📨 Communication Systems
+- **Multi-Channel Notifications**: In-app, email, and WebSocket push notifications
+- **Ethiopian Language Support**: Localized messaging for Ethiopian pharmacy staff
+- **Real-time Updates**: Instant notifications for critical pharmacy operations
 
 ## Quickstart (local)
 1) Create venv and install deps
@@ -79,11 +107,22 @@ Entrypoint waits for DB, applies Alembic migrations, and starts the API.
   - POST `/api/v1/admin/payments/{payment_code}/verify`
   - Advances due date by one cycle and resets counters.
 
-## AI & Chat
-- AI ask: `/api/v1/ai/ask` (tenant + subscription enforced).
-- LangGraph integration via `my_langgraph_impl.run_graph` with schema overview.
-- SQL safety gate: SELECT-only, tenant parameter binding.
-- Chat: threads/messages endpoints with per-user rate limits and tenant enforcement.
+## 🧠 MesobAI Intelligence & Chat System
+
+### AI in Ethiopia - Advanced Analytics
+- **MesobAI Ask**: `/api/v1/ai/ask` - Intelligent query system for Ethiopian pharmacy insights
+- **Business Intelligence**: AI-powered analytics specifically trained on Ethiopian healthcare data
+- **Regulatory Compliance**: AI ensures all queries meet Ethiopian pharmacy regulations
+
+### Mesob Technology Integration
+- **LangGraph Integration**: Advanced AI workflows via `my_langgraph_impl.run_graph`
+- **Schema Intelligence**: AI understands Ethiopian pharmacy data structures
+- **SQL Safety**: Secure, tenant-isolated queries for Ethiopian multi-pharmacy operations
+
+### AI in Business Communication
+- **Smart Chat Threads**: AI-enhanced messaging system for Ethiopian pharmacy teams
+- **Rate-Limited AI**: Optimized AI usage for Ethiopian internet infrastructure
+- **Tenant-Aware AI**: AI responses tailored to specific Ethiopian pharmacy contexts
 
 ## Notifications
 - In-app: GET `/api/v1/notifications`, POST `/api/v1/notifications/{id}/read`.
@@ -144,5 +183,42 @@ curl -X POST "$base/api/v1/chat/threads/1/messages" -H "Authorization: Bearer <O
 - 403 Tenant access denied: user not linked to tenant or wrong tenant id.
 - 429 Too many requests: rate limits hit; try later.
 
+## 🔍 SEO & Discovery
+
+### Keywords & Search Terms
+MesobAI is optimized for discovery through these key terms:
+- **MesobAI** - Our primary brand for AI in Ethiopia
+- **Mesob Technology** - Traditional Ethiopian wisdom meets modern AI
+- **AI in Ethiopia** - Leading artificial intelligence solutions for Ethiopian businesses
+- **AI in Business** - Enterprise AI solutions for Ethiopian healthcare sector
+- **Ethiopian Pharmacy AI** - Specialized AI for Ethiopian pharmacy management
+- **Healthcare AI Ethiopia** - Medical and pharmaceutical AI solutions
+- **Business Intelligence Ethiopia** - Data analytics for Ethiopian enterprises
+
+### API Documentation & SEO
+- **OpenAPI Documentation**: `/docs` - Comprehensive API documentation
+- **ReDoc Interface**: `/redoc` - Alternative API documentation view
+- **SEO Metadata**: `/api/v1/seo-meta` - Structured SEO information
+- **Sitemap**: `/sitemap.xml` - Search engine sitemap
+- **Robots.txt**: `/robots.txt` - Search engine crawling instructions
+
+### Ethiopian Market Focus
+MesobAI is specifically designed for:
+- Ethiopian pharmacy chains and independent pharmacies
+- Healthcare providers across Ethiopia's regions
+- Medical distributors and suppliers in Ethiopia
+- Healthcare technology adopters in Ethiopian cities
+- Traditional Ethiopian businesses embracing AI technology
+
+## 🌐 About Mesob Technology
+
+"Mesob" represents the traditional Ethiopian communal dining experience - bringing people together around shared resources. MesobAI applies this philosophy to pharmacy management, creating a unified platform where Ethiopian healthcare providers can share insights, resources, and AI-powered intelligence.
+
+Our AI in business approach combines:
+- **Traditional Ethiopian Values**: Community, sharing, and collective growth
+- **Modern AI Technology**: Machine learning, predictive analytics, and automation
+- **Ethiopian Market Understanding**: Local regulations, business practices, and cultural nuances
+- **Scalable Solutions**: From single pharmacies to nationwide chains
+
 ## License
-Proprietary – All rights reserved.
+Proprietary – All rights reserved to MesobAI Technologies, Ethiopia.

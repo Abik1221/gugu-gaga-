@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+Allow: /docs
+Allow: /redoc
+Allow: /openapi.json
+Allow: /health
+
+# MesobAI - AI in Ethiopia
+# AI-powered pharmacy management system
+# Mesob technology for Ethiopian businesses
+# AI in business solutions for healthcare
+
+Sitemap: https://api.mesobai.com/sitemap.xml
+
+# Block sensitive endpoints
+Disallow: /api/v1/auth/
+Disallow: /api/v1/admin/
+Disallow: /api/v1/billing/

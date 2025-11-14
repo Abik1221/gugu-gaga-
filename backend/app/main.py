@@ -18,20 +18,36 @@ from .services.billing.subscriptions import process_subscription_due
 from .services.integrations.monitoring import warn_expiring_tokens
 
 tags_metadata = [
-    {"name": "auth", "description": "Authentication, registration, JWT tokens"},
-    {"name": "pharmacy_cms", "description": "Pharmacy management, dashboard, medicines"},
-    {"name": "sales", "description": "POS-like sales operations and transactions"},
-    {"name": "inventory", "description": "Stock levels, low stock and expiry alerts"},
-    {"name": "affiliate", "description": "Affiliate links and commission summaries"},
-    {"name": "admin", "description": "KYC approvals and payment verification"},
-    {"name": "ai", "description": "AI insights via Gemini (rate limited)"},
+    {"name": "auth", "description": "MesobAI Authentication - Secure user registration and JWT token management for Ethiopian pharmacy businesses"},
+    {"name": "pharmacy_cms", "description": "Mesob Pharmacy Management - AI-powered dashboard and medicine inventory for Ethiopian healthcare providers"},
+    {"name": "sales", "description": "AI Business Intelligence - Smart POS operations and transaction analytics for Ethiopian pharmacies"},
+    {"name": "inventory", "description": "MesobAI Inventory - Intelligent stock management with AI-powered alerts for Ethiopian businesses"},
+    {"name": "affiliate", "description": "Mesob Affiliate Network - Commission tracking and partnership management for Ethiopian healthcare sector"},
+    {"name": "admin", "description": "MesobAI Administration - KYC approvals and payment verification for Ethiopian pharmacy compliance"},
+    {"name": "ai", "description": "AI in Ethiopia - Advanced artificial intelligence insights and business analytics powered by MesobAI technology"},
 ]
 
 app = FastAPI(
-    title=settings.app_name,
+    title="MesobAI - AI-Powered Pharmacy Management System for Ethiopia",
     version="0.1.0",
-    description="Multi-tenant AI-powered CMS and management system for pharmacies.",
+    description="MesobAI: Revolutionary AI in business solution for Ethiopian pharmacies. Advanced mesob technology platform offering AI-powered pharmacy management, inventory control, and business intelligence for Ethiopia's healthcare sector.",
     openapi_tags=tags_metadata,
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
+    contact={
+        "name": "MesobAI Support",
+        "url": "https://mesobai.com",
+        "email": "support@mesobai.com",
+    },
+    license_info={
+        "name": "Proprietary",
+        "url": "https://mesobai.com/license",
+    },
+    servers=[
+        {"url": "https://api.mesobai.com", "description": "Production server"},
+        {"url": "http://localhost:8000", "description": "Development server"},
+    ],
 )
 
 # Multi-tenant context middleware
@@ -110,8 +126,27 @@ async def on_shutdown():
 
 @app.api_route("/health", methods=["GET", "HEAD"])
 def health():
-    return {"status": "ok"}
+    """
+    MesobAI Health Check - AI in Ethiopia Pharmacy Management System
+    
+    Monitor the health of Ethiopia's leading AI in business platform.
+    MesobAI combines traditional mesob technology with modern AI for 
+    comprehensive pharmacy management across Ethiopian healthcare sector.
+    """
+    return {
+        "status": "ok",
+        "service": "MesobAI - AI in Ethiopia",
+        "description": "AI-powered pharmacy management system for Ethiopian businesses",
+        "technology": "Mesob AI Technology Platform",
+        "market": "Ethiopian Healthcare Sector",
+        "keywords": ["MesobAI", "mesob", "AI in Ethiopia", "AI in business"],
+        "version": "1.0.0"
+    }
 
+
+# Include SEO routes at root level
+from .api.v1.seo import router as seo_router
+app.include_router(seo_router)
 
 app.include_router(api_router, prefix="/api/v1")
 app.include_router(analytics_router, prefix="/api/v1")
