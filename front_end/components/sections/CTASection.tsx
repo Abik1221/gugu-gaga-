@@ -51,7 +51,7 @@ export default function CTASection() {
           <Button
             size="lg"
             variant="outline"
-            className="text-lg px-8 border-white text-white hover:bg-white/10"
+            className="text-lg px-8 border-emerald-600 text-emerald-600 hover:bg-emerald-50"
             onClick={() => router.push('/contact')}
           >
             Schedule a Demo

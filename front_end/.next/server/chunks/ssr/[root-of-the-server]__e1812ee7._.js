@@ -4514,7 +4514,7 @@ function CTASection() {
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                             size: "lg",
                             variant: "outline",
-                            className: "text-lg px-8 border-white text-white hover:bg-white/10",
+                            className: "text-lg px-8 border-emerald-600 text-emerald-600 hover:bg-emerald-50",
                             onClick: ()=>router.push('/contact'),
                             children: "Schedule a Demo"
                         }, void 0, false, {
@@ -5054,7 +5054,7 @@ function CookieConsent() {
     };
     if (!show) return null;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "fixed bottom-0 left-0 right-0 z-50 p-4 bg-white border-t border-gray-200 shadow-lg",
+        className: "fixed bottom-0 left-0 right-0 z-50 p-4 bg-gradient-to-r from-emerald-100 via-green-50 to-emerald-100 animate-pulse border-t border-emerald-300 shadow-2xl shadow-emerald-500/30",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4",
             children: [
