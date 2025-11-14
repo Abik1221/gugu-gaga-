@@ -96,7 +96,7 @@ export default function ContactPage() {
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Company/Pharmacy Name
+                      Company/Business Name
                     </label>
                     <Input
                       value={formData.company}
@@ -112,7 +112,7 @@ export default function ContactPage() {
                     <Textarea
                       value={formData.message}
                       onChange={(e) => setFormData({...formData, message: e.target.value})}
-                      placeholder="What challenges are you facing? What features are you most interested in?"
+                      placeholder="What challenges are you facing with your business? What features are you most interested in?"
                       className="bg-white border-gray-300 focus:border-emerald-500 focus:ring-emerald-500"
                       rows={4}
                     />
@@ -178,7 +178,7 @@ export default function ContactPage() {
                     <h4 className="font-semibold text-emerald-900 mb-2">What to Expect in Your Demo</h4>
                     <ul className="space-y-2 text-sm text-emerald-800">
                       <li>• 30-minute personalized walkthrough</li>
-                      <li>• See features specific to your pharmacy type</li>
+                      <li>• See features specific to your business type</li>
                       <li>• Live Q&A with our product experts</li>
                       <li>• Custom pricing discussion</li>
                       <li>• Implementation timeline and support</li>
