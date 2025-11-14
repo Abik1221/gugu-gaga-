@@ -46,8 +46,7 @@ export default function AuthLayout({
       {isOpen ? <Dialog>
         <DialogContent>hello dialog</DialogContent>
       </Dialog> : null}
-      <Navbar />
-      <div className="mt-10">{children}</div>
+      <div>{children}</div>
       <Footer />
     </div>
   );
