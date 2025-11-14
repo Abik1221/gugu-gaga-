@@ -104,6 +104,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9433053488658352" crossOrigin="anonymous"></script>
         <link rel="icon" href="/mesoblogo.jpeg" type="image/jpeg" sizes="any" />
         <link rel="icon" href="/mesoblogo.jpeg" type="image/jpeg" sizes="32x32" />
         <link rel="icon" href="/mesoblogo.jpeg" type="image/jpeg" sizes="16x16" />
