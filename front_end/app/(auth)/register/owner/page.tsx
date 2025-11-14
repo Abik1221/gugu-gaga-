@@ -224,6 +224,20 @@ export default function OwnerRegisterPage() {
             <Link href="/" className="flex items-center text-gray-900 hover:text-emerald-600 transition">
               <Image height={60} width={60} src={logoImage} alt="MesobAI logo" />
             </Link>
+            <div className="flex items-center gap-6">
+              <Link href="/#features" className="text-gray-600 hover:text-gray-900">
+                Features
+              </Link>
+              <Link href="/#solutions" className="text-gray-600 hover:text-gray-900">
+                Solutions
+              </Link>
+              <Link href="/#pricing" className="text-gray-600 hover:text-gray-900">
+                Pricing
+              </Link>
+              <Link href="/contact" className="text-gray-600 hover:text-gray-900">
+                Contact
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
