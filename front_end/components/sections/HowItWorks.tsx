@@ -61,7 +61,7 @@ export default function HowItWorks() {
         className="mb-20 text-center text-2xl font-bold text-black"
         variants={titleVariants}
       >
-        How Zemen Inventory Works
+        How Mesob Works
       </motion.h3>
       <div className="grid gap-8 md:grid-cols-2 mb-10 py-5 px-2 shadow-[0_25px_80px_-35px_rgba(255,255,255,0.45)]">
         <div className="overflow-hidden rounded-lg">

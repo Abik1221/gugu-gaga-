@@ -67,24 +67,27 @@ export default function ChatThreadPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Chat #{threadId}</h1>
-        <div className="flex items-center gap-2">
-          <select
-            className="border rounded px-2 py-1"
-            value={tenantId ?? ""}
-            onChange={async (e)=>{ const tid = e.target.value || null; setTenantId(tid); if (tid) await refresh(tid); }}
-          >
-            {pharmacies.map((p:any)=>(<option key={p.tenant_id} value={p.tenant_id}>{p.name} ({p.tenant_id})</option>))}
-          </select>
-        </div>
+        <h1 className="text-xl font-semibold">Business Chat</h1>
       </div>
       {loading ? (<Skeleton className="h-64" />) : error ? (<div className="text-sm text-red-600">{error}</div>) : (
         <div className="space-y-3">
           <div className="border rounded p-3 h-[60vh] overflow-auto bg-white">
             {messages.map((m)=> (
-              <div key={m.id} className="mb-3">
-                <div className="text-xs text-gray-500">{m.role}</div>
-                <div className="whitespace-pre-wrap">{m.content}</div>
+              <div key={m.id} className={`mb-3 ${m.role === 'user' ? 'text-right' : 'text-left'}`}>
+                <div className={`inline-block max-w-[80%] p-3 rounded-lg whitespace-pre-wrap ${
+                  m.role === 'user' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-100 text-gray-900'
+                }`}>
+                  {m.role === 'assistant' ? (() => {
+                    try {
+                      const parsed = JSON.parse(m.content);
+                      return parsed.answer || m.content;
+                    } catch {
+                      return m.content;
+                    }
+                  })() : m.content}
+                </div>
               </div>
             ))}
             {messages.length === 0 && <div className="text-sm text-gray-500">No messages yet.</div>}

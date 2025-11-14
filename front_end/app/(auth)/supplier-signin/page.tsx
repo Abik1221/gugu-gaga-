@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { API_BASE } from "@/utils/api";
 
 export default function SupplierSignInPage() {
   const router = useRouter();
@@ -45,7 +46,7 @@ export default function SupplierSignInPage() {
       formData.append("password", password);
       formData.append("grant_type", "password");
 
-      const response = await fetch("http://localhost:8000/api/v1/auth/login/request-code", {
+      const response = await fetch(`${API_BASE}/auth/login/request-code`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData,
@@ -82,7 +83,7 @@ export default function SupplierSignInPage() {
 
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/api/v1/auth/login/verify", {
+      const response = await fetch(`${API_BASE}/auth/login/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim(), code: otp }),

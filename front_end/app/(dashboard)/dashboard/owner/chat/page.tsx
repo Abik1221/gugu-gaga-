@@ -96,11 +96,7 @@ export default function ChatThreadsPage() {
             </Button>
           </div>
         </div>
-        {tenantId && (
-          <div className="mt-2 text-xs text-slate-600">
-            Tenant: <span className="font-mono bg-slate-100 px-1 rounded">{tenantId}</span>
-          </div>
-        )}
+
       </div>
       
       {loading ? (

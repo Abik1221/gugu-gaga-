@@ -234,7 +234,7 @@ export default function POSPage() {
           <span className="font-medium text-gray-900">{profile?.username || "—"}</span>
           <span className="hidden sm:inline">•</span>
           <span>Tenant:</span>
-          <span className="font-medium text-gray-900">{profile?.tenant_id || "—"}</span>
+
         </div>
       </header>
 

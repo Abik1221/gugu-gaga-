@@ -405,7 +405,7 @@ export default function StaffListPage() {
             <div>
               Showing {filteredStaff.length} of {staff.length} team members
             </div>
-            <div>Tenant: {profile?.tenant_id || "—"}</div>
+
           </CardFooter>
         </Card>
       </section>

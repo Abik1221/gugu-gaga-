@@ -135,7 +135,7 @@ export default function DashboardSettingsPage() {
     if (!profile) return [];
     return [
       { label: "Email", value: profile.email },
-      { label: "Tenant", value: profile.tenant_id ?? "—" },
+
       { label: "Role", value: profile.role ?? "—" },
       { label: "KYC Status", value: profile.kyc_status ?? "—" },
       { label: "Subscription", value: profile.subscription_status ?? "—" },

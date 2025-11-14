@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { Send, Bot, User, Sparkles, TrendingUp, Package, ShoppingCart, BarChart3 } from "lucide-react";
+import { API_BASE } from "@/utils/api";
 
 interface Message {
   id: string;
@@ -45,7 +46,7 @@ export default function SupplierAIChat() {
     // Welcome message
     const welcomeMessage: Message = {
       id: "welcome",
-      content: "👋 **Hello! I'm Mesob AI - Your Business Co-Worker & Advisor**\n\nI don't just show you data - I tell you what to DO with it!\n\n🎯 **How I Help:**\n• Analyze your inventory, suppliers, and sales data\n• Provide specific business recommendations\n• Give you actionable steps to improve performance\n• Act as your 24/7 business consultant\n\n💡 **Ask me things like:**\n• \"What's my inventory status at [specific branch]?\"\n• \"How can I improve my supplier relationships?\"\n• \"What should I do about slow-moving products?\"\n• \"Give me a business strategy for next month\"\n\n**I'll give you the data AND the business advice to act on it!**\n\nWhat business challenge can I help you solve today?",
+      content: "Hello! I'm Mesob AI, your business co-founder and advisor.\n\nI analyze your real business data and provide actionable insights to help you grow. Ask me about inventory, suppliers, sales trends, or any business challenge you're facing.\n\nWhat would you like to know about your business today?",
       sender: "ai",
       timestamp: new Date()
     };
@@ -67,32 +68,50 @@ export default function SupplierAIChat() {
     setIsLoading(true);
 
     try {
-      // Simulate AI response
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const token = localStorage.getItem('access_token');
+      const tenantId = localStorage.getItem('tenant_id');
+      const userId = localStorage.getItem('user_id');
       
-      const aiResponse = generateAIResponse(content);
+      const res = await fetch(`${API_BASE}/ai/agent/process`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(tenantId ? { "X-Tenant-ID": tenantId } : {}),
+          ...(userId ? { "X-User-ID": userId } : {}),
+        },
+        body: JSON.stringify({ message: content.trim() }),
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Failed with ${res.status}`);
+      }
+      
+      const data = await res.json();
+      const reply = data?.response || "Sorry, I couldn't process your request.";
+      
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: aiResponse,
+        content: reply,
         sender: "ai",
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, aiMessage]);
     } catch (err: any) {
-      show({
-        variant: "destructive",
-        title: "Failed to send message",
-        description: err?.message || "Unable to get AI response",
-      });
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: "Sorry, I'm having trouble connecting right now. Please try again.",
+        sender: "ai",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const generateAIResponse = (userMessage: string): string => {
-    return "🤖 **AI Business Advisor Response:**\n\nI'm your intelligent business co-worker! Here's what I do:\n\n📊 **Data Analysis + Business Advice**\n• Pull real data from your database (inventory, sales, suppliers)\n• Analyze trends, patterns, and performance metrics\n• Provide specific, actionable business recommendations\n• Give you immediate steps to improve your operations\n\n🎯 **Smart Business Insights:**\n• \"Your Branch A has low stock - here's what to order and when\"\n• \"Supplier X is underperforming - here's how to address it\"\n• \"Revenue is down 15% - here are 5 strategies to recover\"\n• \"These 3 products are expiring - here's your action plan\"\n\n💡 **I'm Like Having a Business Consultant 24/7:**\n• Ask about specific branches, products, or time periods\n• Get data-driven insights with clear next steps\n• Receive strategic advice tailored to your situation\n• Learn optimization strategies for growth\n\n**Try me with specific questions:**\n• \"What's happening with inventory at [branch name]?\"\n• \"How are my suppliers performing this quarter?\"\n• \"What should I do about declining sales?\"\n• \"Which products should I focus on promoting?\"\n\nI'll analyze your data AND tell you exactly what actions to take!";
-  };
+
 
   const handleSuggestedQuestion = (question: string) => {
     sendMessage(question);
@@ -133,23 +152,8 @@ export default function SupplierAIChat() {
                           : "bg-gray-100 text-gray-900"
                       }`}
                     >
-                      <div className="flex items-start space-x-2">
-                        {message.sender === "ai" && (
-                          <Bot className="h-4 w-4 mt-1 text-blue-600" />
-                        )}
-                        {message.sender === "user" && (
-                          <User className="h-4 w-4 mt-1 text-white" />
-                        )}
-                        <div className="flex-1">
-                          <div className="whitespace-pre-wrap text-sm">
-                            {message.content}
-                          </div>
-                          <div className={`text-xs mt-1 ${
-                            message.sender === "user" ? "text-blue-100" : "text-gray-500"
-                          }`}>
-                            {message.timestamp.toLocaleTimeString()}
-                          </div>
-                        </div>
+                      <div className="whitespace-pre-wrap text-sm">
+                        {message.content}
                       </div>
                     </div>
                   </div>
@@ -157,13 +161,10 @@ export default function SupplierAIChat() {
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="bg-gray-100 rounded-lg p-3">
-                      <div className="flex items-center space-x-2">
-                        <Bot className="h-4 w-4 text-blue-600" />
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                        </div>
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                       </div>
                     </div>
                   </div>

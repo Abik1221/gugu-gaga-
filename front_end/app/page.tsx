@@ -5,7 +5,7 @@ import ProblemSolution from "@/components/sections/ProblemSolution";
 import FeaturesSection from "@/components/sections/FeaturesSection";
 import AISection from "@/components/sections/AISection";
 import HowItWorks from "@/components/sections/HowItWorks";
-import SecuritySection from "@/components/sections/SecuritySection";
+
 import PricingSection from "@/components/sections/PricingSection";
 import IntegrationsSection from "@/components/sections/IntegrationsSection";
 import AffiliateSection from "@/components/sections/AffiliateSection";
@@ -47,7 +47,7 @@ export default function App() {
       <FeaturesSection />
       <AISection />
       <HowItWorks />
-      <SecuritySection />
+
       <PricingSection />
       {/* <GoogleAds adSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT || "1234567890"} className="my-8" /> */}
       <IntegrationsSection />

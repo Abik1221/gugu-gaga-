@@ -155,11 +155,7 @@ function LayoutContent({
                     )}
                   </div>
                 </div>
-                {!isAffiliate && !isAdmin && user?.tenant_id && (
-                  <span className="inline-flex items-center rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 text-xs text-neutral-600">
-                    Tenant: {user.tenant_id}
-                  </span>
-                )}
+
                 {isAffiliate && pathname?.includes('/payouts') && (
                   <button
                     onClick={handleRefresh}

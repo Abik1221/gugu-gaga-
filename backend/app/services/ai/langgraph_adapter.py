@@ -1,27 +1,10 @@
 from __future__ import annotations
 
-from typing import Protocol, Dict, Any, Optional
-
-
-class SQLTool(Protocol):
-    def generate_sql(self, *, prompt: str, tenant_id: str) -> str: ...
-
-
-class LangGraphOrchestrator(Protocol):
-    """Protocol for plugging in a real LangGraph multi-agent workflow.
-
-    A conforming implementation should:
-    - Use an LLM agent graph to interpret prompt
-    - Call a SQL tool to produce candidate SQL
-    - Optionally call a safety tool/validator
-    - Return a dict payload with keys like {"sql": str, "intent": str}
-    """
-
-    def run(self, *, prompt: str, tenant_id: str, user_id: int) -> Dict[str, Any]: ...
+from typing import Dict, Any, Optional
 
 
 class HeuristicSQLTool:
-    """Fallback SQL tool mirroring current heuristic logic."""
+    """Basic SQL generation tool for simple queries."""
 
     def generate_sql(self, *, prompt: str, tenant_id: str) -> str:
         p = prompt.lower()
@@ -47,29 +30,14 @@ class HeuristicSQLTool:
         )
 
 
-class PassthroughLangGraph:
-    """Stub orchestrator that uses the heuristic SQL tool; replace with real LangGraph."""
-
-    def __init__(self, tool: Optional[SQLTool] = None):
-        self.tool = tool or HeuristicSQLTool()
-
-    def run(self, *, prompt: str, tenant_id: str, user_id: int) -> Dict[str, Any]:
-        sql = self.tool.generate_sql(prompt=prompt, tenant_id=tenant_id)
-        return {"sql": sql, "intent": "auto"}
-
-
 class RealLangGraphOrchestrator:
-    """Optional wrapper intended to call an actual LangGraph workflow if installed.
+    """LangGraph orchestrator with fallback to heuristic SQL generation."""
 
-    Fallbacks to heuristic tool if the underlying implementation is missing.
-    """
-
-    def __init__(self, tool: Optional[SQLTool] = None):
+    def __init__(self, tool: Optional[HeuristicSQLTool] = None):
         self.tool = tool or HeuristicSQLTool()
         self._available = False
         try:
-            # Try to import a user-provided LangGraph runner
-            from my_langgraph_impl import run_graph  # type: ignore
+            from my_langgraph_impl import run_graph
             self._run_graph = run_graph
             self._available = True
         except Exception:

@@ -14,48 +14,43 @@ validate through a SQL safety gate.
 
 
 def run_graph(*, prompt: str, tenant_id: str, user_id: int, schema: Optional[str] = None) -> Dict[str, Any]:
-    """Enhanced SQL generation with comprehensive business intelligence."""
+    """AI-powered SQL generation with business intelligence."""
     try:
         from app.services.ai.gemini import GeminiClient
         client = GeminiClient()
         
         if client.is_configured():
             system_prompt = f"""
-You are Mesob AI, a business intelligence assistant for a multi-tenant business management platform.
+Generate secure SQL for business intelligence. ONLY SELECT queries with tenant_id filter.
 
-STRICT RULES:
-1. ONLY generate SELECT queries - never INSERT, UPDATE, DELETE, DROP, ALTER, CREATE
-2. ALWAYS include tenant_id filter: WHERE table.tenant_id = :tenant_id
-3. Use ONLY tables and columns from the provided schema
-4. Return ONLY valid JSON with "sql" and "intent" keys
-5. NEVER hallucinate - if unsure, use a safe fallback query
+Schema: {schema or 'Use fallback patterns'}
 
-SCHEMA: {schema or 'No schema available'}
+Rules:
+1. SELECT only - never INSERT/UPDATE/DELETE
+2. Always include: WHERE table.tenant_id = :tenant_id
+3. Use schema tables/columns only
+4. Return JSON: {{"sql": "...", "intent": "..."}}
 
-COMMON BUSINESS QUERIES:
-- Revenue trends: sales table with date grouping
-- Inventory status: inventory_items with quantity checks
-- Staff performance: users joined with sales data
-- Supplier orders: orders table with supplier relationships
-- Product analytics: medicines/products with sales data
-
-User question: {prompt}
-
-Respond with JSON only:
-{{
-  "sql": "SELECT ... WHERE tenant_id = :tenant_id",
-  "intent": "descriptive_intent"
-}}
+Question: {prompt}
 """
             
             response = client.ask(system_prompt, "sql_generation", str(user_id))
             if "answer" in response:
                 try:
                     import json
-                    result = json.loads(response["answer"])
+                    answer = response["answer"].strip()
+                    if answer.startswith("```json"):
+                        answer = answer[7:]
+                    if answer.endswith("```"):
+                        answer = answer[:-3]
+                    
+                    result = json.loads(answer.strip())
                     if "sql" in result and "tenant_id" in result["sql"].lower():
-                        return result
-                except:
+                        return {
+                            "sql": result["sql"],
+                            "intent": result.get("intent", "ai_generated")
+                        }
+                except Exception:
                     pass
         
         return _enhanced_fallback_sql(prompt)
@@ -64,29 +59,62 @@ Respond with JSON only:
 
 
 def _enhanced_fallback_sql(prompt: str) -> Dict[str, Any]:
-    """Enhanced fallback with supplier and owner specific queries."""
+    """Fallback SQL generation for business queries."""
     p = prompt.lower()
     
-    # Supplier-specific queries
+    # Supplier queries
     if "supplier" in p:
-        if "order" in p:
+        if "order" in p or "purchase" in p:
+            if "pending" in p or "waiting" in p:
+                return {
+                    "sql": (
+                        "SELECT o.id, o.status, o.total_amount, o.created_at, o.expected_delivery, sp.business_name "
+                        "FROM orders o JOIN suppliers sp ON sp.id = o.supplier_id "
+                        "WHERE o.tenant_id = :tenant_id AND o.status IN ('pending', 'confirmed', 'shipped') "
+                        "ORDER BY o.expected_delivery ASC LIMIT 25"
+                    ),
+                    "intent": "supplier_pending_orders"
+                }
             return {
                 "sql": (
-                    "SELECT o.id, o.status, o.total_amount, o.created_at, sp.business_name "
+                    "SELECT o.id, o.status, o.total_amount, o.created_at, o.expected_delivery, sp.business_name "
                     "FROM orders o JOIN suppliers sp ON sp.id = o.supplier_id "
-                    "WHERE o.tenant_id = :tenant_id ORDER BY o.created_at DESC LIMIT 20"
+                    "WHERE o.tenant_id = :tenant_id ORDER BY o.created_at DESC LIMIT 25"
                 ),
-                "intent": "supplier_orders"
+                "intent": "supplier_orders_analysis"
             }
-        if "product" in p:
+        if "product" in p or "catalog" in p:
             return {
                 "sql": (
-                    "SELECT sp.name, sp.unit_price, sp.stock_quantity, s.business_name "
+                    "SELECT sp.name, sp.unit_price, sp.stock_quantity, sp.minimum_order, s.business_name, s.reliability_score "
                     "FROM supplier_products sp JOIN suppliers s ON s.id = sp.supplier_id "
-                    "WHERE sp.tenant_id = :tenant_id AND sp.is_active = 1 ORDER BY sp.name"
+                    "WHERE sp.tenant_id = :tenant_id AND sp.is_active = 1 ORDER BY s.reliability_score DESC, sp.name"
                 ),
-                "intent": "supplier_products"
+                "intent": "supplier_product_catalog"
             }
+        if "performance" in p or "reliable" in p or "rating" in p:
+            return {
+                "sql": (
+                    "SELECT s.business_name, s.contact_email, COUNT(o.id) as total_orders, "
+                    "AVG(CASE WHEN o.delivered_at IS NOT NULL THEN julianday(o.delivered_at) - julianday(o.created_at) END) as avg_delivery_days, "
+                    "s.reliability_score "
+                    "FROM suppliers s LEFT JOIN orders o ON o.supplier_id = s.id AND o.tenant_id = :tenant_id "
+                    "WHERE s.tenant_id = :tenant_id GROUP BY s.id, s.business_name, s.contact_email, s.reliability_score "
+                    "ORDER BY s.reliability_score DESC"
+                ),
+                "intent": "supplier_performance_metrics"
+            }
+        # Default supplier overview
+        return {
+            "sql": (
+                "SELECT s.business_name, s.contact_email, s.phone, s.reliability_score, "
+                "COUNT(o.id) as recent_orders "
+                "FROM suppliers s LEFT JOIN orders o ON o.supplier_id = s.id AND o.tenant_id = :tenant_id "
+                "WHERE s.tenant_id = :tenant_id GROUP BY s.id, s.business_name, s.contact_email, s.phone, s.reliability_score "
+                "ORDER BY s.reliability_score DESC"
+            ),
+            "intent": "supplier_overview"
+        }
     
     # Enhanced owner queries
     if "revenue" in p:
@@ -154,13 +182,14 @@ def _enhanced_fallback_sql(prompt: str) -> Dict[str, Any]:
             "intent": "top_selling"
         }
     
-    # Default safe query
+    # Default query
     return {
         "sql": (
-            "SELECT DATE(created_at) as day, COUNT(*) as transactions, SUM(total_amount) as revenue "
+            "SELECT DATE(created_at) as day, COUNT(*) as transactions, "
+            "SUM(total_amount) as revenue, AVG(total_amount) as avg_transaction "
             "FROM sales WHERE tenant_id = :tenant_id "
             "AND created_at >= date('now', '-7 days') "
             "GROUP BY day ORDER BY day DESC"
         ),
-        "intent": "recent_activity"
+        "intent": "recent_business_activity"
     }

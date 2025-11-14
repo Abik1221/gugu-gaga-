@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { LogOut, Clock, CheckCircle, AlertCircle, FileText, Building2, Phone, MapPin, CreditCard, Hash, MessageSquare, Upload } from "lucide-react";
-import { getAuthJSON, postAuthJSON } from "@/utils/api";
+import { getAuthJSON, postAuthJSON, API_BASE } from "@/utils/api";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -150,7 +150,7 @@ export default function OwnerKYCPage() {
         pharmacy_license_number: formData.tin_number,
         notes: formData.notes,
       };
-      const response = await fetch(`http://localhost:8000/api/v1/owner/kyc/status?tenant_id=${tenantId}`, {
+      const response = await fetch(`${API_BASE}/owner/kyc/status?tenant_id=${tenantId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

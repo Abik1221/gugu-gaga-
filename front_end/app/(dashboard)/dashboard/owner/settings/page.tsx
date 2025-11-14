@@ -233,7 +233,7 @@ export default function OwnerSettingsPage() {
     if (!profile) return [];
     return [
       { label: "Email", value: profile.email },
-      { label: "Tenant", value: profile.tenant_id ?? "—" },
+
       { label: "Primary role", value: profile.role ?? "—" },
       { label: "KYC status", value: profile.kyc_status ?? "—" },
       { label: "Subscription", value: profile.subscription_status ?? "—" },
