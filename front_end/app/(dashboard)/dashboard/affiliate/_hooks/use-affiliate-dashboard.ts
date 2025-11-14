@@ -53,7 +53,13 @@ type DashboardState = {
     deactivate: (token: string) => Promise<void>;
     rotate: (token: string) => Promise<void>;
     copyLink: (url: string) => Promise<void>;
-    requestPayout: () => Promise<void>;
+    requestPayout: (payoutData?: {
+      month?: string;
+      percent?: number;
+      bank_name: string;
+      bank_account_name: string;
+      bank_account_number: string;
+    }) => Promise<void>;
   };
 };
 
@@ -318,10 +324,20 @@ export function useAffiliateDashboard(): DashboardState {
     [show]
   );
 
-  const handleRequestPayout = useCallback(async () => {
+  const handleRequestPayout = useCallback(async (payoutData?: {
+    month?: string;
+    percent?: number;
+    bank_name: string;
+    bank_account_name: string;
+    bank_account_number: string;
+  }) => {
     setRequestingPayout(true);
     try {
-      await AffiliateAPI.requestPayout(payoutMonth || undefined, payoutPercent || 5);
+      if (payoutData) {
+        await AffiliateAPI.requestPayoutWithBankDetails(payoutData);
+      } else {
+        await AffiliateAPI.requestPayout(payoutMonth || undefined, payoutPercent || 5);
+      }
       show({ variant: "success", title: "Payout requested", description: "Finance will review your request shortly." });
       await Promise.all([refreshDashboard(), refreshPayouts()]);
     } catch (err) {

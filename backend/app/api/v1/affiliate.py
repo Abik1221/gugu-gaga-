@@ -14,6 +14,7 @@ from app.schemas.affiliate_links import (
     AffiliateLinkActionResponse,
     AffiliateLinkItem,
 )
+from app.schemas.payout import PayoutRequest, PayoutResponse
 
 router = APIRouter(prefix="/affiliate", tags=["affiliate"])
 
@@ -151,21 +152,30 @@ def list_payouts(
     ]
 
 
-@router.post("/payouts/request")
+@router.post("/payouts/request", response_model=PayoutResponse)
 def request_payout(
+    payout_data: PayoutRequest,
     user=Depends(require_role(Role.admin, Role.affiliate)),
     db: Session = Depends(get_db),
-    month: str | None = None,  # YYYY-MM
-    percent: float = 5.0,
 ):
     now = datetime.utcnow()
-    if not month:
-        month = f"{now.year:04d}-{now.month:02d}"
+    month = payout_data.month or f"{now.year:04d}-{now.month:02d}"
     try:
         year, mon = [int(x) for x in month.split("-")]
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid month format, expected YYYY-MM")
-    summary = compute_monthly_commission(db, affiliate_user_id=user.id, year=year, month=mon, percent=percent)
+    
+    # Update affiliate profile with bank details
+    profile = db.query(AffiliateProfile).filter(AffiliateProfile.user_id == user.id).first()
+    if not profile:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Affiliate profile not found")
+    
+    profile.bank_name = payout_data.bank_name
+    profile.bank_account_name = payout_data.bank_account_name
+    profile.bank_account_number = payout_data.bank_account_number
+    db.add(profile)
+    
+    summary = compute_monthly_commission(db, affiliate_user_id=user.id, year=year, month=mon, percent=payout_data.percent)
     amount = float(summary.get("amount", 0.0) or 0.0)
     if amount <= 0:
         raise HTTPException(
@@ -176,14 +186,14 @@ def request_payout(
         affiliate_user_id=user.id,
         tenant_id="GLOBAL",
         month=month,
-        percent=percent,
+        percent=payout_data.percent,
         amount=amount,
         status="pending",
     )
     db.add(payout)
     db.commit()
     db.refresh(payout)
-    return {"id": payout.id, "month": payout.month, "amount": payout.amount, "percent": payout.percent, "status": payout.status}
+    return PayoutResponse(id=payout.id, month=payout.month, amount=payout.amount, percent=payout.percent, status=payout.status)
 
 
 @router.post("/profile")

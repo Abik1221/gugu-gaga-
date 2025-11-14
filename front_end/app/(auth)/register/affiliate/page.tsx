@@ -23,9 +23,8 @@ export default function AffiliateRegisterPage() {
   const [affEmail, setAffEmail] = useState("");
   const [affPassword, setAffPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [bankAccountName, setBankAccountName] = useState("");
-  const [bankAccountNumber, setBankAccountNumber] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
 
   async function submitAffiliate(e: React.FormEvent) {
     e.preventDefault();
@@ -37,14 +36,19 @@ export default function AffiliateRegisterPage() {
         throw new Error("Valid email required");
       if (!affPassword || affPassword.length < 6)
         throw new Error("Password must be at least 6 characters");
+      if (!fullName.trim())
+        throw new Error("Full name is required");
+      if (!phone.trim())
+        throw new Error("Phone number is required");
+      if (!address.trim())
+        throw new Error("Address is required");
 
       await AuthAPI.registerAffiliate({
         email: affEmail,
         password: affPassword,
-        affiliate_full_name: fullName || undefined,
-        bank_name: bankName || undefined,
-        bank_account_name: bankAccountName || undefined,
-        bank_account_number: bankAccountNumber || undefined,
+        full_name: fullName,
+        phone: phone,
+        address: address,
       });
 
       setSuccess("Affiliate registered. Please verify your email.");
@@ -167,41 +171,35 @@ export default function AffiliateRegisterPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                  Full name (for payouts)
+                  Full name*
                 </label>
                 <Input
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
+                  required
                   className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                  Bank name
+                  Phone number*
                 </label>
                 <Input
-                  value={bankName}
-                  onChange={(e) => setBankName(e.target.value)}
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
                   className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                  Account name
+                  Address*
                 </label>
                 <Input
-                  value={bankAccountName}
-                  onChange={(e) => setBankAccountName(e.target.value)}
-                  className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                  Account number
-                </label>
-                <Input
-                  value={bankAccountNumber}
-                  onChange={(e) => setBankAccountNumber(e.target.value)}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  required
                   className="mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                 />
               </div>

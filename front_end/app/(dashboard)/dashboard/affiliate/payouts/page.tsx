@@ -26,6 +26,9 @@ export default function PayoutsPage() {
   } = useAffiliateDashboardContext();
 
   const [refreshing, setRefreshing] = useState(false);
+  const [bankName, setBankName] = useState("");
+  const [bankAccountName, setBankAccountName] = useState("");
+  const [bankAccountNumber, setBankAccountNumber] = useState("");
 
   const tenantsCount = dash?.tenants?.length ?? 0;
   const currentPeriodLabel = useMemo(() => {
@@ -147,20 +150,65 @@ export default function PayoutsPage() {
                   className="rounded-2xl border border-emerald-100/40 bg-white/80 text-emerald-900 focus:border-emerald-400 focus:ring-emerald-400"
                 />
               </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-600">
+                  Bank name*
+                </label>
+                <Input
+                  value={bankName}
+                  onChange={(e) => setBankName(e.target.value)}
+                  placeholder="Enter bank name"
+                  required
+                  className="rounded-2xl border border-emerald-100/40 bg-white/80 text-emerald-900 placeholder:text-emerald-300 focus:border-emerald-400 focus:ring-emerald-400"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-600">
+                  Account holder name*
+                </label>
+                <Input
+                  value={bankAccountName}
+                  onChange={(e) => setBankAccountName(e.target.value)}
+                  placeholder="Enter account holder name"
+                  required
+                  className="rounded-2xl border border-emerald-100/40 bg-white/80 text-emerald-900 placeholder:text-emerald-300 focus:border-emerald-400 focus:ring-emerald-400"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-600">
+                  Account number*
+                </label>
+                <Input
+                  value={bankAccountNumber}
+                  onChange={(e) => setBankAccountNumber(e.target.value)}
+                  placeholder="Enter account number"
+                  required
+                  className="rounded-2xl border border-emerald-100/40 bg-white/80 text-emerald-900 placeholder:text-emerald-300 focus:border-emerald-400 focus:ring-emerald-400"
+                />
+              </div>
             </div>
             <Button
               onClick={() => {
-                if (!payoutMonth) return;
+                if (!payoutMonth || !bankName.trim() || !bankAccountName.trim() || !bankAccountNumber.trim()) return;
                 if (!canRequestPayout) return;
-                void actions.requestPayout();
+                void actions.requestPayout({
+                  month: payoutMonth,
+                  percent: payoutPercent,
+                  bank_name: bankName,
+                  bank_account_name: bankAccountName,
+                  bank_account_number: bankAccountNumber,
+                });
               }}
-              disabled={requestingPayout || !payoutMonth || !canRequestPayout}
+              disabled={requestingPayout || !payoutMonth || !canRequestPayout || !bankName.trim() || !bankAccountName.trim() || !bankAccountNumber.trim()}
               className="mt-6 h-11 w-full rounded-2xl bg-emerald-600 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {requestingPayout ? "Submitting..." : "Submit payout request"}
             </Button>
             {!canRequestPayout && (
               <p className="mt-3 text-xs font-medium text-rose-600">{payoutGuardMessage}</p>
+            )}
+            {(!bankName.trim() || !bankAccountName.trim() || !bankAccountNumber.trim()) && (
+              <p className="mt-3 text-xs font-medium text-rose-600">All bank details are required for payout requests.</p>
             )}
           </SectionCard>
         </motion.div>

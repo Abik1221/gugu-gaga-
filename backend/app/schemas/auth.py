@@ -13,21 +13,6 @@ class UserCreate(BaseModel):
     phone: Optional[str] = None
     role: Optional[str] = None  # default handled server-side
     affiliate_code: Optional[str] = None
-    # Pharmacy KYC fields
-    id_number: Optional[str] = Field(default=None, description="Applicant national ID or company ID number (required for pharmacy_owner)")
-    pharmacy_license_number: Optional[str] = Field(default=None, description="Official pharmacy license number (required for pharmacy_owner)")
-    national_id_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded national ID document")
-    pharmacy_license_document_path: Optional[str] = Field(default=None, description="Path/URL to uploaded pharmacy license document")
-    license_document_name: Optional[str] = Field(default=None, description="Original filename for the pharmacy license document")
-    license_document_mime: Optional[str] = Field(default=None, description="MIME type for the pharmacy license document")
-    license_document_base64: Optional[str] = Field(default=None, description="Base64-encoded pharmacy license document contents")
-    kyc_notes: Optional[str] = Field(default=None, description="Additional notes for KYC reviewer")
-    affiliate_token: Optional[str] = Field(default=None, description="Referral link token if pharmacy arrived via affiliate link")
-    # Affiliate details
-    affiliate_full_name: Optional[str] = Field(default=None, description="Affiliate full legal name for payouts")
-    bank_name: Optional[str] = Field(default=None, description="Affiliate bank name")
-    bank_account_name: Optional[str] = Field(default=None, description="Affiliate bank account holder name")
-    bank_account_number: Optional[str] = Field(default=None, description="Affiliate bank account number")
 
     @field_validator("password")
     @classmethod
@@ -66,10 +51,9 @@ class PharmacyRegister(BaseModel):
 class AffiliateRegister(BaseModel):
     email: EmailStr
     password: str
-    affiliate_full_name: Optional[str] = Field(default=None, description="Affiliate full legal name for payouts")
-    bank_name: Optional[str] = Field(default=None, description="Affiliate bank name")
-    bank_account_name: Optional[str] = Field(default=None, description="Affiliate bank account holder name")
-    bank_account_number: Optional[str] = Field(default=None, description="Affiliate bank account number")
+    full_name: str = Field(..., description="Affiliate full legal name")
+    phone: str = Field(..., description="Affiliate phone number")
+    address: str = Field(..., description="Affiliate address")
 
     @field_validator("password")
     @classmethod

@@ -366,7 +366,7 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
 
     user = User(
         email=payload.email,
-        phone=None,
+        phone=payload.phone,
         role=Role.affiliate.value,
         tenant_id=None,
         password_hash=password_hash,
@@ -380,10 +380,9 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
     profile = AffiliateProfile(
         user_id=user.id,
         code=code,
-        full_name=payload.affiliate_full_name,
-        bank_name=payload.bank_name,
-        bank_account_name=payload.bank_account_name,
-        bank_account_number=payload.bank_account_number,
+        full_name=payload.full_name,
+        phone=payload.phone,
+        address=payload.address,
     )
     db.add(profile)
     db.commit()

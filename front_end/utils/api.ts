@@ -575,6 +575,14 @@ export const AffiliateAPI = {
     ),
   requestPayout: (month?: string, percent = 5) =>
     postAuthJSON("/api/v1/affiliate/payouts/request", { month, percent }, ""),
+  requestPayoutWithBankDetails: (data: {
+    month?: string;
+    percent?: number;
+    bank_name: string;
+    bank_account_name: string;
+    bank_account_number: string;
+  }) =>
+    postAuthJSON("/api/v1/affiliate/payouts/request", data, ""),
   updateProfile: (body: any) => postAuthJSON("/api/v1/affiliate/profile", body, ""),
 };
 

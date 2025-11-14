@@ -658,6 +658,7 @@ const AffiliateAPI = {
             percent
         }, "");
     },
+    requestPayoutWithBankDetails: (data)=>postAuthJSON("/api/v1/affiliate/payouts/request", data, ""),
     updateProfile: (body)=>postAuthJSON("/api/v1/affiliate/profile", body, "")
 };
 const AdminAPI = {
@@ -1534,9 +1535,8 @@ function AffiliateRegisterPage() {
     const [affEmail, setAffEmail] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [affPassword, setAffPassword] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [fullName, setFullName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [bankName, setBankName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [bankAccountName, setBankAccountName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [bankAccountNumber, setBankAccountNumber] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [phone, setPhone] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [address, setAddress] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     async function submitAffiliate(e) {
         e.preventDefault();
         setError(null);
@@ -1545,13 +1545,15 @@ function AffiliateRegisterPage() {
         try {
             if (!affEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(affEmail)) throw new Error("Valid email required");
             if (!affPassword || affPassword.length < 6) throw new Error("Password must be at least 6 characters");
+            if (!fullName.trim()) throw new Error("Full name is required");
+            if (!phone.trim()) throw new Error("Phone number is required");
+            if (!address.trim()) throw new Error("Address is required");
             await __TURBOPACK__imported__module__$5b$project$5d2f$utils$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AuthAPI"].registerAffiliate({
                 email: affEmail,
                 password: affPassword,
-                affiliate_full_name: fullName || undefined,
-                bank_name: bankName || undefined,
-                bank_account_name: bankAccountName || undefined,
-                bank_account_number: bankAccountNumber || undefined
+                full_name: fullName,
+                phone: phone,
+                address: address
             });
             setSuccess("Affiliate registered. Please verify your email.");
             showEmailSentNotification(affEmail, "register");
@@ -1584,27 +1586,27 @@ function AffiliateRegisterPage() {
                         className: "absolute top-[-6rem] left-[-4rem] h-72 w-72 rounded-full bg-emerald-200/40 blur-3xl"
                     }, void 0, false, {
                         fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                        lineNumber: 75,
+                        lineNumber: 79,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "absolute bottom-[-5rem] right-[-3rem] h-[28rem] w-[28rem] rounded-full bg-blue-200/40 blur-3xl"
                     }, void 0, false, {
                         fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                        lineNumber: 76,
+                        lineNumber: 80,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "absolute inset-x-0 top-[38%] h-24 bg-gradient-to-r from-emerald-100/40 via-transparent to-blue-100/40 blur-2xl"
                     }, void 0, false, {
                         fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                        lineNumber: 77,
+                        lineNumber: 81,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                lineNumber: 74,
+                lineNumber: 78,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1633,12 +1635,12 @@ function AffiliateRegisterPage() {
                                         children: "Mesob AI Affiliate Network"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                        lineNumber: 89,
+                                        lineNumber: 93,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                    lineNumber: 88,
+                                    lineNumber: 92,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1647,7 +1649,7 @@ function AffiliateRegisterPage() {
                                     className: "my-10 mx-auto"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                    lineNumber: 94,
+                                    lineNumber: 98,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1655,7 +1657,7 @@ function AffiliateRegisterPage() {
                                     children: "Become a trusted partner for bussiness digitization. Unlock recurring earnings with every successful registration."
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                    lineNumber: 99,
+                                    lineNumber: 103,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -1667,36 +1669,36 @@ function AffiliateRegisterPage() {
                                                     className: "mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 107,
+                                                    lineNumber: 111,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: item
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 108,
+                                                    lineNumber: 112,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, item, true, {
                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                            lineNumber: 106,
+                                            lineNumber: 110,
                                             columnNumber: 17
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                    lineNumber: 104,
+                                    lineNumber: 108,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                            lineNumber: 82,
+                            lineNumber: 86,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                        lineNumber: 81,
+                        lineNumber: 85,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1723,7 +1725,7 @@ function AffiliateRegisterPage() {
                                             children: "Join the affiliate program"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                            lineNumber: 123,
+                                            lineNumber: 127,
                                             columnNumber: 13
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1731,13 +1733,13 @@ function AffiliateRegisterPage() {
                                             children: "Earn commissions every time a pharmacy goes live."
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                            lineNumber: 126,
+                                            lineNumber: 130,
                                             columnNumber: 13
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                    lineNumber: 122,
+                                    lineNumber: 126,
                                     columnNumber: 11
                                 }, this),
                                 error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1745,7 +1747,7 @@ function AffiliateRegisterPage() {
                                     children: error
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                    lineNumber: 132,
+                                    lineNumber: 136,
                                     columnNumber: 13
                                 }, this),
                                 success && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1753,7 +1755,7 @@ function AffiliateRegisterPage() {
                                     children: success
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                    lineNumber: 137,
+                                    lineNumber: 141,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1770,7 +1772,7 @@ function AffiliateRegisterPage() {
                                                             children: "Email*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 145,
+                                                            lineNumber: 149,
                                                             columnNumber: 17
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1781,13 +1783,13 @@ function AffiliateRegisterPage() {
                                                             className: "mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 148,
+                                                            lineNumber: 152,
                                                             columnNumber: 17
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 144,
+                                                    lineNumber: 148,
                                                     columnNumber: 15
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1797,7 +1799,7 @@ function AffiliateRegisterPage() {
                                                             children: "Password*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 157,
+                                                            lineNumber: 161,
                                                             columnNumber: 17
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -1808,119 +1810,98 @@ function AffiliateRegisterPage() {
                                                             className: "mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 160,
+                                                            lineNumber: 164,
                                                             columnNumber: 17
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 156,
+                                                    lineNumber: 160,
                                                     columnNumber: 15
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                             className: "block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700",
-                                                            children: "Full name (for payouts)"
+                                                            children: "Full name*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 169,
+                                                            lineNumber: 173,
                                                             columnNumber: 17
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                                                             value: fullName,
                                                             onChange: (e)=>setFullName(e.target.value),
+                                                            required: true,
                                                             className: "mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 172,
+                                                            lineNumber: 176,
                                                             columnNumber: 17
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 168,
+                                                    lineNumber: 172,
                                                     columnNumber: 15
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                             className: "block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700",
-                                                            children: "Bank name"
+                                                            children: "Phone number*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 179,
+                                                            lineNumber: 184,
                                                             columnNumber: 17
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                                                            value: bankName,
-                                                            onChange: (e)=>setBankName(e.target.value),
+                                                            type: "tel",
+                                                            value: phone,
+                                                            onChange: (e)=>setPhone(e.target.value),
+                                                            required: true,
                                                             className: "mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 182,
+                                                            lineNumber: 187,
                                                             columnNumber: 17
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 178,
+                                                    lineNumber: 183,
                                                     columnNumber: 15
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     children: [
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                                             className: "block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700",
-                                                            children: "Account name"
+                                                            children: "Address*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 189,
+                                                            lineNumber: 196,
                                                             columnNumber: 17
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                                                            value: bankAccountName,
-                                                            onChange: (e)=>setBankAccountName(e.target.value),
+                                                            value: address,
+                                                            onChange: (e)=>setAddress(e.target.value),
+                                                            required: true,
                                                             className: "mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 192,
-                                                            columnNumber: 17
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 188,
-                                                    columnNumber: 15
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                            className: "block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700",
-                                                            children: "Account number"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
                                                             lineNumber: 199,
                                                             columnNumber: 17
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                                                            value: bankAccountNumber,
-                                                            onChange: (e)=>setBankAccountNumber(e.target.value),
-                                                            className: "mt-2 border border-emerald-100 bg-white text-slate-900 placeholder:text-slate-700 focus:border-emerald-500 focus:ring-emerald-500"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 202,
-                                                            columnNumber: 17
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 198,
+                                                    lineNumber: 195,
                                                     columnNumber: 15
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                            lineNumber: 143,
+                                            lineNumber: 147,
                                             columnNumber: 13
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1942,7 +1923,7 @@ function AffiliateRegisterPage() {
                                                             strokeWidth: "4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 221,
+                                                            lineNumber: 219,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -1951,20 +1932,20 @@ function AffiliateRegisterPage() {
                                                             d: "M4 12a8 8 0 018-8v8z"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                            lineNumber: 229,
+                                                            lineNumber: 227,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 216,
+                                                    lineNumber: 214,
                                                     columnNumber: 17
                                                 }, this) : null,
                                                 loading ? "Registering..." : "Sign Up"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                            lineNumber: 210,
+                                            lineNumber: 208,
                                             columnNumber: 13
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1978,19 +1959,19 @@ function AffiliateRegisterPage() {
                                                     children: "Sign in"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                                    lineNumber: 241,
+                                                    lineNumber: 239,
                                                     columnNumber: 15
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                            lineNumber: 239,
+                                            lineNumber: 237,
                                             columnNumber: 13
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                    lineNumber: 142,
+                                    lineNumber: 146,
                                     columnNumber: 11
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2004,7 +1985,7 @@ function AffiliateRegisterPage() {
                                             children: "Terms"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                            lineNumber: 252,
+                                            lineNumber: 250,
                                             columnNumber: 13
                                         }, this),
                                         " ",
@@ -2016,41 +1997,41 @@ function AffiliateRegisterPage() {
                                             children: "Privacy Policy"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                            lineNumber: 256,
+                                            lineNumber: 254,
                                             columnNumber: 13
                                         }, this),
                                         "."
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                                    lineNumber: 250,
+                                    lineNumber: 248,
                                     columnNumber: 11
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                            lineNumber: 116,
+                            lineNumber: 120,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                        lineNumber: 115,
+                        lineNumber: 119,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-                lineNumber: 80,
+                lineNumber: 84,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(auth)/register/affiliate/page.tsx",
-        lineNumber: 73,
+        lineNumber: 77,
         columnNumber: 5
     }, this);
 }
-_s(AffiliateRegisterPage, "w4SukqUM6zwkbeQmiu8Wq4BA8QM=", false, function() {
+_s(AffiliateRegisterPage, "ln52ZkviMUBzJViAyUkkx9unvSw=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
         __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$toast$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"],
