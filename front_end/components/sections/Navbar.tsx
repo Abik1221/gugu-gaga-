@@ -31,11 +31,7 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/20 backdrop-blur-md text-black shadow-lg border-b border-white/10"
-          : "bg-white/95 backdrop-blur-sm border-b border-gray-200"
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm transition-all duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -103,7 +99,8 @@ export default function Navbar() {
               </Button>
             </TrialDialog>
           </div>
-          <div className="lg:hidden">
+          <div className="lg:hidden flex items-center space-x-2">
+            <InstallButton />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-gray-700 hover:text-emerald-600 p-2"
@@ -112,6 +109,7 @@ export default function Navbar() {
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
+
         </div>
       </div>
 
@@ -162,6 +160,7 @@ export default function Navbar() {
               </Link>
 
               <div className="px-3 py-2 space-y-2 pt-4 border-t border-gray-200">
+                <InstallButton fullWidth={true} />
                 <RoleSelectionDialog>
                   <Button variant="outline" className="w-full">
                     Sign In

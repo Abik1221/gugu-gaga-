@@ -2,10 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Download, X, Smartphone } from "lucide-react";
-import Image from "next/image";
-import logoImage from "@/public/mesoblogo.jpeg";
+import { Download } from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -14,7 +11,6 @@ interface BeforeInstallPromptEvent extends Event {
 
 export function InstallPWA() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showInstallDialog, setShowInstallDialog] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
@@ -28,13 +24,6 @@ export function InstallPWA() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      
-      // Show popup after 30 seconds of browsing
-      setTimeout(() => {
-        if (!isInstalled && !localStorage.getItem('pwa-install-dismissed')) {
-          setShowInstallDialog(true);
-        }
-      }, 30000);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -55,58 +44,24 @@ export function InstallPWA() {
     }
     
     setDeferredPrompt(null);
-    setShowInstallDialog(false);
-  };
-
-  const handleDismiss = () => {
-    setShowInstallDialog(false);
-    localStorage.setItem('pwa-install-dismissed', 'true');
   };
 
   // Don't show if already installed or no prompt available
   if (isInstalled || !deferredPrompt) return null;
 
   return (
-    <Dialog open={showInstallDialog} onOpenChange={setShowInstallDialog}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <div className="flex items-center gap-3 mb-2">
-            <Image
-              src={logoImage}
-              alt="Mesob Logo"
-              width={40}
-              height={40}
-              className="rounded-lg"
-            />
-            <DialogTitle className="text-xl">Install Mesob App</DialogTitle>
-          </div>
-          <DialogDescription className="text-left">
-            Get the full Mesob experience! Install our app for:
-            <ul className="mt-2 space-y-1 text-sm">
-              <li>• Faster loading and offline access</li>
-              <li>• Native app experience</li>
-              <li>• Quick access from your home screen</li>
-              <li>• Push notifications for updates</li>
-            </ul>
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="flex gap-3 mt-4">
-          <Button onClick={handleInstall} className="flex-1 bg-emerald-600 hover:bg-emerald-700">
-            <Download className="w-4 h-4 mr-2" />
-            Install App
-          </Button>
-          <Button variant="outline" onClick={handleDismiss} className="flex-1">
-            <X className="w-4 h-4 mr-2" />
-            Not Now
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <div className="fixed bottom-6 right-6 z-40 lg:hidden">
+      <Button
+        onClick={handleInstall}
+        className="h-14 w-14 rounded-full bg-emerald-600 hover:bg-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300"
+      >
+        <Download className="w-6 h-6 text-white" />
+      </Button>
+    </div>
   );
 }
 
-export function InstallButton() {
+export function InstallButton({ className = "", fullWidth = false }: { className?: string; fullWidth?: boolean }) {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
 
@@ -142,18 +97,34 @@ export function InstallButton() {
     setDeferredPrompt(null);
   };
 
-  // Don't show if already installed or no prompt available
-  if (isInstalled || !deferredPrompt) return null;
+  // Don't show if already installed
+  if (isInstalled) return null;
+  
+  // If no prompt available, show not supported message
+  if (!deferredPrompt) {
+    return (
+      <Button
+        disabled
+        variant="outline"
+        size="sm"
+        className={`flex items-center gap-2 border-gray-200 text-gray-400 ${fullWidth ? 'w-full' : ''} ${className}`}
+        title="PWA not supported on this browser"
+      >
+        <Download className="w-4 h-4" />
+        <span className={fullWidth ? "Not Supported" : "hidden sm:inline"}>Not Supported</span>
+      </Button>
+    );
+  }
 
   return (
     <Button
       onClick={handleInstall}
       variant="outline"
       size="sm"
-      className="hidden lg:flex items-center gap-2 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+      className={`flex items-center gap-2 border-emerald-200 text-emerald-700 hover:bg-emerald-50 ${fullWidth ? 'w-full' : ''} ${className}`}
     >
-      <Smartphone className="w-4 h-4" />
-      Install App
+      <Download className="w-4 h-4" />
+      <span className={fullWidth ? "" : "hidden sm:inline"}>Install App</span>
     </Button>
   );
 }

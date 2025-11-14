@@ -92,51 +92,48 @@ export default function HowItWorks() {
         {/* Step 1 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
-            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black "
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600"
             variants={circleVariants}
           >
             <span className="text-2xl font-bold text-white">1</span>
           </motion.div>
           <h4 className="mb-3 text-xl font-semibold text-black">
-            Setup & Integration
+            Quick Setup
           </h4>
           <p className="text-gray-700">
-            Quick setup with your existing inventory data. Integrate with your
-            suppliers and payment systems seamlessly.
+            Get started in minutes with easy setup and seamless integration with your existing systems.
           </p>
         </motion.div>
 
         {/* Step 2 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
-            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black"
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600"
             variants={circleVariants}
           >
             <span className="text-2xl font-bold text-white">2</span>
           </motion.div>
           <h4 className="mb-3 text-xl font-semibold text-black">
-            AI Optimization
+            Smart Analytics
           </h4>
           <p className="text-gray-700">
-            Our AI analyzes your operations and starts providing insights,
-            predictions, and automated recommendations.
+            AI-powered insights help you make better decisions with real-time analytics and predictions.
           </p>
         </motion.div>
 
         {/* Step 3 */}
         <motion.div className="text-center" variants={cardVariants}>
           <motion.div
-            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black"
+            className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600"
             variants={circleVariants}
           >
             <span className="text-2xl font-bold text-white">3</span>
           </motion.div>
           <h4 className="mb-3 text-xl font-semibold text-black">
-            Grow & Scale
+            Scale & Grow
           </h4>
           <p className="text-gray-700">
-            Expand your business with confidence using real-time data,
-            multi-branch support, and continuous AI improvements.
+            Expand confidently with multi-branch support, automated workflows, and continuous optimization.
           </p>
         </motion.div>
       </div>
