@@ -53,7 +53,7 @@ export default function HowItWorks() {
       className="mx-auto flex max-w-5xl flex-col justify-center py-16"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true }}
       variants={containerVariants}
     >
       {/* Animated Title */}

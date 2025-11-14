@@ -89,7 +89,7 @@ export default function FeaturesSection() {
                 key={index}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className={`grid lg:grid-cols-2 gap-12 items-center ${
                   !isEven ? "lg:flex-row-reverse" : ""
