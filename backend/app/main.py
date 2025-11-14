@@ -64,6 +64,15 @@ def on_startup():
     if settings.environment != "production":
         engine = get_engine()
         Base.metadata.create_all(bind=engine)
+    
+    # Seed admin user from environment variables
+    from .core.admin_seeder import seed_admin_user
+    db = SessionLocal()
+    try:
+        seed_admin_user(db)
+    finally:
+        db.close()
+    
     register_error_handlers(app)
     # Start scheduler loop if enabled
     if settings.enable_scheduler:
