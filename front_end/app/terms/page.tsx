@@ -103,8 +103,10 @@ export default function TermsPage() {
             If you have questions about these Terms of Service, please contact us:
           </p>
           <div className="space-y-2 text-gray-700">
-            <p>Email: <a href="mailto:legal@mesob.ai" className="text-emerald-600 hover:underline">legal@mesob.ai</a></p>
+            <p>Email: <a href="mailto:nahomkeneni4@gmail.com" className="text-emerald-600 hover:underline">nahomkeneni4@gmail.com</a></p>
+            <p>Phone: +251983446134</p>
             <p>Address: Bole, Addis Ababa, Ethiopia</p>
+            <p className="text-sm text-gray-600 mt-3">Business Hours: Monday - Friday, 8:30 AM - 5:30 PM (East Africa Time)</p>
           </div>
         </div>
 

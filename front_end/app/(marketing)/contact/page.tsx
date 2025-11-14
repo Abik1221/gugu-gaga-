@@ -141,7 +141,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Email</h4>
-                    <p className="text-gray-600">support@mesob.com</p>
+                    <p className="text-gray-600">nahomkeneni4@gmail.com</p>
                     <p className="text-sm text-gray-500">We respond within 24 hours</p>
                   </div>
                 </div>
@@ -152,7 +152,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Phone</h4>
-                    <p className="text-gray-600">+251 11 123 4567</p>
+                    <p className="text-gray-600">+251983446134</p>
                     <p className="text-sm text-gray-500">Mon-Fri, 9AM-6PM EAT</p>
                   </div>
                 </div>
@@ -163,8 +163,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Office</h4>
-                    <p className="text-gray-600">Addis Ababa, Ethiopia</p>
-                    <p className="text-sm text-gray-500">Innovation District</p>
+                    <p className="text-gray-600">Bole, Addis Ababa, Ethiopia</p>
+                    <p className="text-sm text-gray-500">Business Hours: Monday - Friday, 8:30 AM - 5:30 PM (East Africa Time)</p>
                   </div>
                 </div>
               </div>

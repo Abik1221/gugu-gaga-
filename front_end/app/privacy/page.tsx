@@ -103,8 +103,8 @@ export default function PrivacyPage() {
             If you have questions about this Privacy Policy or how we handle your data, please contact us:
           </p>
           <div className="space-y-2 text-gray-700">
-            <p>Email: <a href="mailto:privacy@mesob.ai" className="text-emerald-600 hover:underline">privacy@mesob.ai</a></p>
-            <p>Phone: +251 11 XXX XXXX</p>
+            <p>Email: <a href="mailto:nahomkeneni4@gmail.com" className="text-emerald-600 hover:underline">nahomkeneni4@gmail.com</a></p>
+            <p>Phone: +251983446134</p>
             <p>Address: Bole, Addis Ababa, Ethiopia</p>
             <p className="text-sm text-gray-600 mt-3">Business Hours: Monday - Friday, 8:30 AM - 5:30 PM (East Africa Time)</p>
           </div>
