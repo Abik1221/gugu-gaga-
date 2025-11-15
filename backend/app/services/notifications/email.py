@@ -18,10 +18,6 @@ def send_email(to: str, subject: str, body: str, from_addr: Optional[str] = None
         logger.info("📧 EMAIL DISABLED - Would send to %s: %s", to, subject)
         return True
     
-    # Fast email sending without SMTP for development
-    logger.info("📧 EMAIL SENT (mock) to %s: %s", to, subject)
-    return True
-
     host = settings.smtp_host
     username = settings.smtp_username
     password = settings.smtp_password
