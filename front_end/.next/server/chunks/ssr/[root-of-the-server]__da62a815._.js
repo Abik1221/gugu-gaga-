@@ -339,44 +339,34 @@ function TrialDialog({ children }) {
                 children: children
             }, void 0, false, {
                 fileName: "[project]/components/ui/trial-dialog.tsx",
-                lineNumber: 53,
+                lineNumber: 59,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogContent"], {
-                className: "bg-white text-black max-w-sm",
+                className: "sm:max-w-sm bg-white p-6",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogHeader"], {
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["DialogTitle"], {
-                            className: "text-black text-center text-lg",
+                            className: "text-black text-center text-md",
                             children: "Choose Your Role"
                         }, void 0, false, {
                             fileName: "[project]/components/ui/trial-dialog.tsx",
-                            lineNumber: 58,
+                            lineNumber: 62,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/ui/trial-dialog.tsx",
-                        lineNumber: 57,
+                        lineNumber: 61,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "space-y-3",
+                        className: "space-y-1",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "text-center text-gray-600 text-xs",
-                                children: "Select your role to start your free trial"
-                            }, void 0, false, {
-                                fileName: "[project]/components/ui/trial-dialog.tsx",
-                                lineNumber: 61,
-                                columnNumber: 11
-                            }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2",
                                 children: userTypes.map((type)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
                                         className: `cursor-pointer transition-all ${selectedType === type.id ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-emerald-300"}`,
                                         onClick: ()=>setSelectedType(type.id),
                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
-                                            className: "p-3",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "flex items-center space-x-2",
                                                 children: [
@@ -386,12 +376,12 @@ function TrialDialog({ children }) {
                                                             className: `w-4 h-4 ${selectedType === type.id ? "text-emerald-600" : "text-gray-600"}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/components/ui/trial-dialog.tsx",
-                                                            lineNumber: 81,
+                                                            lineNumber: 87,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/ui/trial-dialog.tsx",
-                                                        lineNumber: 78,
+                                                        lineNumber: 80,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -401,7 +391,7 @@ function TrialDialog({ children }) {
                                                                 children: type.title
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/ui/trial-dialog.tsx",
-                                                                lineNumber: 86,
+                                                                lineNumber: 96,
                                                                 columnNumber: 23
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -409,34 +399,34 @@ function TrialDialog({ children }) {
                                                                 children: type.description
                                                             }, void 0, false, {
                                                                 fileName: "[project]/components/ui/trial-dialog.tsx",
-                                                                lineNumber: 87,
+                                                                lineNumber: 99,
                                                                 columnNumber: 23
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/components/ui/trial-dialog.tsx",
-                                                        lineNumber: 85,
+                                                        lineNumber: 95,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/components/ui/trial-dialog.tsx",
-                                                lineNumber: 77,
+                                                lineNumber: 79,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/components/ui/trial-dialog.tsx",
-                                            lineNumber: 76,
+                                            lineNumber: 78,
                                             columnNumber: 17
                                         }, this)
                                     }, type.id, false, {
                                         fileName: "[project]/components/ui/trial-dialog.tsx",
-                                        lineNumber: 67,
+                                        lineNumber: 69,
                                         columnNumber: 15
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/components/ui/trial-dialog.tsx",
-                                lineNumber: 65,
+                                lineNumber: 67,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -449,7 +439,7 @@ function TrialDialog({ children }) {
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/components/ui/trial-dialog.tsx",
-                                        lineNumber: 96,
+                                        lineNumber: 110,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -459,31 +449,31 @@ function TrialDialog({ children }) {
                                         children: "Start Trial"
                                     }, void 0, false, {
                                         fileName: "[project]/components/ui/trial-dialog.tsx",
-                                        lineNumber: 103,
+                                        lineNumber: 117,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/ui/trial-dialog.tsx",
-                                lineNumber: 95,
+                                lineNumber: 109,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/ui/trial-dialog.tsx",
-                        lineNumber: 60,
+                        lineNumber: 66,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/ui/trial-dialog.tsx",
-                lineNumber: 56,
+                lineNumber: 60,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/ui/trial-dialog.tsx",
-        lineNumber: 52,
+        lineNumber: 58,
         columnNumber: 5
     }, this);
 }
@@ -1180,7 +1170,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navi
 function HeroSection() {
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-        className: "pt-2 sm:pt-3 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white",
+        className: "pt-2 sm:pt-3 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white mt-10",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "w-full max-w-7xl mx-auto",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1280,7 +1270,7 @@ function HeroSection() {
                                 },
                                 className: "space-y-4",
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                    className: "text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight",
+                                    className: "text-2xl sm:text-3xl md:text-4xl lg:text-4xl text-gray-900 leading-tight",
                                     children: [
                                         "Transform Your",
                                         " ",
@@ -1332,18 +1322,18 @@ function HeroSection() {
                                                     className: "ml-2 w-4 h-4 sm:w-5 sm:h-5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/HeroSection.tsx",
-                                                    lineNumber: 67,
+                                                    lineNumber: 68,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/sections/HeroSection.tsx",
-                                            lineNumber: 62,
+                                            lineNumber: 63,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/HeroSection.tsx",
-                                        lineNumber: 61,
+                                        lineNumber: 62,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1354,13 +1344,13 @@ function HeroSection() {
                                         children: "Watch Demo"
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/HeroSection.tsx",
-                                        lineNumber: 70,
+                                        lineNumber: 71,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/HeroSection.tsx",
-                                lineNumber: 54,
+                                lineNumber: 55,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -1391,7 +1381,7 @@ function HeroSection() {
                                                     children: "30 Days"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/HeroSection.tsx",
-                                                    lineNumber: 89,
+                                                    lineNumber: 90,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1399,20 +1389,20 @@ function HeroSection() {
                                                     children: "Free Trial"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/HeroSection.tsx",
-                                                    lineNumber: 90,
+                                                    lineNumber: 93,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/sections/HeroSection.tsx",
-                                            lineNumber: 88,
+                                            lineNumber: 89,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "h-12 w-px bg-gray-300 flex-shrink-0"
                                         }, void 0, false, {
                                             fileName: "[project]/components/sections/HeroSection.tsx",
-                                            lineNumber: 92,
+                                            lineNumber: 95,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1423,7 +1413,7 @@ function HeroSection() {
                                                     children: "24/7"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/HeroSection.tsx",
-                                                    lineNumber: 94,
+                                                    lineNumber: 97,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1431,20 +1421,20 @@ function HeroSection() {
                                                     children: "AI Support"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/HeroSection.tsx",
-                                                    lineNumber: 95,
+                                                    lineNumber: 98,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/sections/HeroSection.tsx",
-                                            lineNumber: 93,
+                                            lineNumber: 96,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "h-12 w-px bg-gray-300 flex-shrink-0"
                                         }, void 0, false, {
                                             fileName: "[project]/components/sections/HeroSection.tsx",
-                                            lineNumber: 97,
+                                            lineNumber: 100,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1458,7 +1448,7 @@ function HeroSection() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/components/sections/HeroSection.tsx",
-                                                    lineNumber: 99,
+                                                    lineNumber: 102,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1466,24 +1456,24 @@ function HeroSection() {
                                                     children: "Uptime"
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/HeroSection.tsx",
-                                                    lineNumber: 100,
+                                                    lineNumber: 105,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/components/sections/HeroSection.tsx",
-                                            lineNumber: 98,
+                                            lineNumber: 101,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/sections/HeroSection.tsx",
-                                    lineNumber: 87,
+                                    lineNumber: 88,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HeroSection.tsx",
-                                lineNumber: 80,
+                                lineNumber: 81,
                                 columnNumber: 13
                             }, this)
                         ]
@@ -1514,7 +1504,7 @@ function HeroSection() {
                                 className: "absolute inset-0 bg-emerald-400 rounded-2xl blur-3xl opacity-20"
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HeroSection.tsx",
-                                lineNumber: 113,
+                                lineNumber: 118,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -1523,13 +1513,13 @@ function HeroSection() {
                                 className: "relative rounded-2xl shadow-2xl w-full"
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/HeroSection.tsx",
-                                lineNumber: 114,
+                                lineNumber: 119,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/sections/HeroSection.tsx",
-                        lineNumber: 106,
+                        lineNumber: 111,
                         columnNumber: 11
                     }, this)
                 ]
@@ -2091,8 +2081,7 @@ function FeaturesSection() {
                                 y: 0
                             },
                             viewport: {
-                                once: true,
-                                margin: "-100px"
+                                once: true
                             },
                             transition: {
                                 duration: 0.6,
@@ -2919,8 +2908,7 @@ function HowItWorks() {
         initial: "hidden",
         whileInView: "visible",
         viewport: {
-            once: true,
-            amount: 0.3
+            once: true
         },
         variants: containerVariants,
         children: [
@@ -3351,13 +3339,13 @@ function PricingSection() {
                                     children: "Transparent Pricing"
                                 }, void 0, false, {
                                     fileName: "[project]/components/sections/PricingSection.tsx",
-                                    lineNumber: 183,
+                                    lineNumber: 180,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/sections/PricingSection.tsx",
-                            lineNumber: 181,
+                            lineNumber: 178,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3365,7 +3353,7 @@ function PricingSection() {
                             children: "Choose the plan that fits your business. Start with a 30-day free trial, then select the tier that matches your needs."
                         }, void 0, false, {
                             fileName: "[project]/components/sections/PricingSection.tsx",
-                            lineNumber: 185,
+                            lineNumber: 182,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3380,7 +3368,7 @@ function PricingSection() {
                                         children: "Bussiness Owner"
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/PricingSection.tsx",
-                                        lineNumber: 192,
+                                        lineNumber: 189,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3390,28 +3378,28 @@ function PricingSection() {
                                         children: "Supplier"
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/PricingSection.tsx",
-                                        lineNumber: 203,
+                                        lineNumber: 200,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                lineNumber: 191,
+                                lineNumber: 188,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/components/sections/PricingSection.tsx",
-                            lineNumber: 190,
+                            lineNumber: 187,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/sections/PricingSection.tsx",
-                    lineNumber: 174,
+                    lineNumber: 171,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: `grid gap-8 max-w-6xl mx-auto ${selectedType === "supplier" ? "md:grid-cols-4" : "md:grid-cols-3"}`,
+                    className: `grid gap-14 max-w-6xl mx-auto ${selectedType === "supplier" ? "md:grid-cols-4" : "md:grid-cols-3"}`,
                     children: currentPlans.map((plan, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
                             initial: {
                                 opacity: 0,
@@ -3429,7 +3417,7 @@ function PricingSection() {
                                 delay: index * 0.1
                             },
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-                                className: `p-8 relative h-full ${plan.highlight ? "border-2 border-emerald-500 shadow-2xl md:scale-105" : "border border-gray-200"}`,
+                                className: `p-4 relative ${index === 2 ? "text-[14px]" : ""} ${plan.highlight ? "border-2 border-emerald-500 shadow-2xl md:scale-105" : "border border-gray-200"}`,
                                 children: [
                                     plan.popular && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
                                         className: "absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white",
@@ -3438,25 +3426,25 @@ function PricingSection() {
                                                 className: "w-3 h-3 mr-1"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                                lineNumber: 240,
+                                                lineNumber: 237,
                                                 columnNumber: 21
                                             }, this),
                                             "Most Popular"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/sections/PricingSection.tsx",
-                                        lineNumber: 239,
+                                        lineNumber: 236,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "text-center mb-8",
+                                        className: "text-center mb-4",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                                                 className: "text-2xl text-gray-900 mb-2",
                                                 children: plan.name
                                             }, void 0, false, {
                                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                                lineNumber: 246,
+                                                lineNumber: 243,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3464,22 +3452,22 @@ function PricingSection() {
                                                 children: plan.description
                                             }, void 0, false, {
                                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                                lineNumber: 247,
+                                                lineNumber: 244,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "mb-2",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                    className: "text-5xl text-gray-900",
+                                                    className: "text-4xl text-gray-900",
                                                     children: plan.price
                                                 }, void 0, false, {
                                                     fileName: "[project]/components/sections/PricingSection.tsx",
-                                                    lineNumber: 249,
+                                                    lineNumber: 246,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                                lineNumber: 248,
+                                                lineNumber: 245,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3487,17 +3475,17 @@ function PricingSection() {
                                                 children: plan.period
                                             }, void 0, false, {
                                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                                lineNumber: 251,
+                                                lineNumber: 248,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/sections/PricingSection.tsx",
-                                        lineNumber: 245,
+                                        lineNumber: 242,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                                        className: "space-y-4 mb-8",
+                                        className: `text-[13px] ${index === 2 ? "space-y-1" : "space-y-2"} mb-4`,
                                         children: plan.features.map((feature, featureIndex)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                 className: "flex items-start gap-3",
                                                 children: [
@@ -3505,7 +3493,7 @@ function PricingSection() {
                                                         className: "w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/PricingSection.tsx",
-                                                        lineNumber: 257,
+                                                        lineNumber: 258,
                                                         columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3513,58 +3501,58 @@ function PricingSection() {
                                                         children: feature
                                                     }, void 0, false, {
                                                         fileName: "[project]/components/sections/PricingSection.tsx",
-                                                        lineNumber: 258,
+                                                        lineNumber: 259,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, featureIndex, true, {
                                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                                lineNumber: 256,
+                                                lineNumber: 257,
                                                 columnNumber: 21
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/PricingSection.tsx",
-                                        lineNumber: 254,
+                                        lineNumber: 251,
                                         columnNumber: 17
                                     }, this),
                                     plan.name === "Free Trial" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$trial$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TrialDialog"], {
                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                             className: `w-full ${plan.highlight ? "bg-emerald-600 hover:bg-emerald-700" : "bg-gray-900 hover:bg-gray-800"}`,
-                                            size: "lg",
+                                            size: "default",
                                             children: plan.cta
                                         }, void 0, false, {
                                             fileName: "[project]/components/sections/PricingSection.tsx",
-                                            lineNumber: 265,
+                                            lineNumber: 266,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/PricingSection.tsx",
-                                        lineNumber: 264,
+                                        lineNumber: 265,
                                         columnNumber: 19
                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                         className: `w-full ${plan.highlight ? "bg-emerald-600 hover:bg-emerald-700" : "bg-gray-900 hover:bg-gray-800"}`,
-                                        size: "lg",
+                                        size: "default",
                                         onClick: ()=>handlePlanClick(plan),
                                         children: plan.cta
                                     }, void 0, false, {
                                         fileName: "[project]/components/sections/PricingSection.tsx",
-                                        lineNumber: 277,
+                                        lineNumber: 278,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                lineNumber: 231,
+                                lineNumber: 228,
                                 columnNumber: 15
                             }, this)
                         }, index, false, {
                             fileName: "[project]/components/sections/PricingSection.tsx",
-                            lineNumber: 224,
+                            lineNumber: 221,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/components/sections/PricingSection.tsx",
-                    lineNumber: 218,
+                    lineNumber: 215,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3575,7 +3563,7 @@ function PricingSection() {
                             "All plans include secure data encryption, regular backups, and Ethiopian Birr support.",
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                lineNumber: 298,
+                                lineNumber: 299,
                                 columnNumber: 13
                             }, this),
                             selectedType === "owner" ? "Need a custom enterprise solution?" : "Ready to join our supplier network?",
@@ -3586,24 +3574,24 @@ function PricingSection() {
                                 children: "Contact us"
                             }, void 0, false, {
                                 fileName: "[project]/components/sections/PricingSection.tsx",
-                                lineNumber: 302,
+                                lineNumber: 303,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/sections/PricingSection.tsx",
-                        lineNumber: 295,
+                        lineNumber: 296,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/components/sections/PricingSection.tsx",
-                    lineNumber: 294,
+                    lineNumber: 295,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/components/sections/PricingSection.tsx",
-            lineNumber: 173,
+            lineNumber: 170,
             columnNumber: 7
         }, this)
     }, void 0, false, {

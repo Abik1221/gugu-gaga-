@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Package, Store } from "lucide-react";
@@ -22,26 +28,26 @@ export function TrialDialog({ children }: TrialDialogProps) {
       title: "Bussiness Owner",
       description: "Manage your bussiness operations",
       icon: Store,
-      route: "/register/owner"
+      route: "/register/owner",
     },
     {
       id: "supplier",
       title: "Supplier",
       description: "Supply products to pharmacies",
       icon: Package,
-      route: "/register/supplier"
+      route: "/register/supplier",
     },
     {
       id: "affiliate",
       title: "Affiliate",
       description: "Earn commissions by referring",
       icon: Users,
-      route: "/register/affiliate"
-    }
+      route: "/register/affiliate",
+    },
   ];
 
   const handleSubmit = () => {
-    const selectedUserType = userTypes.find(type => type.id === selectedType);
+    const selectedUserType = userTypes.find((type) => type.id === selectedType);
     if (selectedUserType) {
       router.push(selectedUserType.route);
       setOpen(false);
@@ -50,21 +56,17 @@ export function TrialDialog({ children }: TrialDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
-      <DialogContent className="bg-white text-black max-w-sm">
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-sm bg-white p-6">
         <DialogHeader>
-          <DialogTitle className="text-black text-center text-lg">Choose Your Role</DialogTitle>
+          <DialogTitle className="text-black text-center text-md">
+            Choose Your Role
+          </DialogTitle>
         </DialogHeader>
-        <div className="space-y-3">
-          <p className="text-center text-gray-600 text-xs">
-            Select your role to start your free trial
-          </p>
-          
-          <div className="space-y-2">
+        <div className="space-y-1">
+          <div>
             {userTypes.map((type) => (
-              <Card
+              <div
                 key={type.id}
                 className={`cursor-pointer transition-all ${
                   selectedType === type.id
@@ -73,22 +75,34 @@ export function TrialDialog({ children }: TrialDialogProps) {
                 }`}
                 onClick={() => setSelectedType(type.id)}
               >
-                <CardContent className="p-3">
-                  <div className="flex items-center space-x-2">
-                    <div className={`p-1.5 rounded-lg ${
-                      selectedType === type.id ? "bg-emerald-100" : "bg-gray-100"
-                    }`}>
-                      <type.icon className={`w-4 h-4 ${
-                        selectedType === type.id ? "text-emerald-600" : "text-gray-600"
-                      }`} />
+                <div className="my-2">
+                  <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <div
+                      className={`p-1.5 rounded-lg ${
+                        selectedType === type.id
+                          ? "bg-emerald-100"
+                          : "bg-gray-100"
+                      }`}
+                    >
+                      <type.icon
+                        className={`w-4 h-4 ${
+                          selectedType === type.id
+                            ? "text-emerald-600"
+                            : "text-gray-600"
+                        }`}
+                      />
                     </div>
                     <div>
-                      <h3 className="font-medium text-black text-sm">{type.title}</h3>
-                      <p className="text-xs text-gray-600">{type.description}</p>
+                      <h3 className="font-medium text-black text-sm">
+                        {type.title}
+                      </h3>
+                      <p className="text-xs text-gray-600">
+                        {type.description}
+                      </p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
 

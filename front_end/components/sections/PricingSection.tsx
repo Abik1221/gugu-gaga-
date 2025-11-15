@@ -166,10 +166,7 @@ export default function PricingSection() {
   const currentPlans = selectedType === "owner" ? ownerPlans : supplierPlans;
 
   return (
-    <section
-      id="pricing"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50"
-    >
+    <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -216,7 +213,7 @@ export default function PricingSection() {
         </motion.div>
 
         <div
-          className={`grid gap-8 max-w-6xl mx-auto ${
+          className={`grid gap-14 max-w-6xl mx-auto ${
             selectedType === "supplier" ? "md:grid-cols-4" : "md:grid-cols-3"
           }`}
         >
@@ -229,7 +226,7 @@ export default function PricingSection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Card
-                className={`p-8 relative h-full ${
+                className={`p-4 relative ${index === 2 ? "text-[14px]" : ""} ${
                   plan.highlight
                     ? "border-2 border-emerald-500 shadow-2xl md:scale-105"
                     : "border border-gray-200"
@@ -242,16 +239,20 @@ export default function PricingSection() {
                   </Badge>
                 )}
 
-                <div className="text-center mb-8">
+                <div className="text-center mb-4">
                   <h3 className="text-2xl text-gray-900 mb-2">{plan.name}</h3>
                   <p className="text-gray-600 mb-4">{plan.description}</p>
                   <div className="mb-2">
-                    <span className="text-5xl text-gray-900">{plan.price}</span>
+                    <span className="text-4xl text-gray-900">{plan.price}</span>
                   </div>
                   <div className="text-gray-600">{plan.period}</div>
                 </div>
 
-                <ul className="space-y-4 mb-8">
+                <ul
+                  className={`text-[13px] ${
+                    index === 2 ? "space-y-1" : "space-y-2"
+                  } mb-4`}
+                >
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start gap-3">
                       <Check className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
@@ -268,7 +269,7 @@ export default function PricingSection() {
                           ? "bg-emerald-600 hover:bg-emerald-700"
                           : "bg-gray-900 hover:bg-gray-800"
                       }`}
-                      size="lg"
+                      size="default"
                     >
                       {plan.cta}
                     </Button>
@@ -280,7 +281,7 @@ export default function PricingSection() {
                         ? "bg-emerald-600 hover:bg-emerald-700"
                         : "bg-gray-900 hover:bg-gray-800"
                     }`}
-                    size="lg"
+                    size="default"
                     onClick={() => handlePlanClick(plan)}
                   >
                     {plan.cta}

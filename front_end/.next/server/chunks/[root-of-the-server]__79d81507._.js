@@ -59,9 +59,9 @@ __turbopack_context__.s([
 ]);
 function manifest() {
     return {
-        name: "Mesob - Pharmacy Management Platform",
-        short_name: "Mesob",
-        description: "Mesob - Complete pharmacy management platform for inventory, sales, and operations.",
+        name: "MesobAI - AI-Powered Pharmacy Management",
+        short_name: "MesobAI",
+        description: "MesobAI - AI-powered pharmacy management system for Ethiopian businesses. Revolutionary mesob technology meets modern AI.",
         id: "/",
         start_url: "/",
         scope: "/",

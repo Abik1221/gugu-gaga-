@@ -3,7 +3,7 @@ import { Shield } from "lucide-react";
 import Footer from "@/components/sections/Footer";
 import Image from "next/image";
 import logoImage from "@/public/mesoblogo.jpeg";
-
+import Navbar from "@/components/sections/Navbar";
 const sections = [
   {
     heading: "Information We Collect",
@@ -55,69 +55,77 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <>
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-2 text-gray-900 hover:text-emerald-600 transition">
-              <Image height={60} width={60} src={logoImage} alt="Mesob logo" />
-            </Link>
-            <div className="flex items-center gap-6">
-              <Link href="/privacy" className="text-emerald-600 font-medium">
-                Privacy
-              </Link>
-              <Link href="/terms" className="text-gray-600 hover:text-gray-900">
-                Terms
-              </Link>
-              <Link href="/contact" className="text-gray-600 hover:text-gray-900">
-                Contact
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-20 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mb-6">
-            <Shield className="w-8 h-8 text-emerald-600" />
-          </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Your privacy matters to us. This policy explains how Mesob AI collects, uses, and protects your personal information.
-          </p>
-          <p className="text-sm text-gray-500 mt-4">Last updated: {new Date().toLocaleDateString()}</p>
-        </div>
-
-        <div className="space-y-6">
-          {sections.map((section, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">{section.heading}</h2>
-              <p className="text-gray-600 leading-relaxed">{section.body}</p>
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mb-6">
+              <Shield className="w-8 h-8 text-emerald-600" />
             </div>
-          ))}
-        </div>
-
-        <div className="mt-12 bg-emerald-50 rounded-lg p-6 border border-emerald-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Contact Us</h3>
-          <p className="text-gray-600 mb-4">
-            If you have questions about this Privacy Policy or how we handle your data, please contact us:
-          </p>
-          <div className="space-y-2 text-gray-700">
-            <p>Email: <a href="mailto:nahomkeneni4@gmail.com" className="text-emerald-600 hover:underline">nahomkeneni4@gmail.com</a></p>
-            <p>Phone: +251983446134</p>
-            <p>Address: Bole, Addis Ababa, Ethiopia</p>
-            <p className="text-sm text-gray-600 mt-3">Business Hours: Monday - Friday, 8:30 AM - 5:30 PM (East Africa Time)</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Privacy Policy
+            </h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Your privacy matters to us. This policy explains how Mesob AI
+              collects, uses, and protects your personal information.
+            </p>
+            <p className="text-sm text-gray-500 mt-4">
+              Last updated: {new Date().toLocaleDateString()}
+            </p>
           </div>
-        </div>
 
-        <div className="mt-8 text-center">
-          <Link href="/terms" className="text-emerald-600 hover:underline font-medium">
-            Read our Terms of Service →
-          </Link>
+          <div className="space-y-6">
+            {sections.map((section, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+              >
+                <h2 className="text-xl font-semibold text-gray-900 mb-3">
+                  {section.heading}
+                </h2>
+                <p className="text-gray-600 leading-relaxed">{section.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 bg-emerald-50 rounded-lg p-6 border border-emerald-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              Contact Us
+            </h3>
+            <p className="text-gray-600 mb-4">
+              If you have questions about this Privacy Policy or how we handle
+              your data, please contact us:
+            </p>
+            <div className="space-y-2 text-gray-700">
+              <p>
+                Email:{" "}
+                <a
+                  href="mailto:nahomkeneni4@gmail.com"
+                  className="text-emerald-600 hover:underline"
+                >
+                  nahomkeneni4@gmail.com
+                </a>
+              </p>
+              <p>Phone: +251983446134</p>
+              <p>Address: Bole, Addis Ababa, Ethiopia</p>
+              <p className="text-sm text-gray-600 mt-3">
+                Business Hours: Monday - Friday, 8:30 AM - 5:30 PM (East Africa
+                Time)
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <Link
+              href="/terms"
+              className="text-emerald-600 hover:underline font-medium"
+            >
+              Read our Terms of Service →
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
-    <Footer />
+      <Footer />
     </>
   );
 }

@@ -196,7 +196,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$pwa$2f$Install
 ;
 ;
 const metadata = {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://mymesob.com'),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://mymesob.com"),
     title: {
         default: "MesobAI - AI-Powered Pharmacy Management System | Ethiopia | Africa",
         template: "%s | MesobAI - AI in Business Solutions"
@@ -236,9 +236,9 @@ const metadata = {
         googleBot: {
             index: true,
             follow: true,
-            'max-video-preview': -1,
-            'max-image-preview': 'large',
-            'max-snippet': -1
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1
         }
     },
     openGraph: {
@@ -306,6 +306,15 @@ function RootLayout({ children }) {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("head", {
                 children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("script", {
+                        async: true,
+                        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9433053488658352",
+                        crossOrigin: "anonymous"
+                    }, void 0, false, {
+                        fileName: "[project]/app/layout.tsx",
+                        lineNumber: 115,
+                        columnNumber: 9
+                    }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("link", {
                         rel: "icon",
                         href: "/mesoblogo.jpeg",
@@ -313,7 +322,7 @@ function RootLayout({ children }) {
                         sizes: "any"
                     }, void 0, false, {
                         fileName: "[project]/app/layout.tsx",
-                        lineNumber: 107,
+                        lineNumber: 120,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("link", {
@@ -323,7 +332,7 @@ function RootLayout({ children }) {
                         sizes: "32x32"
                     }, void 0, false, {
                         fileName: "[project]/app/layout.tsx",
-                        lineNumber: 108,
+                        lineNumber: 121,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("link", {
@@ -333,7 +342,7 @@ function RootLayout({ children }) {
                         sizes: "16x16"
                     }, void 0, false, {
                         fileName: "[project]/app/layout.tsx",
-                        lineNumber: 109,
+                        lineNumber: 127,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("link", {
@@ -342,7 +351,7 @@ function RootLayout({ children }) {
                         sizes: "180x180"
                     }, void 0, false, {
                         fileName: "[project]/app/layout.tsx",
-                        lineNumber: 110,
+                        lineNumber: 133,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("link", {
@@ -351,7 +360,7 @@ function RootLayout({ children }) {
                         type: "image/jpeg"
                     }, void 0, false, {
                         fileName: "[project]/app/layout.tsx",
-                        lineNumber: 111,
+                        lineNumber: 134,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("link", {
@@ -359,7 +368,7 @@ function RootLayout({ children }) {
                         href: "https://mymesob.com"
                     }, void 0, false, {
                         fileName: "[project]/app/layout.tsx",
-                        lineNumber: 112,
+                        lineNumber: 135,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("script", {
@@ -368,41 +377,41 @@ function RootLayout({ children }) {
                             __html: JSON.stringify({
                                 "@context": "https://schema.org",
                                 "@type": "SoftwareApplication",
-                                "name": "MesobAI - AI-Powered Pharmacy Management System",
-                                "description": "MesobAI: Revolutionary AI in business solution for Ethiopian pharmacies. Advanced mesob technology platform offering AI-powered pharmacy management.",
-                                "url": "https://mymesob.com",
-                                "applicationCategory": "BusinessApplication",
-                                "operatingSystem": "Web Browser",
-                                "image": "https://mymesob.com/mesoblogo.jpeg",
-                                "logo": "https://mymesob.com/mesoblogo.jpeg",
-                                "offers": {
+                                name: "MesobAI - AI-Powered Pharmacy Management System",
+                                description: "MesobAI: Revolutionary AI in business solution for Ethiopian pharmacies. Advanced mesob technology platform offering AI-powered pharmacy management.",
+                                url: "https://mymesob.com",
+                                applicationCategory: "BusinessApplication",
+                                operatingSystem: "Web Browser",
+                                image: "https://mymesob.com/mesoblogo.jpeg",
+                                logo: "https://mymesob.com/mesoblogo.jpeg",
+                                offers: {
                                     "@type": "Offer",
-                                    "price": "0",
-                                    "priceCurrency": "USD",
-                                    "description": "30-day free trial"
+                                    price: "0",
+                                    priceCurrency: "USD",
+                                    description: "30-day free trial"
                                 },
-                                "author": {
+                                author: {
                                     "@type": "Organization",
-                                    "name": "MesobAI Technologies",
-                                    "url": "https://mymesob.com",
-                                    "logo": "https://mymesob.com/mesoblogo.jpeg"
+                                    name: "MesobAI Technologies",
+                                    url: "https://mymesob.com",
+                                    logo: "https://mymesob.com/mesoblogo.jpeg"
                                 },
-                                "aggregateRating": {
+                                aggregateRating: {
                                     "@type": "AggregateRating",
-                                    "ratingValue": "4.8",
-                                    "ratingCount": "150"
+                                    ratingValue: "4.8",
+                                    ratingCount: "150"
                                 }
                             })
                         }
                     }, void 0, false, {
                         fileName: "[project]/app/layout.tsx",
-                        lineNumber: 113,
+                        lineNumber: 136,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/layout.tsx",
-                lineNumber: 106,
+                lineNumber: 114,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("body", {
@@ -413,35 +422,35 @@ function RootLayout({ children }) {
                             children,
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$toaster$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Toaster"], {}, void 0, false, {
                                 fileName: "[project]/app/layout.tsx",
-                                lineNumber: 152,
+                                lineNumber: 174,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$pwa$2f$InstallPWA$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["InstallPWA"], {}, void 0, false, {
                                 fileName: "[project]/app/layout.tsx",
-                                lineNumber: 153,
+                                lineNumber: 175,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/layout.tsx",
-                        lineNumber: 150,
+                        lineNumber: 172,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$providers$2f$service$2d$worker$2d$provider$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["ServiceWorkerProvider"], {}, void 0, false, {
                         fileName: "[project]/app/layout.tsx",
-                        lineNumber: 155,
+                        lineNumber: 177,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/layout.tsx",
-                lineNumber: 147,
+                lineNumber: 171,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/layout.tsx",
-        lineNumber: 105,
+        lineNumber: 113,
         columnNumber: 5
     }, this);
 }

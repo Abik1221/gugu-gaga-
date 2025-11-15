@@ -25,7 +25,7 @@ export default function AuthLayout({
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       window.addEventListener("scroll", handleScroll);
       return () => window.removeEventListener("scroll", handleScroll);
     }
@@ -43,9 +43,11 @@ export default function AuthLayout({
   };
   return (
     <div>
-      {isOpen ? <Dialog>
-        <DialogContent>hello dialog</DialogContent>
-      </Dialog> : null}
+      {isOpen ? (
+        <Dialog>
+          <DialogContent>hello dialog</DialogContent>
+        </Dialog>
+      ) : null}
       <div>{children}</div>
       <Footer />
     </div>

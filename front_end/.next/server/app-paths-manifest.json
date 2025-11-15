@@ -1,3 +1,13 @@
 {
-  "/page": "app/page.js"
+  "/(auth)/affiliate-signin/page": "app/(auth)/affiliate-signin/page.js",
+  "/(auth)/auth/page": "app/(auth)/auth/page.js",
+  "/(auth)/owner-signin/page": "app/(auth)/owner-signin/page.js",
+  "/(auth)/register/owner/page": "app/(auth)/register/owner/page.js",
+  "/(auth)/register/supplier/page": "app/(auth)/register/supplier/page.js",
+  "/(auth)/supplier-signin/page": "app/(auth)/supplier-signin/page.js",
+  "/(marketing)/contact/page": "app/(marketing)/contact/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
+  "/page": "app/page.js",
+  "/terms/page": "app/terms/page.js"
 }
