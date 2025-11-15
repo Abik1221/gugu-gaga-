@@ -172,10 +172,10 @@ export default function PricingSection() {
     >
       <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.6 }}
           className="text-center mb-8 md:mb-12"
         >
           <h2 className="text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-3 md:mb-4">
@@ -223,10 +223,10 @@ export default function PricingSection() {
           {currentPlans.map((plan, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Card
                 className={`p-4 md:p-6 lg:p-8 relative h-full ${

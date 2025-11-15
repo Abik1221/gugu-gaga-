@@ -63,10 +63,10 @@ export default function FeaturesSection() {
     <section id="features" className="py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.6 }}
           className="text-center mb-8 md:mb-12 lg:mb-16"
         >
           <h2 className="text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-3 md:mb-4">
@@ -87,19 +87,19 @@ export default function FeaturesSection() {
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
+                transition={{ duration: 0.6, delay: 0.1 }}
                 className={`grid lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center ${
                   !isEven ? "lg:flex-row-reverse" : ""
                 }`}
               >
                 <motion.div
-                  initial={{ opacity: 0, x: isEven ? -15 : 15 }}
+                  initial={{ opacity: 0, x: isEven ? -30 : 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
                   className={`space-y-3 md:space-y-4 lg:space-y-6 ${!isEven ? "lg:order-2" : ""}`}
                 >
                   <div className="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-2xl bg-emerald-100">
@@ -111,19 +111,19 @@ export default function FeaturesSection() {
                   </p>
                 </motion.div>
                 <motion.div
-                  initial={{ opacity: 0, x: isEven ? 15 : -15 }}
+                  initial={{ opacity: 0, x: isEven ? 30 : -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: 0.15, ease: "easeOut" }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
                   className={!isEven ? "lg:order-1" : ""}
                 >
                   <Image
                     src={feature.image}
-                    width={600}
-                    height={400}
+                    width={10}
+                    height={10}
                     alt="super market image"
+                    placeholder="empty"
                     className="rounded-2xl shadow-xl w-full"
-                    loading="lazy"
                   />
                 </motion.div>
               </motion.div>
@@ -132,10 +132,10 @@ export default function FeaturesSection() {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.6 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-12 md:mt-16 lg:mt-20"
         >
           {quickFeatures.map((feature, index) => {
@@ -143,10 +143,10 @@ export default function FeaturesSection() {
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
               >
                 <Card className="p-3 md:p-4 lg:p-6 text-center hover:shadow-lg transition-shadow">
                   <Icon className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 text-emerald-600 mx-auto mb-2 md:mb-3" />
