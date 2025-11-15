@@ -15,10 +15,10 @@ export default function HeroSection() {
       <div className="w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
             className="space-y-4 md:space-y-6 lg:space-y-8"
           >
             <motion.div
@@ -104,10 +104,10 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
             className="relative"
           >
             <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-3xl opacity-20" />
@@ -115,6 +115,10 @@ export default function HeroSection() {
               src={branch4}
               alt="AI Dashboard"
               className="relative rounded-2xl shadow-2xl w-full"
+              priority
+              width={600}
+              height={400}
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </motion.div>
         </div>

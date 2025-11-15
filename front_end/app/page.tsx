@@ -1,19 +1,20 @@
 "use client";
+import dynamic from "next/dynamic";
 import Navbar from "@/components/sections/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
-import ProblemSolution from "@/components/sections/ProblemSolution";
 import FeaturesSection from "@/components/sections/FeaturesSection";
-import AISection from "@/components/sections/AISection";
-import HowItWorks from "@/components/sections/HowItWorks";
-
 import PricingSection from "@/components/sections/PricingSection";
-import IntegrationsSection from "@/components/sections/IntegrationsSection";
-import AffiliateSection from "@/components/sections/AffiliateSection";
-import TestimonialsSection from "@/components/sections/TestimonialsSection";
-import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
-import { CookieConsent } from "@/components/ui/cookie-consent";
-import { GoogleAds } from "@/components/ads/google-ads";
+
+// Lazy load heavy components
+const ProblemSolution = dynamic(() => import("@/components/sections/ProblemSolution"), { ssr: false });
+const AISection = dynamic(() => import("@/components/sections/AISection"), { ssr: false });
+const HowItWorks = dynamic(() => import("@/components/sections/HowItWorks"), { ssr: false });
+const IntegrationsSection = dynamic(() => import("@/components/sections/IntegrationsSection"), { ssr: false });
+const AffiliateSection = dynamic(() => import("@/components/sections/AffiliateSection"), { ssr: false });
+const TestimonialsSection = dynamic(() => import("@/components/sections/TestimonialsSection"), { ssr: false });
+const CTASection = dynamic(() => import("@/components/sections/CTASection"), { ssr: false });
+const CookieConsent = dynamic(() => import("@/components/ui/cookie-consent").then(mod => ({ default: mod.CookieConsent })), { ssr: false });
 export default function App() {
   const structuredData = {
     "@context": "https://schema.org",
@@ -49,7 +50,7 @@ export default function App() {
       <HowItWorks />
 
       <PricingSection />
-      {/* <GoogleAds adSlot={process.env.NEXT_PUBLIC_GOOGLE_AD_SLOT || "1234567890"} className="my-8" /> */}
+
       <IntegrationsSection />
       <AffiliateSection />
 
