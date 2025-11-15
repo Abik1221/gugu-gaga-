@@ -5,6 +5,8 @@ import Image from "next/image";
 import logoImage from "@/public/mesoblogo.jpeg";
 import { ErrorDialog } from "@/components/ui/error-dialog";
 import { API_BASE } from "@/utils/api";
+import AuthNavBar from "@/components/layout/AuthNavBar";
+import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 
 type Errors = {
     identifier?: string;
@@ -21,6 +23,7 @@ export default function PharmacySignInPage(): JSX.Element {
     const [loading, setLoading] = useState<boolean>(false);
     const [otpSent, setOtpSent] = useState<boolean>(false);
     const [otp, setOtp] = useState<string>("");
+    const [showOtpDialog, setShowOtpDialog] = useState<boolean>(false);
     const [errorDialog, setErrorDialog] = useState<{
         isOpen: boolean;
         title: string;
@@ -87,13 +90,8 @@ export default function PharmacySignInPage(): JSX.Element {
                 return;
             }
 
-            setErrorDialog({
-                isOpen: true,
-                title: "Code Sent Successfully!",
-                message: `We've sent a 6-digit verification code to ${identifier.trim()}. Please check your inbox.`,
-                type: "success",
-            });
             setOtpSent(true);
+            setShowOtpDialog(true);
         } catch (err: any) {
             // Error already handled above
         } finally {
@@ -163,6 +161,13 @@ export default function PharmacySignInPage(): JSX.Element {
 
     return (
         <>
+            <AuthNavBar />
+            <OtpSentDialog 
+                isOpen={showOtpDialog}
+                onClose={() => setShowOtpDialog(false)}
+                email={identifier.trim()}
+                purpose="login"
+            />
             <ErrorDialog
                 isOpen={errorDialog.isOpen}
                 onClose={() => setErrorDialog({ ...errorDialog, isOpen: false })}

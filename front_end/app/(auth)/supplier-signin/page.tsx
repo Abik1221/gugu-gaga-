@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { API_BASE } from "@/utils/api";
+import AuthNavBar from "@/components/layout/AuthNavBar";
+import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 
 export default function SupplierSignInPage() {
   const router = useRouter();
@@ -19,6 +21,7 @@ export default function SupplierSignInPage() {
   const [password, setPassword] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
+  const [showOtpDialog, setShowOtpDialog] = useState(false);
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -58,11 +61,7 @@ export default function SupplierSignInPage() {
       }
 
       setOtpSent(true);
-      show({
-        variant: "success",
-        title: "OTP Sent",
-        description: "Check your email for the verification code.",
-      });
+      setShowOtpDialog(true);
     } catch (err: any) {
       const message = err?.message || "Invalid credentials";
       setError(message);
@@ -124,7 +123,15 @@ export default function SupplierSignInPage() {
   ];
 
   return (
-    <div className="relative flex min-h-screen text-white">
+    <>
+      <AuthNavBar />
+      <OtpSentDialog 
+        isOpen={showOtpDialog}
+        onClose={() => setShowOtpDialog(false)}
+        email={email.trim()}
+        purpose="login"
+      />
+      <div className="relative flex min-h-screen text-white">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-10 left-10 h-80 w-80 rounded-full bg-green-500/15 blur-3xl" />
         <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
@@ -333,5 +340,6 @@ export default function SupplierSignInPage() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

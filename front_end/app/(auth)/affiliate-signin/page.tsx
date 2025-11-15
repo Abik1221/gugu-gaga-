@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { ErrorDialog } from "@/components/ui/error-dialog";
+import AuthNavBar from "@/components/layout/AuthNavBar";
+import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 
 const highlights = [
   "Track referrals and payouts in real time",
@@ -24,6 +26,7 @@ export default function AffiliateLoginPage() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showOtpDialog, setShowOtpDialog] = useState(false);
   const [errorDialog, setErrorDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -38,12 +41,7 @@ export default function AffiliateLoginPage() {
     try {
       await AuthAPI.loginRequestCode(email, password);
       setStep("verify");
-      setErrorDialog({
-        isOpen: true,
-        title: "Code Sent Successfully!",
-        message: `We've sent a 6-digit login code to ${email}. Please check your inbox and enter the code below.`,
-        type: "success",
-      });
+      setShowOtpDialog(true);
     } catch (e: any) {
       const message = e.message || "Failed to send code";
       setError(null);
@@ -124,6 +122,13 @@ export default function AffiliateLoginPage() {
 
   return (
     <>
+      <AuthNavBar />
+      <OtpSentDialog 
+        isOpen={showOtpDialog}
+        onClose={() => setShowOtpDialog(false)}
+        email={email}
+        purpose="login"
+      />
       <ErrorDialog
         isOpen={errorDialog.isOpen}
         onClose={() => setErrorDialog({ ...errorDialog, isOpen: false })}
