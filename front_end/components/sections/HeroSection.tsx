@@ -11,21 +11,21 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-2 sm:pt-3 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white">
+    <section className="pt-2 sm:pt-3 pb-8 sm:pb-12 md:pb-16 px-2 sm:px-6 lg:px-8 bg-white">
       <div className="w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="space-y-8"
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="space-y-4 md:space-y-6 lg:space-y-8"
           >
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+              transition={{ delay: 0.1, duration: 0.3, ease: "easeOut" }}
               className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start"
             >
               <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs sm:text-sm">
@@ -39,23 +39,23 @@ export default function HeroSection() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+              transition={{ delay: 0.15, duration: 0.3, ease: "easeOut" }}
               className="space-y-4"
             >
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-gray-900 leading-tight">
                 Transform Your{" "}
                 <span className="text-emerald-600">Business</span> with AI-Powered Management Software
               </h1>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.5 }}
+              transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
               className="flex flex-col sm:flex-row gap-3 sm:gap-4 px-4 sm:px-0"
             >
               <TrialDialog>
@@ -78,11 +78,11 @@ export default function HeroSection() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-              className="pt-4 overflow-x-auto"
+              transition={{ delay: 0.25, duration: 0.3, ease: "easeOut" }}
+              className="pt-2 md:pt-4 overflow-x-auto"
             >
               <div className="flex items-center gap-6 sm:gap-8 min-w-max">
                 <div className="flex-shrink-0">
@@ -104,10 +104,10 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
             className="relative"
           >
             <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-3xl opacity-20" />
@@ -115,6 +115,9 @@ export default function HeroSection() {
               src={branch4}
               alt="AI Dashboard"
               className="relative rounded-2xl shadow-2xl w-full"
+              priority
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             />
           </motion.div>
         </div>

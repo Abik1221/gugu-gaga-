@@ -26,18 +26,7 @@ export default function AuthNavBar() {
             <Link href="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">
               Contact
             </Link>
-            <div className="flex items-center gap-3 ml-4 border-l border-gray-200 pl-4">
-              <Link href="/register">
-                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
-                  Sign Up
-                </Button>
-              </Link>
-              <Link href="/signin">
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                  Sign In
-                </Button>
-              </Link>
-            </div>
+
           </div>
         </div>
       </div>

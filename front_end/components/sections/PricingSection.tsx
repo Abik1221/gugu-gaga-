@@ -168,21 +168,21 @@ export default function PricingSection() {
   return (
     <section
       id="pricing"
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50"
+      className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-gray-50"
     >
       <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="text-center mb-8 md:mb-12"
         >
-          <h2 className="text-4xl text-gray-900 mb-4">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-3 md:mb-4">
             Simple,{" "}
             <span className="text-emerald-600">Transparent Pricing</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto mb-6 md:mb-8">
             Choose the plan that fits your business. Start with a 30-day free
             trial, then select the tier that matches your needs.
           </p>
@@ -223,13 +223,13 @@ export default function PricingSection() {
           {currentPlans.map((plan, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
             >
               <Card
-                className={`p-8 relative h-full ${
+                className={`p-4 md:p-6 lg:p-8 relative h-full ${
                   plan.highlight
                     ? "border-2 border-emerald-500 shadow-2xl md:scale-105"
                     : "border border-gray-200"
@@ -242,20 +242,20 @@ export default function PricingSection() {
                   </Badge>
                 )}
 
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl text-gray-900 mb-2">{plan.name}</h3>
-                  <p className="text-gray-600 mb-4">{plan.description}</p>
+                <div className="text-center mb-4 md:mb-6">
+                  <h3 className="text-lg md:text-xl lg:text-2xl text-gray-900 mb-2">{plan.name}</h3>
+                  <p className="text-sm md:text-base text-gray-600 mb-3 md:mb-4">{plan.description}</p>
                   <div className="mb-2">
-                    <span className="text-5xl text-gray-900">{plan.price}</span>
+                    <span className="text-3xl md:text-4xl lg:text-5xl text-gray-900">{plan.price}</span>
                   </div>
-                  <div className="text-gray-600">{plan.period}</div>
+                  <div className="text-sm md:text-base text-gray-600">{plan.period}</div>
                 </div>
 
-                <ul className="space-y-4 mb-8">
+                <ul className="space-y-2 md:space-y-3 mb-4 md:mb-6">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start gap-3">
                       <Check className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700">{feature}</span>
+                      <span className="text-sm md:text-base text-gray-700">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -291,8 +291,8 @@ export default function PricingSection() {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <p className="text-gray-600">
+        <div className="text-center mt-8 md:mt-12">
+          <p className="text-sm md:text-base text-gray-600">
             All plans include secure data encryption, regular backups, and
             Ethiopian Birr support.
             <br />

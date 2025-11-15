@@ -34,13 +34,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50/30 to-white overflow-x-hidden will-change-auto">
+    <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50/30 to-white overflow-x-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <Navbar />
-      <div className="pt-16">
+      <div className="pt-16" style={{ transform: 'translateZ(0)' }}>
         <HeroSection />
       </div>
       <ProblemSolution />
