@@ -11,6 +11,8 @@ import { ErrorDialog } from "@/components/ui/error-dialog";
 import { postJSON } from "@/utils/api";
 import { ArrowLeft, Mail, Lock, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import AuthNavBar from "@/components/layout/AuthNavBar";
+import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -21,6 +23,7 @@ export default function ForgotPasswordPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showOtpDialog, setShowOtpDialog] = useState(false);
   const [errorDialog, setErrorDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -35,13 +38,8 @@ export default function ForgotPasswordPage() {
     try {
       await postJSON("/api/v1/auth/password/reset/request", { email });
 
-      setErrorDialog({
-        isOpen: true,
-        title: "Code Sent Successfully!",
-        message: `We've sent a 6-digit verification code to ${email}. Please check your inbox and enter the code below.`,
-        type: "success",
-      });
       setStep("code");
+      setShowOtpDialog(true);
     } catch (error: any) {
       const message = error.message || "Failed to send reset code";
       
@@ -139,6 +137,13 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
+      <AuthNavBar />
+      <OtpSentDialog 
+        isOpen={showOtpDialog}
+        onClose={() => setShowOtpDialog(false)}
+        email={email}
+        purpose="password_reset"
+      />
       <ErrorDialog
         isOpen={errorDialog.isOpen}
         onClose={() => setErrorDialog({ ...errorDialog, isOpen: false })}

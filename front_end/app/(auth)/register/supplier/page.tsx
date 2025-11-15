@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { AuthAPI } from "@/utils/api";
+import AuthNavBar from "@/components/layout/AuthNavBar";
+import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 
 type FieldKey =
   | "supplierName"
@@ -37,6 +39,7 @@ export default function SupplierRegisterPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [registeredEmail, setRegisteredEmail] = useState("");
+  const [showOtpDialog, setShowOtpDialog] = useState(false);
 
   const [supplierName, setSupplierName] = useState("");
   const [email, setEmail] = useState("");
@@ -137,11 +140,7 @@ export default function SupplierRegisterPage() {
       setRegisteredEmail(trimmedEmail);
       setOtpSent(true);
       setSuccess("Registration successful! Please verify your email.");
-      show({
-        variant: "success",
-        title: "Registration Complete",
-        description: "Check your email for the verification code.",
-      });
+      setShowOtpDialog(true);
     } catch (err: any) {
       const message = err?.message || "Failed to register";
       setError(message);
@@ -198,7 +197,15 @@ export default function SupplierRegisterPage() {
   ];
 
   return (
-    <div className="relative flex min-h-screen text-white">
+    <>
+      <AuthNavBar />
+      <OtpSentDialog 
+        isOpen={showOtpDialog}
+        onClose={() => setShowOtpDialog(false)}
+        email={registeredEmail}
+        purpose="register"
+      />
+      <div className="relative flex min-h-screen text-white">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-10 left-10 h-80 w-80 rounded-full bg-green-500/15 blur-3xl" />
         <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
@@ -527,5 +534,6 @@ export default function SupplierRegisterPage() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

@@ -10,7 +10,8 @@ import { useToast } from "@/components/ui/toast";
 import { AuthAPI } from "@/utils/api";
 import Image from "next/image";
 import ownerRegistrationImage from "@/public/owner_registration.jpeg";
-import logoImage from "@/public/mesoblogo.jpeg";
+import AuthNavBar from "@/components/layout/AuthNavBar";
+import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 
 type FieldKey = "businessName" | "email" | "password" | "tinNumber" | "phone" | "address" | "licenseFile";
 
@@ -35,6 +36,7 @@ export default function OwnerRegisterPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [registeredEmail, setRegisteredEmail] = useState("");
+  const [showOtpDialog, setShowOtpDialog] = useState(false);
 
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
@@ -154,11 +156,7 @@ export default function OwnerRegisterPage() {
       setRegisteredEmail(trimmedEmail);
       setOtpSent(true);
       setSuccess("Registration successful! Check your email for verification code.");
-      show({
-        variant: "success",
-        title: "Registration Complete",
-        description: "Check your email for the verification code.",
-      });
+      setShowOtpDialog(true);
     } catch (err: any) {
       const message = err?.message || "Failed to register";
       setError(message);
@@ -217,30 +215,13 @@ export default function OwnerRegisterPage() {
 
   return (
     <>
-      {/* Navigation */}
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center text-gray-900 hover:text-emerald-600 transition">
-              <Image height={60} width={60} src={logoImage} alt="MesobAI logo" />
-            </Link>
-            <div className="flex items-center gap-6">
-              <Link href="/#features" className="text-gray-600 hover:text-gray-900">
-                Features
-              </Link>
-              <Link href="/#solutions" className="text-gray-600 hover:text-gray-900">
-                Solutions
-              </Link>
-              <Link href="/#pricing" className="text-gray-600 hover:text-gray-900">
-                Pricing
-              </Link>
-              <Link href="/contact" className="text-gray-600 hover:text-gray-900">
-                Contact
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <AuthNavBar />
+      <OtpSentDialog 
+        isOpen={showOtpDialog}
+        onClose={() => setShowOtpDialog(false)}
+        email={registeredEmail}
+        purpose="register"
+      />
     <div className="relative min-h-screen text-white">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-10 left-10 h-80 w-80 rounded-full bg-green-500/15 blur-3xl" />
