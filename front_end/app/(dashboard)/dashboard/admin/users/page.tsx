@@ -124,6 +124,9 @@ export default function AdminUsersPage() {
                 onChange={(e)=>setQ(e.target.value)} 
                 className="w-80 rounded-lg border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500" 
               />
+              <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
+                <Link href="/dashboard/admin/users/create">Create Super Admin</Link>
+              </Button>
             </div>
           </div>
         </div>
