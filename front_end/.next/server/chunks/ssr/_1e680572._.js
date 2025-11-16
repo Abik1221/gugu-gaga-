@@ -2583,7 +2583,7 @@ function OwnerRegisterPage() {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$layout$2f$AuthNavBar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                lineNumber: 240,
+                lineNumber: 241,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$otp$2d$sent$2d$dialog$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["OtpSentDialog"], {
@@ -2593,7 +2593,7 @@ function OwnerRegisterPage() {
                 purpose: "register"
             }, void 0, false, {
                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                lineNumber: 241,
+                lineNumber: 242,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2606,20 +2606,20 @@ function OwnerRegisterPage() {
                                 className: "absolute top-10 left-10 h-80 w-80 rounded-full bg-green-500/15 blur-3xl"
                             }, void 0, false, {
                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                lineNumber: 249,
+                                lineNumber: 250,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl"
                             }, void 0, false, {
                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                lineNumber: 250,
+                                lineNumber: 251,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                        lineNumber: 248,
+                        lineNumber: 249,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2648,7 +2648,7 @@ function OwnerRegisterPage() {
                                                 className: "mt-8 rounded-xl shadow-lg mx-auto"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                lineNumber: 261,
+                                                lineNumber: 262,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -2656,7 +2656,7 @@ function OwnerRegisterPage() {
                                                 children: "Start your business management journey"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                lineNumber: 266,
+                                                lineNumber: 267,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2664,7 +2664,7 @@ function OwnerRegisterPage() {
                                                 children: "Join thousands of business owners who trust our AI-powered platform to streamline their operations and boost profitability."
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                lineNumber: 269,
+                                                lineNumber: 270,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -2676,31 +2676,31 @@ function OwnerRegisterPage() {
                                                                 className: "mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-black"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                                lineNumber: 277,
+                                                                lineNumber: 278,
                                                                 columnNumber: 21
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 children: item
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                                lineNumber: 278,
+                                                                lineNumber: 279,
                                                                 columnNumber: 21
                                                             }, this)
                                                         ]
                                                     }, item, true, {
                                                         fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                        lineNumber: 276,
+                                                        lineNumber: 277,
                                                         columnNumber: 19
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                lineNumber: 274,
+                                                lineNumber: 275,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                        lineNumber: 255,
+                                        lineNumber: 256,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
@@ -2722,14 +2722,14 @@ function OwnerRegisterPage() {
                                                 children: '"Mesob has revolutionized how we manage our business. The AI insights are incredible!"'
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                lineNumber: 290,
+                                                lineNumber: 291,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "h-px w-24 bg-black/20 mx-auto lg:mx-0"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                lineNumber: 294,
+                                                lineNumber: 295,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2742,25 +2742,25 @@ function OwnerRegisterPage() {
                                                         children: "Contact our support team"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                        lineNumber: 297,
+                                                        lineNumber: 298,
                                                         columnNumber: 17
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                lineNumber: 295,
+                                                lineNumber: 296,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                        lineNumber: 284,
+                                        lineNumber: 285,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                lineNumber: 254,
+                                lineNumber: 255,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2787,7 +2787,7 @@ function OwnerRegisterPage() {
                                                     children: "Register as Business Owner"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 312,
+                                                    lineNumber: 313,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2795,7 +2795,7 @@ function OwnerRegisterPage() {
                                                     children: "Create your business management account today."
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 315,
+                                                    lineNumber: 316,
                                                     columnNumber: 17
                                                 }, this),
                                                 affiliateToken && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2805,20 +2805,20 @@ function OwnerRegisterPage() {
                                                             className: "h-2 w-2 rounded-full bg-emerald-500"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 320,
+                                                            lineNumber: 321,
                                                             columnNumber: 21
                                                         }, this),
                                                         "Referred by affiliate"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 319,
+                                                    lineNumber: 320,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                            lineNumber: 311,
+                                            lineNumber: 312,
                                             columnNumber: 15
                                         }, this),
                                         error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2826,7 +2826,7 @@ function OwnerRegisterPage() {
                                             children: error
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                            lineNumber: 327,
+                                            lineNumber: 328,
                                             columnNumber: 17
                                         }, this),
                                         success && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2834,7 +2834,7 @@ function OwnerRegisterPage() {
                                             children: success
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                            lineNumber: 332,
+                                            lineNumber: 333,
                                             columnNumber: 17
                                         }, this),
                                         otpSent ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -2848,7 +2848,7 @@ function OwnerRegisterPage() {
                                                             children: "Verification Code*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 340,
+                                                            lineNumber: 341,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2859,7 +2859,7 @@ function OwnerRegisterPage() {
                                                             className: "mt-2 border border-slate-200 bg-white/5 text-slate-700 text-center text-2xl tracking-widest"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 343,
+                                                            lineNumber: 344,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2867,13 +2867,13 @@ function OwnerRegisterPage() {
                                                             children: "Check your email for the verification code"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 350,
+                                                            lineNumber: 351,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 339,
+                                                    lineNumber: 340,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2883,13 +2883,13 @@ function OwnerRegisterPage() {
                                                     children: loading ? "Verifying..." : "Verify Code"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 355,
+                                                    lineNumber: 356,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                            lineNumber: 338,
+                                            lineNumber: 339,
                                             columnNumber: 17
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                                             onSubmit: submitOwner,
@@ -2902,7 +2902,7 @@ function OwnerRegisterPage() {
                                                             children: "Business Name*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 366,
+                                                            lineNumber: 367,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2914,7 +2914,7 @@ function OwnerRegisterPage() {
                                                             className: `mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.businessName ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60" : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 369,
+                                                            lineNumber: 370,
                                                             columnNumber: 21
                                                         }, this),
                                                         fieldErrors.businessName && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2922,13 +2922,13 @@ function OwnerRegisterPage() {
                                                             children: fieldErrors.businessName
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 382,
+                                                            lineNumber: 383,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 365,
+                                                    lineNumber: 366,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2938,7 +2938,7 @@ function OwnerRegisterPage() {
                                                             children: "Email Address*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 389,
+                                                            lineNumber: 390,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2951,7 +2951,7 @@ function OwnerRegisterPage() {
                                                             className: `mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.email ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60" : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 392,
+                                                            lineNumber: 393,
                                                             columnNumber: 21
                                                         }, this),
                                                         fieldErrors.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2959,13 +2959,13 @@ function OwnerRegisterPage() {
                                                             children: fieldErrors.email
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 406,
+                                                            lineNumber: 407,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 388,
+                                                    lineNumber: 389,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2975,7 +2975,7 @@ function OwnerRegisterPage() {
                                                             children: "Password*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 413,
+                                                            lineNumber: 414,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -2988,7 +2988,7 @@ function OwnerRegisterPage() {
                                                             className: `mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.password ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60" : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 416,
+                                                            lineNumber: 417,
                                                             columnNumber: 21
                                                         }, this),
                                                         fieldErrors.password && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2996,13 +2996,13 @@ function OwnerRegisterPage() {
                                                             children: fieldErrors.password
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 430,
+                                                            lineNumber: 431,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 412,
+                                                    lineNumber: 413,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3012,7 +3012,7 @@ function OwnerRegisterPage() {
                                                             children: "TIN Number*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 437,
+                                                            lineNumber: 438,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3025,7 +3025,7 @@ function OwnerRegisterPage() {
                                                             className: `mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.tinNumber ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60" : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 440,
+                                                            lineNumber: 441,
                                                             columnNumber: 21
                                                         }, this),
                                                         fieldErrors.tinNumber && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3033,13 +3033,13 @@ function OwnerRegisterPage() {
                                                             children: fieldErrors.tinNumber
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 454,
+                                                            lineNumber: 455,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 436,
+                                                    lineNumber: 437,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3049,7 +3049,7 @@ function OwnerRegisterPage() {
                                                             children: "Phone Number"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 461,
+                                                            lineNumber: 462,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3059,13 +3059,13 @@ function OwnerRegisterPage() {
                                                             className: "mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:border-green-400 focus-visible:ring-green-400/40"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 464,
+                                                            lineNumber: 465,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 460,
+                                                    lineNumber: 461,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3075,7 +3075,7 @@ function OwnerRegisterPage() {
                                                             children: "Business Address"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 473,
+                                                            lineNumber: 474,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -3084,13 +3084,13 @@ function OwnerRegisterPage() {
                                                             className: "mt-2 border border-slate-200 bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:border-green-400 focus-visible:ring-green-400/40"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 476,
+                                                            lineNumber: 477,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 472,
+                                                    lineNumber: 473,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3100,7 +3100,7 @@ function OwnerRegisterPage() {
                                                             children: "Business License Document*"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 484,
+                                                            lineNumber: 485,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3113,7 +3113,7 @@ function OwnerRegisterPage() {
                                                             className: `mt-2 w-full text-xs text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 ${fieldErrors.licenseFile ? "border border-red-400" : ""}`
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 487,
+                                                            lineNumber: 488,
                                                             columnNumber: 21
                                                         }, this),
                                                         licenseFile && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3124,7 +3124,7 @@ function OwnerRegisterPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 499,
+                                                            lineNumber: 500,
                                                             columnNumber: 23
                                                         }, this),
                                                         fieldErrors.licenseFile && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3132,13 +3132,13 @@ function OwnerRegisterPage() {
                                                             children: fieldErrors.licenseFile
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 504,
+                                                            lineNumber: 505,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 483,
+                                                    lineNumber: 484,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -3160,7 +3160,7 @@ function OwnerRegisterPage() {
                                                                     strokeWidth: "4"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                                    lineNumber: 521,
+                                                                    lineNumber: 522,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
@@ -3169,26 +3169,26 @@ function OwnerRegisterPage() {
                                                                     d: "M4 12a8 8 0 018-8v8z"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                                    lineNumber: 529,
+                                                                    lineNumber: 530,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                            lineNumber: 516,
+                                                            lineNumber: 517,
                                                             columnNumber: 23
                                                         }, this) : null,
                                                         loading ? "Registering..." : "Register as Owner"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 510,
+                                                    lineNumber: 511,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                            lineNumber: 364,
+                                            lineNumber: 365,
                                             columnNumber: 17
                                         }, this),
                                         !otpSent && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3202,13 +3202,13 @@ function OwnerRegisterPage() {
                                                     children: "Sign in"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 544,
+                                                    lineNumber: 545,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                            lineNumber: 542,
+                                            lineNumber: 543,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3222,7 +3222,7 @@ function OwnerRegisterPage() {
                                                     children: "Terms"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 555,
+                                                    lineNumber: 556,
                                                     columnNumber: 17
                                                 }, this),
                                                 " ",
@@ -3234,37 +3234,37 @@ function OwnerRegisterPage() {
                                                     children: "Privacy Policy"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                                    lineNumber: 559,
+                                                    lineNumber: 560,
                                                     columnNumber: 17
                                                 }, this),
                                                 "."
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                            lineNumber: 553,
+                                            lineNumber: 554,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                    lineNumber: 305,
+                                    lineNumber: 306,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                                lineNumber: 304,
+                                lineNumber: 305,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                        lineNumber: 253,
+                        lineNumber: 254,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(auth)/register/owner/page.tsx",
-                lineNumber: 247,
+                lineNumber: 248,
                 columnNumber: 7
             }, this)
         ]

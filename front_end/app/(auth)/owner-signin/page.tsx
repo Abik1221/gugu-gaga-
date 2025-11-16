@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, JSX } from "react";
 import Image from "next/image";
 import logoImage from "@/public/mesoblogo.jpeg";
 import { ErrorDialog } from "@/components/ui/error-dialog";
@@ -7,6 +7,7 @@ import { API_BASE } from "@/utils/api";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Link from "next/link";
+import Head from "next/head";
 
 type Errors = {
   identifier?: string;
@@ -166,6 +167,17 @@ export default function PharmacySignInPage(): JSX.Element {
 
   return (
     <>
+      <Head>
+        <title>Owner Sign In - Manage Your Business</title>
+        <meta
+          name="description"
+          content="Sign in to your business owner account and manage your operations securely."
+        />
+        <meta
+          name="keywords"
+          content="owner sign in, business management, secure login, business dashboard"
+        />
+      </Head>
       <AuthNavBar />
       <OtpSentDialog
         isOpen={showOtpDialog}

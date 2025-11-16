@@ -99,15 +99,6 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
-// Validate ../../app/(auth)/register/pharmacy/page.tsx
-{
-  type __IsExpected<Specific extends AppPageConfig<"/register/pharmacy">> = Specific
-  const handler = {} as typeof import("../../app/(auth)/register/pharmacy/page.js")
-  type __Check = __IsExpected<typeof handler>
-  // @ts-ignore
-  type __Unused = __Check
-}
-
 // Validate ../../app/(auth)/register/supplier/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/register/supplier">> = Specific
@@ -708,10 +699,64 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
 
 
 
+// Validate ../../app/(auth)/affiliate-signin/layout.tsx
+{
+  type __IsExpected<Specific extends LayoutConfig<"/affiliate-signin">> = Specific
+  const handler = {} as typeof import("../../app/(auth)/affiliate-signin/layout.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/(auth)/layout.tsx
 {
   type __IsExpected<Specific extends LayoutConfig<"/">> = Specific
   const handler = {} as typeof import("../../app/(auth)/layout.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/(auth)/owner-signin/layout.tsx
+{
+  type __IsExpected<Specific extends LayoutConfig<"/owner-signin">> = Specific
+  const handler = {} as typeof import("../../app/(auth)/owner-signin/layout.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/(auth)/register/affiliate/layout.tsx
+{
+  type __IsExpected<Specific extends LayoutConfig<"/register/affiliate">> = Specific
+  const handler = {} as typeof import("../../app/(auth)/register/affiliate/layout.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/(auth)/register/owner/layout.tsx
+{
+  type __IsExpected<Specific extends LayoutConfig<"/register/owner">> = Specific
+  const handler = {} as typeof import("../../app/(auth)/register/owner/layout.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/(auth)/register/supplier/layout.tsx
+{
+  type __IsExpected<Specific extends LayoutConfig<"/register/supplier">> = Specific
+  const handler = {} as typeof import("../../app/(auth)/register/supplier/layout.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/(auth)/supplier-signin/layout.tsx
+{
+  type __IsExpected<Specific extends LayoutConfig<"/supplier-signin">> = Specific
+  const handler = {} as typeof import("../../app/(auth)/supplier-signin/layout.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

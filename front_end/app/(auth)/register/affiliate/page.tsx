@@ -13,6 +13,9 @@ import Image from "next/image";
 import affiliateRegistrationImage from "@/public/affiliateregistration.jpeg";
 import logoImage from "@/public/mesoblogo.jpeg";
 import Navbar from "@/components/sections/Navbar";
+import Head from "next/head";
+import { title } from "process";
+
 export default function AffiliateRegisterPage() {
   const router = useRouter();
   const { show } = useToast();
@@ -69,7 +72,7 @@ export default function AffiliateRegisterPage() {
   }
 
   const programHighlights = [
-    "Earn commission for every pharmacy you onboard",
+    "Earn commission for every bussiness you onboard",
     "Real-time tracking of referrals and payouts",
     "Dedicated success manager and training toolkit",
     "Fast payouts to the bank account you choose",
@@ -77,6 +80,17 @@ export default function AffiliateRegisterPage() {
 
   return (
     <>
+      <Head>
+        <title>Affiliate Registration - Earn with Us</title>
+        <meta
+          name="description"
+          content="Join our affiliate program and earn commissions by referring businesses to our platform."
+        />
+        <meta
+          name="keywords"
+          content="affiliate registration, earn commissions, business referrals, partner program"
+        />
+      </Head>
       {/* Navigation */}
       <Navbar />
       <div className="relative min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 text-slate-900">

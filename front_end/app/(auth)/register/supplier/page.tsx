@@ -12,6 +12,9 @@ import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Image from "next/image";
 import supplierRegistrationImage from "@/public/supplierregistration.jpeg";
+import Head from "next/head";
+
+// Redefine the missing `FieldKey` type
 type FieldKey =
   | "supplierName"
   | "email"
@@ -20,6 +23,7 @@ type FieldKey =
   | "tinNumber"
   | "licenseImage";
 
+// Redefine the createEmptyFieldErrors function
 const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
   supplierName: null,
   email: null,
@@ -58,7 +62,6 @@ export default function SupplierRegisterPage() {
       ...prev,
       [key]: null,
     }));
-
   async function submitSupplier(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -216,6 +219,17 @@ export default function SupplierRegisterPage() {
 
   return (
     <>
+      <Head>
+        <title>Supplier Registration - Join Our Network</title>
+        <meta
+          name="description"
+          content="Register as a supplier and join our verified business network. Manage your business efficiently with our tools."
+        />
+        <meta
+          name="keywords"
+          content="supplier registration, business network, verified suppliers, business management"
+        />
+      </Head>
       <AuthNavBar />
       <OtpSentDialog
         isOpen={showOtpDialog}
@@ -909,8 +923,7 @@ export default function SupplierRegisterPage() {
 //                               strokeLinejoin="round"
 //                               strokeWidth={2}
 //                               d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-//                             />
-//                           </svg>
+//                           />
 //                         </div>
 //                       )}
 //                       <span className="text-sm text-slate-700 truncate">
