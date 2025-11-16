@@ -3308,7 +3308,7 @@ function PricingSection() {
         },
         {
             name: "Essential",
-            price: "2,500",
+            price: "1,299",
             period: "Birr/month",
             description: "For single-branch businesses",
             popular: false,
@@ -3327,7 +3327,7 @@ function PricingSection() {
         },
         {
             name: "Professional",
-            price: "5,666",
+            price: "2,499",
             period: "Birr/month",
             description: "For growing multi-branch businesses",
             popular: true,
@@ -3368,7 +3368,7 @@ function PricingSection() {
         },
         {
             name: "Starter",
-            price: "1,500",
+            price: "799",
             period: "Birr/month",
             description: "Perfect for small suppliers",
             popular: false,
@@ -3385,7 +3385,7 @@ function PricingSection() {
         },
         {
             name: "Growth",
-            price: "3,500",
+            price: "1,299",
             period: "Birr/month",
             description: "For expanding supplier businesses",
             popular: true,
