@@ -7,6 +7,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { AdminGuard } from "@/components/auth/admin-guard";
 
 export default function OwnerLayout({
   children,
@@ -14,17 +15,19 @@ export default function OwnerLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <SidebarProvider>
-        <AdminSideBar />
-        <SidebarInset className="p-3 bg-white">
-          <SidebarHeader className="p-3">
-            <SidebarTrigger />
-          </SidebarHeader>
-          <Separator className="mb-4" />
-          {children}
-        </SidebarInset>
-      </SidebarProvider>
-    </div>
+    <AdminGuard>
+      <div>
+        <SidebarProvider>
+          <AdminSideBar />
+          <SidebarInset className="p-3 bg-white">
+            <SidebarHeader className="p-3">
+              <SidebarTrigger />
+            </SidebarHeader>
+            <Separator className="mb-4" />
+            {children}
+          </SidebarInset>
+        </SidebarProvider>
+      </div>
+    </AdminGuard>
   );
 }

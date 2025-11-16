@@ -8,6 +8,7 @@ from .inventory import router as inventory_router
 from .medicines import router as medicines_router
 from .affiliate import router as affiliate_router
 from .admin import router as admin_router
+from .admin_users import router as admin_users_router
 from .ai import router as ai_router
 from .kyc import router as kyc_router
 from .staff import router as staff_router
@@ -47,6 +48,7 @@ api_router.include_router(inventory_router)
 api_router.include_router(medicines_router)
 api_router.include_router(affiliate_router)
 api_router.include_router(admin_router)
+api_router.include_router(admin_users_router)
 api_router.include_router(ai_router)
 api_router.include_router(kyc_router, prefix="/owner")
 api_router.include_router(staff_router)

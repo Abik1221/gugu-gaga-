@@ -617,6 +617,39 @@ export const AdminAPI = {
     if (params.limit) query.set('limit', params.limit.toString());
     return getAuthJSON(`/api/v1/admin/audit${query.toString() ? `?${query.toString()}` : ''}`);
   },
+  downloadPharmacyLicense: async (applicationId: number) => {
+    const res = await authFetch(
+      `/api/v1/admin/pharmacies/${applicationId}/license`,
+      { method: "GET" },
+      true
+    );
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `HTTP ${res.status}`);
+    }
+    const blob = await res.blob();
+    let filename = `license-${applicationId}`;
+    const disposition = res.headers.get("Content-Disposition") || "";
+    const match = disposition.match(
+      /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i
+    );
+    const extracted = match?.[1] || match?.[2];
+    if (extracted) {
+      try {
+        filename = decodeURIComponent(extracted);
+      } catch {
+        filename = extracted;
+      }
+    }
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  },
 };
 
 // ----------------- StaffAPI -----------------
