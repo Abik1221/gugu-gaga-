@@ -139,9 +139,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
-              name: "MesobAI - AI-Powered Pharmacy Management System",
+              name: "MesobAI - AI-Powered Bussiness Management System",
               description:
-                "MesobAI: Revolutionary AI in business solution for Ethiopian pharmacies. Advanced mesob technology platform offering AI-powered pharmacy management.",
+                "MesobAI: Revolutionary AI in business solution for Ethiopian bussinesses. Advanced mesob technology platform offering AI-powered bussiness management.",
               url: "https://mymesob.com",
               applicationCategory: "BusinessApplication",
               operatingSystem: "Web Browser",

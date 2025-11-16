@@ -1,6 +1,1 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///home/habtamusemagn/Videos/gugu-gaga-/front_end/app/icon.jpeg.mjs%20%28structured%20image%20object%29"],"sourcesContent":["import src from \"IMAGE\";\nexport default { src, width: 374, height: 221 }\n"],"names":[],"mappings":";;;;AAAA;;uCACe;IAAE,KAAA,gHAAG;IAAE,OAAO;IAAK,QAAQ;AAAI","debugId":null}}]
-}
+{"version":3,"sources":["turbopack:///[project]/app/icon.jpeg.mjs (structured image object)"],"sourcesContent":["import src from \"IMAGE\";\nexport default { src, width: 374, height: 221 }\n"],"names":[],"mappings":"6HACe,CAAE,IADjB,AACiB,EADjB,CAAA,CAAA,OACiB,OAAG,CAAE,MAAO,IAAK,OAAQ,GAAI"}

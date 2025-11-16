@@ -1,0 +1,3 @@
+{
+  "/(dashboard)/dashboard/owner/pharmacies/[id]/settings/page": "app/(dashboard)/dashboard/owner/pharmacies/[id]/settings/page.js"
+}
