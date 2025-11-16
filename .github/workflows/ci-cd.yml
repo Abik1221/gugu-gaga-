@@ -170,6 +170,13 @@ jobs:
                 server_name mymesob.com www.mymesob.com;
                 client_max_body_size 50M;
                 
+                # Serve ads.txt directly for Google AdSense verification
+                location = /ads.txt {
+                    proxy_pass http://zemen-frontend:3000/ads.txt;
+                    proxy_set_header Host $host;
+                    add_header Content-Type text/plain;
+                }
+                
                 location /api/ {
                     proxy_pass http://zemen-backend:8000;
                     proxy_set_header Host $host;
@@ -250,6 +257,13 @@ jobs:
                 
                 ssl_certificate /etc/letsencrypt/live/mymesob.com/fullchain.pem;
                 ssl_certificate_key /etc/letsencrypt/live/mymesob.com/privkey.pem;
+                
+                # Serve ads.txt directly for Google AdSense verification
+                location = /ads.txt {
+                    proxy_pass http://zemen-frontend:3000/ads.txt;
+                    proxy_set_header Host $host;
+                    add_header Content-Type text/plain;
+                }
                 
                 location /api/ {
                     proxy_pass http://zemen-backend:8000;
