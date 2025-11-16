@@ -406,7 +406,32 @@ def login(
 ):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.password_hash):
+        # Enhanced security logging for admin attempts
+        if user and user.role == Role.admin.value:
+            log_activity(
+                db,
+                tenant_id="system",
+                actor_user_id=user.id,
+                action="admin.login.failed",
+                message=f"Failed admin login attempt from {_client_ip(request)}",
+                metadata={"ip": _client_ip(request), "user_agent": request.headers.get("user-agent")}
+            )
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+    # Enhanced security for admin users
+    if user.role == Role.admin.value:
+        from app.core.admin_security import AdminSecurityManager
+        if not AdminSecurityManager.verify_admin_access(db, user.email, _client_ip(request)):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access denied")
+        # Log successful admin login
+        log_activity(
+            db,
+            tenant_id="system",
+            actor_user_id=user.id,
+            action="admin.login.success",
+            message=f"Admin login successful from {_client_ip(request)}",
+            metadata={"ip": _client_ip(request), "user_agent": request.headers.get("user-agent")}
+        )
+    
     # Enforce OTP-only login for affiliates
     if user.role == Role.affiliate.value:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Affiliates must use OTP login flow: /auth/login/request-code then /auth/login/verify")

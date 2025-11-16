@@ -150,6 +150,8 @@ jobs:
               -e EMAIL_FROM=nahomkeneni4@gmail.com \
               -e CORS_ORIGINS="http://localhost:3000,http://13.61.24.25:8000,http://mymesob.com,https://mymesob.com,http://www.mymesob.com,https://www.mymesob.com" \
               -e GEMINI_API_KEY=AIzaSyDd8wzl1jPDgzoE0cMlE0_EFTAaIbqDu6Y \
+              -e ADMIN_EMAIL=admin@zemensystem.com \
+              -e ADMIN_PASSWORD=ProductionAdmin2024! \
               --restart unless-stopped \
               ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:latest
             
@@ -195,9 +197,13 @@ jobs:
               --restart unless-stopped \
               nginx:alpine
             
+            # Setup admin user post-deployment
+            echo "Setting up admin user..."
+            docker exec zemen-backend python post_deploy_admin_setup.py
+            
             # Quick status check
             docker ps --format "table {{.Names}}\t{{.Status}}"
-            echo "Deployment completed!"
+            echo "Deployment completed with admin setup!"
 
   setup-ssl:
     needs: deploy

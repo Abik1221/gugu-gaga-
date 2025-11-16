@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Admin Login</title>
+</head>
+<body>
+    <h1>Test Admin Login</h1>
+    <div id="result"></div>
+    
+    <script>
+        async function testLogin() {
+            const result = document.getElementById('result');
+            
+            try {
+                result.innerHTML = 'Testing admin login...';
+                
+                // Test login with admin credentials
+                const response = await fetch('http://127.0.0.1:8000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        username: 'admin@zemensystem.com',
+                        password: 'secret',
+                        grant_type: 'password'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `
+                        <h2>✅ Login Successful!</h2>
+                        <p><strong>Access Token:</strong> ${data.access_token.substring(0, 50)}...</p>
+                        <p><strong>Token Type:</strong> ${data.token_type}</p>
+                        <p><strong>Session ID:</strong> ${data.session_id}</p>
+                    `;
+                } else {
+                    const errorText = await response.text();
+                    result.innerHTML = `
+                        <h2>❌ Login Failed</h2>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Error:</strong> ${errorText}</p>
+                    `;
+                }
+            } catch (error) {
+                result.innerHTML = `
+                    <h2>❌ Network Error</h2>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p>Make sure the backend server is running on http://127.0.0.1:8000</p>
+                `;
+            }
+        }
+        
+        // Test login when page loads
+        testLogin();
+    </script>
+</body>
+</html>
