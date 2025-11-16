@@ -5,7 +5,7 @@ import { X, Cookie } from "lucide-react";
 import Link from "next/link";
 
 export function CookieConsent() {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
     const consent = localStorage.getItem("cookie-consent");
@@ -34,8 +34,12 @@ export function CookieConsent() {
           <div className="text-sm text-gray-700">
             <p className="font-medium mb-1">We use cookies</p>
             <p>
-              We use essential cookies for authentication and analytics cookies to improve your experience.{" "}
-              <Link href="/privacy" className="text-emerald-600 hover:underline">
+              We use essential cookies for authentication and analytics cookies
+              to improve your experience.{" "}
+              <Link
+                href="/privacy"
+                className="text-emerald-600 hover:underline"
+              >
                 Learn more
               </Link>
             </p>

@@ -1,0 +1,3 @@
+{
+  "/(auth)/register/affiliate/page": "app/(auth)/register/affiliate/page.js"
+}

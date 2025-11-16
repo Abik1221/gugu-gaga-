@@ -1,0 +1,8 @@
+{
+  "status": 404,
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(auth)/layout,_N_T_/(auth)/register/layout,_N_T_/(auth)/register/pharmacy/layout,_N_T_/(auth)/register/pharmacy/page,_N_T_/register/pharmacy"
+  }
+}

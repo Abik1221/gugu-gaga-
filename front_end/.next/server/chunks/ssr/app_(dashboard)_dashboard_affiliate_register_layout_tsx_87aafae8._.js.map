@@ -1,0 +1,1 @@
+{"version":3,"sources":["turbopack:///[project]/app/(dashboard)/dashboard/affiliate/register/layout.tsx"],"sourcesContent":["export default function AffiliateRegisterLayout({ children }: { children: React.ReactNode }) {\n  return <>{children}</>;\n}"],"names":[],"mappings":"8EAAe,SAAS,EAAwB,UAAE,CAAQ,CAAiC,EACzF,MAAO,CAAA,EAAA,EAAA,GAAA,EAAA,EAAA,QAAA,CAAA,UAAG,GACZ"}
