@@ -1,1 +1,6 @@
-{"version":3,"sources":["turbopack:///[project]/app/(dashboard)/layout.tsx"],"sourcesContent":["\"use client\"\n\nexport default function App({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  return (\n    <div>\n      {children}\n    </div>\n  );\n}\n"],"names":[],"mappings":"+EAEe,SAAS,EAAI,UAC1B,CAAQ,CAGR,EACA,MACE,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UACE,GAGP"}
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/habtamusemagn/Videos/gugu-gaga-/front_end/app/%28dashboard%29/layout.tsx"],"sourcesContent":["\"use client\"\n\nexport default function App({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  return (\n    <div>\n      {children}\n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;AAAA;;AAEe,SAAS,IAAI,EAC1B,QAAQ,EAGR;IACA,qBACE,8OAAC;kBACE;;;;;;AAGP","debugId":null}}]
+}
