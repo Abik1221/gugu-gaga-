@@ -11,9 +11,9 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-2 sm:pt-3 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white mt-10">
+    <section className="pt-2 sm:pt-3 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white">
       <div className="w-full max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch pt-10">
           {/* LEFT */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -29,12 +29,12 @@ export default function HeroSection() {
               transition={{ delay: 0.2, duration: 0.5 }}
               className="flex flex-wrap gap-2 sm:gap-3 sm:justify-start"
             >
-              <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs sm:text-sm">
-                <Sparkles className="w-3 h-3 mr-1" />
+              <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-[9px] sm:text-sm">
+                <Sparkles className="text-[9px] w-3 h-3 mr-1" />
                 Business Revolution with AI
               </Badge>
-              <Badge className="bg-blue-100 text-blue-700 border-blue-200 text-xs sm:text-sm">
-                <span className="text-sm sm:text-base mr-1">🇪🇹</span>
+              <Badge className="bg-blue-100 text-blue-700 border-blue-200 text-[9px] sm:text-sm">
+                <span className="text-[9px] sm:text-base mr-1">🇪🇹</span>
                 Built by Ethiopia for Africa
               </Badge>
             </motion.div>
