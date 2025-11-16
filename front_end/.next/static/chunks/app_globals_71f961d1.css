@@ -4981,10 +4981,6 @@
     line-height: var(--tw-leading, var(--text-xs--line-height));
   }
 
-  .text-\[8px\] {
-    font-size: 8px;
-  }
-
   .text-\[9px\] {
     font-size: 9px;
   }

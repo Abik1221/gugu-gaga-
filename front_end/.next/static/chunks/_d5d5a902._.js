@@ -71,7 +71,7 @@ __turbopack_context__.s([
     ()=>putAuthJSON
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
-const API_BASE = ("TURBOPACK compile-time value", "https://mymesob.com/api/v1") || "https://mymesob.com/api/v1";
+const API_BASE = ("TURBOPACK compile-time value", "http://127.0.0.1:8000/api/v1") || "https://mymesob.com/api/v1";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
 const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
 let API_BASE_PATH = "";
