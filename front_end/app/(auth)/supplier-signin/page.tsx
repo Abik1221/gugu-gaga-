@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/toast";
 import { API_BASE } from "@/utils/api";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
+import Head from "next/head";
 
 export default function SupplierSignInPage() {
   const router = useRouter();
@@ -140,6 +141,17 @@ export default function SupplierSignInPage() {
 
   return (
     <>
+      <Head>
+        <title>Supplier Sign In - Access Your Dashboard</title>
+        <meta
+          name="description"
+          content="Sign in to your supplier account and manage your business efficiently."
+        />
+        <meta
+          name="keywords"
+          content="supplier sign in, supplier login, business dashboard, manage orders"
+        />
+      </Head>
       <AuthNavBar />
       <OtpSentDialog
         isOpen={showOtpDialog}

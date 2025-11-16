@@ -14,11 +14,11 @@ export const metadata: Metadata = {
   ),
   title: {
     default:
-      "MesobAI - AI-Powered Pharmacy Management System | Ethiopia | Africa",
+      "MesobAI - AI-Powered Bussiness Management System | Ethiopia | Africa",
     template: "%s | MesobAI - AI in Business Solutions",
   },
   description:
-    "MesobAI: Revolutionary AI in business solution for Ethiopian pharmacies. Advanced mesob technology platform offering AI-powered pharmacy management, inventory control, and business intelligence for Ethiopia's healthcare sector.",
+    "MesobAI: Revolutionary AI in business solution for Ethiopian bussinesses. Advanced mesob technology platform offering AI-powered bussiness management, inventory control, and business intelligence for Ethiopia's bussiness sector.",
   keywords: [
     "business management software Ethiopia",
     "AI business automation Africa",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     "enterprise resource planning ERP",
     "small business software Africa",
     "business intelligence tools",
-    "pharmacy management software",
+    "bussiness management software",
     "retail management system",
     "POS system Ethiopia",
     "business software Africa",
@@ -58,9 +58,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://mymesob.com",
     siteName: "MesobAI - AI Business Management Software",
-    title: "MesobAI - AI-Powered Pharmacy Management System for Ethiopia",
+    title: "MesobAI - AI-Powered Bussiness Management System for Ethiopia",
     description:
-      "MesobAI: Revolutionary AI in business solution for Ethiopian pharmacies. Advanced mesob technology platform.",
+      "MesobAI: Revolutionary AI in business solution for Ethiopian bussiness. Advanced mesob technology platform.",
     images: [
       {
         url: "/mesoblogo.jpeg",
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MesobAI - AI in Ethiopia Business Solutions",
     description:
-      "Revolutionary mesob AI technology for Ethiopian pharmacy management and healthcare business intelligence.",
+      "Revolutionary mesob AI technology for Ethiopian bussiness management and healthcare business intelligence.",
     images: ["/mesoblogo.jpeg"],
     creator: "@MesobAI",
   },

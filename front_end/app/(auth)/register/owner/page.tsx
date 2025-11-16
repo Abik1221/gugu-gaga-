@@ -12,6 +12,7 @@ import Image from "next/image";
 import ownerRegistrationImage from "@/public/owner_registration.jpeg";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
+import Head from "next/head";
 
 type FieldKey =
   | "businessName"

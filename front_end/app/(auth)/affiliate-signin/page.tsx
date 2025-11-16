@@ -11,6 +11,8 @@ import { ErrorDialog } from "@/components/ui/error-dialog";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Navbar from "@/components/sections/Navbar";
+import Head from "next/head";
+
 const highlights = [
   "Track referrals and payouts in real time",
   "Secure two-step sign-in protects your commissions",
@@ -127,6 +129,17 @@ export default function AffiliateLoginPage() {
 
   return (
     <>
+      <Head>
+        <title>Affiliate Sign In - Partner Dashboard</title>
+        <meta
+          name="description"
+          content="Sign in to your affiliate account and access your referral dashboard securely."
+        />
+        <meta
+          name="keywords"
+          content="affiliate sign in, partner login, referral tracking, affiliate dashboard"
+        />
+      </Head>
       <AuthNavBar />
       <OtpSentDialog
         isOpen={showOtpDialog}
