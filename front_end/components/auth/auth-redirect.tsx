@@ -16,10 +16,23 @@ export function AuthRedirect({ children }: AuthRedirectProps) {
     if (loading) return;
 
     if (user) {
-      // Redirect authenticated users to their appropriate dashboard
+      // Handle pharmacy owners with flow logic
+      if (user.role === "pharmacy_owner") {
+        import("@/utils/owner-flow").then(async ({ getOwnerFlowStatus, getRedirectPath }) => {
+          try {
+            const status = await getOwnerFlowStatus();
+            const redirectPath = getRedirectPath(status);
+            router.replace(redirectPath);
+          } catch (error) {
+            router.replace("/dashboard/kyc");
+          }
+        });
+        return;
+      }
+
+      // Redirect other roles to their appropriate dashboard
       const roleRedirects: Record<string, string> = {
         admin: "/dashboard/admin",
-        pharmacy_owner: "/dashboard/owner",
         affiliate: "/dashboard/affiliate",
         supplier: "/dashboard/supplier",
         cashier: "/dashboard/staff"

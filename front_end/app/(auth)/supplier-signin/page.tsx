@@ -119,12 +119,17 @@ export default function SupplierSignInPage() {
         description: "Redirecting to your supplier dashboard...",
       });
 
-      // Redirect based on supplier status
-      setTimeout(() => {
-        // For suppliers, check if they need KYC or can access dashboard
-        // Since suppliers don't have complex flow like owners, redirect to supplier dashboard
-        // The RoleSpecificGuard will handle redirects to supplier-kyc if needed
-        router.replace("/dashboard/supplier");
+      // Redirect based on supplier status using flow logic
+      setTimeout(async () => {
+        try {
+          const { getSupplierFlowStatus, getRedirectPath } = await import('@/utils/supplier-flow');
+          const flowStatus = await getSupplierFlowStatus();
+          const redirectPath = getRedirectPath(flowStatus);
+          router.replace(redirectPath);
+        } catch (error) {
+          console.error('Error determining supplier redirect:', error);
+          router.replace('/dashboard/supplier');
+        }
       }, 1000);
     } catch (err: any) {
       const message = err?.message || "Invalid verification code";
