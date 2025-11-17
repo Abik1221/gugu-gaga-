@@ -34,7 +34,7 @@ export default function Footer() {
           </p>
           <div className="flex gap-3 text-emerald-100">
             <a
-              href="https://www.linkedin.com"
+              href="https://www.linkedin.com/in/nahom-keneni-638290330"
               target="_blank"
               rel="noreferrer"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:text-emerald-200"
@@ -42,15 +42,17 @@ export default function Footer() {
               <Linkedin className="h-4 w-4" />
             </a>
             <a
-              href="https://twitter.com"
+              href="https://t.me/nahom_keneni"
               target="_blank"
               rel="noreferrer"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:text-emerald-200"
             >
-              <Twitter className="h-4 w-4" />
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16l-1.61 7.59c-.12.54-.44.67-.89.42l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.49.24l.17-2.43 4.47-4.03c.19-.17-.04-.27-.3-.1L9.28 13.47l-2.38-.75c-.52-.16-.53-.52.11-.77l9.28-3.57c.43-.16.81.1.67.77z"/>
+              </svg>
             </a>
             <a
-              href="mailto:hello@zemenpharma.com"
+              href="mailto:nahomkeneni4@gmail.com"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:text-emerald-200"
             >
               <Mail className="h-4 w-4" />
