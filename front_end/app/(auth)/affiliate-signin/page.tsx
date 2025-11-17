@@ -394,7 +394,7 @@ export default function AffiliateLoginPage() {
             <p className="mt-8 text-center text-xs text-slate-500">
               Need an affiliate account?{" "}
               <Link
-                href="/auth?tab=affiliate"
+                href="/register/affiliate"
                 className="font-medium text-emerald-600 hover:underline"
               >
                 Register here
