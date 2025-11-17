@@ -363,14 +363,14 @@ export default function SupplierSignInPage() {
               <p className="text-xs text-slate-700">
                 Different role?{" "}
                 <Link
-                  href="/register/owner"
+                  href="/owner-signin"
                   className="text-green-600 hover:underline"
                 >
-                  bussiness Owner
+                  Business Owner
                 </Link>{" "}
                 |{" "}
                 <Link
-                  href="/register/affiliate"
+                  href="/affiliate-signin"
                   className="text-green-600 hover:underline"
                 >
                   Affiliate
