@@ -30,6 +30,12 @@ export function AuthGuard({
         document.cookie = "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       }
       
+      // Block obvious admin routes
+      if (typeof window !== "undefined" && window.location.pathname.startsWith('/dashboard/admin')) {
+        router.replace('/404');
+        return;
+      }
+      
       // Determine redirect based on current path if not specified
       let finalRedirect = redirectTo;
       if (!finalRedirect && typeof window !== "undefined") {
@@ -40,8 +46,6 @@ export function AuthGuard({
           finalRedirect = '/affiliate-signin';
         } else if (path.startsWith('/dashboard/owner') || path.startsWith('/dashboard/kyc') || path.startsWith('/dashboard/payment') || path.startsWith('/dashboard/inventory') || path.startsWith('/dashboard/pos') || path.startsWith('/dashboard/settings') || path.startsWith('/dashboard/receipts')) {
           finalRedirect = '/owner-signin';
-        } else if (path.startsWith('/dashboard/admin')) {
-          finalRedirect = '/superadin/zemnpharma/login';
         } else if (path.startsWith('/dashboard/staff')) {
           finalRedirect = '/owner-signin';
         } else if (path.startsWith('/dashboard/ai')) {
