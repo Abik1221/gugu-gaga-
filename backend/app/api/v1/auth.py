@@ -67,12 +67,61 @@ def _make_tenant_id_from_name(name: str, existing: list[str]) -> str:
 
 
 def _user_with_status(db: Session, user: User) -> UserOut:
-    # Skip expensive status queries for performance
-    kyc_status = "pending" if user.tenant_id else None
-    subscription_status = "active" if user.tenant_id else None
+    # Get actual KYC status
+    kyc_status = None
+    if user.role == "pharmacy_owner" and user.tenant_id:
+        kyc_app = db.query(KYCApplication).filter(
+            KYCApplication.tenant_id == user.tenant_id
+        ).first()
+        kyc_status = kyc_app.status if kyc_app else "not_submitted"
+    elif user.role == "supplier":
+        from app.models.supplier_kyc import SupplierKYC
+        from app.models.supplier import Supplier
+        supplier = db.query(Supplier).filter(Supplier.user_id == user.id).first()
+        if supplier:
+            supplier_kyc = db.query(SupplierKYC).filter(SupplierKYC.supplier_id == supplier.id).first()
+            kyc_status = supplier_kyc.status if supplier_kyc else "not_submitted"
+        else:
+            kyc_status = "not_submitted"
+    
+    # Get actual subscription status
+    subscription_status = None
     subscription_blocked = False
     subscription_next_due = None
     latest_payment_status = None
+    
+    # Only pharmacy owners have tenant-based subscriptions
+    if user.role == "pharmacy_owner" and user.tenant_id:
+        sub = ensure_subscription(db, tenant_id=user.tenant_id)
+        subscription_blocked = sub.blocked
+        subscription_next_due = sub.next_due_date
+        
+        # Determine subscription status based on KYC and payment state
+        if kyc_status != "approved":
+            subscription_status = "awaiting_kyc"
+        elif sub.blocked:
+            subscription_status = "blocked"
+        else:
+            # Check for pending payment submissions
+            pending_payment = db.query(PaymentSubmission).filter(
+                PaymentSubmission.tenant_id == user.tenant_id,
+                PaymentSubmission.status == "pending"
+            ).first()
+            
+            if pending_payment:
+                subscription_status = "pending_verification"
+                latest_payment_status = "pending"
+            else:
+                subscription_status = "active"
+    elif user.role == "supplier":
+        # Suppliers have simpler status logic
+        if kyc_status != "approved":
+            subscription_status = "awaiting_kyc"
+        else:
+            subscription_status = "active"
+    elif user.role == "affiliate":
+        # Affiliates always have active status
+        subscription_status = "active"
 
     return UserOut(
         id=user.id,
@@ -85,6 +134,7 @@ def _user_with_status(db: Session, user: User) -> UserOut:
         tenant_id=user.tenant_id,
         is_active=user.is_active,
         is_approved=user.is_approved,
+        is_verified=user.is_verified,
         kyc_status=kyc_status,
         subscription_status=subscription_status,
         subscription_blocked=subscription_blocked,
@@ -437,14 +487,16 @@ def login(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Affiliates must use OTP login flow: /auth/login/request-code then /auth/login/verify")
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
-    # Pharmacy owner/cashier: require admin approval then payment
-    if user.role in {Role.pharmacy_owner.value, Role.cashier.value} and user.tenant_id:
+    # All users must verify email first
+    if not user.is_verified:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first")
+    # Only cashiers need approval check
+    if user.role == Role.cashier.value and user.tenant_id:
+        if not user.is_approved:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Awaiting admin approval")
         sub = ensure_subscription(db, tenant_id=user.tenant_id)
-        if user.role == Role.cashier.value:
-            if not user.is_approved:
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Awaiting admin approval")
-            if sub.blocked:
-                raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked. Submit payment code and await verification.")
+        if sub.blocked:
+            raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked. Submit payment code and await verification.")
     if user.role != Role.admin.value:
         # Enforce tenant match for non-admin users
         if tenant_id and user.tenant_id != tenant_id:
@@ -622,14 +674,16 @@ def login_verify(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code")
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
-    # Pharmacy owner/cashier: require approval then payment before issuing token
-    if user.role in {Role.pharmacy_owner.value, Role.cashier.value} and user.tenant_id:
+    # All users must verify email first
+    if not user.is_verified:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first")
+    # Only cashiers need approval check
+    if user.role == Role.cashier.value and user.tenant_id:
+        if not user.is_approved:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Awaiting admin approval")
         sub = ensure_subscription(db, tenant_id=user.tenant_id)
-        if user.role == Role.cashier.value:
-            if not user.is_approved:
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Awaiting admin approval")
-            if sub.blocked:
-                raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked. Submit payment code and await verification.")
+        if sub.blocked:
+            raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked. Submit payment code and await verification.")
     tokens = _issue_session_tokens(db, user, request)
     return tokens
 

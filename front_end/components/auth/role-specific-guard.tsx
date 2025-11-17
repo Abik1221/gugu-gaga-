@@ -47,28 +47,38 @@ export function RoleSpecificGuard({
       return;
     }
 
-    // Additional checks for specific roles
+    // Additional checks for specific roles (exclude affiliates)
     if (user.role === "pharmacy_owner") {
-      if (user.kyc_status !== "approved") {
+      if (!user.is_verified) {
+        router.replace("/verify");
+        return;
+      }
+      if (!user.kyc_status || user.kyc_status === "not_submitted" || user.kyc_status === "pending" || user.kyc_status === "rejected") {
         router.replace("/dashboard/kyc");
         return;
       }
-      if (user.subscription_status !== "active") {
+      if (user.subscription_status === "awaiting_kyc" || user.subscription_status === "pending_verification" || user.subscription_status === "blocked" || user.subscription_blocked) {
         router.replace("/dashboard/payment");
         return;
       }
     }
 
     if (user.role === "supplier") {
-      if (user.kyc_status !== "approved") {
+      if (!user.is_verified) {
+        router.replace("/verify");
+        return;
+      }
+      if (!user.kyc_status || user.kyc_status === "not_submitted" || user.kyc_status === "pending" || user.kyc_status === "rejected") {
         router.replace("/dashboard/supplier-kyc");
         return;
       }
-      if (user.subscription_status !== "active") {
+      if (user.subscription_status === "awaiting_kyc" || user.subscription_status === "pending_verification" || user.subscription_status === "blocked" || user.subscription_blocked) {
         router.replace("/dashboard/supplier-payment");
         return;
       }
     }
+
+    // Affiliates can access their dashboard freely - no additional restrictions
   }, [user, loading, router, allowedRoles, redirectTo]);
 
   if (loading) {

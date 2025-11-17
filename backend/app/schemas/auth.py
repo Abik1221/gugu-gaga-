@@ -96,6 +96,7 @@ class UserOut(BaseModel):
     tenant_id: Optional[str] = None
     is_active: bool
     is_approved: bool
+    is_verified: bool = False
     kyc_status: Optional[str] = None
     subscription_status: Optional[str] = None
     subscription_blocked: Optional[bool] = None
