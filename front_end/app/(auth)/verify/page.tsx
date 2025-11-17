@@ -148,13 +148,21 @@ function VerifyRegistrationContent() {
           "Your account has been verified. Redirecting to your dashboard.",
       });
 
-      // Redirect to appropriate dashboard based on user role
-      setTimeout(() => {
+      // Redirect to appropriate dashboard based on user role and status
+      setTimeout(async () => {
         const userRole = verifyRes?.user?.role;
         if (userRole === "affiliate") {
           window.location.href = "/dashboard/affiliate";
         } else if (userRole === "pharmacy_owner") {
-          window.location.href = "/dashboard/owner";
+          // Use owner flow logic
+          try {
+            const { getOwnerFlowStatus, getRedirectPath } = await import("@/utils/owner-flow");
+            const status = await getOwnerFlowStatus();
+            const redirectPath = getRedirectPath(status);
+            window.location.href = redirectPath;
+          } catch (error) {
+            window.location.href = "/dashboard/kyc";
+          }
         } else if (userRole === "supplier") {
           window.location.href = "/dashboard/supplier";
         } else {
@@ -194,12 +202,20 @@ function VerifyRegistrationContent() {
             Your account has been activated. We'll send you to the affiliate dashboard in a moment.
           </p>
           <Button
-            onClick={() => {
+            onClick={async () => {
               const userRole = localStorage.getItem("user_role") || "affiliate";
               if (userRole === "affiliate") {
                 window.location.href = "/dashboard/affiliate";
               } else if (userRole === "pharmacy_owner") {
-                window.location.href = "/dashboard/owner";
+                // Use owner flow logic
+                try {
+                  const { getOwnerFlowStatus, getRedirectPath } = await import("@/utils/owner-flow");
+                  const status = await getOwnerFlowStatus();
+                  const redirectPath = getRedirectPath(status);
+                  window.location.href = redirectPath;
+                } catch (error) {
+                  window.location.href = "/dashboard/kyc";
+                }
               } else if (userRole === "supplier") {
                 window.location.href = "/dashboard/supplier";
               } else {

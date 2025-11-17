@@ -119,7 +119,13 @@ export default function SupplierSignInPage() {
         description: "Redirecting to your supplier dashboard...",
       });
 
-      setTimeout(() => router.replace("/dashboard/supplier"), 1000);
+      // Redirect based on supplier status
+      setTimeout(() => {
+        // For suppliers, check if they need KYC or can access dashboard
+        // Since suppliers don't have complex flow like owners, redirect to supplier dashboard
+        // The RoleSpecificGuard will handle redirects to supplier-kyc if needed
+        router.replace("/dashboard/supplier");
+      }, 1000);
     } catch (err: any) {
       const message = err?.message || "Invalid verification code";
       setError(message);
