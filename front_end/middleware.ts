@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
                      pathname.startsWith('/owner-signin') || 
                      pathname.startsWith('/affiliate-signin') || 
                      pathname.startsWith('/supplier-signin') ||
+                     pathname.startsWith('/superadin') ||
                      pathname.startsWith('/register');
   
   // Get token from cookies or headers
@@ -17,10 +18,26 @@ export function middleware(request: NextRequest) {
                 request.headers.get('authorization')?.replace('Bearer ', '') ||
                 request.headers.get('x-access-token');
   
-  // If accessing dashboard without token, redirect to auth
+  // If accessing dashboard without token, redirect to appropriate login
   if (isDashboardRoute && !token) {
     const url = request.nextUrl.clone();
-    url.pathname = '/auth';
+    
+    // Determine login page based on dashboard type
+    if (pathname.includes('/dashboard/admin')) {
+      url.pathname = '/superadin/zemnpharma/login';
+    } else if (pathname.includes('/dashboard/owner')) {
+      url.pathname = '/owner-signin';
+    } else if (pathname.includes('/dashboard/affiliate')) {
+      url.pathname = '/affiliate-signin';
+    } else if (pathname.includes('/dashboard/supplier')) {
+      url.pathname = '/supplier-signin';
+    } else if (pathname.includes('/dashboard/staff')) {
+      url.pathname = '/owner-signin'; // Staff login through owner
+    } else {
+      // Default to auth page for generic dashboard access
+      url.pathname = '/auth';
+    }
+    
     url.searchParams.set('redirect', pathname);
     return NextResponse.redirect(url);
   }
@@ -59,6 +76,7 @@ export const config = {
     '/owner-signin/:path*',
     '/affiliate-signin/:path*',
     '/supplier-signin/:path*',
+    '/superadin/:path*',
     '/register/:path*'
   ]
 };

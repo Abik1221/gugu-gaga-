@@ -12,7 +12,20 @@ export function ClientRedirect() {
     if (path.startsWith('/dashboard')) {
       const token = localStorage.getItem('access_token');
       if (!token) {
-        router.replace('/auth');
+        // Redirect to appropriate login page
+        if (path.includes('/dashboard/admin')) {
+          router.replace('/superadin/zemnpharma/login');
+        } else if (path.includes('/dashboard/owner')) {
+          router.replace('/owner-signin');
+        } else if (path.includes('/dashboard/affiliate')) {
+          router.replace('/affiliate-signin');
+        } else if (path.includes('/dashboard/supplier')) {
+          router.replace('/supplier-signin');
+        } else if (path.includes('/dashboard/staff')) {
+          router.replace('/owner-signin');
+        } else {
+          router.replace('/auth');
+        }
       }
     }
   }, [router]);
