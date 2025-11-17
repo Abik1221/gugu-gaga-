@@ -70,7 +70,15 @@ export function AuthGuard({
   }
 
   if (!user) {
-    return null;
+    // Show loading while redirecting
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="space-y-4 w-full max-w-md text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto"></div>
+          <p className="text-gray-600">Redirecting to login...</p>
+        </div>
+      </div>
+    );
   }
 
   return <>{children}</>;

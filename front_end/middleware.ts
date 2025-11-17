@@ -14,7 +14,8 @@ export function middleware(request: NextRequest) {
   
   // Get token from cookies or headers
   const token = request.cookies.get('access_token')?.value || 
-                request.headers.get('authorization')?.replace('Bearer ', '');
+                request.headers.get('authorization')?.replace('Bearer ', '') ||
+                request.headers.get('x-access-token');
   
   // If accessing dashboard without token, redirect to auth
   if (isDashboardRoute && !token) {

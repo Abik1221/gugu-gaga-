@@ -38,9 +38,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     // Store tokens in cookies for middleware access
     if (typeof window !== "undefined" && response.access_token) {
-      document.cookie = `access_token=${response.access_token}; path=/; max-age=${20160 * 60}; secure; samesite=strict`;
+      const isProduction = process.env.NODE_ENV === 'production';
+      const cookieOptions = `path=/; max-age=${20160 * 60}; ${isProduction ? 'secure; ' : ''}samesite=strict`;
+      document.cookie = `access_token=${response.access_token}; ${cookieOptions}`;
       if (response.refresh_token) {
-        document.cookie = `refresh_token=${response.refresh_token}; path=/; max-age=${14 * 24 * 60 * 60}; secure; samesite=strict`;
+        document.cookie = `refresh_token=${response.refresh_token}; path=/; max-age=${14 * 24 * 60 * 60}; ${isProduction ? 'secure; ' : ''}samesite=strict`;
       }
     }
     

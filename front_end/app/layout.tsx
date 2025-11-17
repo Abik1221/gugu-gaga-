@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ServiceWorkerProvider } from "@/components/providers/service-worker-provider";
 import { InstallPWA } from "@/components/pwa/InstallPWA";
 import { AuthProvider } from "@/components/auth/auth-provider";
+import { ClientRedirect } from "@/components/auth/client-redirect";
 import logoImage from "@/public/mesoblogo.jpeg";
 
 // Removed force-dynamic for better performance
@@ -171,6 +172,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased overflow-x-hidden">
         <AuthProvider>
+          <ClientRedirect />
           <ToastProvider>
             {children}
             <Toaster />
