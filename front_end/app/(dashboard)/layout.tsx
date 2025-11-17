@@ -1,13 +1,15 @@
 "use client"
 
-export default function App({
+import { AuthGuard } from "@/components/auth/auth-guard";
+
+export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <AuthGuard redirectTo="/auth">
       {children}
-    </div>
+    </AuthGuard>
   );
 }

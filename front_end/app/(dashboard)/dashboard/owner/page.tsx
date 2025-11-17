@@ -4,10 +4,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 import {
-  AuthAPI,
   OwnerAnalyticsAPI,
   type OwnerAnalyticsResponse,
 } from "@/utils/api";
+import { useAuth } from "@/components/auth/auth-provider";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -63,12 +63,21 @@ function EmptyState({ title, description }: { title: string; description: string
   );
 }
 
+import { RoleSpecificGuard } from "@/components/auth/role-specific-guard";
+
 export default function OwnerDashboardPage() {
+  return (
+    <RoleSpecificGuard allowedRoles={["pharmacy_owner"]}>
+      <OwnerDashboardContent />
+    </RoleSpecificGuard>
+  );
+}
+
+function OwnerDashboardContent() {
   const { show } = useToast();
 
-  const [me, setMe] = useState<any>(null);
-  const [tenantId, setTenantId] = useState<string | null>(null);
-  const [loadingUser, setLoadingUser] = useState(true);
+  const { user } = useAuth();
+  const tenantId = user?.tenant_id || null;
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [analyticsError, setAnalyticsError] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<OwnerAnalyticsResponse | null>(null);
@@ -96,44 +105,12 @@ export default function OwnerDashboardPage() {
   );
 
   useEffect(() => {
-    let active = true;
-    async function bootstrap() {
-      setLoadingUser(true);
-      try {
-        const profile = await AuthAPI.me();
-        if (!active) return;
-        
-        // Check flow status
-        if (profile?.kyc_status !== "approved") {
-          window.location.href = "/dashboard/kyc";
-          return;
-        }
-        if (profile?.subscription_status !== "active") {
-          window.location.href = "/dashboard/payment";
-          return;
-        }
-        
-        setMe(profile);
-        const tid = profile?.tenant_id || null;
-        setTenantId(tid);
-        if (tid) {
-          await loadAnalytics(tid);
-        }
-      } catch (error: any) {
-        if (!active) return;
-        setMe(null);
-        setTenantId(null);
-        setAnalytics(null);
-        setAnalyticsError(error?.message || "You are not authorised to view this dashboard");
-      } finally {
-        if (active) setLoadingUser(false);
-      }
+    if (!user) return;
+    
+    if (tenantId) {
+      loadAnalytics(tenantId);
     }
-    bootstrap();
-    return () => {
-      active = false;
-    };
-  }, [loadAnalytics]);
+  }, [user, tenantId, loadAnalytics]);
 
   const handleRefresh = async () => {
     if (!tenantId) return;
@@ -215,21 +192,21 @@ export default function OwnerDashboardPage() {
   const inventorySlices = analytics?.inventory_health || [];
   const recentPayments = analytics?.recent_payments || [];
 
-  const loading = loadingUser || analyticsLoading;
+  const loading = analyticsLoading;
   const displayName = useMemo(() => {
-    if (!me) return "owner";
-    const firstName = (me.first_name || "").trim();
+    if (!user) return "owner";
+    const firstName = (user.first_name || "").trim();
     if (firstName) return firstName;
-    const fallback = (me.username || me.email || "owner").trim();
+    const fallback = (user.username || user.email || "owner").trim();
     return fallback || "owner";
-  }, [me]);
+  }, [user]);
 
   return (
     <div className="space-y-8">
       <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-md lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold text-black">
-            {loadingUser ? "Loading..." : `Welcome back, ${displayName}`}
+            {!user ? "Loading..." : `Welcome back, ${displayName}`}
           </h1>
           <p className="max-w-xl text-sm text-slate-900">
             Monitor revenue, compare branches, and coach your pharmacy team from a single command center.

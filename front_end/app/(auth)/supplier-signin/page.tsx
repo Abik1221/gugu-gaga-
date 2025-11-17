@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { API_BASE } from "@/utils/api";
+import { AuthRedirect } from "@/components/auth/auth-redirect";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Head from "next/head";
@@ -140,7 +141,7 @@ export default function SupplierSignInPage() {
   ];
 
   return (
-    <>
+    <AuthRedirect>
       <Head>
         <title>Supplier Sign In - Access Your Dashboard</title>
         <meta
@@ -386,6 +387,6 @@ export default function SupplierSignInPage() {
           </motion.div>
         </div>
       </div>
-    </>
+    </AuthRedirect>
   );
 }

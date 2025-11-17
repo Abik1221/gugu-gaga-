@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useAuth } from "@/components/auth/auth-provider";
 import { getSupplierFlowStatus, getRedirectPath } from "@/utils/supplier-flow";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -12,12 +13,16 @@ interface SupplierFlowGuardProps {
 export function SupplierFlowGuard({ children }: SupplierFlowGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [canAccess, setCanAccess] = useState(false);
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user || user.role !== "supplier") return;
+    
     checkAccess();
-  }, [pathname]);
+  }, [pathname, user, authLoading]);
 
   const checkAccess = async () => {
     try {
@@ -49,7 +54,7 @@ export function SupplierFlowGuard({ children }: SupplierFlowGuardProps) {
     }
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center space-y-4">
@@ -61,7 +66,7 @@ export function SupplierFlowGuard({ children }: SupplierFlowGuardProps) {
     );
   }
 
-  if (!canAccess) {
+  if (!canAccess || !user || user.role !== "supplier") {
     return null;
   }
 

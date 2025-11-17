@@ -1,43 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { AuthAPI } from "@/utils/api";
+import { useAuth } from "@/components/auth/auth-provider";
 
 export function AdminGuard({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-          router.replace("/superadin/zeenpharma/login");
-          return;
-        }
+    if (loading) return;
 
-        const user = await AuthAPI.me();
-        if (user.role !== "admin") {
-          router.replace("/superadin/zeenpharma/login");
-          return;
-        }
+    if (!user) {
+      router.replace("/superadin/zemnpharma/login");
+      return;
+    }
 
-        setIsAuthenticated(true);
-      } catch (error) {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        router.replace("/superadin/zeenpharma/login");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (user.role !== "admin") {
+      router.replace("/superadin/zemnpharma/login");
+      return;
+    }
+  }, [user, loading, router]);
 
-    checkAuth();
-  }, [router]);
-
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
@@ -45,7 +30,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!user || user.role !== "admin") {
     return null;
   }
 

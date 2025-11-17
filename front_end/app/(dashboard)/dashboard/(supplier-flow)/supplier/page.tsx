@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
+import { RoleSpecificGuard } from "@/components/auth/role-specific-guard";
+import { SupplierAnalyticsAPI } from "@/utils/api";
 import { Package, DollarSign, ShoppingCart, AlertTriangle, TrendingUp, Users, Truck, Target, MessageSquare, Calendar, FileText } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
@@ -22,6 +24,14 @@ interface SupplierDashboardData {
 }
 
 export default function SupplierDashboard() {
+  return (
+    <RoleSpecificGuard allowedRoles={["supplier"]}>
+      <SupplierDashboardContent />
+    </RoleSpecificGuard>
+  );
+}
+
+function SupplierDashboardContent() {
   const { show } = useToast();
   const [data, setData] = useState<SupplierDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -29,22 +39,19 @@ export default function SupplierDashboard() {
   const loadDashboard = async () => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockData: SupplierDashboardData = {
-        total_products: 245,
-        total_orders: 1847,
-        monthly_revenue: 125750.50,
-        pending_shipments: 23,
-        customer_satisfaction: 94.5,
-        order_fulfillment_rate: 98.2,
-        inventory_turnover: 8.4,
-        active_customers: 156,
-        overdue_invoices: 5,
-        performance_score: 92.8
-      };
-      
-      setData(mockData);
+      const response = await SupplierAnalyticsAPI.overview();
+      setData({
+        total_products: response.summary?.total_products || 0,
+        total_orders: response.summary?.total_orders || 0,
+        monthly_revenue: response.summary?.total_revenue || 0,
+        pending_shipments: response.delivery_metrics?.find(m => m.status === 'pending')?.count || 0,
+        customer_satisfaction: response.summary?.avg_rating * 20 || 0,
+        order_fulfillment_rate: response.summary?.fulfillment_rate || 0,
+        inventory_turnover: 0,
+        active_customers: response.customer_insights?.length || 0,
+        overdue_invoices: 0,
+        performance_score: response.summary?.avg_rating * 20 || 0
+      });
     } catch (err: any) {
       show({
         variant: "destructive",
@@ -136,7 +143,7 @@ export default function SupplierDashboard() {
           <CardContent>
             <div className="text-2xl font-bold mb-2">{data?.customer_satisfaction || 0}%</div>
             <Progress value={data?.customer_satisfaction || 0} className="mb-2" />
-            <p className="text-xs text-muted-foreground">Based on 1,247 reviews</p>
+            <p className="text-xs text-muted-foreground">Based on customer feedback</p>
           </CardContent>
         </Card>
 
@@ -216,7 +223,7 @@ export default function SupplierDashboard() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Avg. Order Value</span>
-                <span className="font-medium">$2,847</span>
+                <span className="font-medium">${data?.monthly_revenue && data?.total_orders ? Math.round(data.monthly_revenue / data.total_orders).toLocaleString() : '0'}</span>
               </div>
             </div>
           </CardContent>
@@ -228,34 +235,40 @@ export default function SupplierDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Large order received</p>
-                  <p className="text-xs text-gray-500">MediCorp - $15,750</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Shipment dispatched</p>
-                  <p className="text-xs text-gray-500">Order #12847 - PharmaCare</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Payment received</p>
-                  <p className="text-xs text-gray-500">Invoice #INV-2024-0156</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">New customer onboarded</p>
-                  <p className="text-xs text-gray-500">HealthPlus Pharmacy</p>
-                </div>
-              </div>
+              {data?.total_orders ? (
+                <>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Orders processed</p>
+                      <p className="text-xs text-gray-500">{data.total_orders} total orders</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Revenue generated</p>
+                      <p className="text-xs text-gray-500">${data.monthly_revenue?.toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Products available</p>
+                      <p className="text-xs text-gray-500">{data.total_products} products</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Active customers</p>
+                      <p className="text-xs text-gray-500">{data.active_customers} customers</p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <p className="text-sm text-gray-500">No recent activity</p>
+              )}
             </div>
           </CardContent>
         </Card>

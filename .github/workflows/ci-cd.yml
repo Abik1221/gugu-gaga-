@@ -48,6 +48,9 @@ jobs:
         run: |
           cd front_end
           npm run build
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_API_BASE: https://mymesob.com/api/v1
 
   build:
     needs: test
@@ -87,6 +90,8 @@ jobs:
           no-cache: true
           build-args: |
             NEXT_PUBLIC_API_BASE=https://mymesob.com/api/v1
+            NODE_ENV=production
+            NEXT_PUBLIC_SECURE_COOKIES=true
           tags: |
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:latest
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
@@ -98,6 +103,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Validate security fixes
+        run: |
+          chmod +x validate-security.sh
+          ./validate-security.sh
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
