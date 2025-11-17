@@ -18,13 +18,21 @@ function AuthContent() {
   return <AffiliateLoginPage />;
 }
 
+function AuthWithSuspense() {
+  return (
+    <Suspense fallback={<SimpleLoading />}>
+      <AuthContent />
+    </Suspense>
+  );
+}
+
 export default function AuthRouterPage() {
   return (
     <>
-      <AuthRedirectHandler />
-      <Suspense fallback={<SimpleLoading />}>
-        <AuthContent />
+      <Suspense fallback={<div>Loading...</div>}>
+        <AuthRedirectHandler />
       </Suspense>
+      <AuthWithSuspense />
     </>
   );
 }
