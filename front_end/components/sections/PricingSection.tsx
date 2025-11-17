@@ -20,12 +20,11 @@ export default function PricingSection() {
 
   const handlePlanClick = (plan: any) => {
     if (selectedType === "supplier") {
-      handleSupplierPlanClick(plan.name);
-    } else if (plan.name === "Free Trial") {
-      // Free trial buttons will use TrialDialog
-      return;
+      router.push("/register/supplier");
+    } else {
+      // For owner plans (non-free trial)
+      router.push("/register/owner");
     }
-    // Other owner plan buttons can have their own logic here
   };
 
   const ownerPlans = [
