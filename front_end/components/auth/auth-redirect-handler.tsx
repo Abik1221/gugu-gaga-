@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
 
-export function AuthRedirectHandler() {
+function AuthRedirectContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading } = useAuth();
@@ -48,4 +48,8 @@ export function AuthRedirectHandler() {
   }, [user, loading, router, searchParams]);
 
   return null;
+}
+
+export function AuthRedirectHandler() {
+  return <AuthRedirectContent />;
 }
