@@ -22,7 +22,6 @@ export default function PricingSection() {
     if (selectedType === "supplier") {
       router.push("/register/supplier");
     } else {
-      // For owner plans (non-free trial)
       router.push("/register/owner");
     }
   };
@@ -260,32 +259,17 @@ export default function PricingSection() {
                   ))}
                 </ul>
 
-                {plan.name === "Free Trial" ? (
-                  <TrialDialog>
-                    <Button
-                      className={`w-full ${
-                        plan.highlight
-                          ? "bg-emerald-600 hover:bg-emerald-700"
-                          : "bg-gray-900 hover:bg-gray-800"
-                      }`}
-                      size="default"
-                    >
-                      {plan.cta}
-                    </Button>
-                  </TrialDialog>
-                ) : (
-                  <Button
-                    className={`w-full ${
-                      plan.highlight
-                        ? "bg-emerald-600 hover:bg-emerald-700"
-                        : "bg-gray-900 hover:bg-gray-800"
-                    }`}
-                    size="default"
-                    onClick={() => handlePlanClick(plan)}
-                  >
-                    {plan.cta}
-                  </Button>
-                )}
+                <Button
+                  className={`w-full ${
+                    plan.highlight
+                      ? "bg-emerald-600 hover:bg-emerald-700"
+                      : "bg-gray-900 hover:bg-gray-800"
+                  }`}
+                  size="default"
+                  onClick={() => handlePlanClick(plan)}
+                >
+                  {plan.cta}
+                </Button>
               </Card>
             </motion.div>
           ))}
