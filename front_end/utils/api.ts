@@ -16,6 +16,9 @@ function buildHeaders(
   tenantId?: string
 ): HeadersInit {
   const headers: Record<string, string> = {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
     ...(initHeaders as Record<string, string>),
   };
   if (tenantId) headers[TENANT_HEADER] = tenantId;
@@ -196,6 +199,19 @@ export function getAccessToken(): string | null {
   return localStorage.getItem("access_token") || localStorage.getItem("token");
 }
 
+// Enhanced token management with security
+export function setTokens(accessToken: string, refreshToken: string): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("access_token", accessToken);
+  localStorage.setItem("refresh_token", refreshToken);
+}
+
+export function clearTokens(): void {
+  if (typeof window === "undefined") return;
+  const keysToRemove = ['access_token', 'refresh_token', 'token', 'user_role'];
+  keysToRemove.forEach(key => localStorage.removeItem(key));
+}
+
 
 
 function getRefreshToken(): string | null {
@@ -220,8 +236,7 @@ async function refreshTokens(): Promise<boolean> {
       refresh_token: string;
     };
     if (typeof window !== "undefined") {
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("refresh_token", data.refresh_token);
+      setTokens(data.access_token, data.refresh_token);
     }
     return true;
   } catch {
@@ -419,8 +434,7 @@ export const AuthAPI = {
     ).then(
       (resp) => {
         if (typeof window !== "undefined") {
-          localStorage.setItem("access_token", resp.access_token);
-          localStorage.setItem("refresh_token", resp.refresh_token);
+          setTokens(resp.access_token, resp.refresh_token);
         }
         return resp;
       }
@@ -434,8 +448,7 @@ export const AuthAPI = {
   loginVerify: (email: string, code: string, tenantId?: string) =>
     postJSON<AuthTokenResponse>("/api/v1/auth/login/verify", { email, code }, tenantId).then((resp) => {
       if (typeof window !== "undefined") {
-        localStorage.setItem("access_token", resp.access_token);
-        localStorage.setItem("refresh_token", resp.refresh_token);
+        setTokens(resp.access_token, resp.refresh_token);
       }
       return resp;
     }),

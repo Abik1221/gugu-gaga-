@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { ErrorDialog } from "@/components/ui/error-dialog";
+import { AuthRedirect } from "@/components/auth/auth-redirect";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Navbar from "@/components/sections/Navbar";
@@ -128,7 +129,7 @@ export default function AffiliateLoginPage() {
   }
 
   return (
-    <>
+    <AuthRedirect>
       <Head>
         <title>Affiliate Sign In - Partner Dashboard</title>
         <meta
@@ -402,6 +403,6 @@ export default function AffiliateLoginPage() {
           </motion.div>
         </div>
       </div>
-    </>
+    </AuthRedirect>
   );
 }

@@ -4,10 +4,19 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { RoleSpecificGuard } from "@/components/auth/role-specific-guard";
 import { StatCard, MiniStat, SectionCard } from "./_components/cards";
 import { useAffiliateDashboardContext } from "./_context/affiliate-dashboard-context";
 
 export default function AffiliateOverviewPage() {
+  return (
+    <RoleSpecificGuard allowedRoles={["affiliate"]}>
+      <AffiliateOverviewContent />
+    </RoleSpecificGuard>
+  );
+}
+
+function AffiliateOverviewContent() {
   const { stats, dash, monthLabel, payoutPercent, actions, canCreateMore } =
     useAffiliateDashboardContext();
 

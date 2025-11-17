@@ -4,6 +4,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
 import { ServiceWorkerProvider } from "@/components/providers/service-worker-provider";
 import { InstallPWA } from "@/components/pwa/InstallPWA";
+import { AuthProvider } from "@/components/auth/auth-provider";
 import logoImage from "@/public/mesoblogo.jpeg";
 
 // Removed force-dynamic for better performance
@@ -169,11 +170,13 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased overflow-x-hidden">
-        <ToastProvider>
-          {children}
-          <Toaster />
-          <InstallPWA />
-        </ToastProvider>
+        <AuthProvider>
+          <ToastProvider>
+            {children}
+            <Toaster />
+            <InstallPWA />
+          </ToastProvider>
+        </AuthProvider>
         <ServiceWorkerProvider />
       </body>
     </html>

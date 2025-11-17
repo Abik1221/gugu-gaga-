@@ -1,5 +1,6 @@
 "use client";
 
+import { SupplierGuard } from "@/components/auth/role-guard";
 import { SupplierFlowGuard } from "@/components/supplier-flow-guard";
 
 export default function SupplierFlowLayout({
@@ -8,12 +9,12 @@ export default function SupplierFlowLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SupplierFlowGuard>
-      <div className="min-h-screen bg-gray-50">
-        {/* <div className="container mx-auto px-4 py-8"> */}
+    <SupplierGuard>
+      <SupplierFlowGuard>
+        <div className="min-h-screen bg-gray-50">
           {children}
-        {/* </div> */}
-      </div>
-    </SupplierFlowGuard>
+        </div>
+      </SupplierFlowGuard>
+    </SupplierGuard>
   );
 }
