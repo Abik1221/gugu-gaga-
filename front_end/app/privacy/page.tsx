@@ -107,7 +107,7 @@ export default function PrivacyPage() {
                 </a>
               </p>
               <p>Phone: +251983446134</p>
-              <p>Address: Bole, Addis Ababa, Ethiopia</p>
+              <p>Address: Bahirdar University, Bahir Dar, Ethiopia</p>
               <p className="text-sm text-gray-600 mt-3">
                 Business Hours: Monday - Friday, 8:30 AM - 5:30 PM (East Africa
                 Time)

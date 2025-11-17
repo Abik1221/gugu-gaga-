@@ -199,7 +199,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Office</h4>
-                    <p className="text-gray-600">Bole, Addis Ababa, Ethiopia</p>
+                    <p className="text-gray-600">Bahirdar University, Bahir Dar, Ethiopia</p>
                     <p className="text-sm text-gray-500">
                       Business Hours: Monday - Friday, 8:30 AM - 5:30 PM (East
                       Africa Time)
