@@ -354,6 +354,7 @@ export type AuthProfile = {
   phone?: string | null;
   role?: string | null;
   tenant_id?: string | null;
+  is_verified?: boolean;
   kyc_status?: string | null;
   subscription_status?: string | null;
   subscription_blocked?: boolean | null;
