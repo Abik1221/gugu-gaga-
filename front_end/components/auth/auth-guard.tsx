@@ -15,7 +15,7 @@ interface AuthGuardProps {
 export function AuthGuard({ 
   children, 
   requiredRole, 
-  redirectTo = "/auth" 
+  redirectTo 
 }: AuthGuardProps) {
   const router = useRouter();
   const { user, loading } = useAuth();
@@ -29,7 +29,27 @@ export function AuthGuard({
         document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         document.cookie = "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       }
-      router.replace(redirectTo);
+      
+      // Determine redirect based on current path if not specified
+      let finalRedirect = redirectTo;
+      if (!finalRedirect && typeof window !== "undefined") {
+        const path = window.location.pathname;
+        if (path.includes('/dashboard/admin')) {
+          finalRedirect = '/superadin/zemnpharma/login';
+        } else if (path.includes('/dashboard/owner')) {
+          finalRedirect = '/owner-signin';
+        } else if (path.includes('/dashboard/affiliate')) {
+          finalRedirect = '/affiliate-signin';
+        } else if (path.includes('/dashboard/supplier')) {
+          finalRedirect = '/supplier-signin';
+        } else if (path.includes('/dashboard/staff')) {
+          finalRedirect = '/owner-signin';
+        } else {
+          finalRedirect = '/auth';
+        }
+      }
+      
+      router.replace(finalRedirect || '/auth');
       return;
     }
 
