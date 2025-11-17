@@ -22,6 +22,13 @@ export function middleware(request: NextRequest) {
   if (isDashboardRoute && !token) {
     const url = request.nextUrl.clone();
     
+    // Block obvious admin routes - redirect to 404
+    if (pathname.startsWith('/dashboard/admin')) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/404';
+      return NextResponse.redirect(url);
+    }
+    
     // Determine login page based on dashboard type - check most specific paths first
     if (pathname.startsWith('/dashboard/supplier-kyc') || pathname.startsWith('/dashboard/supplier-payment') || pathname.startsWith('/dashboard/supplier-status') || pathname.startsWith('/dashboard/supplier')) {
       url.pathname = '/supplier-signin';
@@ -29,12 +36,10 @@ export function middleware(request: NextRequest) {
       url.pathname = '/affiliate-signin';
     } else if (pathname.startsWith('/dashboard/owner') || pathname.startsWith('/dashboard/kyc') || pathname.startsWith('/dashboard/payment') || pathname.startsWith('/dashboard/inventory') || pathname.startsWith('/dashboard/pos') || pathname.startsWith('/dashboard/settings') || pathname.startsWith('/dashboard/receipts')) {
       url.pathname = '/owner-signin';
-    } else if (pathname.startsWith('/dashboard/admin')) {
-      url.pathname = '/superadin/zemnpharma/login';
     } else if (pathname.startsWith('/dashboard/staff')) {
       url.pathname = '/owner-signin';
     } else if (pathname.startsWith('/dashboard/ai')) {
-      url.pathname = '/owner-signin'; // AI chat is for owners
+      url.pathname = '/owner-signin';
     } else {
       url.pathname = '/auth';
     }

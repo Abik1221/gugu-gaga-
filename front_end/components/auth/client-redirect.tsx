@@ -12,6 +12,12 @@ export function ClientRedirect() {
     if (path.startsWith('/dashboard')) {
       const token = localStorage.getItem('access_token');
       if (!token) {
+        // Block obvious admin routes
+        if (path.startsWith('/dashboard/admin')) {
+          router.replace('/404');
+          return;
+        }
+        
         // Redirect to appropriate login page - check most specific paths first
         if (path.startsWith('/dashboard/supplier-kyc') || path.startsWith('/dashboard/supplier-payment') || path.startsWith('/dashboard/supplier-status') || path.startsWith('/dashboard/supplier')) {
           router.replace('/supplier-signin');
@@ -19,8 +25,6 @@ export function ClientRedirect() {
           router.replace('/affiliate-signin');
         } else if (path.startsWith('/dashboard/owner') || path.startsWith('/dashboard/kyc') || path.startsWith('/dashboard/payment') || path.startsWith('/dashboard/inventory') || path.startsWith('/dashboard/pos') || path.startsWith('/dashboard/settings') || path.startsWith('/dashboard/receipts')) {
           router.replace('/owner-signin');
-        } else if (path.startsWith('/dashboard/admin')) {
-          router.replace('/superadin/zemnpharma/login');
         } else if (path.startsWith('/dashboard/staff')) {
           router.replace('/owner-signin');
         } else if (path.startsWith('/dashboard/ai')) {
