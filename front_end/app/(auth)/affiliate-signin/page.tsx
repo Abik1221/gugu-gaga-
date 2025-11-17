@@ -102,7 +102,10 @@ export default function AffiliateLoginPage() {
         message: "Login successful. Redirecting to your affiliate dashboard...",
         type: "success",
       });
-      setTimeout(() => (window.location.href = "/dashboard/affiliate"), 1500);
+      setTimeout(() => {
+        // Affiliates have no restrictions, direct to dashboard
+        window.location.href = "/dashboard/affiliate";
+      }, 1500);
     } catch (e: any) {
       const message = e.message || "Verification failed";
       setError(null);
