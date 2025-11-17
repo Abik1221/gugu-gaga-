@@ -34,15 +34,17 @@ export function AuthGuard({
       let finalRedirect = redirectTo;
       if (!finalRedirect && typeof window !== "undefined") {
         const path = window.location.pathname;
-        if (path.includes('/dashboard/admin')) {
-          finalRedirect = '/superadin/zemnpharma/login';
-        } else if (path.includes('/dashboard/owner')) {
-          finalRedirect = '/owner-signin';
-        } else if (path.includes('/dashboard/affiliate')) {
-          finalRedirect = '/affiliate-signin';
-        } else if (path.includes('/dashboard/supplier')) {
+        if (path.startsWith('/dashboard/supplier-kyc') || path.startsWith('/dashboard/supplier-payment') || path.startsWith('/dashboard/supplier-status') || path.startsWith('/dashboard/supplier')) {
           finalRedirect = '/supplier-signin';
-        } else if (path.includes('/dashboard/staff')) {
+        } else if (path.startsWith('/dashboard/affiliate')) {
+          finalRedirect = '/affiliate-signin';
+        } else if (path.startsWith('/dashboard/owner') || path.startsWith('/dashboard/kyc') || path.startsWith('/dashboard/payment') || path.startsWith('/dashboard/inventory') || path.startsWith('/dashboard/pos') || path.startsWith('/dashboard/settings') || path.startsWith('/dashboard/receipts')) {
+          finalRedirect = '/owner-signin';
+        } else if (path.startsWith('/dashboard/admin')) {
+          finalRedirect = '/superadin/zemnpharma/login';
+        } else if (path.startsWith('/dashboard/staff')) {
+          finalRedirect = '/owner-signin';
+        } else if (path.startsWith('/dashboard/ai')) {
           finalRedirect = '/owner-signin';
         } else {
           finalRedirect = '/auth';
