@@ -46,14 +46,21 @@ export default function AffiliateLoginPage() {
     setError(null);
     setLoading(true);
     try {
-      await AuthAPI.loginRequestCode(email, password);
+      await AuthAPI.loginRequestCode(email, password, "affiliate");
       setStep("verify");
       setShowOtpDialog(true);
     } catch (e: any) {
       const message = e.message || "Failed to send code";
       setError(null);
 
-      if (message.includes("No account")) {
+      if (message.includes("registered as a")) {
+        setErrorDialog({
+          isOpen: true,
+          title: "Wrong Login Page",
+          message: message,
+          type: "warning",
+        });
+      } else if (message.includes("No account")) {
         setErrorDialog({
           isOpen: true,
           title: "Account Not Found",

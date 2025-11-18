@@ -486,12 +486,16 @@ export const AuthAPI = {
         return resp;
       }
     ),
-  loginRequestCode: (email: string, password: string, tenantId?: string) =>
-    postForm(
-      "/api/v1/auth/login/request-code",
+  loginRequestCode: (email: string, password: string, expectedRole?: string, tenantId?: string) => {
+    const url = expectedRole 
+      ? `/api/v1/auth/login/request-code?expected_role=${encodeURIComponent(expectedRole)}`
+      : "/api/v1/auth/login/request-code";
+    return postForm(
+      url,
       { username: email, password, grant_type: "password" },
       tenantId
-    ),
+    );
+  },
   loginVerify: (email: string, code: string, tenantId?: string) =>
     postJSON<AuthTokenResponse>("/api/v1/auth/login/verify", { email, code }, tenantId).then((resp) => {
       if (typeof window !== "undefined") {

@@ -63,7 +63,7 @@ export default function SupplierSignInPage() {
       formData.append("password", password);
       formData.append("grant_type", "password");
 
-      const response = await fetch(`${API_BASE}/auth/login/request-code`, {
+      const response = await fetch(`${API_BASE}/auth/login/request-code?expected_role=supplier`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData,
@@ -71,7 +71,14 @@ export default function SupplierSignInPage() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Invalid credentials");
+        const message = errorData.detail || "Invalid credentials";
+        
+        // Handle role mismatch errors with helpful messages
+        if (message.includes("registered as a")) {
+          throw new Error(message);
+        }
+        
+        throw new Error(message);
       }
 
       setOtpSent(true);
