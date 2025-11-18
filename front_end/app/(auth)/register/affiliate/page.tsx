@@ -61,11 +61,11 @@ export default function AffiliateRegisterPage() {
         address: address,
       });
 
-      setSuccess("Affiliate registered. Please verify your email.");
+      setSuccess("Affiliate registered. Redirecting to verification...");
       showEmailSentNotification(affEmail, "register");
-      setTimeout(() => {
-        router.push(`/verify?email=${encodeURIComponent(affEmail)}&purpose=register`);
-      }, 2000);
+      
+      // Immediate redirect to verification page
+      router.push(`/verify?email=${encodeURIComponent(affEmail)}&purpose=register`);
     } catch (err: any) {
       let message = err?.message || "Registration failed";
       let title = "Registration Failed";
