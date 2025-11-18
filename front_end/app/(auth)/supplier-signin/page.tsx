@@ -136,10 +136,10 @@ export default function SupplierSignInPage() {
           const { getSupplierFlowStatus, getRedirectPath } = await import('@/utils/supplier-flow');
           const flowStatus = await getSupplierFlowStatus();
           const redirectPath = getRedirectPath(flowStatus);
-          router.replace(redirectPath);
+          window.location.replace(redirectPath);
         } catch (error) {
           console.error('Error determining supplier redirect:', error);
-          router.replace('/dashboard/supplier');
+          window.location.replace('/dashboard/supplier-kyc');
         }
       }, 1000);
     } catch (err: any) {

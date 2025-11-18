@@ -123,9 +123,16 @@ function VerifyRegistrationContent() {
         console.log('Storing access token:', accessToken.substring(0, 20) + '...');
         localStorage.setItem("access_token", accessToken);
         localStorage.setItem("token", accessToken); // Also store as 'token' for compatibility
+        
+        // Store in cookies for middleware access
+        const isProduction = process.env.NODE_ENV === 'production';
+        const cookieOptions = `path=/; max-age=${20160 * 60}; ${isProduction ? 'secure; ' : ''}samesite=lax`;
+        document.cookie = `access_token=${accessToken}; ${cookieOptions}`;
       }
       if (refreshToken) {
         localStorage.setItem("refresh_token", refreshToken);
+        const isProduction = process.env.NODE_ENV === 'production';
+        document.cookie = `refresh_token=${refreshToken}; path=/; max-age=${14 * 24 * 60 * 60}; ${isProduction ? 'secure; ' : ''}samesite=lax`;
       } else {
         localStorage.removeItem("refresh_token");
       }
@@ -152,35 +159,34 @@ function VerifyRegistrationContent() {
           "Your account has been verified. Redirecting to your dashboard.",
       });
 
-      // Redirect to appropriate dashboard based on user role and status
+      // Redirect based on user role and approval status
       setTimeout(async () => {
-        const userRole = verifyRes?.user?.role;
+        const userRole = verifyRes?.user?.role || localStorage.getItem("user_role");
+        
         if (userRole === "affiliate") {
-          window.location.href = "/dashboard/affiliate";
+          window.location.replace("/dashboard/affiliate");
         } else if (userRole === "pharmacy_owner") {
-          // Use owner flow logic
           try {
             const { getOwnerFlowStatus, getRedirectPath } = await import("@/utils/owner-flow");
             const status = await getOwnerFlowStatus();
             const redirectPath = getRedirectPath(status);
-            window.location.href = redirectPath;
+            window.location.replace(redirectPath);
           } catch (error) {
-            window.location.href = "/dashboard/kyc";
+            window.location.replace("/dashboard/kyc");
           }
         } else if (userRole === "supplier") {
-          // Use supplier flow logic
           try {
             const { getSupplierFlowStatus, getRedirectPath } = await import("@/utils/supplier-flow");
             const status = await getSupplierFlowStatus();
             const redirectPath = getRedirectPath(status);
-            window.location.href = redirectPath;
+            window.location.replace(redirectPath);
           } catch (error) {
-            window.location.href = "/dashboard/supplier-kyc";
+            window.location.replace("/dashboard/supplier-kyc");
           }
         } else {
-          window.location.href = "/dashboard";
+          window.location.replace("/dashboard");
         }
-      }, 1000);
+      }, 500);
     } catch (err: any) {
       setError(err.message || "Verification failed");
       show({
@@ -211,35 +217,34 @@ function VerifyRegistrationContent() {
           </div>
           <h1 className="mt-6 text-3xl font-semibold text-slate-900">Account verified!</h1>
           <p className="mt-3 text-sm text-slate-600">
-            Your account has been activated. We'll send you to the affiliate dashboard in a moment.
+            Your account has been activated. We'll redirect you to the next step in a moment.
           </p>
           <Button
             onClick={async () => {
               const userRole = localStorage.getItem("user_role") || "affiliate";
+              
               if (userRole === "affiliate") {
-                window.location.href = "/dashboard/affiliate";
+                window.location.replace("/dashboard/affiliate");
               } else if (userRole === "pharmacy_owner") {
-                // Use owner flow logic
                 try {
                   const { getOwnerFlowStatus, getRedirectPath } = await import("@/utils/owner-flow");
                   const status = await getOwnerFlowStatus();
                   const redirectPath = getRedirectPath(status);
-                  window.location.href = redirectPath;
+                  window.location.replace(redirectPath);
                 } catch (error) {
-                  window.location.href = "/dashboard/kyc";
+                  window.location.replace("/dashboard/kyc");
                 }
               } else if (userRole === "supplier") {
-                // Use supplier flow logic
                 try {
                   const { getSupplierFlowStatus, getRedirectPath } = await import("@/utils/supplier-flow");
                   const status = await getSupplierFlowStatus();
                   const redirectPath = getRedirectPath(status);
-                  window.location.href = redirectPath;
+                  window.location.replace(redirectPath);
                 } catch (error) {
-                  window.location.href = "/dashboard/supplier-kyc";
+                  window.location.replace("/dashboard/supplier-kyc");
                 }
               } else {
-                window.location.href = "/dashboard";
+                window.location.replace("/dashboard");
               }
             }}
             className="mt-8 w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 text-sm font-semibold text-white shadow-[0_25px_70px_-50px_rgba(15,118,110,0.45)] hover:translate-y-[-1px]"

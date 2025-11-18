@@ -34,11 +34,24 @@ export function AuthRedirect({ children }: AuthRedirectProps) {
         return;
       }
 
+      // Handle suppliers with flow logic
+      if (user.role === "supplier") {
+        import("@/utils/supplier-flow").then(async ({ getSupplierFlowStatus, getRedirectPath }) => {
+          try {
+            const status = await getSupplierFlowStatus();
+            const redirectPath = getRedirectPath(status);
+            router.replace(redirectPath);
+          } catch (error) {
+            router.replace("/dashboard/supplier-kyc");
+          }
+        });
+        return;
+      }
+
       // Redirect other roles to their appropriate dashboard
       const roleRedirects: Record<string, string> = {
         admin: "/dashboard/admin",
         affiliate: "/dashboard/affiliate",
-        supplier: "/dashboard/supplier",
         cashier: "/dashboard/staff"
       };
 

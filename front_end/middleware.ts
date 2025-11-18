@@ -11,7 +11,8 @@ export function middleware(request: NextRequest) {
                      pathname.startsWith('/affiliate-signin') || 
                      pathname.startsWith('/supplier-signin') ||
                      pathname.startsWith('/superadin') ||
-                     pathname.startsWith('/register');
+                     pathname.startsWith('/register') ||
+                     pathname.startsWith('/verify');
   
   // Get token from cookies or headers
   const token = request.cookies.get('access_token')?.value || 
@@ -30,15 +31,11 @@ export function middleware(request: NextRequest) {
     }
     
     // Determine login page based on dashboard type - check most specific paths first
-    if (pathname.startsWith('/dashboard/supplier-kyc') || pathname.startsWith('/dashboard/supplier-payment') || pathname.startsWith('/dashboard/supplier-status') || pathname.startsWith('/dashboard/supplier')) {
+    if (pathname.startsWith('/dashboard/supplier')) {
       url.pathname = '/supplier-signin';
     } else if (pathname.startsWith('/dashboard/affiliate')) {
       url.pathname = '/affiliate-signin';
-    } else if (pathname.startsWith('/dashboard/owner') || pathname.startsWith('/dashboard/kyc') || pathname.startsWith('/dashboard/payment') || pathname.startsWith('/dashboard/inventory') || pathname.startsWith('/dashboard/pos') || pathname.startsWith('/dashboard/settings') || pathname.startsWith('/dashboard/receipts')) {
-      url.pathname = '/owner-signin';
-    } else if (pathname.startsWith('/dashboard/staff')) {
-      url.pathname = '/owner-signin';
-    } else if (pathname.startsWith('/dashboard/ai')) {
+    } else if (pathname.startsWith('/dashboard/owner') || pathname.startsWith('/dashboard/kyc') || pathname.startsWith('/dashboard/payment') || pathname.startsWith('/dashboard/inventory') || pathname.startsWith('/dashboard/pos') || pathname.startsWith('/dashboard/settings') || pathname.startsWith('/dashboard/receipts') || pathname.startsWith('/dashboard/staff') || pathname.startsWith('/dashboard/ai')) {
       url.pathname = '/owner-signin';
     } else {
       url.pathname = '/auth';
@@ -50,6 +47,15 @@ export function middleware(request: NextRequest) {
   
   // If accessing auth routes with token, redirect to appropriate dashboard
   if (isAuthRoute && token) {
+    // Check if there's a specific redirect parameter
+    const redirectParam = request.nextUrl.searchParams.get('redirect');
+    if (redirectParam && redirectParam.startsWith('/dashboard')) {
+      const url = request.nextUrl.clone();
+      url.pathname = redirectParam;
+      url.searchParams.delete('redirect');
+      return NextResponse.redirect(url);
+    }
+    
     // Try to decode role from token (basic check)
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -57,9 +63,9 @@ export function middleware(request: NextRequest) {
       
       const roleRedirects: Record<string, string> = {
         admin: '/dashboard/admin',
-        pharmacy_owner: '/dashboard/owner',
+        pharmacy_owner: '/dashboard/kyc', // Will be handled by flow logic
         affiliate: '/dashboard/affiliate',
-        supplier: '/dashboard/supplier',
+        supplier: '/dashboard/supplier-kyc', // Will be handled by flow logic
         cashier: '/dashboard/staff'
       };
       
@@ -83,6 +89,7 @@ export const config = {
     '/affiliate-signin/:path*',
     '/supplier-signin/:path*',
     '/superadin/:path*',
-    '/register/:path*'
+    '/register/:path*',
+    '/verify/:path*'
   ]
 };
