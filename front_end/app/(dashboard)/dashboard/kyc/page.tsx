@@ -173,13 +173,13 @@ export default function OwnerKYCPage() {
       
       // Use proper routing logic
       const { getAuthRedirectPath } = await import('@/utils/auth-routing');
-      const me = await getAuthJSON("/api/v1/auth/me");
+      const userStatus = await getAuthJSON("/api/v1/auth/me");
       const redirectPath = getAuthRedirectPath({
-        role: me.role,
-        is_verified: me.is_verified,
-        kyc_status: me.kyc_status,
-        subscription_status: me.subscription_status,
-        subscription_blocked: me.subscription_blocked
+        role: userStatus.role,
+        is_verified: userStatus.is_verified,
+        kyc_status: userStatus.kyc_status,
+        subscription_status: userStatus.subscription_status,
+        subscription_blocked: userStatus.subscription_blocked
       });
       
       setTimeout(() => router.push(redirectPath), 1500);
