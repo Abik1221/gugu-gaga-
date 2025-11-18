@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/components/ui/toast";
+
 import { ErrorDialog } from "@/components/ui/error-dialog";
 import { postJSON } from "@/utils/api";
 import { ArrowLeft, Mail, Lock, CheckCircle } from "lucide-react";
@@ -16,7 +16,11 @@ import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const { show } = useToast();
+  const show = (toast: any) => {
+    if (typeof window !== 'undefined') {
+      console.log('Toast:', toast.title, toast.description);
+    }
+  };
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
