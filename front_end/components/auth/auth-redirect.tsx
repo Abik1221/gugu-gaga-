@@ -13,18 +13,18 @@ export function AuthRedirect({ children }: AuthRedirectProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Don't redirect if we're on auth pages that handle their own redirects
-  const isAuthPage = pathname?.includes('/verify') || pathname?.includes('/signin') || pathname?.includes('/register');
+  // Don't redirect during verification process
+  const isVerifyPage = pathname?.includes('/verify');
   
-  // Always check flow status for owners and suppliers on dashboard pages
+  // Always check flow status for owners and suppliers
   const isDashboardPage = pathname?.startsWith('/dashboard');
 
   useEffect(() => {
-    if (loading || isAuthPage) return;
+    if (loading || isVerifyPage) return;
 
     if (user) {
-      // Handle pharmacy owners with flow logic - always check on dashboard pages
-      if (user.role === "pharmacy_owner" && isDashboardPage) {
+      // Handle pharmacy owners with flow logic
+      if (user.role === "pharmacy_owner") {
         import("@/utils/owner-flow").then(async ({ getOwnerFlowStatus, getRedirectPath }) => {
           try {
             const status = await getOwnerFlowStatus();
@@ -41,8 +41,8 @@ export function AuthRedirect({ children }: AuthRedirectProps) {
         return;
       }
 
-      // Handle suppliers with flow logic - always check on dashboard pages
-      if (user.role === "supplier" && isDashboardPage) {
+      // Handle suppliers with flow logic
+      if (user.role === "supplier") {
         import("@/utils/supplier-flow").then(async ({ getSupplierFlowStatus, getRedirectPath }) => {
           try {
             const status = await getSupplierFlowStatus();
@@ -59,19 +59,19 @@ export function AuthRedirect({ children }: AuthRedirectProps) {
         return;
       }
 
-      // Redirect other roles to their appropriate dashboard (only if not already there)
-      if (!isDashboardPage) {
-        const roleRedirects: Record<string, string> = {
-          admin: "/dashboard/admin",
-          affiliate: "/dashboard/affiliate",
-          cashier: "/dashboard/staff"
-        };
+      // Redirect other roles to their appropriate dashboard
+      const roleRedirects: Record<string, string> = {
+        admin: "/dashboard/admin",
+        affiliate: "/dashboard/affiliate",
+        cashier: "/dashboard/staff"
+      };
 
-        const redirect = roleRedirects[user.role || ""] || "/dashboard";
+      const redirect = roleRedirects[user.role || ""];
+      if (redirect && pathname !== redirect) {
         router.replace(redirect);
       }
     }
-  }, [user, loading, router, isAuthPage, isDashboardPage, pathname]);
+  }, [user, loading, router, isVerifyPage, pathname]);
 
   // Show login form only if user is not authenticated
   if (loading) {
