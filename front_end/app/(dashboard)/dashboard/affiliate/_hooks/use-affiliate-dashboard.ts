@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AffiliateAPI } from "@/utils/api";
-import { useToast } from "@/components/ui/toast";
+
 
 export type AffiliateStats = {
   currentCommission: number;
@@ -190,7 +190,11 @@ function getErrorMessage(error: unknown): string {
 }
 
 export function useAffiliateDashboard(): DashboardState {
-  const { show } = useToast();
+  const show = (toast: any) => {
+    if (typeof window !== 'undefined') {
+      console.log('Toast:', toast.title, toast.description);
+    }
+  };
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

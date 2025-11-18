@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
 
 interface AuthRedirectProps {
@@ -11,9 +11,13 @@ interface AuthRedirectProps {
 export function AuthRedirect({ children }: AuthRedirectProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Don't redirect if we're on auth pages that handle their own redirects
+  const isAuthPage = pathname?.includes('/verify') || pathname?.includes('/signin') || pathname?.includes('/register');
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || isAuthPage) return;
 
     if (user) {
       // Handle pharmacy owners with flow logic
@@ -41,7 +45,7 @@ export function AuthRedirect({ children }: AuthRedirectProps) {
       const redirect = roleRedirects[user.role || ""] || "/dashboard";
       router.replace(redirect);
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, isAuthPage]);
 
   // Show login form only if user is not authenticated
   if (loading) {
@@ -52,7 +56,7 @@ export function AuthRedirect({ children }: AuthRedirectProps) {
     );
   }
 
-  if (user) {
+  if (user && !isAuthPage) {
     return null; // Will redirect
   }
 
