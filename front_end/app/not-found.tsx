@@ -44,7 +44,7 @@ export default function NotFoundPage() {
               variant="outline"
               className="rounded-xl border border-emerald-300/30 bg-white/5 text-white hover:border-emerald-200 hover:bg-white/10"
             >
-              <Link href="/superadin/zemnpharma/login">Admin console</Link>
+              <Link href="/contact">Contact us</Link>
             </Button>
           </div>
 
