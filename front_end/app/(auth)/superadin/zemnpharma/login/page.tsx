@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { AuthAPI } from "@/utils/api";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
+
 import { Input } from "@/components/ui/input";
 
 const highlights = [
@@ -17,7 +17,11 @@ const highlights = [
 
 export default function SuperAdminLoginPage() {
   const router = useRouter();
-  const { show } = useToast();
+  const show = (toast: any) => {
+    if (typeof window !== 'undefined') {
+      console.log('Toast:', toast.title, toast.description);
+    }
+  };
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

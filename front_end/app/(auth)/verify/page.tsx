@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { CheckCircle2, MailCheck, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/toast";
+
 import { useEmailVerificationToast } from "@/components/ui/email-verification-toast";
 import { AuthAPI } from "@/utils/api";
 import { SimpleLoading } from "@/components/ui/simple-loading";
@@ -32,7 +32,11 @@ const highlights = [
 function VerifyRegistrationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { show } = useToast();
+  const show = (toast: any) => {
+    if (typeof window !== 'undefined') {
+      console.log('Toast:', toast.title, toast.description);
+    }
+  };
   const { showEmailSentNotification, showResendCooldown } = useEmailVerificationToast();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");

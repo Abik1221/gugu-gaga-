@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { AuthAPI } from "@/utils/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/toast";
+
 import { ErrorDialog } from "@/components/ui/error-dialog";
 import { AuthRedirect } from "@/components/auth/auth-redirect";
 import AuthNavBar from "@/components/layout/AuthNavBar";
@@ -22,7 +22,11 @@ const highlights = [
 
 export default function AffiliateLoginPage() {
   const router = useRouter();
-  const { show } = useToast();
+  const show = (toast: any) => {
+    if (typeof window !== 'undefined') {
+      console.log('Toast:', toast.title, toast.description);
+    }
+  };
   const [step, setStep] = useState<"request" | "verify">("request");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
