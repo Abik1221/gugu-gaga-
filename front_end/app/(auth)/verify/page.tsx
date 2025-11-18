@@ -159,30 +159,16 @@ function VerifyRegistrationContent() {
           "Your account has been verified. Redirecting to your dashboard.",
       });
 
-      // Redirect based on user role and approval status
-      setTimeout(async () => {
+      // Redirect based on user role - let AuthRedirect handle flow logic
+      setTimeout(() => {
         const userRole = verifyRes?.user?.role || localStorage.getItem("user_role");
         
         if (userRole === "affiliate") {
           window.location.replace("/dashboard/affiliate");
         } else if (userRole === "pharmacy_owner") {
-          try {
-            const { getOwnerFlowStatus, getRedirectPath } = await import("@/utils/owner-flow");
-            const status = await getOwnerFlowStatus();
-            const redirectPath = getRedirectPath(status);
-            window.location.replace(redirectPath);
-          } catch (error) {
-            window.location.replace("/dashboard/kyc");
-          }
+          window.location.replace("/dashboard/kyc");
         } else if (userRole === "supplier") {
-          try {
-            const { getSupplierFlowStatus, getRedirectPath } = await import("@/utils/supplier-flow");
-            const status = await getSupplierFlowStatus();
-            const redirectPath = getRedirectPath(status);
-            window.location.replace(redirectPath);
-          } catch (error) {
-            window.location.replace("/dashboard/supplier-kyc");
-          }
+          window.location.replace("/dashboard/supplier-kyc");
         } else {
           window.location.replace("/dashboard");
         }
@@ -220,29 +206,15 @@ function VerifyRegistrationContent() {
             Your account has been activated. We'll redirect you to the next step in a moment.
           </p>
           <Button
-            onClick={async () => {
+            onClick={() => {
               const userRole = localStorage.getItem("user_role") || "affiliate";
               
               if (userRole === "affiliate") {
                 window.location.replace("/dashboard/affiliate");
               } else if (userRole === "pharmacy_owner") {
-                try {
-                  const { getOwnerFlowStatus, getRedirectPath } = await import("@/utils/owner-flow");
-                  const status = await getOwnerFlowStatus();
-                  const redirectPath = getRedirectPath(status);
-                  window.location.replace(redirectPath);
-                } catch (error) {
-                  window.location.replace("/dashboard/kyc");
-                }
+                window.location.replace("/dashboard/kyc");
               } else if (userRole === "supplier") {
-                try {
-                  const { getSupplierFlowStatus, getRedirectPath } = await import("@/utils/supplier-flow");
-                  const status = await getSupplierFlowStatus();
-                  const redirectPath = getRedirectPath(status);
-                  window.location.replace(redirectPath);
-                } catch (error) {
-                  window.location.replace("/dashboard/supplier-kyc");
-                }
+                window.location.replace("/dashboard/supplier-kyc");
               } else {
                 window.location.replace("/dashboard");
               }
