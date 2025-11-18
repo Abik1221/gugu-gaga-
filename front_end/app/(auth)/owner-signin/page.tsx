@@ -61,7 +61,7 @@ export default function PharmacySignInPage(): JSX.Element {
       formData.append("password", password);
       formData.append("grant_type", "password");
 
-      const response = await fetch(`${API_BASE}/auth/login/request-code`, {
+      const response = await fetch(`${API_BASE}/auth/login/request-code?expected_role=pharmacy_owner`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData,
@@ -71,7 +71,14 @@ export default function PharmacySignInPage(): JSX.Element {
         const errorData = await response.json().catch(() => ({}));
         const message = errorData.detail || "Invalid credentials";
 
-        if (message.includes("No account")) {
+        if (message.includes("registered as a")) {
+          setErrorDialog({
+            isOpen: true,
+            title: "Wrong Login Page",
+            message: message,
+            type: "warning",
+          });
+        } else if (message.includes("No account")) {
           setErrorDialog({
             isOpen: true,
             title: "Account Not Found",

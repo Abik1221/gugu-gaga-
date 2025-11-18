@@ -489,7 +489,7 @@ def login(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
     # All users must verify email first
     if not user.is_verified:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first using the verification code sent during registration")
     # Only cashiers need approval check
     if user.role == Role.cashier.value and user.tenant_id:
         if not user.is_approved:
@@ -695,14 +695,37 @@ def login_request_code(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
     tenant_id: Optional[str] = Depends(get_optional_tenant_id),
+    expected_role: Optional[str] = None,
 ):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
     if not verify_password(form_data.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
+    
+    # Role validation - check if user is trying to login with wrong role
+    if expected_role and user.role != expected_role:
+        role_names = {
+            "pharmacy_owner": "pharmacy owner",
+            "supplier": "supplier", 
+            "affiliate": "affiliate",
+            "cashier": "cashier"
+        }
+        user_role_name = role_names.get(user.role, user.role)
+        expected_role_name = role_names.get(expected_role, expected_role)
+        
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail=f"You are registered as a {user_role_name}. Please use the {user_role_name} sign-in page."
+        )
+    
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
+    
+    # All users must verify email first before login
+    if not user.is_verified:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first using the verification code sent during registration")
+    
     code = issue_code(db, email=user.email, purpose="login")
     if user.email:
         try:
@@ -729,7 +752,7 @@ def login_verify(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
     # All users must verify email first
     if not user.is_verified:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first using the verification code sent during registration")
     # Only cashiers need approval check
     if user.role == Role.cashier.value and user.tenant_id:
         if not user.is_approved:
