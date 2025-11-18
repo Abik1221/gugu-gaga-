@@ -95,12 +95,19 @@ export default function OwnerKYCPage() {
         return;
       }
 
-      if (me.kyc_status === "approved") {
-        if (me.subscription_status !== "active") {
-          router.push("/dashboard/payment");
-        } else {
-          router.push("/dashboard/owner");
-        }
+      // Use proper routing logic
+      const { getAuthRedirectPath } = await import('@/utils/auth-routing');
+      const redirectPath = getAuthRedirectPath({
+        role: me.role,
+        is_verified: me.is_verified,
+        kyc_status: me.kyc_status,
+        subscription_status: me.subscription_status,
+        subscription_blocked: me.subscription_blocked
+      });
+      
+      // Only redirect if not on KYC page
+      if (redirectPath !== '/dashboard/kyc' && me.kyc_status === 'approved') {
+        router.push(redirectPath);
         return;
       }
 
@@ -163,7 +170,19 @@ export default function OwnerKYCPage() {
         throw new Error(errorData.detail || 'Failed to update KYC');
       }
       show({ title: "Success", description: "KYC information updated successfully. Redirecting...", variant: "success" });
-      setTimeout(() => router.push("/dashboard/owner"), 1500);
+      
+      // Use proper routing logic
+      const { getAuthRedirectPath } = await import('@/utils/auth-routing');
+      const me = await getAuthJSON("/api/v1/auth/me");
+      const redirectPath = getAuthRedirectPath({
+        role: me.role,
+        is_verified: me.is_verified,
+        kyc_status: me.kyc_status,
+        subscription_status: me.subscription_status,
+        subscription_blocked: me.subscription_blocked
+      });
+      
+      setTimeout(() => router.push(redirectPath), 1500);
     } catch (error) {
       console.error("Submit error:", error);
       show({ title: "Error", description: error?.message || "Failed to update KYC information", variant: "destructive" });

@@ -115,6 +115,17 @@ export async function postForm<T = any>(
       networkError.original = error;
       throw networkError;
     }
+    // Re-throw errors that already have status (HTTP errors)
+    if (error.status) {
+      throw error;
+    }
+    // Handle other network/connection errors
+    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      const networkError: any = new Error('Network error - please check your connection and try again');
+      networkError.name = 'NetworkError';
+      networkError.original = error;
+      throw networkError;
+    }
     throw error;
   }
 }
@@ -155,6 +166,24 @@ export async function postJSON<T = any>(
 
     return (await res.json()) as T;
   } catch (error: any) {
+    // Handle network errors
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      const networkError: any = new Error('Network error - please check your connection and try again');
+      networkError.name = 'NetworkError';
+      networkError.original = error;
+      throw networkError;
+    }
+    // Re-throw errors that already have status (HTTP errors)
+    if (error.status) {
+      throw error;
+    }
+    // Handle other network/connection errors
+    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      const networkError: any = new Error('Network error - please check your connection and try again');
+      networkError.name = 'NetworkError';
+      networkError.original = error;
+      throw networkError;
+    }
     throw error;
   }
 }
@@ -426,15 +455,20 @@ export const AuthAPI = {
       console.error('❌ registerVerify failed:', err);
       
       // Handle network errors
-      if (err?.name === 'TypeError' && err?.message?.includes('fetch')) {
+      if (err?.name === 'NetworkError' || (err?.name === 'TypeError' && err?.message?.includes('fetch'))) {
         throw new Error('Network error - please check your connection and try again');
       }
       
-      // Handle specific HTTP errors
+      // Handle specific HTTP errors with user-friendly messages
       if (err?.status === 404) {
         throw new Error('No account found with this email address');
       } else if (err?.status === 400) {
-        throw new Error('Invalid or expired verification code');
+        // Check if the error message contains more specific info
+        const errorMsg = err?.message || err?.body?.detail || 'Invalid or expired verification code';
+        if (errorMsg.includes('Invalid or expired')) {
+          throw new Error('Invalid or expired verification code. Please check your email or request a new code.');
+        }
+        throw new Error(errorMsg);
       } else if (err?.status === 422) {
         console.warn("[AuthAPI.registerVerify] 422, retrying with JSON", {
           body: err.body,
@@ -449,7 +483,11 @@ export const AuthAPI = {
           if (err2?.status === 404) {
             throw new Error('No account found with this email address');
           } else if (err2?.status === 400) {
-            throw new Error('Invalid or expired verification code');
+            const errorMsg = err2?.message || err2?.body?.detail || 'Invalid or expired verification code';
+            if (errorMsg.includes('Invalid or expired')) {
+              throw new Error('Invalid or expired verification code. Please check your email or request a new code.');
+            }
+            throw new Error(errorMsg);
           }
           
           const e: any = new Error(
@@ -463,7 +501,9 @@ export const AuthAPI = {
         throw new Error('Server error - please try again later');
       }
       
-      throw err;
+      // Default error handling
+      const errorMessage = err?.message || err?.body?.detail || 'Verification failed';
+      throw new Error(errorMessage);
     }
   },
 

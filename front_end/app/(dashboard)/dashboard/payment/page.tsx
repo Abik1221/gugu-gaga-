@@ -80,8 +80,19 @@ export default function OwnerPaymentPage() {
       setLoading(true);
       const me = await getAuthJSON("/api/v1/auth/me");
       
-      if (me.kyc_status !== "approved") {
-        router.replace("/dashboard/kyc");
+      // Use proper routing logic
+      const { getAuthRedirectPath } = await import('@/utils/auth-routing');
+      const redirectPath = getAuthRedirectPath({
+        role: me.role,
+        is_verified: me.is_verified,
+        kyc_status: me.kyc_status,
+        subscription_status: me.subscription_status,
+        subscription_blocked: me.subscription_blocked
+      });
+      
+      // Only redirect if not on payment page
+      if (redirectPath !== '/dashboard/payment') {
+        router.replace(redirectPath);
         return;
       }
       
@@ -89,7 +100,7 @@ export default function OwnerPaymentPage() {
       setSubscriptionStatus(me.subscription_status || "awaiting_payment");
       
       if (me.subscription_status === "active") {
-        router.replace("/dashboard/owner");
+        router.replace('/dashboard/owner');
         return;
       }
     } catch (error) {
