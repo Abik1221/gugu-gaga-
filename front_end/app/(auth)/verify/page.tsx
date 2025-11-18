@@ -164,7 +164,15 @@ function VerifyRegistrationContent() {
             window.location.href = "/dashboard/kyc";
           }
         } else if (userRole === "supplier") {
-          window.location.href = "/dashboard/supplier";
+          // Use supplier flow logic
+          try {
+            const { getSupplierFlowStatus, getRedirectPath } = await import("@/utils/supplier-flow");
+            const status = await getSupplierFlowStatus();
+            const redirectPath = getRedirectPath(status);
+            window.location.href = redirectPath;
+          } catch (error) {
+            window.location.href = "/dashboard/supplier-kyc";
+          }
         } else {
           window.location.href = "/dashboard";
         }
@@ -217,7 +225,15 @@ function VerifyRegistrationContent() {
                   window.location.href = "/dashboard/kyc";
                 }
               } else if (userRole === "supplier") {
-                window.location.href = "/dashboard/supplier";
+                // Use supplier flow logic
+                try {
+                  const { getSupplierFlowStatus, getRedirectPath } = await import("@/utils/supplier-flow");
+                  const status = await getSupplierFlowStatus();
+                  const redirectPath = getRedirectPath(status);
+                  window.location.href = redirectPath;
+                } catch (error) {
+                  window.location.href = "/dashboard/supplier-kyc";
+                }
               } else {
                 window.location.href = "/dashboard";
               }
