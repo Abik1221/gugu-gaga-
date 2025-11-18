@@ -258,7 +258,7 @@ export default function AffiliateRegisterPage() {
                 <p className="text-center text-xs text-slate-500">
                   Already part of the network?{" "}
                   <Link
-                    href="/auth?tab=signin"
+                    href="/affiliate-signin"
                     className="font-medium text-emerald-600 hover:underline"
                   >
                     Sign in

@@ -189,7 +189,7 @@ export default function SuperAdminLoginPage() {
 
           <p className="text-center text-xs text-emerald-100/70">
             Pharmacy owner or cashier? {" "}
-            <Link href="/auth?tab=signin" className="font-medium text-white hover:underline">
+            <Link href="/owner-signin" className="font-medium text-white hover:underline">
               Use the owner portal
             </Link>
           </p>
