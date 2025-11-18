@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/toast";
+
 import { AuthAPI } from "@/utils/api";
 import Image from "next/image";
 import ownerRegistrationImage from "@/public/owner_registration.jpeg";
@@ -35,7 +35,11 @@ const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
 
 export default function OwnerRegisterPage() {
   const router = useRouter();
-  const { show } = useToast();
+  const show = (toast: any) => {
+    if (typeof window !== 'undefined') {
+      console.log('Toast:', toast.title, toast.description);
+    }
+  };
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/toast";
+
 import { API_BASE } from "@/utils/api";
 import { AuthRedirect } from "@/components/auth/auth-redirect";
 import AuthNavBar from "@/components/layout/AuthNavBar";
@@ -15,7 +15,11 @@ import Head from "next/head";
 
 export default function SupplierSignInPage() {
   const router = useRouter();
-  const { show } = useToast();
+  const show = (toast: any) => {
+    if (typeof window !== 'undefined') {
+      console.log('Toast:', toast.title, toast.description);
+    }
+  };
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
