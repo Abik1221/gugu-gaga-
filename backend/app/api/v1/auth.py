@@ -741,9 +741,25 @@ def login_request_code(
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
     
-    # All users must verify email first before login
+    # All users must verify email first before login, except those who just reset password
     if not user.is_verified:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first using the verification code sent during registration")
+        # Check if user recently reset password (within last 24 hours)
+        from datetime import datetime, timedelta
+        from app.models.verification import VerificationCode
+        
+        recent_reset = (
+            db.query(VerificationCode)
+            .filter(
+                VerificationCode.email == user.email,
+                VerificationCode.purpose == "password_reset",
+                VerificationCode.consumed == True,
+                VerificationCode.created_at >= datetime.utcnow() - timedelta(hours=24)
+            )
+            .first()
+        )
+        
+        if not recent_reset:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first using the verification code sent during registration")
     
     code = issue_code(db, email=user.email, purpose="login")
     if user.email:
@@ -776,9 +792,25 @@ def login_verify(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code. Please request a new code and try again.")
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
-    # All users must verify email first
+    # All users must verify email first, except those who just reset password
     if not user.is_verified:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first using the verification code sent during registration")
+        # Check if user recently reset password (within last 24 hours)
+        from datetime import datetime, timedelta
+        from app.models.verification import VerificationCode
+        
+        recent_reset = (
+            db.query(VerificationCode)
+            .filter(
+                VerificationCode.email == user.email,
+                VerificationCode.purpose == "password_reset",
+                VerificationCode.consumed == True,
+                VerificationCode.created_at >= datetime.utcnow() - timedelta(hours=24)
+            )
+            .first()
+        )
+        
+        if not recent_reset:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email first using the verification code sent during registration")
     # Only cashiers need approval check
     if user.role == Role.cashier.value and user.tenant_id:
         if not user.is_approved:
