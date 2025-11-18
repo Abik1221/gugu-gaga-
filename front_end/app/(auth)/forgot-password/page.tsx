@@ -40,10 +40,20 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      await postJSON("/api/v1/auth/password/reset/request", { email });
-
+      const response = await postJSON("/api/v1/auth/password/reset/request", { email });
+      
       setStep("code");
       setShowOtpDialog(true);
+      
+      // Show development notice if email is disabled
+      if (process.env.NODE_ENV === 'development') {
+        setErrorDialog({
+          isOpen: true,
+          title: "Development Mode",
+          message: "Check the backend console for your password reset code. In production, this would be sent to your email.",
+          type: "warning",
+        });
+      }
     } catch (error: any) {
       const message = error.message || "Failed to send reset code";
       
@@ -223,7 +233,14 @@ export default function ForgotPasswordPage() {
                   className="h-11 text-center text-lg tracking-widest"
                   autoFocus
                 />
-                <p className="text-xs text-gray-500">Check your email ({email}) for the 6-digit code</p>
+                <p className="text-xs text-gray-500">
+                  Check your email ({email}) for the 6-digit code
+                  {process.env.NODE_ENV === 'development' && (
+                    <span className="block mt-1 text-orange-600 font-medium">
+                      Development: Check backend console for the code
+                    </span>
+                  )}
+                </p>
               </div>
 
               <div className="space-y-2">
