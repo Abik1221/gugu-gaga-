@@ -168,10 +168,10 @@ export default function PharmacySignInPage(): JSX.Element {
         try {
           const status = await getOwnerFlowStatus();
           const redirectPath = getRedirectPath(status);
-          window.location.href = redirectPath;
+          window.location.replace(redirectPath);
         } catch (error) {
           // Fallback to KYC page if status check fails
-          window.location.href = "/dashboard/kyc";
+          window.location.replace("/dashboard/kyc");
         }
       }, 1000);
     } catch (err: any) {
