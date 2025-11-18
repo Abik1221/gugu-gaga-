@@ -45,33 +45,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
   
-  // Protect flow-based routes - ensure users can't skip steps
-  if (isDashboardRoute && token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const role = payload.role;
-      
-      // Owner flow protection - redirect to KYC if trying to access advanced pages
-      if (role === 'pharmacy_owner') {
-        if (pathname.startsWith('/dashboard/payment') || pathname.startsWith('/dashboard/owner') || pathname.startsWith('/dashboard/inventory') || pathname.startsWith('/dashboard/pos') || pathname.startsWith('/dashboard/settings')) {
-          const url = request.nextUrl.clone();
-          url.pathname = '/dashboard/kyc';
-          return NextResponse.redirect(url);
-        }
-      }
-      
-      // Supplier flow protection - redirect to KYC if trying to access advanced pages
-      if (role === 'supplier') {
-        if (pathname.startsWith('/dashboard/supplier-payment') || pathname === '/dashboard/supplier') {
-          const url = request.nextUrl.clone();
-          url.pathname = '/dashboard/supplier-kyc';
-          return NextResponse.redirect(url);
-        }
-      }
-    } catch {
-      // Invalid token, let it pass through
-    }
-  }
+  // Let AuthRedirect component handle all authenticated user routing
   
   return NextResponse.next();
 }
