@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { useEmailVerificationToast } from "@/components/ui/email-verification-toast";
+
 import { AuthAPI } from "@/utils/api";
 import Image from "next/image";
 import affiliateRegistrationImage from "@/public/affiliateregistration.jpeg";
@@ -23,7 +23,11 @@ export default function AffiliateRegisterPage() {
       console.log('Toast:', toast.title, toast.description);
     }
   };
-  const { showEmailSentNotification } = useEmailVerificationToast();
+  const showEmailSentNotification = (email: string, purpose: string) => {
+    if (typeof window !== 'undefined') {
+      console.log('Email sent notification:', email, purpose);
+    }
+  };
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
