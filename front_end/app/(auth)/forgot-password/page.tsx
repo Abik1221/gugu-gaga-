@@ -117,7 +117,7 @@ export default function ForgotPasswordPage() {
       });
 
       setTimeout(() => {
-        router.push("/");
+        router.push("/owner-signin");
       }, 2500);
     } catch (error: any) {
       const message = error.message || "Failed to reset password";
