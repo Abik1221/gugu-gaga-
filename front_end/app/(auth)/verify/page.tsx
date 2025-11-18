@@ -161,16 +161,25 @@ function VerifyRegistrationContent() {
 
       // Use proper routing based on user status
       setTimeout(async () => {
-        const { getAuthRedirectPath } = await import('@/utils/auth-routing');
-        const redirectPath = getAuthRedirectPath({
-          role: verifyRes?.user?.role || localStorage.getItem("user_role") || 'affiliate',
-          is_verified: true,
-          kyc_status: verifyRes?.user?.kyc_status,
-          subscription_status: verifyRes?.user?.subscription_status,
-          subscription_blocked: verifyRes?.user?.subscription_blocked
-        });
-        
-        window.location.replace(redirectPath);
+        try {
+          // Get fresh user data to ensure accurate routing
+          const me = await AuthAPI.me();
+          const { getAuthRedirectPath } = await import('@/utils/auth-routing');
+          const redirectPath = getAuthRedirectPath({
+            role: me?.role || verifyRes?.user?.role || localStorage.getItem("user_role") || 'affiliate',
+            is_verified: true,
+            kyc_status: me?.kyc_status || verifyRes?.user?.kyc_status,
+            subscription_status: me?.subscription_status || verifyRes?.user?.subscription_status,
+            subscription_blocked: me?.subscription_blocked || verifyRes?.user?.subscription_blocked || false
+          });
+          
+          window.location.replace(redirectPath);
+        } catch (error) {
+          // Fallback to role-based routing if API call fails
+          const userRole = localStorage.getItem("user_role") || 'affiliate';
+          const fallbackPath = userRole === 'affiliate' ? '/dashboard/affiliate' : '/dashboard';
+          window.location.replace(fallbackPath);
+        }
       }, 500);
     } catch (err: any) {
       setError(err.message || "Verification failed");
@@ -206,19 +215,25 @@ function VerifyRegistrationContent() {
           </p>
           <Button
             onClick={async () => {
-              const userRole = localStorage.getItem("user_role") || "affiliate";
-              
-              // Use proper routing based on user status
-              const { getAuthRedirectPath } = await import('@/utils/auth-routing');
-              const redirectPath = getAuthRedirectPath({
-                role: userRole,
-                is_verified: true,
-                kyc_status: null, // Will be determined by the dashboard
-                subscription_status: null,
-                subscription_blocked: false
-              });
-              
-              window.location.replace(redirectPath);
+              try {
+                // Get fresh user data to ensure accurate routing
+                const me = await AuthAPI.me();
+                const { getAuthRedirectPath } = await import('@/utils/auth-routing');
+                const redirectPath = getAuthRedirectPath({
+                  role: me?.role || localStorage.getItem("user_role") || "affiliate",
+                  is_verified: true,
+                  kyc_status: me?.kyc_status,
+                  subscription_status: me?.subscription_status,
+                  subscription_blocked: me?.subscription_blocked || false
+                });
+                
+                window.location.replace(redirectPath);
+              } catch (error) {
+                // Fallback to role-based routing if API call fails
+                const userRole = localStorage.getItem("user_role") || "affiliate";
+                const fallbackPath = userRole === 'affiliate' ? '/dashboard/affiliate' : '/dashboard';
+                window.location.replace(fallbackPath);
+              }
             }}
             className="mt-8 w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 text-sm font-semibold text-white shadow-[0_25px_70px_-50px_rgba(15,118,110,0.45)] hover:translate-y-[-1px]"
           >
