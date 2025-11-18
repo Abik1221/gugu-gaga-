@@ -7,7 +7,6 @@ import { AffiliateAPI } from "@/utils/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/toast";
 import { StatCard, SectionCard, MiniStat } from "./_components/cards";
 
 type Dashboard = {
@@ -27,7 +26,11 @@ function formatCurrency(amount: number) {
 }
 
 export default function AffiliateOverviewPage() {
-    const { show } = useToast();
+    const show = (toast: any) => {
+        if (typeof window !== 'undefined') {
+            console.log('Toast:', toast.title, toast.description);
+        }
+    };
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [dash, setDash] = useState<Dashboard | null>(null);
