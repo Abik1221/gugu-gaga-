@@ -107,7 +107,7 @@ export default function ForgotPasswordPage() {
       });
 
       setTimeout(() => {
-        router.push("/auth");
+        router.push("/");
       }, 2500);
     } catch (error: any) {
       const message = error.message || "Failed to reset password";
@@ -159,7 +159,7 @@ export default function ForgotPasswordPage() {
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="space-y-1">
           <div className="flex items-center gap-2 mb-2">
-            <Link href="/auth" className="text-gray-600 hover:text-gray-900">
+            <Link href="/" className="text-gray-600 hover:text-gray-900">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
@@ -200,7 +200,7 @@ export default function ForgotPasswordPage() {
               </Button>
 
               <div className="text-center text-sm">
-                <Link href="/auth" className="text-emerald-600 hover:text-emerald-700">
+                <Link href="/" className="text-emerald-600 hover:text-emerald-700">
                   Back to Sign In
                 </Link>
               </div>
@@ -273,7 +273,7 @@ export default function ForgotPasswordPage() {
                 >
                   Didn't receive code? Try again
                 </button>
-                <Link href="/auth" className="text-gray-600 hover:text-gray-900 block">
+                <Link href="/" className="text-gray-600 hover:text-gray-900 block">
                   Back to Sign In
                 </Link>
               </div>
