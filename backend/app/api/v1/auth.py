@@ -193,8 +193,12 @@ def _issue_session_tokens(db: Session, user: User, request: Request) -> TokenWit
 @router.post("/register")
 def register_owner(payload: PharmacyRegister, request: Request, db: Session = Depends(get_db)):
     # Ensure owner email unused
-    if db.query(User).filter(User.email == payload.owner_email).first():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Owner email already registered")
+    existing_user = db.query(User).filter(User.email == payload.owner_email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail=f"An account with email '{payload.owner_email}' already exists. Please use a different email or try signing in instead."
+        )
     # Generate unique tenant_id
     existing_tenants = [t[0] for t in db.query(User.tenant_id).filter(User.tenant_id.isnot(None)).distinct().all()]
     tenant_id = _make_tenant_id_from_name(payload.pharmacy_name, existing_tenants)
@@ -334,8 +338,12 @@ def register_supplier(payload: dict, request: Request, db: Session = Depends(get
     address = payload.get("address")
     license_image = payload.get("business_license_image")
     
-    if db.query(User).filter(User.email == email).first():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+    existing_user = db.query(User).filter(User.email == email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail=f"An account with email '{email}' already exists. Please use a different email or try signing in instead."
+        )
     
     try:
         password_hash = hash_password(password)
@@ -407,8 +415,12 @@ def register_supplier(payload: dict, request: Request, db: Session = Depends(get
 
 @router.post("/register/affiliate", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)):
-    if db.query(User).filter(User.email == payload.email).first():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+    existing_user = db.query(User).filter(User.email == payload.email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail=f"An account with email '{payload.email}' already exists. Please use a different email or try signing in instead."
+        )
     try:
         password_hash = hash_password(payload.password)
     except ValueError as exc:
@@ -558,8 +570,13 @@ def resend_verification_code(
     db: Session = Depends(get_db),
     _rl=Depends(rate_limit("resend_code", identify_by="ip", per_minute=3)),
 ):
+    import logging
+    logger = logging.getLogger(__name__)
+    
     email = payload.get("email")
     purpose = payload.get("purpose", "register")  # register, login, password_reset
+    
+    logger.warning(f"📨 Resend code request: email={email}, purpose={purpose}")
     
     if not email:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email is required")
@@ -570,6 +587,7 @@ def resend_verification_code(
     # Check if user exists
     user = db.query(User).filter(User.email == email).first()
     if not user:
+        logger.warning(f"❌ No user found for resend code: {email}")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
     
     # Check for recent codes to prevent spam (2-minute cooldown)
@@ -597,13 +615,14 @@ def resend_verification_code(
     # Generate new code
     ttl_minutes = 30 if purpose == "password_reset" else 10
     code = issue_code(db, email=email, purpose=purpose, ttl_minutes=ttl_minutes)
+    logger.warning(f"🔐 Generated new {purpose} code for {email}: {code}")
     
     # Send email
     try:
         result = send_verification_email(email, code, purpose)
-        print(f"\n✅ Resend code email result: {result}\n")
+        logger.warning(f"✅ Resend code email result: {result}")
     except Exception as e:
-        print(f"\n❌ Resend code email FAILED: {type(e).__name__}: {e}\n")
+        logger.error(f"❌ Resend code email FAILED: {type(e).__name__}: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to send verification code")
     
     return {"status": "sent", "message": "Verification code sent successfully"}
@@ -620,7 +639,7 @@ def verify_registration(
     logger = logging.getLogger(__name__)
     
     # Log the verification attempt
-    logger.warning(f"🔍 Verification attempt: email={payload.email}, code={payload.code}")
+    logger.warning(f"🔍 Registration verification attempt: email={payload.email}, code={payload.code}")
     
     try:
         # Clean the inputs
@@ -649,7 +668,7 @@ def verify_registration(
         
         # Verify the code with enhanced logging
         if not verify_code(db, email=email, purpose="register", code=code):
-            logger.warning(f"❌ Invalid verification code: email={email}, code={code}")
+            logger.warning(f"❌ Invalid registration verification code: email={email}, code={code}")
             
             # Check what codes exist for debugging
             from app.models.verification import VerificationCode
@@ -660,9 +679,9 @@ def verify_registration(
                 VerificationCode.expires_at >= datetime.utcnow(),
             ).all()
             
-            logger.warning(f"📋 Existing valid codes for {email}: {[(c.code, c.expires_at) for c in existing_codes]}")
+            logger.warning(f"📋 Existing valid registration codes for {email}: {[(c.code, c.expires_at) for c in existing_codes]}")
             
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired verification code")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired verification code. Please check your email or request a new code.")
         
         # Mark user as verified
         user.is_verified = True
@@ -743,11 +762,18 @@ def login_verify(
     tenant_id: Optional[str] = Depends(get_optional_tenant_id),
     db: Session = Depends(get_db),
 ):
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning(f"🔍 Login verification attempt: email={payload.email}, code={payload.code}")
+    
     user = db.query(User).filter(User.email == payload.email).first()
     if not user:
+        logger.warning(f"❌ No user found for login verify: {payload.email}")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
-    if not verify_code(db, email=payload.email, purpose="login", code=payload.code):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code")
+    
+    if not verify_code(db, email=payload.email, purpose="login", code=str(payload.code).strip()):
+        logger.warning(f"❌ Invalid login verification code: email={payload.email}, code={payload.code}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired code. Please request a new code and try again.")
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant mismatch")
     # All users must verify email first
@@ -760,6 +786,8 @@ def login_verify(
         sub = ensure_subscription(db, tenant_id=user.tenant_id)
         if sub.blocked:
             raise HTTPException(status_code=status.HTTP_402_PAYMENT_REQUIRED, detail="Subscription blocked. Submit payment code and await verification.")
+    
+    logger.warning(f"✅ Login verification successful for {payload.email}")
     tokens = _issue_session_tokens(db, user, request)
     return tokens
 
@@ -798,26 +826,37 @@ def password_reset_request(payload: PasswordResetRequest, db: Session = Depends(
 
 @router.post("/password/reset/confirm")
 def password_reset_confirm(payload: PasswordResetConfirm, db: Session = Depends(get_db)):
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning(f"🔐 Password reset confirm attempt: email={payload.email}, code={payload.code}")
+    
     user = db.query(User).filter(User.email == payload.email).first()
     if not user:
+        logger.warning(f"❌ No user found for email: {payload.email}")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
     
     # Allow password reset for all roles
     if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.supplier.value, Role.cashier.value, Role.admin.value}:
+        logger.warning(f"❌ Password reset not allowed for role: {user.role}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password reset not available for this account")
     
-    # Verify reset code
-    if not verify_code(db, email=payload.email, purpose="password_reset", code=payload.code):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired reset code")
+    # Verify reset code with enhanced logging
+    logger.warning(f"🔍 Verifying reset code for {payload.email}: {payload.code}")
+    if not verify_code(db, email=payload.email, purpose="password_reset", code=str(payload.code).strip()):
+        logger.warning(f"❌ Invalid or expired reset code for {payload.email}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired reset code. Please request a new code and try again.")
     
     # Hash and update password
     try:
         user.password_hash = hash_password(payload.new_password)
+        logger.warning(f"✅ Password hash updated for {payload.email}")
     except ValueError as exc:
+        logger.warning(f"❌ Password validation failed for {payload.email}: {exc}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
     
     db.add(user)
     db.commit()
+    logger.warning(f"✅ Password reset completed for {payload.email}")
     
     # Revoke all existing sessions for security
     sessions = db.query(AuthSession).filter(
@@ -826,14 +865,19 @@ def password_reset_confirm(payload: PasswordResetConfirm, db: Session = Depends(
     ).all()
     for session in sessions:
         revoke_auth_session(db, session)
+    logger.warning(f"🔒 Revoked {len(sessions)} sessions for {payload.email}")
     
     # Send confirmation email
     if user.email:
-        send_notification_email(
-            user.email,
-            "Password Reset Successful",
-            "Your password has been successfully reset. All active sessions have been logged out for security. If you didn't make this change, please contact support immediately."
-        )
+        try:
+            send_notification_email(
+                user.email,
+                "Password Reset Successful",
+                "Your password has been successfully reset. All active sessions have been logged out for security. If you didn't make this change, please contact support immediately."
+            )
+            logger.warning(f"📧 Confirmation email sent to {payload.email}")
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to send confirmation email to {payload.email}: {e}")
     
     # Log activity if tenant exists
     if user.tenant_id:

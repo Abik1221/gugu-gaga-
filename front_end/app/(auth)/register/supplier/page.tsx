@@ -158,11 +158,25 @@ export default function SupplierRegisterPage() {
       setSuccess("Registration successful! Please verify your email.");
       setShowOtpDialog(true);
     } catch (err: any) {
-      const message = err?.message || "Failed to register";
+      let message = err?.message || "Failed to register";
+      let title = "Registration Failed";
+      
+      // Handle specific error cases with user-friendly messages
+      if (message.includes("already exists") || message.includes("already registered")) {
+        title = "Email Already Registered";
+        message = `An account with email "${trimmedEmail}" already exists. Please use a different email address or try signing in instead.`;
+      } else if (message.includes("Network error") || message.includes("fetch")) {
+        title = "Connection Error";
+        message = "Unable to connect to the server. Please check your internet connection and try again.";
+      } else if (message.includes("500") || message.includes("Internal Server Error")) {
+        title = "Server Error";
+        message = "Something went wrong on our end. Please try again in a few moments.";
+      }
+      
       setError(message);
       show({
         variant: "destructive",
-        title: "Registration Failed",
+        title: title,
         description: message,
       });
     } finally {
@@ -200,14 +214,78 @@ export default function SupplierRegisterPage() {
         description:
           "Your account has been verified. Redirecting to dashboard.",
       });
-      setTimeout(() => (window.location.href = "/dashboard/supplier"), 1500);
+      // Use proper routing based on user status
+      const { getAuthRedirectPath } = await import('@/utils/auth-routing');
+      const redirectPath = getAuthRedirectPath({
+        role: verifyData.user?.role || 'supplier',
+        is_verified: true,
+        kyc_status: verifyData.user?.kyc_status,
+        subscription_status: verifyData.user?.subscription_status,
+        subscription_blocked: verifyData.user?.subscription_blocked
+      });
+      
+      setTimeout(() => (window.location.href = redirectPath), 1500);
     } catch (err: any) {
-      const message = err?.message || "Verification failed";
+      let message = err?.message || "Verification failed";
+      let title = "Verification Failed";
+      
+      // Handle specific error cases
+      if (message.includes("No account found")) {
+        title = "Account Not Found";
+        message = `We couldn't find an account with email "${registeredEmail}". Please check your email address.`;
+      } else if (message.includes("Invalid or expired")) {
+        title = "Invalid Code";
+        message = "The verification code is invalid or has expired. Please check your email for the latest code or request a new one.";
+      } else if (message.includes("Network error")) {
+        title = "Connection Error";
+        message = "Unable to connect to the server. Please check your internet connection and try again.";
+      }
+      
       setError(message);
       show({
         variant: "destructive",
-        title: "Verification Failed",
+        title: title,
         description: message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResendCode() {
+    if (!registeredEmail) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch("/api/v1/auth/resend-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: registeredEmail, purpose: "register" })
+      });
+      
+      if (response.status === 429) {
+        const errorData = await response.json();
+        const match = errorData.detail?.match(/(\d+) seconds/);
+        const seconds = match ? parseInt(match[1]) : 120;
+        setError(`Please wait ${seconds} seconds before requesting a new code.`);
+        return;
+      }
+      
+      if (!response.ok) {
+        throw new Error("Failed to resend code");
+      }
+      
+      show({
+        variant: "success",
+        title: "Code Sent",
+        description: "A new verification code has been sent to your email."
+      });
+    } catch (err: any) {
+      setError(err.message || "Failed to resend verification code");
+      show({
+        variant: "destructive",
+        title: "Resend Failed",
+        description: err.message || "Failed to resend verification code"
       });
     } finally {
       setLoading(false);
@@ -342,9 +420,9 @@ export default function SupplierRegisterPage() {
                   </label>
                   <Input
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                     placeholder="Enter 6-digit code"
-                    className="mt-2 border border-slate-200 bg-white text-slate-700"
+                    className="mt-2 border border-slate-200 bg-white text-slate-700 text-center text-2xl tracking-widest"
                     maxLength={6}
                   />
                   <p className="mt-1 text-xs text-slate-500">
@@ -613,16 +691,48 @@ export default function SupplierRegisterPage() {
                   ? "Verify Email"
                   : "Register as Supplier"}
               </Button>
+              
+              {otpSent && (
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={handleResendCode}
+                    disabled={loading}
+                    className="text-sm text-green-600 hover:text-green-700 hover:underline disabled:text-gray-400 disabled:no-underline"
+                  >
+                    {loading ? "Sending..." : "Didn't receive the code? Resend"}
+                  </button>
+                </div>
+              )}
 
-              <p className="text-center text-xs text-slate-700">
-                Already have a supplier account?{" "}
-                <Link
-                  href="/supplier-signin"
-                  className="font-medium text-green-600 hover:underline"
-                >
-                  Sign in
-                </Link>
-              </p>
+              {!otpSent && (
+                <p className="text-center text-xs text-slate-700">
+                  Already have a supplier account?{" "}
+                  <Link
+                    href="/supplier-signin"
+                    className="font-medium text-green-600 hover:underline"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+              )}
+              
+              {otpSent && (
+                <p className="text-center text-xs text-slate-700">
+                  Need to change your email?{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtpSent(false);
+                      setOtp("");
+                      setError(null);
+                    }}
+                    className="font-medium text-green-600 hover:underline"
+                  >
+                    Go back
+                  </button>
+                </p>
+              )}
             </form>
 
             <p className="mt-6 lg:mt-8 text-center text-[11px] text-slate-700">

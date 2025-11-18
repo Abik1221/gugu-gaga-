@@ -159,19 +159,18 @@ function VerifyRegistrationContent() {
           "Your account has been verified. Redirecting to your dashboard.",
       });
 
-      // Redirect based on user role - let AuthRedirect handle flow logic
-      setTimeout(() => {
-        const userRole = verifyRes?.user?.role || localStorage.getItem("user_role");
+      // Use proper routing based on user status
+      setTimeout(async () => {
+        const { getAuthRedirectPath } = await import('@/utils/auth-routing');
+        const redirectPath = getAuthRedirectPath({
+          role: verifyRes?.user?.role || localStorage.getItem("user_role") || 'affiliate',
+          is_verified: true,
+          kyc_status: verifyRes?.user?.kyc_status,
+          subscription_status: verifyRes?.user?.subscription_status,
+          subscription_blocked: verifyRes?.user?.subscription_blocked
+        });
         
-        if (userRole === "affiliate") {
-          window.location.replace("/dashboard/affiliate");
-        } else if (userRole === "pharmacy_owner") {
-          window.location.replace("/dashboard/kyc");
-        } else if (userRole === "supplier") {
-          window.location.replace("/dashboard/supplier-kyc");
-        } else {
-          window.location.replace("/dashboard");
-        }
+        window.location.replace(redirectPath);
       }, 500);
     } catch (err: any) {
       setError(err.message || "Verification failed");
@@ -206,18 +205,20 @@ function VerifyRegistrationContent() {
             Your account has been activated. We'll redirect you to the next step in a moment.
           </p>
           <Button
-            onClick={() => {
+            onClick={async () => {
               const userRole = localStorage.getItem("user_role") || "affiliate";
               
-              if (userRole === "affiliate") {
-                window.location.replace("/dashboard/affiliate");
-              } else if (userRole === "pharmacy_owner") {
-                window.location.replace("/dashboard/kyc");
-              } else if (userRole === "supplier") {
-                window.location.replace("/dashboard/supplier-kyc");
-              } else {
-                window.location.replace("/dashboard");
-              }
+              // Use proper routing based on user status
+              const { getAuthRedirectPath } = await import('@/utils/auth-routing');
+              const redirectPath = getAuthRedirectPath({
+                role: userRole,
+                is_verified: true,
+                kyc_status: null, // Will be determined by the dashboard
+                subscription_status: null,
+                subscription_blocked: false
+              });
+              
+              window.location.replace(redirectPath);
             }}
             className="mt-8 w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-blue-600 text-sm font-semibold text-white shadow-[0_25px_70px_-50px_rgba(15,118,110,0.45)] hover:translate-y-[-1px]"
           >

@@ -71,9 +71,23 @@ export default function AffiliateRegisterPage() {
         2000
       );
     } catch (err: any) {
-      const message = err?.message || "Registration failed";
+      let message = err?.message || "Registration failed";
+      let title = "Registration Failed";
+      
+      // Handle specific error cases with user-friendly messages
+      if (message.includes("already exists") || message.includes("already registered")) {
+        title = "Email Already Registered";
+        message = `An account with email "${affEmail}" already exists. Please use a different email address or try signing in instead.`;
+      } else if (message.includes("Network error") || message.includes("fetch")) {
+        title = "Connection Error";
+        message = "Unable to connect to the server. Please check your internet connection and try again.";
+      } else if (message.includes("500") || message.includes("Internal Server Error")) {
+        title = "Server Error";
+        message = "Something went wrong on our end. Please try again in a few moments.";
+      }
+      
       setError(message);
-      show({ variant: "destructive", title: "Failed", description: message });
+      show({ variant: "destructive", title: title, description: message });
     } finally {
       setLoading(false);
     }
