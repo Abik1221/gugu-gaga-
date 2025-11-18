@@ -1,4 +1,4 @@
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://mymesob.com/api/v1";
+export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://13.61.24.25:8000/api/v1";
 export const TENANT_HEADER =
   process.env.NEXT_PUBLIC_TENANT_HEADER || "X-Tenant-ID";
 
@@ -60,50 +60,63 @@ export async function postForm<T = any>(
   tenantId?: string
 ): Promise<T> {
   const body = new URLSearchParams(data);
-  const res = await fetch(resolveApiUrl(path), {
-    method: "POST",
-    headers: buildHeaders(
-      { "Content-Type": "application/x-www-form-urlencoded" },
-      tenantId
-    ),
-    body,
-  });
+  
+  try {
+    const res = await fetch(resolveApiUrl(path), {
+      method: "POST",
+      headers: buildHeaders(
+        { "Content-Type": "application/x-www-form-urlencoded" },
+        tenantId
+      ),
+      body,
+    });
 
-  if (!res.ok) {
-    let parsed: any = null;
-    try {
-      parsed = await res.json();
-    } catch {
-      parsed = await res.text().catch(() => null);
+    if (!res.ok) {
+      let parsed: any = null;
+      try {
+        parsed = await res.json();
+      } catch {
+        parsed = await res.text().catch(() => null);
+      }
+
+      let msg = "";
+      if (!parsed) msg = `Request failed with ${res.status}`;
+      else if (typeof parsed === "string") msg = parsed;
+      else if (Array.isArray(parsed)) msg = parsed.join(", ");
+      else if (parsed?.detail) msg = parsed.detail;
+      else if (parsed?.message) msg = parsed.message;
+      else if (parsed?.error) msg = parsed.error;
+      else if (parsed?.errors) {
+        msg = Object.keys(parsed.errors)
+          .map(
+            (k) =>
+              `${k}: ${Array.isArray(parsed.errors[k])
+                ? parsed.errors[k].join(", ")
+                : parsed.errors[k]
+              }`
+          )
+          .join(" | ");
+      } else msg = JSON.stringify(parsed);
+
+      const err: any = new Error(msg || `Request failed with ${res.status}`);
+      err.status = res.status;
+      err.body = parsed;
+      console.error("[postForm] failed", { path, status: res.status, parsed });
+      throw err;
     }
 
-    let msg = "";
-    if (!parsed) msg = `Request failed with ${res.status}`;
-    else if (typeof parsed === "string") msg = parsed;
-    else if (Array.isArray(parsed)) msg = parsed.join(", ");
-    else if (parsed?.detail) msg = parsed.detail;
-    else if (parsed?.message) msg = parsed.message;
-    else if (parsed?.error) msg = parsed.error;
-    else if (parsed?.errors) {
-      msg = Object.keys(parsed.errors)
-        .map(
-          (k) =>
-            `${k}: ${Array.isArray(parsed.errors[k])
-              ? parsed.errors[k].join(", ")
-              : parsed.errors[k]
-            }`
-        )
-        .join(" | ");
-    } else msg = JSON.stringify(parsed);
-
-    const err: any = new Error(msg || `Request failed with ${res.status}`);
-    err.status = res.status;
-    err.body = parsed;
-    console.error("[postForm] failed", { path, status: res.status, parsed });
-    throw err;
+    return (await res.json()) as T;
+  } catch (error: any) {
+    // Handle network errors
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      console.error('[postForm] Network error:', error);
+      const networkError: any = new Error('Network error - please check your connection and try again');
+      networkError.name = 'NetworkError';
+      networkError.original = error;
+      throw networkError;
+    }
+    throw error;
   }
-
-  return (await res.json()) as T;
 }
 
 export async function postJSON<T = any>(
@@ -399,16 +412,46 @@ export const AuthAPI = {
   registerSupplier: (body: any) => postJSON("/api/v1/auth/register/supplier", body),
 
   registerVerify: async (email: string, code: string) => {
+    console.log('🔍 AuthAPI.registerVerify called with:', { email, code });
+    
+    // Clean inputs
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanCode = String(code).trim();
+    
     try {
-      return await postForm("/api/v1/auth/register/verify", { email, code });
+      const result = await postForm("/api/v1/auth/register/verify", { email: cleanEmail, code: cleanCode });
+      console.log('✅ registerVerify success:', result);
+      return result;
     } catch (err: any) {
-      if (err?.status === 422) {
+      console.error('❌ registerVerify failed:', err);
+      
+      // Handle network errors
+      if (err?.name === 'TypeError' && err?.message?.includes('fetch')) {
+        throw new Error('Network error - please check your connection and try again');
+      }
+      
+      // Handle specific HTTP errors
+      if (err?.status === 404) {
+        throw new Error('No account found with this email address');
+      } else if (err?.status === 400) {
+        throw new Error('Invalid or expired verification code');
+      } else if (err?.status === 422) {
         console.warn("[AuthAPI.registerVerify] 422, retrying with JSON", {
           body: err.body,
         });
         try {
-          return await postJSON("/api/v1/auth/register/verify", { email, code });
+          const result = await postJSON("/api/v1/auth/register/verify", { email: cleanEmail, code: cleanCode });
+          console.log('✅ registerVerify retry success:', result);
+          return result;
         } catch (err2: any) {
+          console.error('❌ registerVerify retry failed:', err2);
+          
+          if (err2?.status === 404) {
+            throw new Error('No account found with this email address');
+          } else if (err2?.status === 400) {
+            throw new Error('Invalid or expired verification code');
+          }
+          
           const e: any = new Error(
             err2?.message || err?.message || "Verification failed"
           );
@@ -416,7 +459,10 @@ export const AuthAPI = {
           e.retry = err2;
           throw e;
         }
+      } else if (err?.status >= 500) {
+        throw new Error('Server error - please try again later');
       }
+      
       throw err;
     }
   },

@@ -615,26 +615,79 @@ def verify_registration(
     request: Request,
     db: Session = Depends(get_db),
 ):
-    if not verify_code(db, email=payload.email, purpose="register", code=payload.code):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired verification code")
-    user = db.query(User).filter(User.email == payload.email).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
-    user.is_verified = True
-    db.add(user)
-    db.commit()
+    """Enhanced registration verification with detailed error handling"""
+    import logging
+    logger = logging.getLogger(__name__)
     
-    # Create proper session for the user
-    tokens = _issue_session_tokens(db, user, request)
+    # Log the verification attempt
+    logger.warning(f"🔍 Verification attempt: email={payload.email}, code={payload.code}")
     
-    return {
-        "status": "verified", 
-        "access_token": tokens.access_token, 
-        "token_type": "bearer",
-        "refresh_token": tokens.refresh_token,
-        "session_id": tokens.session_id,
-        "user": _user_with_status(db, user)
-    }
+    try:
+        # Clean the inputs
+        email = payload.email.strip().lower()
+        code = str(payload.code).strip()
+        
+        # Check if user exists
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            logger.warning(f"❌ User not found: {email}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
+        
+        # Check if already verified
+        if user.is_verified:
+            logger.warning(f"⚠️ User already verified: {email}")
+            # Still create session for already verified users
+            tokens = _issue_session_tokens(db, user, request)
+            return {
+                "status": "already_verified", 
+                "access_token": tokens.access_token, 
+                "token_type": "bearer",
+                "refresh_token": tokens.refresh_token,
+                "session_id": tokens.session_id,
+                "user": _user_with_status(db, user)
+            }
+        
+        # Verify the code with enhanced logging
+        if not verify_code(db, email=email, purpose="register", code=code):
+            logger.warning(f"❌ Invalid verification code: email={email}, code={code}")
+            
+            # Check what codes exist for debugging
+            from app.models.verification import VerificationCode
+            existing_codes = db.query(VerificationCode).filter(
+                VerificationCode.email == email,
+                VerificationCode.purpose == "register",
+                VerificationCode.consumed == False,
+                VerificationCode.expires_at >= datetime.utcnow(),
+            ).all()
+            
+            logger.warning(f"📋 Existing valid codes for {email}: {[(c.code, c.expires_at) for c in existing_codes]}")
+            
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired verification code")
+        
+        # Mark user as verified
+        user.is_verified = True
+        db.add(user)
+        db.commit()
+        
+        logger.warning(f"✅ User verified successfully: {email}")
+        
+        # Create session tokens
+        tokens = _issue_session_tokens(db, user, request)
+        
+        return {
+            "status": "verified", 
+            "access_token": tokens.access_token, 
+            "token_type": "bearer",
+            "refresh_token": tokens.refresh_token,
+            "session_id": tokens.session_id,
+            "user": _user_with_status(db, user)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Verification error: {type(e).__name__}: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Verification failed due to server error")
 
 
 @router.post("/login/request-code")
