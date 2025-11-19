@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Zap, HeadphonesIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { TrialDialog } from "@/components/ui/trial-dialog";
+import { ComingSoonDialog } from "@/components/ui/coming-soon-dialog";
 
 export default function CTASection() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function CTASection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
         >
-          <TrialDialog>
+          <ComingSoonDialog>
             <Button
               size="lg"
               className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
@@ -47,7 +48,7 @@ export default function CTASection() {
               Start Your Free Trial
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-          </TrialDialog>
+          </ComingSoonDialog>
           <Button
             size="lg"
             variant="outline"

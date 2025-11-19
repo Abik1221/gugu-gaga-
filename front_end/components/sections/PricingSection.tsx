@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { TrialDialog } from "@/components/ui/trial-dialog";
+import { ComingSoonDialog } from "@/components/ui/coming-soon-dialog";
 
 export default function PricingSection() {
   const [selectedType, setSelectedType] = useState<"owner" | "supplier">(
@@ -259,17 +260,18 @@ export default function PricingSection() {
                   ))}
                 </ul>
 
-                <Button
-                  className={`w-full ${
-                    plan.highlight
-                      ? "bg-emerald-600 hover:bg-emerald-700"
-                      : "bg-gray-900 hover:bg-gray-800"
-                  }`}
-                  size="default"
-                  onClick={() => handlePlanClick(plan)}
-                >
-                  {plan.cta}
-                </Button>
+                <ComingSoonDialog>
+                  <Button
+                    className={`w-full ${
+                      plan.highlight
+                        ? "bg-emerald-600 hover:bg-emerald-700"
+                        : "bg-gray-900 hover:bg-gray-800"
+                    }`}
+                    size="default"
+                  >
+                    {plan.cta}
+                  </Button>
+                </ComingSoonDialog>
               </Card>
             </motion.div>
           ))}

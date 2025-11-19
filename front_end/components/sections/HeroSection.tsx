@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import branch4 from "@/public/branch4.jpeg";
 import { TrialDialog } from "@/components/ui/trial-dialog";
+import { ComingSoonDialog } from "@/components/ui/coming-soon-dialog";
 import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
@@ -60,7 +61,7 @@ export default function HeroSection() {
               transition={{ duration: 0.5 }}
               className="flex flex-col sm:flex-row gap-3 sm:gap-4 px-4 sm:px-0"
             >
-              <TrialDialog>
+              <ComingSoonDialog>
                 <Button
                   size="lg"
                   className="bg-emerald-600 hover:bg-emerald-700 text-base sm:text-lg px-4 sm:px-8"
@@ -68,7 +69,7 @@ export default function HeroSection() {
                   Start 30-Day Free Trial
                   <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
-              </TrialDialog>
+              </ComingSoonDialog>
               <Button
                 size="lg"
                 variant="outline"
