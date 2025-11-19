@@ -58,7 +58,6 @@ export const config = {
     '/affiliate-signin/:path*',
     '/supplier-signin/:path*',
     '/superadin/:path*',
-    '/register/:path*',
-    '/verify/:path*'
+    '/register/:path*'
   ]
 };
