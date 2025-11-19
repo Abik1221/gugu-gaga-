@@ -171,11 +171,14 @@ export default function OwnerRegisterPage() {
       }
 
       setRegisteredEmail(trimmedEmail);
-      setOtpSent(true);
       setSuccess(
-        "Registration successful! Check your email for verification code."
+        "Registration successful! Redirecting to verification..."
       );
-      setShowOtpDialog(true);
+      
+      // Redirect to verification page
+      setTimeout(() => {
+        router.push(`/verify?email=${encodeURIComponent(trimmedEmail)}&purpose=register`);
+      }, 1000);
     } catch (err: any) {
       let message = err?.message || "Failed to register";
       let title = "Registration Failed";
@@ -235,10 +238,15 @@ export default function OwnerRegisterPage() {
         description: "Redirecting to dashboard...",
       });
       // Use proper routing based on user status
-      const { getHardcodedRoute } = await import('@/utils/hardcoded-routing');
-      const redirectPath = getHardcodedRoute(verifyData.user);
-      
-      setTimeout(() => (window.location.href = redirectPath), 1500);
+      setTimeout(async () => {
+        try {
+          const { getHardcodedRoute } = await import('@/utils/hardcoded-routing');
+          const redirectPath = getHardcodedRoute(verifyData.user);
+          window.location.replace(redirectPath);
+        } catch (error) {
+          window.location.replace('/dashboard/kyc');
+        }
+      }, 1500);
     } catch (err: any) {
       let message = err?.message || "Invalid verification code";
       let title = "Verification Failed";
