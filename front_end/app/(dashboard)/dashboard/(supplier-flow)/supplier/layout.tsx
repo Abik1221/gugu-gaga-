@@ -10,7 +10,7 @@ import {
 import { SupplierSidebar } from "@/components/custom/supplier-sidebar";
 import { AuthAPI } from "@/utils/api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getSupplierFlowStatus, getRedirectPath } from "@/utils/supplier-flow";
+import { getHardcodedRoute } from "@/utils/hardcoded-routing";
 
 export default function SupplierLayout({
   children,
@@ -30,18 +30,10 @@ export default function SupplierLayout({
           return;
         }
         
-        // Check supplier flow status
-        const flowStatus = await getSupplierFlowStatus();
-        
-        // If not approved, redirect to appropriate step
-        if (!flowStatus.can_access_dashboard) {
-          // For KYC pending, redirect to registration instead of KYC page
-          if (flowStatus.step === 'kyc_pending') {
-            router.replace('/register/supplier');
-          } else {
-            const redirectPath = getRedirectPath(flowStatus);
-            router.replace(redirectPath);
-          }
+        // Check if user should be on supplier dashboard
+        const correctRoute = getHardcodedRoute(me);
+        if (!correctRoute.startsWith('/dashboard/supplier')) {
+          router.replace(correctRoute);
           return;
         }
         

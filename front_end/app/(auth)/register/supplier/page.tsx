@@ -215,14 +215,8 @@ export default function SupplierRegisterPage() {
           "Your account has been verified. Redirecting to dashboard.",
       });
       // Use proper routing based on user status
-      const { getAuthRedirectPath } = await import('@/utils/auth-routing');
-      const redirectPath = getAuthRedirectPath({
-        role: verifyData.user?.role || 'supplier',
-        is_verified: true,
-        kyc_status: verifyData.user?.kyc_status,
-        subscription_status: verifyData.user?.subscription_status,
-        subscription_blocked: verifyData.user?.subscription_blocked
-      });
+      const { getHardcodedRoute } = await import('@/utils/hardcoded-routing');
+      const redirectPath = getHardcodedRoute(verifyData.user);
       
       setTimeout(() => (window.location.href = redirectPath), 1500);
     } catch (err: any) {
