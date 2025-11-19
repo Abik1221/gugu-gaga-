@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import personImg from "@/public/personImg.jpeg";
 import Link from "next/link";
+import { ComingSoonDialog } from "@/components/ui/coming-soon-dialog";
 export default function AffiliateSection() {
   const benefits = [
     {
@@ -120,14 +121,14 @@ export default function AffiliateSection() {
                 </div>
               </div>
             </div>
-            <Link href="/register/affiliate">
+            <ComingSoonDialog>
               <Button
                 size="lg"
                 className="bg-white text-emerald-600 hover:bg-emerald-50 w-full"
               >
                 Become an Affiliate Partner
               </Button>
-            </Link>
+            </ComingSoonDialog>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 30 }}

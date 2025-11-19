@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { TrialDialog } from "@/components/ui/trial-dialog";
 import { RoleSelectionDialog } from "@/components/ui/role-selection-dialog";
+import { ComingSoonDialog } from "@/components/ui/coming-soon-dialog";
 import { InstallButton } from "@/components/pwa/InstallPWA";
 import logoImage from "@/public/mesoblogo.jpeg";
 import Image from "next/image";
@@ -88,16 +89,16 @@ export default function Navbar() {
           </div>
           <div className="hidden lg:flex items-center space-x-4">
             <InstallButton />
-            <RoleSelectionDialog>
+            <ComingSoonDialog>
               <Button variant="ghost" size="sm" className="text-black">
                 Sign In
               </Button>
-            </RoleSelectionDialog>
-            <TrialDialog>
+            </ComingSoonDialog>
+            <ComingSoonDialog>
               <Button className="bg-emerald-600 hover:bg-emerald-700">
                 Start Free Trial
               </Button>
-            </TrialDialog>
+            </ComingSoonDialog>
           </div>
           <div className="lg:hidden flex items-center space-x-2">
             <InstallButton />
@@ -161,16 +162,16 @@ export default function Navbar() {
 
               <div className="px-3 py-2 space-y-2 pt-4 border-t border-gray-200">
                 <InstallButton fullWidth={true} />
-                <RoleSelectionDialog>
+                <ComingSoonDialog>
                   <Button variant="outline" className="w-full">
                     Sign In
                   </Button>
-                </RoleSelectionDialog>
-                <TrialDialog>
+                </ComingSoonDialog>
+                <ComingSoonDialog>
                   <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
                     Start Free Trial
                   </Button>
-                </TrialDialog>
+                </ComingSoonDialog>
               </div>
             </div>
           </motion.div>
