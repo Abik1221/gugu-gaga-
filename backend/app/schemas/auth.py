@@ -154,12 +154,14 @@ class LoginVerifyRequest(BaseModel):
 
 class PasswordResetRequest(BaseModel):
     email: EmailStr
+    expected_role: Optional[str] = None
 
 
 class PasswordResetConfirm(BaseModel):
     email: EmailStr
     code: str
     new_password: str
+    expected_role: Optional[str] = None
 
     @field_validator("new_password")
     @classmethod

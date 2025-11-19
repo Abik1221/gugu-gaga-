@@ -318,7 +318,7 @@ export default function SupplierSignInPage() {
                   <span className="text-slate-700">Remember me</span>
                 </label>
                 <Link
-                  href="/forgot-password"
+                  href="/supplier-forgot-password"
                   className="text-green-600 hover:underline"
                 >
                   Forgot password?

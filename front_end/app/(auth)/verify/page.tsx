@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useEmailVerificationToast } from "@/components/ui/email-verification-toast";
 import { AuthAPI } from "@/utils/api";
 import { SimpleLoading } from "@/components/ui/simple-loading";
+import { getHardcodedRoute } from "@/utils/hardcoded-routing";
 
 const highlights = [
   {
@@ -159,23 +160,13 @@ function VerifyRegistrationContent() {
           "Your account has been verified. Redirecting to your dashboard.",
       });
 
-      // Use proper routing based on user status
+      // Use hardcoded routing based on user status
       setTimeout(async () => {
         try {
-          // Get fresh user data to ensure accurate routing
           const me = await AuthAPI.me();
-          const { getAuthRedirectPath } = await import('@/utils/auth-routing');
-          const redirectPath = getAuthRedirectPath({
-            role: me?.role || verifyRes?.user?.role || localStorage.getItem("user_role") || 'affiliate',
-            is_verified: true,
-            kyc_status: me?.kyc_status || verifyRes?.user?.kyc_status,
-            subscription_status: me?.subscription_status || verifyRes?.user?.subscription_status,
-            subscription_blocked: me?.subscription_blocked || verifyRes?.user?.subscription_blocked || false
-          });
-          
+          const redirectPath = getHardcodedRoute(me);
           window.location.replace(redirectPath);
         } catch (error) {
-          // Fallback to role-based routing if API call fails
           const userRole = localStorage.getItem("user_role") || 'affiliate';
           const fallbackPath = userRole === 'affiliate' ? '/dashboard/affiliate' : '/dashboard';
           window.location.replace(fallbackPath);
@@ -216,20 +207,10 @@ function VerifyRegistrationContent() {
           <Button
             onClick={async () => {
               try {
-                // Get fresh user data to ensure accurate routing
                 const me = await AuthAPI.me();
-                const { getAuthRedirectPath } = await import('@/utils/auth-routing');
-                const redirectPath = getAuthRedirectPath({
-                  role: me?.role || localStorage.getItem("user_role") || "affiliate",
-                  is_verified: true,
-                  kyc_status: me?.kyc_status,
-                  subscription_status: me?.subscription_status,
-                  subscription_blocked: me?.subscription_blocked || false
-                });
-                
+                const redirectPath = getHardcodedRoute(me);
                 window.location.replace(redirectPath);
               } catch (error) {
-                // Fallback to role-based routing if API call fails
                 const userRole = localStorage.getItem("user_role") || "affiliate";
                 const fallbackPath = userRole === 'affiliate' ? '/dashboard/affiliate' : '/dashboard';
                 window.location.replace(fallbackPath);
