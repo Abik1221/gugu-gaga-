@@ -830,6 +830,21 @@ def password_reset_request(payload: PasswordResetRequest, db: Session = Depends(
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
     
+    # Check if role matches the expected role from the request
+    if payload.expected_role and user.role != payload.expected_role:
+        role_names = {
+            "pharmacy_owner": "pharmacy owner",
+            "supplier": "supplier", 
+            "affiliate": "affiliate",
+            "cashier": "cashier"
+        }
+        user_role_name = role_names.get(user.role, user.role)
+        
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail=f"This email is registered as a {user_role_name}. Please use the {user_role_name} sign-in page."
+        )
+    
     # Allow password reset for all roles: owner, affiliate, supplier, cashier
     if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.supplier.value, Role.cashier.value, Role.admin.value}:
         return {"status": "sent"}
@@ -866,6 +881,21 @@ def password_reset_confirm(payload: PasswordResetConfirm, db: Session = Depends(
     if not user:
         logger.warning(f"❌ No user found for email: {payload.email}")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
+    
+    # Check if role matches the expected role from the request
+    if payload.expected_role and user.role != payload.expected_role:
+        role_names = {
+            "pharmacy_owner": "pharmacy owner",
+            "supplier": "supplier", 
+            "affiliate": "affiliate",
+            "cashier": "cashier"
+        }
+        user_role_name = role_names.get(user.role, user.role)
+        
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail=f"This email is registered as a {user_role_name}. Please use the {user_role_name} sign-in page."
+        )
     
     # Allow password reset for all roles
     if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.supplier.value, Role.cashier.value, Role.admin.value}:

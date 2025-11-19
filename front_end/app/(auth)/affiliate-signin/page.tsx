@@ -293,7 +293,7 @@ export default function AffiliateLoginPage() {
                       Password*
                     </label>
                     <Link
-                      href="/forgot-password"
+                      href="/affiliate-forgot-password"
                       className="text-xs font-medium text-emerald-600 hover:text-emerald-700 hover:underline"
                     >
                       Forgot password?

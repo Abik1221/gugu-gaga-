@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { ToastProvider } from "@/components/ui/toast";
+import { RouteGuard } from "@/components/auth/route-guard";
 import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -27,7 +28,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <ToastProvider />
-          {children}
+          <RouteGuard>
+            {children}
+          </RouteGuard>
         </AuthProvider>
         <Script id="register-sw" strategy="afterInteractive">
           {`
