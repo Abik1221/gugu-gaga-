@@ -141,10 +141,11 @@ export default function SupplierRegisterPage() {
         address: address.trim() || null,
       });
 
-      // Store tokens immediately after registration
+      // Store tokens if provided (they might not be included if session creation failed on backend,
+      // which is OK - tokens will be properly set after OTP verification)
       if (data.access_token) {
         localStorage.setItem("access_token", data.access_token);
-        localStorage.setItem("token", data.access_token); // Also store as 'token'
+        localStorage.setItem("token", data.access_token);
       }
       if (data.refresh_token) {
         localStorage.setItem("refresh_token", data.refresh_token);
@@ -153,6 +154,7 @@ export default function SupplierRegisterPage() {
         localStorage.setItem("user_role", data.user.role);
       }
 
+      // Registration succeeded - show success and prepare for OTP
       setRegisteredEmail(trimmedEmail);
       setOtpSent(true);
       setSuccess("Registration successful! Please verify your email.");
@@ -160,7 +162,7 @@ export default function SupplierRegisterPage() {
     } catch (err: any) {
       let message = err?.message || "Failed to register";
       let title = "Registration Failed";
-      
+
       // Handle specific error cases with user-friendly messages
       if (message.includes("already exists") || message.includes("already registered")) {
         title = "Email Already Registered";
@@ -172,7 +174,7 @@ export default function SupplierRegisterPage() {
         title = "Server Error";
         message = "Something went wrong on our end. Please try again in a few moments.";
       }
-      
+
       setError(message);
       show({
         variant: "destructive",
@@ -217,12 +219,12 @@ export default function SupplierRegisterPage() {
       // Use proper routing based on user status
       const { getHardcodedRoute } = await import('@/utils/hardcoded-routing');
       const redirectPath = getHardcodedRoute(verifyData.user);
-      
+
       setTimeout(() => (window.location.href = redirectPath), 1500);
     } catch (err: any) {
       let message = err?.message || "Verification failed";
       let title = "Verification Failed";
-      
+
       // Handle specific error cases
       if (message.includes("No account found")) {
         title = "Account Not Found";
@@ -234,7 +236,7 @@ export default function SupplierRegisterPage() {
         title = "Connection Error";
         message = "Unable to connect to the server. Please check your internet connection and try again.";
       }
-      
+
       setError(message);
       show({
         variant: "destructive",
@@ -248,7 +250,7 @@ export default function SupplierRegisterPage() {
 
   async function handleResendCode() {
     if (!registeredEmail) return;
-    
+
     setLoading(true);
     try {
       const response = await fetch("/api/v1/auth/resend-code", {
@@ -256,7 +258,7 @@ export default function SupplierRegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: registeredEmail, purpose: "register" })
       });
-      
+
       if (response.status === 429) {
         const errorData = await response.json();
         const match = errorData.detail?.match(/(\d+) seconds/);
@@ -264,11 +266,11 @@ export default function SupplierRegisterPage() {
         setError(`Please wait ${seconds} seconds before requesting a new code.`);
         return;
       }
-      
+
       if (!response.ok) {
         throw new Error("Failed to resend code");
       }
-      
+
       show({
         variant: "success",
         title: "Code Sent",
@@ -436,11 +438,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("supplierName");
                         setSupplierName(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.supplierName
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.supplierName
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Use your registered business name.
@@ -463,11 +464,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("email");
                         setEmail(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.email
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.email
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Business email for account notifications.
@@ -490,11 +490,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("password");
                         setPassword(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.password
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.password
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Minimum 6 characters for security.
@@ -516,11 +515,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("nationalId");
                         setNationalId(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.nationalId
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.nationalId
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Government-issued identification number.
@@ -542,11 +540,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("tinNumber");
                         setTinNumber(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.tinNumber
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.tinNumber
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Tax Identification Number for business verification.
@@ -575,11 +572,10 @@ export default function SupplierRegisterPage() {
                       />
                       <label
                         htmlFor="license-upload"
-                        className={`flex items-center justify-between px-4 py-2.5 border rounded-lg cursor-pointer transition bg-white ${
-                          fieldErrors.licenseImage
+                        className={`flex items-center justify-between px-4 py-2.5 border rounded-lg cursor-pointer transition bg-white ${fieldErrors.licenseImage
                             ? "border-red-400/60 hover:border-red-300"
                             : "border-slate-200 hover:border-green-400"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           {licenseImage && (
@@ -682,10 +678,10 @@ export default function SupplierRegisterPage() {
                     ? "Verifying..."
                     : "Registering..."
                   : otpSent
-                  ? "Verify Email"
-                  : "Register as Supplier"}
+                    ? "Verify Email"
+                    : "Register as Supplier"}
               </Button>
-              
+
               {otpSent && (
                 <div className="text-center">
                   <button
@@ -710,7 +706,7 @@ export default function SupplierRegisterPage() {
                   </Link>
                 </p>
               )}
-              
+
               {otpSent && (
                 <p className="text-center text-xs text-slate-700">
                   Need to change your email?{" "}

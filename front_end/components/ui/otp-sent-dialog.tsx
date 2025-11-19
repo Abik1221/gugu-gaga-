@@ -14,7 +14,7 @@ interface OtpSentDialogProps {
 export function OtpSentDialog({ isOpen, onClose, email, purpose = "register" }: OtpSentDialogProps) {
   const purposeText = {
     register: "registration",
-    login: "login", 
+    login: "login",
     password_reset: "password reset"
   }[purpose];
 
@@ -22,7 +22,7 @@ export function OtpSentDialog({ isOpen, onClose, email, purpose = "register" }: 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg border-0 shadow-2xl">
+      <DialogContent className="sm:max-w-lg border-0 shadow-2xl bg-white">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-green-600 text-xl">
             <div className="p-2 bg-green-100 rounded-full">
@@ -31,7 +31,7 @@ export function OtpSentDialog({ isOpen, onClose, email, purpose = "register" }: 
             Code Sent Successfully!
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-6">
           <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200">
             <div className="p-2 bg-green-100 rounded-full flex-shrink-0">
@@ -71,9 +71,9 @@ export function OtpSentDialog({ isOpen, onClose, email, purpose = "register" }: 
         </div>
 
         <div className="flex justify-center pt-2">
-          <Button 
-            onClick={onClose} 
-            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+          <Button
+            onClick={onClose}
+            className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
           >
             Got it, thanks!
           </Button>

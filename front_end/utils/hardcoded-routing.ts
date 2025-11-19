@@ -38,7 +38,14 @@ export function getHardcodedRoute(user: any): string {
       if (user.kyc_status === 'pending') {
         return '/dashboard/supplier/kyc';
       }
-      // KYC approved, go to supplier dashboard
+      // If KYC approved, check subscription
+      if (user.subscription_status === 'pending_verification') {
+        return '/dashboard/payment';
+      }
+      if (user.subscription_blocked) {
+        return '/dashboard/payment';
+      }
+      // All good, go to supplier dashboard
       return '/dashboard/supplier';
 
     case 'cashier':
@@ -78,8 +85,8 @@ export function canAccessRoute(user: any, pathname: string): boolean {
         return false;
       }
       // Block dashboard if payment pending
-      if ((user.subscription_status === 'pending_verification' || user.subscription_blocked) && 
-          pathname.startsWith('/dashboard') && !pathname.includes('/payment')) {
+      if ((user.subscription_status === 'pending_verification' || user.subscription_blocked) &&
+        pathname.startsWith('/dashboard') && !pathname.includes('/payment')) {
         return false;
       }
       return pathname.startsWith('/dashboard') && !pathname.includes('/affiliate') && !pathname.includes('/supplier');
@@ -88,6 +95,15 @@ export function canAccessRoute(user: any, pathname: string): boolean {
       // Block dashboard if KYC not approved
       if ((user.kyc_status !== 'approved') && pathname.startsWith('/dashboard/supplier') && !pathname.includes('/kyc')) {
         return false;
+      }
+      // Block dashboard if payment pending
+      if ((user.subscription_status === 'pending_verification' || user.subscription_blocked) &&
+        pathname.startsWith('/dashboard') && !pathname.includes('/payment')) {
+        return false;
+      }
+      // Allow payment page access
+      if (pathname.includes('/payment')) {
+        return true;
       }
       return pathname.startsWith('/dashboard/supplier');
 
