@@ -297,13 +297,36 @@ def register_owner(payload: PharmacyRegister, request: Request, db: Session = De
     # Send verification code for security
     try:
         code = issue_code(db, email=owner.email, purpose="register")
+        print(f"\n🔐 Owner registration code for {owner.email}: {code}\n")
         if owner.email:
             send_verification_email(owner.email, code, "register")
-    except Exception:
+    except Exception as e:
+        print(f"\n⚠️ Email send failed but continuing: {e}\n")
         pass
     
     # Create session tokens for immediate login after verification
-    tokens = _issue_session_tokens(db, owner, request)
+    try:
+        tokens = _issue_session_tokens(db, owner, request)
+    except Exception as e:
+        print(f"\n⚠️ Session token creation failed: {e}\n")
+        # Return without tokens if session creation fails
+        return {
+            "user": _user_with_status(db, owner),
+            "tenant_id": tenant_id,
+            "kyc": {
+                "id": app.id,
+                "status": app.status,
+                "pharmacy_name": app.pharmacy_name,
+                "pharmacy_address": app.pharmacy_address,
+                "id_number": app.id_number,
+                "pharmacy_license_number": app.pharmacy_license_number,
+                "owner_phone": app.owner_phone,
+                "notes": app.notes,
+                "license_document_name": app.license_document_name,
+                "license_document_mime": app.license_document_mime,
+                "documents_path": app.documents_path,
+            },
+        }
     
     return {
         "user": _user_with_status(db, owner),
@@ -452,8 +475,10 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
     try:
         if user.email:
             reg_code = issue_code(db, email=user.email, purpose="register")
+            print(f"\n🔐 Affiliate registration code for {user.email}: {reg_code}\n")
             send_verification_email(user.email, reg_code, "register")
-    except Exception:
+    except Exception as e:
+        print(f"\n⚠️ Email send failed but continuing: {e}\n")
         pass
     return _user_with_status(db, user)
 
