@@ -130,15 +130,17 @@ export default function SupplierSignInPage() {
         description: "Redirecting to your supplier dashboard...",
       });
 
-      // Redirect based on supplier status using flow logic
+      // Redirect to supplier dashboard
       setTimeout(async () => {
         try {
-          const { getSupplierFlowStatus, getRedirectPath } = await import('@/utils/supplier-flow');
-          const flowStatus = await getSupplierFlowStatus();
-          const redirectPath = getRedirectPath(flowStatus);
+          const response = await fetch(`${API_BASE}/auth/me`, {
+            headers: { "Authorization": `Bearer ${data.access_token}` }
+          });
+          const user = await response.json();
+          const { getHardcodedRoute } = await import('@/utils/hardcoded-routing');
+          const redirectPath = getHardcodedRoute(user);
           window.location.replace(redirectPath);
         } catch (error) {
-          console.error('Error determining supplier redirect:', error);
           window.location.replace('/dashboard/supplier-kyc');
         }
       }, 1000);
