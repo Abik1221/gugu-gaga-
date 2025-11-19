@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import AffiliateLoginPage from "../affiliate-signin/page";
 import AffiliateRegisterPage from "../register/affiliate/page";
-import { AuthRedirectHandler } from "@/components/auth/auth-redirect-handler";
+import { AuthRedirect } from "@/components/auth/auth-redirect";
 import { SimpleLoading } from "@/components/ui/simple-loading";
 
 function AuthContent() {
@@ -28,11 +28,8 @@ function AuthWithSuspense() {
 
 export default function AuthRouterPage() {
   return (
-    <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <AuthRedirectHandler />
-      </Suspense>
+    <AuthRedirect>
       <AuthWithSuspense />
-    </>
+    </AuthRedirect>
   );
 }
