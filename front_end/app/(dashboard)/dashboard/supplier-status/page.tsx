@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Clock, AlertCircle, ArrowRight } from "lucide-react";
-import { getSupplierFlowStatus, getRedirectPath } from "@/utils/supplier-flow";
+import { getHardcodedRoute } from "@/utils/hardcoded-routing";
+import { AuthAPI } from "@/utils/api";
 import { useRouter } from "next/navigation";
 
 export default function SupplierStatusPage() {
@@ -19,8 +20,8 @@ export default function SupplierStatusPage() {
 
   const loadStatus = async () => {
     try {
-      const flowStatus = await getSupplierFlowStatus();
-      setStatus(flowStatus);
+      const user = await AuthAPI.me();
+      setStatus(user);
     } catch (error) {
       console.error('Error loading status:', error);
     } finally {
@@ -188,7 +189,10 @@ export default function SupplierStatusPage() {
                 )}
                 <div className="pt-4">
                   <Button
-                    onClick={() => router.push(getRedirectPath(status))}
+                    onClick={() => {
+                      const redirectPath = getHardcodedRoute(status);
+                      router.push(redirectPath);
+                    }}
                     className="w-full"
                   >
                     Continue Onboarding

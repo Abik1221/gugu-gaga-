@@ -95,15 +95,9 @@ export default function OwnerKYCPage() {
         return;
       }
 
-      // Use proper routing logic
-      const { getAuthRedirectPath } = await import('@/utils/auth-routing');
-      const redirectPath = getAuthRedirectPath({
-        role: me.role,
-        is_verified: me.is_verified,
-        kyc_status: me.kyc_status,
-        subscription_status: me.subscription_status,
-        subscription_blocked: me.subscription_blocked
-      });
+      // Use hardcoded routing logic
+      const { getHardcodedRoute } = await import('@/utils/hardcoded-routing');
+      const redirectPath = getHardcodedRoute(me);
       
       // Only redirect if not on KYC page
       if (redirectPath !== '/dashboard/kyc' && me.kyc_status === 'approved') {
@@ -171,16 +165,10 @@ export default function OwnerKYCPage() {
       }
       show({ title: "Success", description: "KYC information updated successfully. Redirecting...", variant: "success" });
       
-      // Use proper routing logic
-      const { getAuthRedirectPath } = await import('@/utils/auth-routing');
+      // Use hardcoded routing logic
+      const { getHardcodedRoute } = await import('@/utils/hardcoded-routing');
       const userStatus = await getAuthJSON("/api/v1/auth/me");
-      const redirectPath = getAuthRedirectPath({
-        role: userStatus.role,
-        is_verified: userStatus.is_verified,
-        kyc_status: userStatus.kyc_status,
-        subscription_status: userStatus.subscription_status,
-        subscription_blocked: userStatus.subscription_blocked
-      });
+      const redirectPath = getHardcodedRoute(userStatus);
       
       setTimeout(() => router.push(redirectPath), 1500);
     } catch (error) {

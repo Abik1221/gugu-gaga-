@@ -7,7 +7,7 @@ import { API_BASE } from "@/utils/api";
 import { AuthRedirect } from "@/components/auth/auth-redirect";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
-import { getOwnerFlowStatus, getRedirectPath } from "@/utils/owner-flow";
+import { getHardcodedRoute } from "@/utils/hardcoded-routing";
 import Link from "next/link";
 import Head from "next/head";
 
@@ -166,11 +166,13 @@ export default function PharmacySignInPage(): JSX.Element {
 
       setTimeout(async () => {
         try {
-          const status = await getOwnerFlowStatus();
-          const redirectPath = getRedirectPath(status);
+          const response = await fetch(`${API_BASE}/auth/me`, {
+            headers: { "Authorization": `Bearer ${data.access_token}` }
+          });
+          const user = await response.json();
+          const redirectPath = getHardcodedRoute(user);
           window.location.replace(redirectPath);
         } catch (error) {
-          // Fallback to KYC page if status check fails
           window.location.replace("/dashboard/kyc");
         }
       }, 1000);

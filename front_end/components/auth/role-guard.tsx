@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
 import { type AuthProfile } from "@/utils/api";
-import { getOwnerFlowStatus } from "@/utils/owner-flow";
-import { getSupplierFlowStatus } from "@/utils/supplier-flow";
+import { getHardcodedRoute, canAccessRoute } from "@/utils/hardcoded-routing";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface RoleGuardProps {
@@ -55,8 +54,12 @@ export function RoleGuard({
           return;
         }
 
-        // Handle role-specific flow checks
-        await handleRoleSpecificFlow(user);
+        // Check if user can access current route
+        if (!canAccessRoute(user, pathname)) {
+          const correctRoute = getHardcodedRoute(user);
+          router.replace(correctRoute);
+          return;
+        }
         
         if (mounted) {
           setAuthorized(true);
@@ -73,68 +76,7 @@ export function RoleGuard({
       }
     }
 
-    async function handleRoleSpecificFlow(profile: AuthProfile) {
-      const role = profile.role;
-      
-      // Owner flow check
-      if (role === "pharmacy_owner") {
-        const flowStatus = await getOwnerFlowStatus();
-        
-        // Allow access to flow pages
-        const flowPages = ["/dashboard/kyc", "/dashboard/payment"];
-        const isOnFlowPage = flowPages.some(page => pathname.startsWith(page));
-        
-        if (flowStatus === "kyc_pending" && !pathname.startsWith("/dashboard/kyc")) {
-          router.replace("/dashboard/kyc");
-          return;
-        }
-        
-        if (flowStatus === "payment_pending" && !pathname.startsWith("/dashboard/payment")) {
-          router.replace("/dashboard/payment");
-          return;
-        }
-        
-        // If approved but on flow page, redirect to dashboard
-        if (flowStatus === "approved" && isOnFlowPage) {
-          router.replace("/dashboard/owner");
-          return;
-        }
-      }
-      
-      // Supplier flow check
-      if (role === "supplier") {
-        const flowStatus = await getSupplierFlowStatus();
-        
-        const flowPages = ["/dashboard/supplier-kyc", "/dashboard/supplier-payment"];
-        const isOnFlowPage = flowPages.some(page => pathname.startsWith(page));
-        
-        if (!flowStatus.can_access_dashboard && !isOnFlowPage) {
-          if (flowStatus.step === "kyc_pending") {
-            router.replace("/dashboard/supplier-kyc");
-            return;
-          }
-          if (flowStatus.step === "payment_pending") {
-            router.replace("/dashboard/supplier-payment");
-            return;
-          }
-        }
-        
-        // If approved but on flow page, redirect to dashboard
-        if (flowStatus.can_access_dashboard && isOnFlowPage) {
-          router.replace("/dashboard/supplier");
-          return;
-        }
-      }
-      
-      // Affiliate verification check
-      if (role === "affiliate") {
-        // Check if affiliate is verified/approved
-        if (profile.kyc_status && profile.kyc_status !== "approved") {
-          // Could redirect to affiliate verification page if needed
-          console.warn("Affiliate not fully approved:", profile.kyc_status);
-        }
-      }
-    }
+
 
     checkAuth();
 
