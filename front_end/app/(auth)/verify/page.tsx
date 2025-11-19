@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { useEmailVerificationToast } from "@/components/ui/email-verification-toast";
-import { AuthAPI } from "@/utils/api";
+import { AuthAPI, API_BASE } from "@/utils/api";
 import { SimpleLoading } from "@/components/ui/simple-loading";
 import { getHardcodedRoute } from "@/utils/hardcoded-routing";
 
@@ -69,7 +69,7 @@ function VerifyRegistrationContent() {
     setResendLoading(true);
     try {
       const purpose = searchParams.get("purpose") || "register";
-      const response = await fetch("/api/v1/auth/resend-code", {
+      const response = await fetch(`${API_BASE}/auth/resend-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, purpose })
