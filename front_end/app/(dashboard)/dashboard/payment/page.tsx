@@ -80,15 +80,9 @@ export default function OwnerPaymentPage() {
       setLoading(true);
       const me = await getAuthJSON("/api/v1/auth/me");
       
-      // Use proper routing logic
-      const { getAuthRedirectPath } = await import('@/utils/auth-routing');
-      const redirectPath = getAuthRedirectPath({
-        role: me.role,
-        is_verified: me.is_verified,
-        kyc_status: me.kyc_status,
-        subscription_status: me.subscription_status,
-        subscription_blocked: me.subscription_blocked
-      });
+      // Use hardcoded routing logic
+      const { getHardcodedRoute } = await import('@/utils/hardcoded-routing');
+      const redirectPath = getHardcodedRoute(me);
       
       // Only redirect if not on payment page
       if (redirectPath !== '/dashboard/payment') {
