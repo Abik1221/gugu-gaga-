@@ -4,7 +4,7 @@ import Image from "next/image";
 import logoImage from "@/public/mesoblogo.jpeg";
 import { ErrorDialog } from "@/components/ui/error-dialog";
 import { API_BASE } from "@/utils/api";
-import { AuthRedirect } from "@/components/auth/auth-redirect";
+
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import { getHardcodedRoute } from "@/utils/hardcoded-routing";
@@ -184,7 +184,7 @@ export default function PharmacySignInPage(): JSX.Element {
   }
 
   return (
-    <AuthRedirect>
+    <>
       <Head>
         <title>Owner Sign In - Manage Your Business</title>
         <meta
@@ -439,6 +439,6 @@ export default function PharmacySignInPage(): JSX.Element {
           </main>
         </div>
       </div>
-    </AuthRedirect>
+    </>
   );
 }
