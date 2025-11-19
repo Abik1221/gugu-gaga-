@@ -172,13 +172,14 @@ export default function OwnerRegisterPage() {
 
       setRegisteredEmail(trimmedEmail);
       setSuccess(
-        "Registration successful! Redirecting to verification..."
+        "Registration successful! Check your email for verification code."
       );
+      setShowOtpDialog(true);
       
       // Redirect to verification page
       setTimeout(() => {
-        router.push(`/verify?email=${encodeURIComponent(trimmedEmail)}&purpose=register`);
-      }, 1000);
+        window.location.href = `/verify?email=${encodeURIComponent(trimmedEmail)}&purpose=register`;
+      }, 2000);
     } catch (err: any) {
       let message = err?.message || "Failed to register";
       let title = "Registration Failed";
