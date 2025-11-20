@@ -3,6 +3,7 @@ import "./globals.css";
 import { ToastProvider } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
 import { ServiceWorkerProvider } from "@/components/providers/service-worker-provider";
+import { CookieVersionChecker } from "@/components/providers/cookie-version-checker";
 import { InstallPWA } from "@/components/pwa/InstallPWA";
 import logoImage from "@/public/mesoblogo.jpeg";
 
@@ -135,6 +136,7 @@ export default function RootLayout({
         <link rel="canonical" href="https://mymesob.com" />
         <script
           type="application/ld+json"
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
@@ -169,6 +171,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased overflow-x-hidden">
+        <CookieVersionChecker />
         <ToastProvider>
           {children}
           <Toaster />

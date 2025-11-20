@@ -11,6 +11,61 @@ try {
   API_BASE_PATH = "";
 }
 
+function setCookie(name: string, value: string, days: number) {
+  if (typeof document === "undefined") return;
+  let expires = "";
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+}
+
+// Cookie Version System - Update this when deploying breaking changes
+// See COOKIE_VERSION_GUIDE.md for detailed instructions
+const COOKIE_VERSION = "v1.0.2"; // INCREMENT THIS ON UPDATES
+
+/**
+ * Check and enforce cookie/auth version.
+ * Clears all authentication data if version mismatch detected.
+ * Call this on app initialization to ensure users have fresh auth data.
+ */
+export function checkAuthVersion() {
+  if (typeof window === "undefined") return;
+
+  const storedVersion = localStorage.getItem("auth_version");
+
+  // Version mismatch - clear all auth data
+  if (storedVersion !== COOKIE_VERSION) {
+    console.log(`[Auth Version] Clearing old data. Old: ${storedVersion}, New: ${COOKIE_VERSION}`);
+
+    // Clear localStorage
+    const keysToKeep = ["cookie-consent", "theme"]; // Keep non-auth preferences
+    const keysToRemove: string[] = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && !keysToKeep.includes(key)) {
+        keysToRemove.push(key);
+      }
+    }
+
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+
+    // Clear auth cookies
+    const cookiesToClear = ["access_token", "refresh_token", "token"];
+    cookiesToClear.forEach(name => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+
+    // Set new version
+    localStorage.setItem("auth_version", COOKIE_VERSION);
+
+    console.log("[Auth Version] Auth data cleared. Please log in again.");
+  }
+}
+
 function buildHeaders(
   initHeaders?: HeadersInit,
   tenantId?: string
@@ -384,7 +439,13 @@ export const AuthAPI = {
 
   registerVerify: async (email: string, code: string) => {
     try {
-      return await postForm("/api/v1/auth/register/verify", { email, code });
+      const resp = await postForm<AuthTokenResponse>("/api/v1/auth/register/verify", { email, code });
+      if (typeof window !== "undefined" && resp.access_token) {
+        localStorage.setItem("access_token", resp.access_token);
+        localStorage.setItem("refresh_token", resp.refresh_token);
+        setCookie("access_token", resp.access_token, 7);
+      }
+      return resp;
     } catch (err: any) {
       if (err?.status === 422) {
         console.warn("[AuthAPI.registerVerify] 422, retrying with JSON", {
@@ -421,6 +482,7 @@ export const AuthAPI = {
         if (typeof window !== "undefined") {
           localStorage.setItem("access_token", resp.access_token);
           localStorage.setItem("refresh_token", resp.refresh_token);
+          setCookie("access_token", resp.access_token, 7);
         }
         return resp;
       }
@@ -436,6 +498,7 @@ export const AuthAPI = {
       if (typeof window !== "undefined") {
         localStorage.setItem("access_token", resp.access_token);
         localStorage.setItem("refresh_token", resp.refresh_token);
+        setCookie("access_token", resp.access_token, 7);
       }
       return resp;
     }),
@@ -1184,23 +1247,23 @@ export const SupplierAPI = {
   getProfile: () => getAuthJSON<SupplierProfile>("/api/v1/suppliers/profile"),
   createProfile: (data: any) => postAuthJSON<SupplierProfile>("/api/v1/suppliers/profile", data),
   updateProfile: (data: any) => putAuthJSON<SupplierProfile>("/api/v1/suppliers/profile", data),
-  
+
   // Product management
   getProducts: () => getAuthJSON<SupplierProduct[]>("/api/v1/suppliers/products"),
   createProduct: (data: any) => postAuthJSON<SupplierProduct>("/api/v1/suppliers/products", data),
   updateProduct: (id: number, data: any) => putAuthJSON<SupplierProduct>(`/api/v1/suppliers/products/${id}`, data),
   deleteProduct: (id: number) => deleteAuthJSON(`/api/v1/suppliers/products/${id}`),
-  
+
   // Order management
   getOrders: () => getAuthJSON<Order[]>("/api/v1/suppliers/orders"),
   approveOrder: (id: number) => putAuthJSON(`/api/v1/suppliers/orders/${id}/approve`, {}),
   rejectOrder: (id: number) => putAuthJSON(`/api/v1/suppliers/orders/${id}/reject`, {}),
   verifyPayment: (id: number) => putAuthJSON(`/api/v1/suppliers/orders/${id}/verify-payment`, {}),
   markDelivered: (id: number) => putAuthJSON(`/api/v1/suppliers/orders/${id}/mark-delivered`, {}),
-  
+
   // Public endpoints for customers
   browse: (tenantId: string) => getAuthJSON<SupplierProfile[]>("/api/v1/suppliers/browse", tenantId),
-  getSupplierProducts: (supplierId: number, tenantId: string) => 
+  getSupplierProducts: (supplierId: number, tenantId: string) =>
     getAuthJSON<SupplierProduct[]>(`/api/v1/suppliers/${supplierId}/products`, tenantId),
 };
 
@@ -1208,11 +1271,11 @@ export const OrderAPI = {
   create: (data: any, tenantId: string) => postAuthJSON<Order>("/api/v1/orders", data, tenantId),
   list: (tenantId: string) => getAuthJSON<Order[]>("/api/v1/orders", tenantId),
   get: (id: number, tenantId: string) => getAuthJSON<Order>(`/api/v1/orders/${id}`, tenantId),
-  submitPaymentCode: (id: number, code: string, tenantId: string) => 
+  submitPaymentCode: (id: number, code: string, tenantId: string) =>
     putAuthJSON(`/api/v1/orders/${id}/payment-code`, { code }, tenantId),
-  createReview: (id: number, data: any, tenantId: string) => 
+  createReview: (id: number, data: any, tenantId: string) =>
     postAuthJSON<OrderReview>(`/api/v1/orders/${id}/review`, data, tenantId),
-  getReview: (id: number, tenantId: string) => 
+  getReview: (id: number, tenantId: string) =>
     getAuthJSON<OrderReview>(`/api/v1/orders/${id}/review`, tenantId),
 };
 
@@ -1229,11 +1292,11 @@ export const SupplierAdminAPI = {
   getSuppliers: () => getAuthJSON("/api/v1/admin/suppliers"),
   getPendingKYC: () => getAuthJSON("/api/v1/admin/suppliers/kyc/pending"),
   approveKYC: (supplierId: number) => postAuthJSON(`/api/v1/admin/suppliers/${supplierId}/kyc/approve`, {}),
-  rejectKYC: (supplierId: number, notes?: string) => 
+  rejectKYC: (supplierId: number, notes?: string) =>
     postAuthJSON(`/api/v1/admin/suppliers/${supplierId}/kyc/reject`, { notes }),
   getPendingPayments: () => getAuthJSON("/api/v1/admin/suppliers/payments/pending"),
   verifyPayment: (code: string) => postAuthJSON(`/api/v1/admin/suppliers/payments/${code}/verify`, {}),
-  rejectPayment: (code: string, notes?: string) => 
+  rejectPayment: (code: string, notes?: string) =>
     postAuthJSON(`/api/v1/admin/suppliers/payments/${code}/reject`, { notes }),
 };
 

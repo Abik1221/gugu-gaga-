@@ -143,10 +143,27 @@ export default function PharmacySignInPage(): JSX.Element {
       }
 
       const data = await response.json();
+
+      // Helper function to set cookies
+      const setCookie = (name: string, value: string, days: number) => {
+        if (typeof document === "undefined") return;
+        let expires = "";
+        if (days) {
+          const date = new Date();
+          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+      };
+
+      // Store tokens in localStorage
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
       localStorage.setItem("user_role", "pharmacy_owner");
+
+      // Set cookie for middleware authentication
+      setCookie("access_token", data.access_token, 7);
 
       setErrorDialog({
         isOpen: true,
@@ -264,11 +281,10 @@ export default function PharmacySignInPage(): JSX.Element {
                       name="identifier"
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
-                      className={`w-full bg-white border ${
-                        errors.identifier
+                      className={`w-full bg-white border ${errors.identifier
                           ? "border-red-500"
                           : "border-slate-300"
-                      } rounded-lg px-4 py-3 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400`}
+                        } rounded-lg px-4 py-3 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400`}
                       placeholder="you@business.com or +251900000000"
                       aria-invalid={!!errors.identifier}
                       aria-describedby={
@@ -301,11 +317,10 @@ export default function PharmacySignInPage(): JSX.Element {
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className={`w-full bg-white border ${
-                          errors.password
+                        className={`w-full bg-white border ${errors.password
                             ? "border-red-500"
                             : "border-slate-300"
-                        } rounded-lg px-4 py-3 pr-12 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400`}
+                          } rounded-lg px-4 py-3 pr-12 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400`}
                         placeholder="••••••••"
                         aria-invalid={!!errors.password}
                         aria-describedby={
@@ -389,8 +404,8 @@ export default function PharmacySignInPage(): JSX.Element {
                       ? "Verifying..."
                       : "Sending code..."
                     : otpSent
-                    ? "Verify Code"
-                    : "Sign in"}
+                      ? "Verify Code"
+                      : "Sign in"}
                 </button>
               </div>
 

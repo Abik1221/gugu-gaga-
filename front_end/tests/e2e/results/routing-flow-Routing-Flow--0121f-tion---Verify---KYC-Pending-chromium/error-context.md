@@ -1,0 +1,126 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - generic [ref=e11]: Secure verification
+          - heading "Confirm your email and unlock the partner dashboard" [level=1] [ref=e12]
+          - paragraph [ref=e13]: Enter the one-time code sent to your inbox. Once it matches, we’ll activate your affiliate portal and load your referral toolkit.
+          - generic [ref=e14]:
+            - generic [ref=e15]:
+              - img [ref=e17]
+              - generic [ref=e20]:
+                - paragraph [ref=e21]: Two-step security
+                - paragraph [ref=e22]: Every affiliate login is protected with verification codes for peace of mind.
+            - generic [ref=e23]:
+              - img [ref=e25]
+              - generic [ref=e29]:
+                - paragraph [ref=e30]: Fast email delivery
+                - paragraph [ref=e31]: Codes arrive within seconds. Having trouble? Resend or reach partner support.
+            - generic [ref=e32]:
+              - img [ref=e34]
+              - generic [ref=e37]:
+                - paragraph [ref=e38]: Access partner perks
+                - paragraph [ref=e39]: Once verified you can generate referral links and track commissions instantly.
+          - paragraph [ref=e41]:
+            - text: Need help?
+            - link "Partner support is a message away" [ref=e42] [cursor=pointer]:
+              - /url: /contact
+        - generic [ref=e43]:
+          - paragraph [ref=e44]: Verification keeps your earnings protected.
+          - paragraph [ref=e45]: © 2025 Mesob Partners.
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - heading "Verify your account" [level=2] [ref=e49]
+          - paragraph [ref=e50]: Enter the six-digit code we just emailed to finish activating your partner access.
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]: Email address
+            - textbox "Enter your email" [ref=e54]: owner@example.com
+          - generic [ref=e55]:
+            - generic [ref=e56]: Verification code
+            - textbox "Enter 6-digit code" [ref=e57]: "123456"
+          - button "Verify account" [active] [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - paragraph [ref=e60]:
+            - text: Didn't get the code?
+            - strong [ref=e61]: Check your spam folder
+            - text: or
+            - button "resend code" [ref=e62]
+          - paragraph [ref=e63]: Your verification code expires after 10 minutes for security.
+    - contentinfo [ref=e64]:
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - link "Mesob" [ref=e67] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e68]: Mesob
+          - paragraph [ref=e69]: Multi-tenant, AI-powered management for modern bussiness. Insightful dashboards, secure workflows, and supplier experiences.
+          - generic [ref=e70]:
+            - link [ref=e71] [cursor=pointer]:
+              - /url: https://www.linkedin.com
+              - img [ref=e72]
+            - link [ref=e76] [cursor=pointer]:
+              - /url: https://twitter.com
+              - img [ref=e77]
+            - link [ref=e79] [cursor=pointer]:
+              - /url: mailto:hello@zemenpharma.com
+              - img [ref=e80]
+        - generic [ref=e83]:
+          - generic [ref=e84]:
+            - heading "Product" [level=3] [ref=e85]
+            - list [ref=e86]:
+              - listitem [ref=e87]:
+                - link "Feature overview" [ref=e88] [cursor=pointer]:
+                  - /url: /#features
+              - listitem [ref=e89]:
+                - link "AI solutions" [ref=e90] [cursor=pointer]:
+                  - /url: /#ai-solutions
+              - listitem [ref=e91]:
+                - link "Pricing" [ref=e92] [cursor=pointer]:
+                  - /url: /#pricing
+          - generic [ref=e93]:
+            - heading "Company" [level=3] [ref=e94]
+            - list [ref=e95]:
+              - listitem [ref=e96]:
+                - link "About" [ref=e97] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e98]:
+                - link "Contact" [ref=e99] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e100]:
+                - link "Affiliates" [ref=e101] [cursor=pointer]:
+                  - /url: /register?tab=affiliate
+          - generic [ref=e102]:
+            - heading "Resources" [level=3] [ref=e103]
+            - list [ref=e104]:
+              - listitem [ref=e105]:
+                - link "Privacy policy" [ref=e106] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e107]:
+                - link "Terms of service" [ref=e108] [cursor=pointer]:
+                  - /url: /terms
+      - generic [ref=e110]:
+        - paragraph [ref=e111]: © 2025 Mesob. All rights reserved.
+        - generic [ref=e112]:
+          - link "Privacy" [ref=e113] [cursor=pointer]:
+            - /url: /privacy
+          - link "Terms" [ref=e114] [cursor=pointer]:
+            - /url: /terms
+          - link "Support" [ref=e115] [cursor=pointer]:
+            - /url: /contact
+  - generic [ref=e120] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e121]:
+      - img [ref=e122]
+    - generic [ref=e125]:
+      - button "Open issues overlay" [ref=e126]:
+        - generic [ref=e127]:
+          - generic [ref=e128]: "0"
+          - generic [ref=e129]: "1"
+        - generic [ref=e130]: Issue
+      - button "Collapse issues badge" [ref=e131]:
+        - img [ref=e132]
+  - alert [ref=e134]
+```

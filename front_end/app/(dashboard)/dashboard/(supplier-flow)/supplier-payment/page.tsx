@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CreditCard, Clock, CheckCircle, AlertCircle, DollarSign } from "lucide-react";
+import { CreditCard, Clock, CheckCircle, AlertCircle, DollarSign, RefreshCw } from "lucide-react";
 import { getAuthJSON, postAuthJSON } from "@/utils/api";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
@@ -35,7 +35,7 @@ export default function SupplierPaymentPage() {
       setLoading(true);
       const status = await getAuthJSON("/api/v1/supplier-onboarding/payment/status");
       setPaymentStatus(status);
-      
+
       // If payment is verified, redirect to dashboard
       if (status.status === 'verified') {
         router.push('/dashboard/supplier');
@@ -51,7 +51,7 @@ export default function SupplierPaymentPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const payload = {
         code: formData.code,

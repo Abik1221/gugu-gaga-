@@ -107,10 +107,25 @@ export default function SupplierSignInPage() {
       }
 
       const data = await response.json();
+
+      // Helper function to set cookies
+      const setCookie = (name: string, value: string, days: number) => {
+        if (typeof document === "undefined") return;
+        let expires = "";
+        if (days) {
+          const date = new Date();
+          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+      };
+
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
       localStorage.setItem("user_role", "supplier");
+      // Set cookie for middleware authentication
+      setCookie("access_token", data.access_token, 7);
 
       show({
         variant: "success",
@@ -333,8 +348,8 @@ export default function SupplierSignInPage() {
                     ? "Verifying..."
                     : "Sending code..."
                   : otpSent
-                  ? "Verify Code"
-                  : "Sign In"}
+                    ? "Verify Code"
+                    : "Sign In"}
               </Button>
 
               <div className="relative">

@@ -1,1 +1,6 @@
-{"version":3,"sources":["turbopack:///[project]/app/(dashboard)/dashboard/(supplier-flow)/supplier-kyc/layout.tsx"],"sourcesContent":["export default function SupplierKYCLayout({\n  children,\n}: {\n  children: React.ReactNode;\n}) {\n  return (\n    <div>\n        {children}\n    </div>\n  );\n}"],"names":[],"mappings":"8EAAe,SAAS,EAAkB,UACxC,CAAQ,CAGT,EACC,MACE,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UACI,GAGT"}
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/b/gugu-gaga-/front_end/app/%28dashboard%29/dashboard/%28supplier-flow%29/supplier-kyc/layout.tsx"],"sourcesContent":["export default function SupplierKYCLayout({\r\n  children,\r\n}: {\r\n  children: React.ReactNode;\r\n}) {\r\n  return (\r\n    <div>\r\n        {children}\r\n    </div>\r\n  );\r\n}"],"names":[],"mappings":";;;;;;AAAe,SAAS,kBAAkB,EACxC,QAAQ,EAGT;IACC,qBACE,8OAAC;kBACI;;;;;;AAGT","debugId":null}}]
+}

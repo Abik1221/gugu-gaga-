@@ -98,7 +98,7 @@ __turbopack_context__.s([
     "putAuthJSON",
     ()=>putAuthJSON
 ]);
-const API_BASE = ("TURBOPACK compile-time value", "https://mymesob.com/api/v1") || "https://mymesob.com/api/v1";
+const API_BASE = ("TURBOPACK compile-time value", "http://127.0.0.1:8000/api/v1") || "https://mymesob.com/api/v1";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
 const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
 let API_BASE_PATH = "";
@@ -107,6 +107,16 @@ try {
     API_BASE_PATH = parsed.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
 } catch  {
     API_BASE_PATH = "";
+}
+function setCookie(name, value, days) {
+    if (typeof document === "undefined") return;
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
 }
 function buildHeaders(initHeaders, tenantId) {
     const headers = {
@@ -349,10 +359,13 @@ const AuthAPI = {
     registerSupplier: (body)=>postJSON("/api/v1/auth/register/supplier", body),
     registerVerify: async (email, code)=>{
         try {
-            return await postForm("/api/v1/auth/register/verify", {
+            const resp = await postForm("/api/v1/auth/register/verify", {
                 email,
                 code
             });
+            if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+            ;
+            return resp;
         } catch (err) {
             if (err?.status === 422) {
                 console.warn("[AuthAPI.registerVerify] 422, retrying with JSON", {

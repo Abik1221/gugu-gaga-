@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { LogOut, Clock, CheckCircle, AlertCircle, FileText, Upload, Shield } from "lucide-react";
+import { LogOut, Clock, CheckCircle, AlertCircle, FileText, Building2, Phone, MapPin, CreditCard, Hash, Upload, RefreshCw } from "lucide-react";
 import { getAuthJSON, postAuthJSON } from "@/utils/api";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
@@ -32,29 +31,30 @@ function SupplierKYCSidebar() {
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('access_token');
     router.push('/');
     show({ title: "Success", description: "Signed out successfully", variant: "success" });
   };
 
   return (
-    <Sidebar className="bg-gray-900">
-      <SidebarHeader className="p-6 border-b border-gray-800">
+    <Sidebar className="!bg-white border-r border-gray-200">
+      <SidebarHeader className="p-6 border-b border-gray-200">
         <div className="flex justify-center">
           <Image
             height={80}
             width={80}
             src={logoImage}
             alt="Mesob Logo"
-            className="rounded"
+            className="rounded-lg shadow-sm"
           />
         </div>
       </SidebarHeader>
       <SidebarContent className="p-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut} className="text-emerald-500 hover:text-emerald-400 hover:bg-emerald-50 cursor-pointer">
-              <LogOut className="h-4 w-4 text-emerald-500" />
-              <span className="text-emerald-500">Sign Out</span>
+            <SidebarMenuButton onClick={handleSignOut} className="text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer font-medium">
+              <LogOut className="h-4 w-4 text-emerald-600" />
+              <span className="text-emerald-600">Sign Out</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -87,18 +87,8 @@ export default function SupplierKYCPage() {
     try {
       setLoading(true);
       const data = await getAuthJSON("/api/v1/supplier-onboarding/kyc/status");
-      console.log("=== KYC API Response ===");
-      console.log("Full data:", JSON.stringify(data, null, 2));
-      console.log("Status:", data.status);
-      console.log("Supplier name:", data.supplier_name);
-      console.log("TIN:", data.tin_number);
-      console.log("Phone:", data.phone);
-      console.log("Address:", data.address);
-      console.log("License:", data.business_license_image);
-      
       setKycData(data);
-      
-      // Always populate form with data from backend
+
       const newFormData = {
         supplier_name: data.supplier_name || "",
         national_id: data.national_id || "",
@@ -107,7 +97,6 @@ export default function SupplierKYCPage() {
         phone: data.phone || "",
         address: data.address || "",
       };
-      console.log("Setting form data:", newFormData);
       setFormData(newFormData);
       setExistingLicenseImage(data.business_license_image || "");
     } catch (error) {
@@ -120,14 +109,14 @@ export default function SupplierKYCPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!existingLicenseImage && !formData.business_license_image) {
       show({ title: "Error", description: "Business license image is required", variant: "destructive" });
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const payload: any = {
         supplier_name: formData.supplier_name,
@@ -136,12 +125,11 @@ export default function SupplierKYCPage() {
         phone: formData.phone,
         address: formData.address,
       };
-      
+
       if (formData.business_license_image) {
         payload.business_license_image = `/uploads/${formData.business_license_image.name}`;
       }
-      
-      console.log("Submitting payload:", payload);
+
       await postAuthJSON("/api/v1/supplier-onboarding/kyc/submit", payload);
       show({ title: "Success", description: "KYC information updated successfully", variant: "success" });
       await loadKYCData();
@@ -156,13 +144,13 @@ export default function SupplierKYCPage() {
   const getStatusBadge = () => {
     switch (kycData?.status) {
       case "pending":
-        return <Badge className="bg-yellow-100 text-yellow-800 border border-yellow-300"><Clock className="h-3 w-3 mr-1" />Pending Review</Badge>;
+        return <Badge className="bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 text-sm font-semibold"><Clock className="h-3.5 w-3.5 mr-1.5" />Pending Review</Badge>;
       case "approved":
-        return <Badge className="bg-green-100 text-green-800 border border-green-300"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
+        return <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 text-sm font-semibold"><CheckCircle className="h-3.5 w-3.5 mr-1.5" />Approved</Badge>;
       case "rejected":
-        return <Badge className="bg-red-100 text-red-800 border border-red-300"><AlertCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
+        return <Badge className="bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1 text-sm font-semibold"><AlertCircle className="h-3.5 w-3.5 mr-1.5" />Rejected</Badge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-800 border border-gray-300">Not Submitted</Badge>;
+        return <Badge className="bg-gray-50 text-gray-700 border border-gray-200 px-3 py-1 text-sm font-semibold">Not Submitted</Badge>;
     }
   };
 
@@ -171,11 +159,11 @@ export default function SupplierKYCPage() {
       <div>
         <SidebarProvider>
           <SupplierKYCSidebar />
-          <SidebarInset className="p-3 bg-white">
+          <SidebarInset className="bg-neutral-50 min-h-screen">
             <div className="flex items-center justify-center h-screen">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                <p>Loading KYC data...</p>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+                <p className="text-gray-600 font-medium">Loading KYC data...</p>
               </div>
             </div>
           </SidebarInset>
@@ -184,180 +172,258 @@ export default function SupplierKYCPage() {
     );
   }
 
-  console.log("Rendering form with data:", formData);
-
   return (
     <div>
       <SidebarProvider>
         <SupplierKYCSidebar />
-        <SidebarInset className="bg-white min-h-screen">
-          <div className="bg-white px-6 py-4 flex items-center gap-3">
-            <SidebarTrigger />
-            <h1 className="text-xl font-semibold text-gray-900">KYC Verification</h1>
-          </div>
-          <div className="p-6 max-w-4xl mx-auto">
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-gray-600 text-sm">Complete your verification to start supplying</p>
-                </div>
-                {getStatusBadge()}
-              </div>
+        <SidebarInset className="bg-neutral-50 min-h-screen">
+          <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-6 flex items-center gap-4 sticky top-0 z-10 shadow-lg">
+            <SidebarTrigger className="text-white" />
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold text-white">Supplier KYC Verification</h1>
+              <p className="text-sm text-emerald-100 mt-0.5">Complete your verification to start supplying</p>
             </div>
+            <div className="flex items-center gap-3">
+              {getStatusBadge()}
+              <Button
+                onClick={() => loadKYCData()}
+                variant="outline"
+                size="sm"
+                className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white font-semibold"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh Status
+              </Button>
+            </div>
+          </div>
 
+          <div className="p-6 max-w-6xl mx-auto space-y-6">
             {kycData?.status === "rejected" && kycData?.admin_notes && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-5 bg-rose-50 border-l-4 border-rose-500 rounded-r-xl"
+              >
                 <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                  <AlertCircle className="h-5 w-5 text-rose-600 mt-0.5" />
                   <div>
-                    <h3 className="font-semibold text-red-900 mb-1">Application Rejected</h3>
-                    <p className="text-red-700 text-sm">{kycData.admin_notes}</p>
+                    <h3 className="font-bold text-rose-900 mb-1">Application Rejected</h3>
+                    <p className="text-sm text-rose-700">{kycData.admin_notes}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )}
 
-            <Card className="border border-gray-200">
-              <CardHeader className="border-b bg-gray-50">
-                <CardTitle className="flex items-center gap-2 text-gray-900">
-                  <FileText className="h-5 w-5" />
-                  {kycData?.status === "not_submitted" ? "Submit Verification Documents" : "Edit Verification Documents"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <Label htmlFor="supplier_name" className="text-gray-900 font-semibold">Supplier/Company Name *</Label>
-                    <Input
-                      id="supplier_name"
-                      value={formData.supplier_name}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        supplier_name: e.target.value
-                      }))}
-                      placeholder="Enter your registered business name"
-                      className="mt-2"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="national_id" className="text-gray-900 font-semibold">National ID Number *</Label>
-                    <Input
-                      id="national_id"
-                      value={formData.national_id}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        national_id: e.target.value
-                      }))}
-                      placeholder="Government-issued identification number"
-                      className="mt-2"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="tin_number" className="text-gray-900 font-semibold">TIN Number *</Label>
-                    <Input
-                      id="tin_number"
-                      value={formData.tin_number}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        tin_number: e.target.value
-                      }))}
-                      placeholder="Tax Identification Number"
-                      className="mt-2"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="text-gray-900 font-semibold mb-2 block">
-                      Supplier License Image {!existingLicenseImage && "*"}
-                    </Label>
-                    {existingLicenseImage && (
-                      <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p className="text-sm text-blue-900 font-medium mb-1">Current License:</p>
-                        <p className="text-xs text-blue-700 break-all">{existingLicenseImage}</p>
-                      </div>
-                    )}
-                    <div className="relative">
-                      <input
-                        type="file"
-                        id="license-upload"
-                        accept="image/*"
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          business_license_image: e.target.files?.[0] || null
-                        }))}
-                        className="hidden"
-                      />
-                      <label
-                        htmlFor="license-upload"
-                        className="flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg cursor-pointer transition hover:border-gray-400 hover:bg-gray-50"
-                      >
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          {formData.business_license_image && (
-                            <div className="w-10 h-10 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
-                              <FileText className="w-5 h-5 text-gray-600" />
-                            </div>
-                          )}
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-900">
-                              {formData.business_license_image ? formData.business_license_image.name : existingLicenseImage ? "Upload new license image (optional)" : "No file selected"}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-0.5">
-                              {existingLicenseImage ? "Leave empty to keep current image" : "Upload official supplier license image"}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded hover:bg-emerald-700 transition ml-3">
-                          BROWSE
-                        </div>
-                      </label>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <Card className="border-0 shadow-xl bg-white overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white p-6">
+                  <CardTitle className="flex items-center gap-3 text-white">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <FileText className="h-6 w-6" />
                     </div>
-                  </div>
+                    <div>
+                      <div className="font-bold text-lg">{kycData?.status === "not_submitted" ? "Submit Verification Documents" : "Update Your Information"}</div>
+                      <div className="text-emerald-50 text-sm font-normal mt-1">Provide accurate information for quick approval</div>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-8">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="space-y-2"
+                      >
+                        <Label className="text-gray-900 font-semibold flex items-center gap-2">
+                          <Building2 className="h-4 w-4 text-emerald-600" />
+                          Supplier/Company Name <span className="text-rose-500">*</span>
+                        </Label>
+                        <Input
+                          value={formData.supplier_name}
+                          onChange={(e) => setFormData(prev => ({ ...prev, supplier_name: e.target.value }))}
+                          placeholder="Enter your registered business name"
+                          className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                          required
+                        />
+                      </motion.div>
 
-                  <div>
-                    <Label htmlFor="phone" className="text-gray-900 font-semibold">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      value={formData.phone}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        phone: e.target.value
-                      }))}
-                      placeholder="+251..."
-                      className="mt-2"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Optional contact number</p>
-                  </div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15 }}
+                        className="space-y-2"
+                      >
+                        <Label className="text-gray-900 font-semibold flex items-center gap-2">
+                          <CreditCard className="h-4 w-4 text-emerald-600" />
+                          National ID Number <span className="text-rose-500">*</span>
+                        </Label>
+                        <Input
+                          value={formData.national_id}
+                          onChange={(e) => setFormData(prev => ({ ...prev, national_id: e.target.value }))}
+                          placeholder="Government-issued ID number"
+                          className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                          required
+                        />
+                      </motion.div>
 
-                  <div>
-                    <Label htmlFor="address" className="text-gray-900 font-semibold">Business Address</Label>
-                    <Input
-                      id="address"
-                      value={formData.address}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        address: e.target.value
-                      }))}
-                      placeholder="Business location"
-                      className="mt-2"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Optional business location</p>
-                  </div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="space-y-2"
+                      >
+                        <Label className="text-gray-900 font-semibold flex items-center gap-2">
+                          <Hash className="h-4 w-4 text-emerald-600" />
+                          TIN Number <span className="text-rose-500">*</span>
+                        </Label>
+                        <Input
+                          value={formData.tin_number}
+                          onChange={(e) => setFormData(prev => ({ ...prev, tin_number: e.target.value }))}
+                          placeholder="Tax Identification Number"
+                          className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                          required
+                        />
+                      </motion.div>
 
-                  <Button 
-                    type="submit" 
-                    disabled={isSubmitting} 
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 font-semibold"
-                  >
-                    {isSubmitting ? "Updating..." : kycData?.status === "not_submitted" ? "Submit KYC Application" : "Update KYC Information"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.25 }}
+                        className="space-y-2"
+                      >
+                        <Label className="text-gray-900 font-semibold flex items-center gap-2">
+                          <Phone className="h-4 w-4 text-emerald-600" />
+                          Phone Number
+                        </Label>
+                        <Input
+                          value={formData.phone}
+                          onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                          placeholder="+251..."
+                          className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                        />
+                      </motion.div>
+                    </div>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className="space-y-2"
+                    >
+                      <Label className="text-gray-900 font-semibold flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-emerald-600" />
+                        Business Address
+                      </Label>
+                      <Input
+                        value={formData.address}
+                        onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                        placeholder="Business location"
+                        className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                      />
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.35 }}
+                      className="space-y-3"
+                    >
+                      <Label className="text-gray-900 font-semibold flex items-center gap-2">
+                        <Upload className="h-4 w-4 text-emerald-600" />
+                        Supplier License Document <span className="text-rose-500">*</span>
+                      </Label>
+                      {existingLicenseImage && (
+                        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                          <p className="text-sm text-emerald-900 font-semibold mb-2">✓ Current License Document</p>
+                          {existingLicenseImage.startsWith('data:image') ? (
+                            <div className="relative w-full max-w-md">
+                              <img
+                                src={existingLicenseImage}
+                                alt="Current License"
+                                className="w-full h-auto rounded-lg border border-emerald-300 shadow-sm"
+                              />
+                            </div>
+                          ) : (
+                            <p className="text-xs text-emerald-700 break-all font-mono bg-white px-3 py-2 rounded border border-emerald-200">{existingLicenseImage}</p>
+                          )}
+                        </div>
+                      )}
+                      <div className="relative">
+                        <input
+                          type="file"
+                          id="license-upload"
+                          accept=".pdf,.jpg,.jpeg,.png,image/*"
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            business_license_image: e.target.files?.[0] || null
+                          }))}
+                          className="hidden"
+                        />
+                        <label
+                          htmlFor="license-upload"
+                          className="flex items-center justify-between px-5 py-4 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer transition hover:border-emerald-500 hover:bg-emerald-50 group"
+                        >
+                          <div className="flex items-center gap-4 flex-1 min-w-0">
+                            {formData.business_license_image && (
+                              <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                                <FileText className="w-6 h-6 text-emerald-600" />
+                              </div>
+                            )}
+                            <div className="flex-1">
+                              <p className="text-sm font-semibold text-gray-900 group-hover:text-emerald-700 transition">
+                                {formData.business_license_image
+                                  ? formData.business_license_image.name
+                                  : existingLicenseImage
+                                    ? "Replace License Document"
+                                    : "Click to Upload License Document"
+                                }
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {existingLicenseImage
+                                  ? "Upload a new file to replace the current one"
+                                  : "PDF, JPEG, or PNG • Max 5MB"
+                                }
+                              </p>
+                            </div>
+                          </div>
+                          <div className="px-5 py-2 bg-emerald-600 text-white text-sm font-bold rounded-lg group-hover:bg-emerald-700 transition">
+                            {formData.business_license_image ? "CHANGE" : "BROWSE"}
+                          </div>
+                        </label>
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 }}
+                      className="pt-4"
+                    >
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full h-12 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-base rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Submitting...
+                          </>
+                        ) : (
+                          kycData?.status === "not_submitted" ? "Submit KYC Application" : "Update KYC Information"
+                        )}
+                      </Button>
+                    </motion.div>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </SidebarInset>
       </SidebarProvider>

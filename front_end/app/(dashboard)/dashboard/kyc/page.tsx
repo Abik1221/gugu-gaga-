@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, Clock, CheckCircle, AlertCircle, FileText, Building2, Phone, MapPin, CreditCard, Hash, MessageSquare, Upload } from "lucide-react";
+import { LogOut, Clock, CheckCircle, AlertCircle, FileText, Building2, Phone, MapPin, CreditCard, Hash, MessageSquare, Upload, RefreshCw } from "lucide-react";
 import { getAuthJSON, postAuthJSON, API_BASE } from "@/utils/api";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
@@ -89,7 +89,7 @@ export default function OwnerKYCPage() {
       setLoading(true);
       const me = await getAuthJSON("/api/v1/auth/me");
       const tenantId = me.tenant_id;
-      
+
       if (!tenantId) {
         show({ title: "Error", description: "No tenant ID found", variant: "destructive" });
         return;
@@ -107,7 +107,7 @@ export default function OwnerKYCPage() {
       try {
         const data = await getAuthJSON(`/api/v1/owner/kyc/status?tenant_id=${tenantId}`);
         setKycData(data);
-        
+
         setFormData({
           pharmacy_name: data.pharmacy_name || "",
           pharmacy_address: data.pharmacy_address || "",
@@ -130,18 +130,18 @@ export default function OwnerKYCPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!existingLicense && !licenseFile) {
       show({ title: "Error", description: "Business license document is required", variant: "destructive" });
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const me = await getAuthJSON("/api/v1/auth/me");
       const tenantId = me.tenant_id;
-      
+
       const payload = {
         pharmacy_name: formData.pharmacy_name,
         pharmacy_address: formData.pharmacy_address,
@@ -214,7 +214,18 @@ export default function OwnerKYCPage() {
               <h1 className="text-2xl font-bold text-white">KYC Verification</h1>
               <p className="text-sm text-emerald-100 mt-0.5">Complete your business verification to get started</p>
             </div>
-            {getStatusBadge()}
+            <div className="flex items-center gap-3">
+              {getStatusBadge()}
+              <Button
+                onClick={() => loadKYCData()}
+                variant="outline"
+                size="sm"
+                className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white font-semibold"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh Status
+              </Button>
+            </div>
           </div>
 
           <div className="p-6 max-w-6xl mx-auto space-y-6">
@@ -382,8 +393,18 @@ export default function OwnerKYCPage() {
                       </Label>
                       {existingLicense && (
                         <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-                          <p className="text-sm text-emerald-900 font-semibold mb-1">✓ Current Document:</p>
-                          <p className="text-xs text-emerald-700 break-all font-mono">{existingLicense}</p>
+                          <p className="text-sm text-emerald-900 font-semibold mb-2">✓ Current License Document</p>
+                          {existingLicense.startsWith('data:image') ? (
+                            <div className="relative w-full max-w-md">
+                              <img
+                                src={existingLicense}
+                                alt="Current Business License"
+                                className="w-full h-auto rounded-lg border border-emerald-300 shadow-sm"
+                              />
+                            </div>
+                          ) : (
+                            <p className="text-xs text-emerald-700 break-all font-mono bg-white px-3 py-2 rounded border border-emerald-200">{existingLicense}</p>
+                          )}
                         </div>
                       )}
                       <div className="relative">
@@ -423,9 +444,9 @@ export default function OwnerKYCPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.45 }}
                     >
-                      <Button 
-                        type="submit" 
-                        disabled={isSubmitting} 
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
                         className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white h-12 text-base font-bold rounded-xl shadow-md hover:shadow-lg transition-all"
                       >
                         {isSubmitting ? (

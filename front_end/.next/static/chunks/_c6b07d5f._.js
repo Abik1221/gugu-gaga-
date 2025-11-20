@@ -319,7 +319,7 @@ __turbopack_context__.s([
     ()=>putAuthJSON
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
-const API_BASE = ("TURBOPACK compile-time value", "https://mymesob.com/api/v1") || "https://mymesob.com/api/v1";
+const API_BASE = ("TURBOPACK compile-time value", "http://127.0.0.1:8000/api/v1") || "https://mymesob.com/api/v1";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
 const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
 let API_BASE_PATH = "";
@@ -328,6 +328,16 @@ try {
     API_BASE_PATH = parsed.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
 } catch (e) {
     API_BASE_PATH = "";
+}
+function setCookie(name, value, days) {
+    if (typeof document === "undefined") return;
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
 }
 function buildHeaders(initHeaders, tenantId) {
     const headers = {
@@ -573,10 +583,16 @@ const AuthAPI = {
     registerSupplier: (body)=>postJSON("/api/v1/auth/register/supplier", body),
     registerVerify: async (email, code)=>{
         try {
-            return await postForm("/api/v1/auth/register/verify", {
+            const resp = await postForm("/api/v1/auth/register/verify", {
                 email,
                 code
             });
+            if ("object" !== "undefined" && resp.access_token) {
+                localStorage.setItem("access_token", resp.access_token);
+                localStorage.setItem("refresh_token", resp.refresh_token);
+                setCookie("access_token", resp.access_token, 7);
+            }
+            return resp;
         } catch (err) {
             if ((err === null || err === void 0 ? void 0 : err.status) === 422) {
                 console.warn("[AuthAPI.registerVerify] 422, retrying with JSON", {
@@ -609,6 +625,7 @@ const AuthAPI = {
             if ("TURBOPACK compile-time truthy", 1) {
                 localStorage.setItem("access_token", resp.access_token);
                 localStorage.setItem("refresh_token", resp.refresh_token);
+                setCookie("access_token", resp.access_token, 7);
             }
             return resp;
         }),
@@ -624,6 +641,7 @@ const AuthAPI = {
             if ("TURBOPACK compile-time truthy", 1) {
                 localStorage.setItem("access_token", resp.access_token);
                 localStorage.setItem("refresh_token", resp.refresh_token);
+                setCookie("access_token", resp.access_token, 7);
             }
             return resp;
         }),
@@ -2775,10 +2793,24 @@ function PharmacySignInPage() {
                 return;
             }
             const data = await response.json();
+            // Helper function to set cookies
+            const setCookie = (name, value, days)=>{
+                if (typeof document === "undefined") return;
+                let expires = "";
+                if (days) {
+                    const date = new Date();
+                    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+                    expires = "; expires=" + date.toUTCString();
+                }
+                document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+            };
+            // Store tokens in localStorage
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("refresh_token", data.refresh_token);
             localStorage.setItem("user_role", "pharmacy_owner");
+            // Set cookie for middleware authentication
+            setCookie("access_token", data.access_token, 7);
             setErrorDialog({
                 isOpen: true,
                 title: "Welcome Back!",
@@ -2802,7 +2834,7 @@ function PharmacySignInPage() {
                         children: "Owner Sign In - Manage Your Business"
                     }, void 0, false, {
                         fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                        lineNumber: 171,
+                        lineNumber: 188,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meta", {
@@ -2810,7 +2842,7 @@ function PharmacySignInPage() {
                         content: "Sign in to your business owner account and manage your operations securely."
                     }, void 0, false, {
                         fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                        lineNumber: 172,
+                        lineNumber: 189,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("meta", {
@@ -2818,18 +2850,18 @@ function PharmacySignInPage() {
                         content: "owner sign in, business management, secure login, business dashboard"
                     }, void 0, false, {
                         fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                        lineNumber: 176,
+                        lineNumber: 193,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                lineNumber: 170,
+                lineNumber: 187,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$layout$2f$AuthNavBar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                lineNumber: 181,
+                lineNumber: 198,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$otp$2d$sent$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["OtpSentDialog"], {
@@ -2839,7 +2871,7 @@ function PharmacySignInPage() {
                 purpose: "login"
             }, void 0, false, {
                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                lineNumber: 182,
+                lineNumber: 199,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$error$2d$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ErrorDialog"], {
@@ -2853,7 +2885,7 @@ function PharmacySignInPage() {
                 type: errorDialog.type
             }, void 0, false, {
                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                lineNumber: 188,
+                lineNumber: 205,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2877,7 +2909,7 @@ function PharmacySignInPage() {
                                                 className: "rounded"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                lineNumber: 201,
+                                                lineNumber: 218,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2887,7 +2919,7 @@ function PharmacySignInPage() {
                                                         children: "Mesob"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                        lineNumber: 209,
+                                                        lineNumber: 226,
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2895,19 +2927,19 @@ function PharmacySignInPage() {
                                                         children: "Manage — Grow — Succeed"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                        lineNumber: 212,
+                                                        lineNumber: 229,
                                                         columnNumber: 19
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                lineNumber: 208,
+                                                lineNumber: 225,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                        lineNumber: 200,
+                                        lineNumber: 217,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2915,7 +2947,7 @@ function PharmacySignInPage() {
                                         children: "Access your business dashboard, manage operations, and track performance. Sign in to continue to your business management platform."
                                     }, void 0, false, {
                                         fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                        lineNumber: 218,
+                                        lineNumber: 235,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -2925,38 +2957,38 @@ function PharmacySignInPage() {
                                                 children: "• Business operations management"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                lineNumber: 225,
+                                                lineNumber: 242,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                 children: "• Inventory & stock control"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                lineNumber: 226,
+                                                lineNumber: 243,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                 children: "• Staff & team management"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                lineNumber: 227,
+                                                lineNumber: 244,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                        lineNumber: 224,
+                                        lineNumber: 241,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                lineNumber: 199,
+                                lineNumber: 216,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                            lineNumber: 198,
+                            lineNumber: 215,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -2970,7 +3002,7 @@ function PharmacySignInPage() {
                                             children: "Business Owner Sign In"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                            lineNumber: 235,
+                                            lineNumber: 252,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2978,13 +3010,13 @@ function PharmacySignInPage() {
                                             children: "Welcome back — enter your credentials to continue."
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                            lineNumber: 238,
+                                            lineNumber: 255,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                    lineNumber: 234,
+                                    lineNumber: 251,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -2996,7 +3028,7 @@ function PharmacySignInPage() {
                                             children: errors.form
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                            lineNumber: 248,
+                                            lineNumber: 265,
                                             columnNumber: 17
                                         }, this),
                                         !otpSent ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -3009,7 +3041,7 @@ function PharmacySignInPage() {
                                                             children: "Email or phone"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                            lineNumber: 256,
+                                                            lineNumber: 273,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3025,7 +3057,7 @@ function PharmacySignInPage() {
                                                             inputMode: "email"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                            lineNumber: 262,
+                                                            lineNumber: 279,
                                                             columnNumber: 21
                                                         }, this),
                                                         errors.identifier && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3034,13 +3066,13 @@ function PharmacySignInPage() {
                                                             children: errors.identifier
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                            lineNumber: 281,
+                                                            lineNumber: 297,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                    lineNumber: 255,
+                                                    lineNumber: 272,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3051,7 +3083,7 @@ function PharmacySignInPage() {
                                                             children: "Password"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                            lineNumber: 291,
+                                                            lineNumber: 307,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3070,7 +3102,7 @@ function PharmacySignInPage() {
                                                                     autoComplete: "current-password"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                                    lineNumber: 298,
+                                                                    lineNumber: 314,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3081,13 +3113,13 @@ function PharmacySignInPage() {
                                                                     children: showPassword ? "Hide" : "Show"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                                    lineNumber: 317,
+                                                                    lineNumber: 332,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                            lineNumber: 297,
+                                                            lineNumber: 313,
                                                             columnNumber: 21
                                                         }, this),
                                                         errors.password && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3096,13 +3128,13 @@ function PharmacySignInPage() {
                                                             children: errors.password
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                            lineNumber: 329,
+                                                            lineNumber: 344,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                    lineNumber: 290,
+                                                    lineNumber: 306,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
@@ -3114,7 +3146,7 @@ function PharmacySignInPage() {
                                                     children: "Verification Code"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                    lineNumber: 340,
+                                                    lineNumber: 355,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3128,7 +3160,7 @@ function PharmacySignInPage() {
                                                     maxLength: 6
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                    lineNumber: 346,
+                                                    lineNumber: 361,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3136,13 +3168,13 @@ function PharmacySignInPage() {
                                                     children: "Check your email for the verification code"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                    lineNumber: 356,
+                                                    lineNumber: 371,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                            lineNumber: 339,
+                                            lineNumber: 354,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3158,7 +3190,7 @@ function PharmacySignInPage() {
                                                             className: "h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-400"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                            lineNumber: 364,
+                                                            lineNumber: 379,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3166,13 +3198,13 @@ function PharmacySignInPage() {
                                                             children: "Remember me"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                            lineNumber: 370,
+                                                            lineNumber: 385,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                    lineNumber: 363,
+                                                    lineNumber: 378,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -3181,13 +3213,13 @@ function PharmacySignInPage() {
                                                     children: "Forgot password?"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                    lineNumber: 373,
+                                                    lineNumber: 388,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                            lineNumber: 362,
+                                            lineNumber: 377,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3198,12 +3230,12 @@ function PharmacySignInPage() {
                                                 children: loading ? otpSent ? "Verifying..." : "Sending code..." : otpSent ? "Verify Code" : "Sign in"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                lineNumber: 382,
+                                                lineNumber: 397,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                            lineNumber: 381,
+                                            lineNumber: 396,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3217,19 +3249,19 @@ function PharmacySignInPage() {
                                                     children: "Create one"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                    lineNumber: 399,
+                                                    lineNumber: 414,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                            lineNumber: 397,
+                                            lineNumber: 412,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                    lineNumber: 243,
+                                    lineNumber: 260,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3244,7 +3276,7 @@ function PharmacySignInPage() {
                                                 children: "Terms"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                lineNumber: 411,
+                                                lineNumber: 426,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -3256,36 +3288,36 @@ function PharmacySignInPage() {
                                                 children: "Privacy Policy"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                                lineNumber: 415,
+                                                lineNumber: 430,
                                                 columnNumber: 17
                                             }, this),
                                             "."
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                        lineNumber: 409,
+                                        lineNumber: 424,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                                    lineNumber: 408,
+                                    lineNumber: 423,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                            lineNumber: 233,
+                            lineNumber: 250,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                    lineNumber: 196,
+                    lineNumber: 213,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(auth)/owner-signin/page.tsx",
-                lineNumber: 195,
+                lineNumber: 212,
                 columnNumber: 7
             }, this)
         ]

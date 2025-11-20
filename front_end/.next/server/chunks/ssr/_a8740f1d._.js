@@ -98,7 +98,7 @@ __turbopack_context__.s([
     "putAuthJSON",
     ()=>putAuthJSON
 ]);
-const API_BASE = ("TURBOPACK compile-time value", "https://mymesob.com/api/v1") || "https://mymesob.com/api/v1";
+const API_BASE = ("TURBOPACK compile-time value", "http://127.0.0.1:8000/api/v1") || "https://mymesob.com/api/v1";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
 const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
 let API_BASE_PATH = "";

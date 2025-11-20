@@ -107,7 +107,7 @@ __turbopack_context__.s([
     ()=>putAuthJSON
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
-const API_BASE = ("TURBOPACK compile-time value", "https://mymesob.com/api/v1") || "https://mymesob.com/api/v1";
+const API_BASE = ("TURBOPACK compile-time value", "http://127.0.0.1:8000/api/v1") || "https://mymesob.com/api/v1";
 const TENANT_HEADER = ("TURBOPACK compile-time value", "X-Tenant-ID") || "X-Tenant-ID";
 const API_BASE_NORMALIZED = API_BASE.replace(/\/+$/, "");
 let API_BASE_PATH = "";
@@ -116,6 +116,16 @@ try {
     API_BASE_PATH = parsed.pathname.replace(/^\/+/, "").replace(/\/+$/, "");
 } catch (e) {
     API_BASE_PATH = "";
+}
+function setCookie(name, value, days) {
+    if (typeof document === "undefined") return;
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
 }
 function buildHeaders(initHeaders, tenantId) {
     const headers = {
@@ -361,10 +371,16 @@ const AuthAPI = {
     registerSupplier: (body)=>postJSON("/api/v1/auth/register/supplier", body),
     registerVerify: async (email, code)=>{
         try {
-            return await postForm("/api/v1/auth/register/verify", {
+            const resp = await postForm("/api/v1/auth/register/verify", {
                 email,
                 code
             });
+            if ("object" !== "undefined" && resp.access_token) {
+                localStorage.setItem("access_token", resp.access_token);
+                localStorage.setItem("refresh_token", resp.refresh_token);
+                setCookie("access_token", resp.access_token, 7);
+            }
+            return resp;
         } catch (err) {
             if ((err === null || err === void 0 ? void 0 : err.status) === 422) {
                 console.warn("[AuthAPI.registerVerify] 422, retrying with JSON", {
@@ -397,6 +413,7 @@ const AuthAPI = {
             if ("TURBOPACK compile-time truthy", 1) {
                 localStorage.setItem("access_token", resp.access_token);
                 localStorage.setItem("refresh_token", resp.refresh_token);
+                setCookie("access_token", resp.access_token, 7);
             }
             return resp;
         }),
@@ -412,6 +429,7 @@ const AuthAPI = {
             if ("TURBOPACK compile-time truthy", 1) {
                 localStorage.setItem("access_token", resp.access_token);
                 localStorage.setItem("refresh_token", resp.refresh_token);
+                setCookie("access_token", resp.access_token, 7);
             }
             return resp;
         }),

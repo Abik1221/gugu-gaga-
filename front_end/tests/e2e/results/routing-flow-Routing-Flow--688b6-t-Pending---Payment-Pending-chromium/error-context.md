@@ -1,0 +1,140 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e5]:
+      - navigation [ref=e6]:
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - link "Mesob Logo" [ref=e10] [cursor=pointer]:
+              - /url: /
+              - img "Mesob Logo" [ref=e12]
+            - generic [ref=e14]:
+              - link "Features" [ref=e15] [cursor=pointer]:
+                - /url: /#features
+              - link "How It Works" [ref=e16] [cursor=pointer]:
+                - /url: /#how-it-works
+              - link "Security" [ref=e17] [cursor=pointer]:
+                - /url: /#security
+              - link "Pricing" [ref=e18] [cursor=pointer]:
+                - /url: /#pricing
+              - link "Integrations" [ref=e19] [cursor=pointer]:
+                - /url: /#integrations
+          - generic [ref=e20]:
+            - button "Not Supported" [disabled]:
+              - img
+              - generic: Not Supported
+            - button "Sign In" [ref=e21] [cursor=pointer]
+            - button "Start Free Trial" [ref=e22] [cursor=pointer]
+      - generic [ref=e24]:
+        - complementary [ref=e25]:
+          - generic [ref=e26]:
+            - generic [ref=e27]:
+              - img "Mesob Logo" [ref=e28]
+              - generic [ref=e29]:
+                - heading "Mesob" [level=2] [ref=e30]
+                - paragraph [ref=e31]: Manage — Grow — Succeed
+            - paragraph [ref=e32]: Access your business dashboard, manage operations, and track performance. Sign in to continue to your business management platform.
+            - list [ref=e33]:
+              - listitem [ref=e34]: • Business operations management
+              - listitem [ref=e35]: • Inventory & stock control
+              - listitem [ref=e36]: • Staff & team management
+        - main [ref=e37]:
+          - generic [ref=e38]:
+            - heading "Business Owner Sign In" [level=1] [ref=e39]
+            - paragraph [ref=e40]: Welcome back — enter your credentials to continue.
+          - generic [ref=e41]:
+            - generic [ref=e42]:
+              - generic [ref=e43]: Email or phone
+              - textbox "Email or phone" [ref=e44]:
+                - /placeholder: you@business.com or +251900000000
+            - generic [ref=e45]:
+              - generic [ref=e46]: Password
+              - generic [ref=e47]:
+                - textbox "Password" [ref=e48]:
+                  - /placeholder: ••••••••
+                - button "Show password" [ref=e49]: Show
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - checkbox "Remember me" [checked] [ref=e52]
+                - generic [ref=e53]: Remember me
+              - link "Forgot password?" [ref=e54] [cursor=pointer]:
+                - /url: /forgot-password
+            - button "Sign in" [ref=e56]
+            - generic [ref=e57]:
+              - text: Don't have an account?
+              - link "Create one" [ref=e58] [cursor=pointer]:
+                - /url: /register/owner
+          - paragraph [ref=e60]:
+            - text: By signing in you agree to our
+            - link "Terms" [ref=e61] [cursor=pointer]:
+              - /url: /terms
+            - text: and
+            - link "Privacy Policy" [ref=e62] [cursor=pointer]:
+              - /url: /privacy
+            - text: .
+    - contentinfo [ref=e63]:
+      - generic [ref=e64]:
+        - generic [ref=e65]:
+          - link "Mesob" [ref=e66] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e67]: Mesob
+          - paragraph [ref=e68]: Multi-tenant, AI-powered management for modern bussiness. Insightful dashboards, secure workflows, and supplier experiences.
+          - generic [ref=e69]:
+            - link [ref=e70] [cursor=pointer]:
+              - /url: https://www.linkedin.com
+              - img [ref=e71]
+            - link [ref=e75] [cursor=pointer]:
+              - /url: https://twitter.com
+              - img [ref=e76]
+            - link [ref=e78] [cursor=pointer]:
+              - /url: mailto:hello@zemenpharma.com
+              - img [ref=e79]
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - heading "Product" [level=3] [ref=e84]
+            - list [ref=e85]:
+              - listitem [ref=e86]:
+                - link "Feature overview" [ref=e87] [cursor=pointer]:
+                  - /url: /#features
+              - listitem [ref=e88]:
+                - link "AI solutions" [ref=e89] [cursor=pointer]:
+                  - /url: /#ai-solutions
+              - listitem [ref=e90]:
+                - link "Pricing" [ref=e91] [cursor=pointer]:
+                  - /url: /#pricing
+          - generic [ref=e92]:
+            - heading "Company" [level=3] [ref=e93]
+            - list [ref=e94]:
+              - listitem [ref=e95]:
+                - link "About" [ref=e96] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e97]:
+                - link "Contact" [ref=e98] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e99]:
+                - link "Affiliates" [ref=e100] [cursor=pointer]:
+                  - /url: /register?tab=affiliate
+          - generic [ref=e101]:
+            - heading "Resources" [level=3] [ref=e102]
+            - list [ref=e103]:
+              - listitem [ref=e104]:
+                - link "Privacy policy" [ref=e105] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e106]:
+                - link "Terms of service" [ref=e107] [cursor=pointer]:
+                  - /url: /terms
+      - generic [ref=e109]:
+        - paragraph [ref=e110]: © 2025 Mesob. All rights reserved.
+        - generic [ref=e111]:
+          - link "Privacy" [ref=e112] [cursor=pointer]:
+            - /url: /privacy
+          - link "Terms" [ref=e113] [cursor=pointer]:
+            - /url: /terms
+          - link "Support" [ref=e114] [cursor=pointer]:
+            - /url: /contact
+  - button "Open Next.js Dev Tools" [ref=e120] [cursor=pointer]:
+    - img [ref=e121]
+  - alert [ref=e124]
+```

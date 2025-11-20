@@ -33,7 +33,7 @@ export default function HomePage() {
         body: JSON.stringify({ name: name.trim(), email: email.trim(), message: message.trim() }),
       });
       if (!res.ok) {
-        const t = await res.text().catch(()=>"");
+        const t = await res.text().catch(() => "");
         throw new Error(t || `Failed with ${res.status}`);
       }
       setSuccess("Thanks! Your message has been sent. We'll get back to you soon.");
@@ -120,17 +120,17 @@ export default function HomePage() {
           <form onSubmit={onSubmit} className="mt-4 space-y-4">
             <div>
               <label className="text-sm">Your Name</label>
-              <Input value={name} onChange={(e)=>setName(e.target.value)} placeholder="John Doe" required />
+              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your Name" required />
             </div>
             <div>
               <label className="text-sm">Email</label>
-              <Input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="you@example.com" required />
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required />
             </div>
             <div>
               <label className="text-sm">Message</label>
               <textarea
                 value={message}
-                onChange={(e)=>setMessage(e.target.value)}
+                onChange={(e) => setMessage(e.target.value)}
                 className="w-full border rounded px-3 py-2 min-h-[140px]"
                 placeholder="How can we help you?"
                 required

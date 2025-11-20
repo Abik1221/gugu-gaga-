@@ -2,5 +2,5 @@
   "version": 3,
   "sources": [],
   "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///home/habtamusemagn/Videos/gugu-gaga-/front_end/app/%28dashboard%29/layout.tsx"],"sourcesContent":["\"use client\"\n\nexport default function App({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  return (\n    <div>\n      {children}\n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;AAAA;;AAEe,SAAS,IAAI,KAI1B;QAJ0B,EAC1B,QAAQ,EAGR,GAJ0B;IAK1B,qBACE,6LAAC;kBACE;;;;;;AAGP;KAVwB","debugId":null}}]
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///D:/b/gugu-gaga-/front_end/app/%28dashboard%29/layout.tsx"],"sourcesContent":["\"use client\"\r\n\r\nexport default function App({\r\n  children,\r\n}: Readonly<{\r\n  children: React.ReactNode;\r\n}>) {\r\n  return (\r\n    <div>\r\n      {children}\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AAAA;;AAEe,SAAS,IAAI,KAI1B;QAJ0B,EAC1B,QAAQ,EAGR,GAJ0B;IAK1B,qBACE,6LAAC;kBACE;;;;;;AAGP;KAVwB","debugId":null}}]
 }

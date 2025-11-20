@@ -82,10 +82,25 @@ export default function AffiliateLoginPage() {
     setLoading(true);
     try {
       const data = await AuthAPI.loginVerify(email, code);
+
+      // Helper function to set cookies
+      const setCookie = (name: string, value: string, days: number) => {
+        if (typeof document === "undefined") return;
+        let expires = "";
+        if (days) {
+          const date = new Date();
+          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+      };
+
       if (typeof window !== "undefined") {
         localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("user_role", "affiliate");
+        // Set cookie for middleware authentication
+        setCookie("access_token", data.access_token, 7);
       }
       try {
         await AuthAPI.me();
@@ -233,20 +248,18 @@ export default function AffiliateLoginPage() {
 
             <div className="mb-6 flex items-center justify-center gap-3 text-xs uppercase tracking-[0.3em] text-emerald-600">
               <span
-                className={`relative overflow-hidden rounded-full px-3 py-1 ${
-                  step === "request"
+                className={`relative overflow-hidden rounded-full px-3 py-1 ${step === "request"
                     ? "bg-emerald-100 text-emerald-700"
                     : "bg-emerald-50 text-emerald-400"
-                }`}
+                  }`}
               >
                 Step 1
               </span>
               <span
-                className={`relative overflow-hidden rounded-full px-3 py-1 ${
-                  step === "verify"
+                className={`relative overflow-hidden rounded-full px-3 py-1 ${step === "verify"
                     ? "bg-blue-100 text-blue-700"
                     : "bg-emerald-50 text-emerald-400"
-                }`}
+                  }`}
               >
                 Step 2
               </span>
