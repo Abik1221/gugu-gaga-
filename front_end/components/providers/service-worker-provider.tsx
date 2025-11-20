@@ -20,14 +20,26 @@ export function ServiceWorkerProvider() {
           scope: "/",
         });
 
+        // Check for updates every 60 seconds
+        setInterval(() => {
+          registration?.update();
+        }, 60000);
+
         registration.addEventListener?.("updatefound", () => {
           const installing = registration?.installing;
           installing?.addEventListener("statechange", () => {
             if (installing.state === "installed" && navigator.serviceWorker.controller) {
-              console.info("New content is available; please refresh.");
+              // New version available - automatically reload after 3 seconds
+              console.info("[SW] New version detected! Reloading in 3 seconds...");
+              setTimeout(() => {
+                window.location.reload();
+              }, 3000);
             }
           });
         });
+
+        // Force immediate update check
+        registration.update();
       } catch (error) {
         console.error("Service worker registration failed:", error);
       }
