@@ -140,32 +140,53 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              name: "MesobAI - AI-Powered Bussiness Management System",
-              description:
-                "MesobAI: Revolutionary AI in business solution for Ethiopian bussinesses. Advanced mesob technology platform offering AI-powered bussiness management.",
-              url: "https://mymesob.com",
-              applicationCategory: "BusinessApplication",
-              operatingSystem: "Web Browser",
-              image: "https://mymesob.com/mesoblogo.jpeg",
-              logo: "https://mymesob.com/mesoblogo.jpeg",
-              offers: {
-                "@type": "Offer",
-                price: "0",
-                priceCurrency: "USD",
-                description: "30-day free trial",
-              },
-              author: {
-                "@type": "Organization",
-                name: "MesobAI Technologies",
-                url: "https://mymesob.com",
-                logo: "https://mymesob.com/mesoblogo.jpeg",
-              },
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: "4.8",
-                ratingCount: "150",
-              },
+              "@graph": [
+                {
+                  "@type": "SoftwareApplication",
+                  name: "MesobAI - AI-Powered Bussiness Management System",
+                  description:
+                    "MesobAI: Revolutionary AI in business solution for Ethiopian bussinesses. Advanced mesob technology platform offering AI-powered bussiness management.",
+                  url: "https://mymesob.com",
+                  applicationCategory: "BusinessApplication",
+                  operatingSystem: "Web Browser",
+                  image: "https://mymesob.com/mesoblogo.jpeg",
+                  logo: "https://mymesob.com/mesoblogo.jpeg",
+                  offers: {
+                    "@type": "Offer",
+                    price: "0",
+                    priceCurrency: "USD",
+                    description: "30-day free trial",
+                  },
+                  author: {
+                    "@type": "Organization",
+                    name: "MesobAI Technologies",
+                    url: "https://mymesob.com",
+                    logo: "https://mymesob.com/mesoblogo.jpeg",
+                  },
+                  aggregateRating: {
+                    "@type": "AggregateRating",
+                    ratingValue: "4.8",
+                    ratingCount: "150",
+                  },
+                },
+                {
+                  "@type": "Organization",
+                  name: "MesobAI Technologies",
+                  url: "https://mymesob.com",
+                  logo: "https://mymesob.com/mesoblogo.jpeg",
+                  sameAs: ["https://twitter.com/MesobAI"],
+                },
+                {
+                  "@type": "WebSite",
+                  name: "MesobAI",
+                  url: "https://mymesob.com",
+                  potentialAction: {
+                    "@type": "SearchAction",
+                    target: "https://mymesob.com/search?q={search_term_string}",
+                    "query-input": "required name=search_term_string",
+                  },
+                },
+              ],
             }),
           }}
         />
