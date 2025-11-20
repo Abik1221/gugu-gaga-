@@ -41,6 +41,10 @@ const publicRoutes = [
 ];
 function middleware(request) {
     const { pathname } = request.nextUrl;
+    // Redirect old admin routes to home
+    if (pathname.startsWith('/superadin')) {
+        return __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$esm$2f$server$2f$web$2f$exports$2f$index$2e$js__$5b$middleware$2d$edge$5d$__$28$ecmascript$29$__["NextResponse"].redirect(new URL('/', request.url));
+    }
     // Check if the current path is protected
     const isProtectedRoute = protectedRoutes.some((route)=>pathname.startsWith(route));
     if (!isProtectedRoute) {

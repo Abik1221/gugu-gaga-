@@ -22,6 +22,11 @@ const publicRoutes = [
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
 
+    // Redirect old admin routes to home
+    if (pathname.startsWith('/superadin')) {
+        return NextResponse.redirect(new URL('/', request.url))
+    }
+
     // Check if the current path is protected
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
 

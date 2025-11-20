@@ -1,13 +1,4 @@
 {
-  "/(auth)/owner-signin/page": "app/(auth)/owner-signin/page.js",
-  "/(auth)/register/owner/page": "app/(auth)/register/owner/page.js",
-  "/(auth)/register/supplier/page": "app/(auth)/register/supplier/page.js",
-  "/(dashboard)/dashboard/(supplier-flow)/supplier-kyc/page": "app/(dashboard)/dashboard/(supplier-flow)/supplier-kyc/page.js",
-  "/(dashboard)/dashboard/(supplier-flow)/supplier/page": "app/(dashboard)/dashboard/(supplier-flow)/supplier/page.js",
-  "/(dashboard)/dashboard/kyc/page": "app/(dashboard)/dashboard/kyc/page.js",
-  "/(dashboard)/dashboard/owner/page": "app/(dashboard)/dashboard/owner/page.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js",
   "/page": "app/page.js"
 }
