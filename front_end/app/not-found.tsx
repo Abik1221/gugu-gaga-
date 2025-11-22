@@ -78,10 +78,10 @@ export default function NotFoundPage() {
           >
             Need help? Contact us at{" "}
             <a
-              href="mailto:nahomkenei4@gmail.com"
+              href="mailto:nahomkeneni4@gmail.com"
               className="text-emerald-600 hover:text-emerald-700 font-semibold break-all"
             >
-              nahomkenei4@gmail.com
+              nahomkeneni4@gmail.com
             </a>{" "}
             or call{" "}
             <a
