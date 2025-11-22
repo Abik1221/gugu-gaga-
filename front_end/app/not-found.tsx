@@ -78,10 +78,10 @@ export default function NotFoundPage() {
           >
             Need help? Contact us at{" "}
             <a
-              href="mailto:support@zemenpharma.com"
+              href="mailto:nahomkenei4@gmail.com"
               className="text-emerald-600 hover:text-emerald-700 font-semibold break-all"
             >
-              support@zemenpharma.com
+              nahomkenei4@gmail.com
             </a>{" "}
             or call{" "}
             <a
