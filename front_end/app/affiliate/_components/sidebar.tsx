@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HighlightPill } from "./cards";
 import { cn } from "@/lib/utils";
 import { DollarSign, Sparkles, Users, Wallet, ChevronRight } from "lucide-react";
+import { InstallButton } from "@/components/pwa/InstallPWA";
 import type { AffiliateStats } from "../_hooks/use-affiliate-dashboard";
 
 const navItems = [
@@ -109,6 +110,13 @@ export function AffiliateSidebar({
               );
             })}
           </nav>
+        </CardContent>
+      </Card>
+
+      {/* PWA Install Button */}
+      <Card className="border border-emerald-100/60 bg-white/95 shadow-md backdrop-blur">
+        <CardContent className="p-4">
+          <InstallButton fullWidth className="w-full" />
         </CardContent>
       </Card>
     </div>

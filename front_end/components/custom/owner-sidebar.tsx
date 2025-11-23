@@ -30,6 +30,7 @@ import {
   ClipboardList,
   BarChart3,
 } from "lucide-react";
+import { InstallButton } from "@/components/pwa/InstallPWA";
 
 interface NavItem {
   href: string;
@@ -87,6 +88,15 @@ export function OwnerSidebar() {
                 );
               })}
             </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* PWA Install Button */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <div className="px-2">
+              <InstallButton fullWidth className="w-full" />
+            </div>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
