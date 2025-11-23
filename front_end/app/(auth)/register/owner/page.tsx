@@ -14,12 +14,7 @@ import ownerRegistrationImage from "@/public/owner_registration.jpeg";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Head from "next/head";
-import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Business Owner Registration | MesobAI",
-  description: "Register your business with MesobAI - The leading AI-powered business management system in Ethiopia.",
-};
 
 
 type FieldKey =
