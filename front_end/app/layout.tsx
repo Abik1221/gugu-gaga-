@@ -64,10 +64,10 @@ export const metadata: Metadata = {
       "MesobAI: Revolutionary AI in business solution for Ethiopian business. Advanced mesob technology platform.",
     images: [
       {
-        url: "/mesoblogo.jpeg",
+        url: "/icons/icon-512.png",
         width: 512,
         height: 512,
-        alt: "MesobAI Logo - AI in Ethiopia Business Solutions",
+        alt: "MesobAI Logo - AI Business Inventory Management",
       },
     ],
   },
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     title: "MesobAI - AI in Ethiopia Business Solutions",
     description:
       "Revolutionary mesob AI technology for Ethiopian business management and healthcare business intelligence.",
-    images: ["/mesoblogo.jpeg"],
+    images: ["/icons/icon-512.png"],
     creator: "@MesobAI",
   },
   alternates: {
@@ -85,11 +85,11 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
-      { url: "/mesoblogo.jpeg", sizes: "192x192" },
-      { url: "/mesoblogo.jpeg", sizes: "512x512" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: [{ url: "/mesoblogo.jpeg", sizes: "180x180" }],
-    shortcut: "/mesoblogo.jpeg",
+    apple: [{ url: "/icons/apple-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/icons/icon-192.png",
   },
   other: {
     "mobile-web-app-capable": "yes",

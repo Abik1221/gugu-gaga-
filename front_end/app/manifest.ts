@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "MesobAI - AI-Powered Pharmacy Management",
+    name: "MesobAI - AI-Powered Business Inventory Management",
     short_name: "MesobAI",
     description:
-      "MesobAI - AI-powered pharmacy management system for Ethiopian businesses. Revolutionary mesob technology meets modern AI.",
+      "MesobAI - AI-powered business inventory management system for Ethiopian businesses. Revolutionary mesob technology platform with intelligent automation and analytics.",
     id: "/",
     start_url: "/",
     scope: "/",
@@ -15,7 +15,7 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: "#ffffff",
     lang: "en",
     orientation: "any",
-    categories: ["business", "productivity", "medical", "finance"],
+    categories: ["business", "productivity", "finance", "lifestyle"],
     icons: [
       {
         src: "/icons/icon-72.png",
