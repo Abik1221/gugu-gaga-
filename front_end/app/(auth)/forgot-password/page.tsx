@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,8 +14,9 @@ import Link from "next/link";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 
-export default function ForgotPasswordPage() {
+function ForgotPasswordContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { show } = useToast();
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
@@ -24,6 +25,7 @@ export default function ForgotPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showOtpDialog, setShowOtpDialog] = useState(false);
+  const [expectedRole, setExpectedRole] = useState<string | null>(null);
   const [errorDialog, setErrorDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -31,19 +33,36 @@ export default function ForgotPasswordPage() {
     type: "error" | "warning" | "success";
   }>({ isOpen: false, title: "", message: "", type: "error" });
 
+  useEffect(() => {
+    const role = searchParams.get("role");
+    if (role) {
+      setExpectedRole(role);
+    }
+  }, [searchParams]);
+
   const handleRequestCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await postJSON("/api/v1/auth/password/reset/request", { email });
+      await postJSON("/api/v1/auth/password/reset/request", {
+        email,
+        expected_role: expectedRole || undefined
+      });
 
       setStep("code");
       setShowOtpDialog(true);
     } catch (error: any) {
       const message = error.message || "Failed to send reset code";
-      
-      if (message.includes("No account")) {
+
+      if (message.includes("Role mismatch")) {
+        setErrorDialog({
+          isOpen: true,
+          title: "Incorrect Page",
+          message: message,
+          type: "warning",
+        });
+      } else if (message.includes("No account")) {
         setErrorDialog({
           isOpen: true,
           title: "Account Not Found",
@@ -107,7 +126,7 @@ export default function ForgotPasswordPage() {
       }, 2500);
     } catch (error: any) {
       const message = error.message || "Failed to reset password";
-      
+
       if (message.includes("No account")) {
         setErrorDialog({
           isOpen: true,
@@ -138,7 +157,7 @@ export default function ForgotPasswordPage() {
   return (
     <>
       <AuthNavBar />
-      <OtpSentDialog 
+      <OtpSentDialog
         isOpen={showOtpDialog}
         onClose={() => setShowOtpDialog(false)}
         email={email}
@@ -152,132 +171,140 @@ export default function ForgotPasswordPage() {
         type={errorDialog.type}
       />
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-gray-50 p-4">
-      <Card className="w-full max-w-md shadow-xl">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center gap-2 mb-2">
-            <Link href="/auth" className="text-gray-600 hover:text-gray-900">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-            <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
-          </div>
-          <p className="text-sm text-gray-600">
-            {step === "email"
-              ? "Enter your email to receive a reset code"
-              : "Enter the code and your new password"}
-          </p>
-        </CardHeader>
-        <CardContent>
-          {step === "email" ? (
-            <form onSubmit={handleRequestCode} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-emerald-600" />
-                  Email Address
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-11"
-                  autoFocus
-                />
-                <p className="text-xs text-gray-500">Enter the email associated with your account</p>
-              </div>
+        <Card className="w-full max-w-md shadow-xl">
+          <CardHeader className="space-y-1">
+            <div className="flex items-center gap-2 mb-2">
+              <Link href="/auth" className="text-gray-600 hover:text-gray-900">
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+              <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
+            </div>
+            <p className="text-sm text-gray-600">
+              {step === "email"
+                ? "Enter your email to receive a reset code"
+                : "Enter the code and your new password"}
+            </p>
+          </CardHeader>
+          <CardContent>
+            {step === "email" ? (
+              <form onSubmit={handleRequestCode} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-emerald-600" />
+                    Email Address
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="h-11"
+                    autoFocus
+                  />
+                  <p className="text-xs text-gray-500">Enter the email associated with your account</p>
+                </div>
 
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full h-11 bg-emerald-600 hover:bg-emerald-700"
-              >
-                {loading ? "Sending..." : "Send Reset Code"}
-              </Button>
-
-              <div className="text-center text-sm">
-                <Link href="/auth" className="text-emerald-600 hover:text-emerald-700">
-                  Back to Sign In
-                </Link>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleResetPassword} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="code" className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-600" />
-                  Reset Code
-                </Label>
-                <Input
-                  id="code"
-                  type="text"
-                  placeholder="Enter 6-digit code"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-                  required
-                  maxLength={6}
-                  className="h-11 text-center text-lg tracking-widest"
-                  autoFocus
-                />
-                <p className="text-xs text-gray-500">Check your email ({email}) for the 6-digit code</p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="newPassword" className="flex items-center gap-2">
-                  <Lock className="h-4 w-4 text-emerald-600" />
-                  New Password
-                </Label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  placeholder="Enter new password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  minLength={8}
-                  className="h-11"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Confirm new password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  minLength={8}
-                  className="h-11"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full h-11 bg-emerald-600 hover:bg-emerald-700"
-              >
-                {loading ? "Resetting..." : "Reset Password"}
-              </Button>
-
-              <div className="text-center text-sm space-y-2">
-                <button
-                  type="button"
-                  onClick={() => setStep("email")}
-                  className="text-emerald-600 hover:text-emerald-700 block w-full"
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-11 bg-emerald-600 hover:bg-emerald-700"
                 >
-                  Didn't receive code? Try again
-                </button>
-                <Link href="/auth" className="text-gray-600 hover:text-gray-900 block">
-                  Back to Sign In
-                </Link>
-              </div>
-            </form>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+                  {loading ? "Sending..." : "Send Reset Code"}
+                </Button>
+
+                <div className="text-center text-sm">
+                  <Link href="/auth" className="text-emerald-600 hover:text-emerald-700">
+                    Back to Sign In
+                  </Link>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleResetPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="code" className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" />
+                    Reset Code
+                  </Label>
+                  <Input
+                    id="code"
+                    type="text"
+                    placeholder="Enter 6-digit code"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                    required
+                    maxLength={6}
+                    className="h-11 text-center text-lg tracking-widest"
+                    autoFocus
+                  />
+                  <p className="text-xs text-gray-500">Check your email ({email}) for the 6-digit code</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword" className="flex items-center gap-2">
+                    <Lock className="h-4 w-4 text-emerald-600" />
+                    New Password
+                  </Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    placeholder="Enter new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    className="h-11"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    className="h-11"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-11 bg-emerald-600 hover:bg-emerald-700"
+                >
+                  {loading ? "Resetting..." : "Reset Password"}
+                </Button>
+
+                <div className="text-center text-sm space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setStep("email")}
+                    className="text-emerald-600 hover:text-emerald-700 block w-full"
+                  >
+                    Didn't receive code? Try again
+                  </button>
+                  <Link href="/auth" className="text-gray-600 hover:text-gray-900 block">
+                    Back to Sign In
+                  </Link>
+                </div>
+              </form>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </>
+  );
+}
+
+export default function ForgotPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ForgotPasswordContent />
+    </Suspense>
   );
 }

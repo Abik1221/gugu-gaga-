@@ -57,6 +57,7 @@ export default function SupplierSignInPage() {
       formData.append("username", trimmedEmail);
       formData.append("password", password);
       formData.append("grant_type", "password");
+      formData.append("expected_role", "supplier");
 
       const response = await fetch(`${API_BASE}/auth/login/request-code`, {
         method: "POST",
@@ -66,7 +67,13 @@ export default function SupplierSignInPage() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Invalid credentials");
+        const message = errorData.detail || "Invalid credentials";
+
+        if (message.includes("Role mismatch")) {
+          throw new Error(message);
+        }
+
+        throw new Error(message);
       }
 
       setOtpSent(true);
@@ -98,7 +105,11 @@ export default function SupplierSignInPage() {
       const response = await fetch(`${API_BASE}/auth/login/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), code: otp }),
+        body: JSON.stringify({
+          email: email.trim(),
+          code: otp,
+          expected_role: "supplier"
+        }),
       });
 
       if (!response.ok) {
@@ -310,7 +321,7 @@ export default function SupplierSignInPage() {
                   <span className="text-slate-700">Remember me</span>
                 </label>
                 <Link
-                  href="/forgot-password"
+                  href="/forgot-password?role=supplier"
                   className="text-green-600 hover:underline"
                 >
                   Forgot password?

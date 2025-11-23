@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 import base64
 
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, Form
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -400,11 +400,22 @@ def register_affiliate(payload: AffiliateRegister, db: Session = Depends(get_db)
 def login(
     request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
+    expected_role: Optional[str] = Form(None),
     db: Session = Depends(get_db),
     tenant_id: Optional[str] = Depends(get_optional_tenant_id),
     _rl=Depends(rate_limit("login", identify_by="ip")),
 ):
     user = db.query(User).filter(User.email == form_data.username).first()
+    
+    # Role mismatch check
+    if user and expected_role and user.role != expected_role:
+        # If user is admin trying to login elsewhere, or non-admin trying to login as admin (though admin page usually sends 'admin')
+        # We return 403 with specific detail
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail=f"Role mismatch: You are registered as '{user.role}'. Please use the correct login page."
+        )
+
     if not user or not verify_password(form_data.password, user.password_hash):
         # Enhanced security logging for admin attempts
         if user and user.role == Role.admin.value:
@@ -588,12 +599,21 @@ def verify_registration(
 @router.post("/login/request-code")
 def login_request_code(
     form_data: OAuth2PasswordRequestForm = Depends(),
+    expected_role: Optional[str] = Form(None),
     db: Session = Depends(get_db),
     tenant_id: Optional[str] = Depends(get_optional_tenant_id),
 ):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
+    
+    # Role mismatch check
+    if expected_role and user.role != expected_role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail=f"Role mismatch: You are registered as '{user.role}'. Please use the correct login page."
+        )
+
     if not verify_password(form_data.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
     if user.role != Role.admin.value and tenant_id and user.tenant_id and user.tenant_id != tenant_id:
@@ -639,6 +659,13 @@ def password_reset_request(payload: PasswordResetRequest, db: Session = Depends(
     user = db.query(User).filter(User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
+    
+    # Role mismatch check
+    if payload.expected_role and user.role != payload.expected_role:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail=f"Role mismatch: You are registered as '{user.role}'. Please use the correct login page."
+        )
     
     # Allow password reset for all roles: owner, affiliate, supplier, cashier
     if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.supplier.value, Role.cashier.value, Role.admin.value}:

@@ -153,6 +153,7 @@ class LoginVerifyRequest(BaseModel):
 
 class PasswordResetRequest(BaseModel):
     email: EmailStr
+    expected_role: Optional[str] = None
 
 
 class PasswordResetConfirm(BaseModel):
