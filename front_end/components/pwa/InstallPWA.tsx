@@ -38,11 +38,11 @@ export function InstallPWA() {
 
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    
+
     if (outcome === 'accepted') {
       setIsInstalled(true);
     }
-    
+
     setDeferredPrompt(null);
   };
 
@@ -50,10 +50,11 @@ export function InstallPWA() {
   if (isInstalled || !deferredPrompt) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 lg:hidden">
+    <div className="fixed bottom-6 right-6 z-40">
       <Button
         onClick={handleInstall}
         className="h-14 w-14 rounded-full bg-emerald-600 hover:bg-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300"
+        title="Install MesobAI App"
       >
         <Download className="w-6 h-6 text-white" />
       </Button>
@@ -89,17 +90,17 @@ export function InstallButton({ className = "", fullWidth = false }: { className
 
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    
+
     if (outcome === 'accepted') {
       setIsInstalled(true);
     }
-    
+
     setDeferredPrompt(null);
   };
 
   // Don't show if already installed
   if (isInstalled) return null;
-  
+
   // If no prompt available, show not supported message
   if (!deferredPrompt) {
     return (

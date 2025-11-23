@@ -1,1 +1,0 @@
-{"version":3,"sources":["turbopack:///[project]/app/(dashboard)/dashboard/affiliate/loading.tsx"],"sourcesContent":["export default function Loading() {\n    return <div>Loading...</div>\n}"],"names":[],"mappings":"8EAAe,SAAS,IACpB,MAAO,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UAAI,cAChB"}

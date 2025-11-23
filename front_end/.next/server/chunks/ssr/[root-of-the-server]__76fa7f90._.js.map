@@ -1,1 +1,0 @@
-{"version":3,"sources":["turbopack:///[project]/app/(dashboard)/dashboard/about/page.tsx"],"sourcesContent":["// Dashboard about page\nexport default function DashboardAboutPage() {\n  return <div>About Dashboard</div>;\n}\n"],"names":[],"mappings":"uUACe,SAAS,IACtB,MAAO,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UAAI,mBACd"}

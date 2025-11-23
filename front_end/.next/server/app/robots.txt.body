@@ -1,9 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /admin/
-Disallow: /api/
-Disallow: /_next/
-Disallow: /dashboard/
-Disallow: /.well-known/
-
-Sitemap: https://mymesob.com/sitemap.xml
