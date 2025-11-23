@@ -705,6 +705,15 @@ def analytics_overview(
     total_branches = db.query(func.count(Branch.id)).scalar() or 0
     pharmacy_owners = db.query(func.count(User.id)).filter(User.role == Role.pharmacy_owner.value).scalar() or 0
 
+    # Calculate revenue (verified payments * 1000 ETB placeholder)
+    verified_payments_count = (
+        db.query(func.count(PaymentSubmission.id))
+        .filter(PaymentSubmission.status == "verified")
+        .scalar()
+        or 0
+    )
+    total_revenue = verified_payments_count * 1000.0
+
     totals = AnalyticsTotals(
         total_pharmacies=total_pharmacies,
         active_pharmacies=active_pharmacies,
@@ -712,6 +721,7 @@ def analytics_overview(
         blocked_pharmacies=blocked_pharmacies,
         total_branches=total_branches,
         pharmacy_owners=pharmacy_owners,
+        total_revenue=total_revenue,
     )
 
     db.execute(

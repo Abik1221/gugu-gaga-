@@ -80,6 +80,7 @@ class AnalyticsTotals(BaseModel):
     blocked_pharmacies: int
     total_branches: int
     pharmacy_owners: int
+    total_revenue: float = 0.0
 
 
 class AnalyticsPharmacyUsage(BaseModel):

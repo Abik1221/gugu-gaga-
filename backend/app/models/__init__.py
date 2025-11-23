@@ -27,3 +27,5 @@ from app.models.verification import VerificationCode  # noqa: F401
 from app.models.user_tenant import UserTenant  # noqa: F401
 from app.models.subscription import Subscription, PaymentSubmission  # noqa: F401
 from app.models.tenant_activity import TenantActivityLog  # noqa: F401
+from app.models.system import SystemSetting, Announcement  # noqa: F401
+
