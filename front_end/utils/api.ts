@@ -680,6 +680,19 @@ export const AdminAPI = {
     if (params.limit) query.set('limit', params.limit.toString());
     return getAuthJSON(`/api/v1/admin/audit${query.toString() ? `?${query.toString()}` : ''}`);
   },
+  system: {
+    health: () => getAuthJSON("/api/v1/system/health"),
+    settings: () => getAuthJSON("/api/v1/system/settings"),
+    updateSetting: (key: string, value: string, description?: string) =>
+      authFetch(`/api/v1/system/settings/${key}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ value, description }),
+      }, true).then(res => res.json()),
+    announcements: () => getAuthJSON("/api/v1/system/announcements"),
+    createAnnouncement: (body: any) => postAuthJSON("/api/v1/system/announcements", body),
+    deleteAnnouncement: (id: number) => deleteAuthJSON(`/api/v1/system/announcements/${id}`),
+  },
 };
 
 // ----------------- StaffAPI -----------------

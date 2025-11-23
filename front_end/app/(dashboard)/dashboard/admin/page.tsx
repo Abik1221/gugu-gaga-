@@ -15,6 +15,7 @@ type AnalyticsResponse = {
     blocked_pharmacies: number;
     total_branches: number;
     pharmacy_owners: number;
+    total_revenue: number;
   };
   ai_usage_daily: Array<{ day: string; tokens: number }>;
   top_pharmacies: Array<{
@@ -102,9 +103,9 @@ export default function AdminAnalyticsPage() {
             </div>
             <div className="flex flex-wrap gap-3">
               {[7, 30, 60, 90].map((d) => (
-                <Button 
-                  key={d} 
-                  variant={days === d ? "default" : "outline"} 
+                <Button
+                  key={d}
+                  variant={days === d ? "default" : "outline"}
                   onClick={() => setDays(d)}
                   className={days === d ? "bg-emerald-600 hover:bg-emerald-700" : "border-slate-300 text-slate-700 hover:bg-slate-50"}
                 >
@@ -123,7 +124,8 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <StatTile label="Total Revenue" value={`ETB ${totals.total_revenue.toLocaleString()}`} href="/dashboard/admin/payouts" />
           <StatTile label="Total Pharmacies" value={totals.total_pharmacies} href="/dashboard/admin/pharmacies" />
           <StatTile label="Active Pharmacies" value={totals.active_pharmacies} href="/dashboard/admin/pharmacies" />
           <StatTile label="Pending KYC" value={totals.pending_kyc} href="/dashboard/admin/pharmacies" tone="warning" />
@@ -239,23 +241,23 @@ export default function AdminAnalyticsPage() {
   );
 }
 
-function StatTile({ label, value, href, tone }: { label: string; value: number; href: string; tone?: "warning" | "danger" }) {
-  const toneClasses = tone === "danger" 
-    ? "border-red-200 bg-red-50 hover:bg-red-100" 
-    : tone === "warning" 
-    ? "border-amber-200 bg-amber-50 hover:bg-amber-100" 
-    : "border-slate-200 bg-white hover:bg-slate-50";
-  
-  const textClasses = tone === "danger" 
-    ? "text-red-900" 
-    : tone === "warning" 
-    ? "text-amber-900" 
-    : "text-slate-900";
-  
+function StatTile({ label, value, href, tone }: { label: string; value: number | string; href: string; tone?: "warning" | "danger" }) {
+  const toneClasses = tone === "danger"
+    ? "border-red-200 bg-red-50 hover:bg-red-100"
+    : tone === "warning"
+      ? "border-amber-200 bg-amber-50 hover:bg-amber-100"
+      : "border-slate-200 bg-white hover:bg-slate-50";
+
+  const textClasses = tone === "danger"
+    ? "text-red-900"
+    : tone === "warning"
+      ? "text-amber-900"
+      : "text-slate-900";
+
   return (
     <Link href={href} className={`rounded-2xl border p-6 shadow-sm transition-all hover:shadow-md block ${toneClasses}`}>
       <div className="text-sm font-medium text-slate-600">{label}</div>
-      <div className={`text-4xl font-bold mt-2 ${textClasses}`}>{value.toLocaleString()}</div>
+      <div className={`text-4xl font-bold mt-2 ${textClasses}`}>{typeof value === 'number' ? value.toLocaleString() : value}</div>
     </Link>
   );
 }

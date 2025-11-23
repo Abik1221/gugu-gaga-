@@ -20,6 +20,9 @@ import {
   Users,
   Wallet,
   Truck,
+  Activity,
+  Settings,
+  Megaphone,
 } from "lucide-react";
 
 const navItems = [
@@ -27,6 +30,21 @@ const navItems = [
     label: "Dashboard",
     href: "/dashboard/admin",
     icon: <LayoutDashboard />,
+  },
+  {
+    label: "System Health",
+    href: "/dashboard/admin/system",
+    icon: <Activity />,
+  },
+  {
+    label: "Global Settings",
+    href: "/dashboard/admin/settings",
+    icon: <Settings />,
+  },
+  {
+    label: "Announcements",
+    href: "/dashboard/admin/announcements",
+    icon: <Megaphone />,
   },
   {
     label: "Affiliates",

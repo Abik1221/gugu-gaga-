@@ -29,6 +29,7 @@ from .suppliers import router as suppliers_router
 from .orders import router as orders_router
 from .supplier_onboarding import router as supplier_onboarding_router
 from .seo import router as seo_router
+from .system import router as system_router
 
 api_router = APIRouter()
 
@@ -47,6 +48,7 @@ api_router.include_router(inventory_router)
 api_router.include_router(medicines_router)
 api_router.include_router(affiliate_router)
 api_router.include_router(admin_router)
+api_router.include_router(system_router)
 api_router.include_router(ai_router)
 api_router.include_router(kyc_router, prefix="/owner")
 api_router.include_router(staff_router)
