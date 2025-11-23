@@ -1,3 +1,0 @@
-module.exports=[83048,a=>{"use strict";a.s(["default",()=>d]);var b=a.i(90944),c=a.i(72131);function d({error:a,reset:d}){return(0,c.useEffect)(()=>{},[a]),(0,b.jsxs)("div",{className:"p-6 space-y-3",children:[(0,b.jsx)("h2",{className:"text-lg font-semibold",children:"POS failed to load"}),(0,b.jsx)("p",{className:"text-sm text-gray-600 break-all",children:a.message}),(0,b.jsx)("button",{onClick:d,className:"border rounded px-3 py-2 text-sm hover:bg-gray-50",children:"Try again"})]})}}];
-
-//# sourceMappingURL=app_%28dashboard%29_dashboard_pos_error_tsx_4c953240._.js.map

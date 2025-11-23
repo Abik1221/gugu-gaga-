@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useToast } from "@/components/ui/toast";
 
 export function ServiceWorkerProvider() {
-  const { show } = useToast();
-
   useEffect(() => {
     // Allow in both development and production for testing
     // if (process.env.NODE_ENV !== "production") {
@@ -30,15 +27,11 @@ export function ServiceWorkerProvider() {
         navigator.serviceWorker.addEventListener("message", (event) => {
           if (event.data && event.data.type === "SW_UPDATED") {
             console.log(`[SW] New version detected: ${event.data.version}`);
-            show({
-              variant: "default",
-              title: "🎉 New version available!",
-              description: "Click to refresh and get the latest features.",
-              duration: 10000,
-              onClick: () => {
-                window.location.reload();
-              },
-            });
+
+            // Show native notification instead of toast to avoid SSR issues
+            if (confirm("🎉 New version available! Click OK to refresh and get the latest features.")) {
+              window.location.reload();
+            }
           }
         });
 
@@ -56,18 +49,12 @@ export function ServiceWorkerProvider() {
               // New version available
               console.log("[SW] New version installed! Ready to activate.");
 
-              // Show notification to user
-              show({
-                variant: "success",
-                title: "✨ App Updated!",
-                description: "A new version is ready. Refresh to update.",
-                duration: 15000,
-                onClick: () => {
-                  // Tell service worker to skip waiting and activate immediately
-                  installing.postMessage({ type: "SKIP_WAITING" });
-                  window.location.reload();
-                },
-              });
+              // Show native notification
+              if (confirm("✨ App Updated! A new version is ready. Click OK to refresh now.")) {
+                // Tell service worker to skip waiting and activate immediately
+                installing.postMessage({ type: "SKIP_WAITING" });
+                window.location.reload();
+              }
             }
           });
         });
@@ -86,7 +73,7 @@ export function ServiceWorkerProvider() {
         /* noop */
       });
     };
-  }, [show]);
+  }, []);
 
   return null;
 }

@@ -1,3 +1,0 @@
-{
-  "/(dashboard)/dashboard/owner/chat/[threadId]/page": "app/(dashboard)/dashboard/owner/chat/[threadId]/page.js"
-}
