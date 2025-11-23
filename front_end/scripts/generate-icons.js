@@ -43,7 +43,7 @@ async function generateIcons() {
             await sharp(INPUT_IMAGE, { failOnError: false })
                 .resize(size, size, {
                     fit: 'contain',
-                    background: { r: 255, g: 255, b: 255, alpha: 0 }
+                    background: { r: 255, g: 255, b: 255, alpha: 1 } // White background
                 })
                 .png()
                 .toFile(outputFile);
@@ -58,19 +58,20 @@ async function generateIcons() {
 
             process.stdout.write(`  maskable ${size}x${size}...`);
 
+            // Create white canvas
             const canvas = await sharp({
                 create: {
                     width: size,
                     height: size,
                     channels: 4,
-                    background: THEME_COLOR
+                    background: '#FFFFFF' // Pure white background
                 }
             }).png().toBuffer();
 
             const resizedLogo = await sharp(INPUT_IMAGE, { failOnError: false })
                 .resize(innerSize, innerSize, {
                     fit: 'contain',
-                    background: { r: 0, g: 0, b: 0, alpha: 0 }
+                    background: { r: 255, g: 255, b: 255, alpha: 1 } // White background
                 })
                 .toBuffer();
 
@@ -90,7 +91,7 @@ async function generateIcons() {
         await sharp(INPUT_IMAGE, { failOnError: false })
             .resize(180, 180, {
                 fit: 'contain',
-                background: { r: 255, g: 255, b: 255, alpha: 0 }
+                background: { r: 255, g: 255, b: 255, alpha: 1 } // White background
             })
             .png()
             .toFile(path.join(OUTPUT_DIR, 'apple-icon.png'));
