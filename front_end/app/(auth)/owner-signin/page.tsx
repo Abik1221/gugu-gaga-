@@ -58,6 +58,7 @@ export default function PharmacySignInPage(): JSX.Element {
       formData.append("username", identifier.trim());
       formData.append("password", password);
       formData.append("grant_type", "password");
+      formData.append("expected_role", "pharmacy_owner");
 
       const response = await fetch(`${API_BASE}/auth/login/request-code`, {
         method: "POST",
@@ -69,7 +70,14 @@ export default function PharmacySignInPage(): JSX.Element {
         const errorData = await response.json().catch(() => ({}));
         const message = errorData.detail || "Invalid credentials";
 
-        if (message.includes("No account")) {
+        if (message.includes("Role mismatch")) {
+          setErrorDialog({
+            isOpen: true,
+            title: "Incorrect Login Page",
+            message: message,
+            type: "warning",
+          });
+        } else if (message.includes("No account")) {
           setErrorDialog({
             isOpen: true,
             title: "Account Not Found",
@@ -116,14 +124,25 @@ export default function PharmacySignInPage(): JSX.Element {
       const response = await fetch(`${API_BASE}/auth/login/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: identifier.trim(), code: otp }),
+        body: JSON.stringify({
+          email: identifier.trim(),
+          code: otp,
+          expected_role: "pharmacy_owner"
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         const message = errorData.detail || "Invalid verification code";
 
-        if (message.includes("Invalid") || message.includes("expired")) {
+        if (message.includes("Role mismatch")) {
+          setErrorDialog({
+            isOpen: true,
+            title: "Incorrect Login Page",
+            message: message,
+            type: "warning",
+          });
+        } else if (message.includes("Invalid") || message.includes("expired")) {
           setErrorDialog({
             isOpen: true,
             title: "Invalid Code",
@@ -282,8 +301,8 @@ export default function PharmacySignInPage(): JSX.Element {
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
                       className={`w-full bg-white border ${errors.identifier
-                          ? "border-red-500"
-                          : "border-slate-300"
+                        ? "border-red-500"
+                        : "border-slate-300"
                         } rounded-lg px-4 py-3 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400`}
                       placeholder="you@business.com or +251900000000"
                       aria-invalid={!!errors.identifier}
@@ -318,8 +337,8 @@ export default function PharmacySignInPage(): JSX.Element {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className={`w-full bg-white border ${errors.password
-                            ? "border-red-500"
-                            : "border-slate-300"
+                          ? "border-red-500"
+                          : "border-slate-300"
                           } rounded-lg px-4 py-3 pr-12 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400`}
                         placeholder="••••••••"
                         aria-invalid={!!errors.password}
@@ -386,7 +405,7 @@ export default function PharmacySignInPage(): JSX.Element {
                 </label>
 
                 <a
-                  href="/forgot-password"
+                  href="/forgot-password?role=pharmacy_owner"
                   className="text-sm text-emerald-600 hover:underline"
                 >
                   Forgot password?

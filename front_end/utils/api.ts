@@ -468,13 +468,14 @@ export const AuthAPI = {
 
   verifyRegistration: (email: string, code: string) =>
     postForm("/api/v1/auth/register/verify", { email, code }),
-  login: (email: string, password: string, tenantId?: string) =>
+  login: (email: string, password: string, tenantId?: string, expectedRole?: string) =>
     postForm<AuthTokenResponse>(
       "/api/v1/auth/login",
       {
         username: email,
         password,
         grant_type: "password",
+        expected_role: expectedRole || "",
       },
       tenantId
     ).then(
@@ -487,10 +488,10 @@ export const AuthAPI = {
         return resp;
       }
     ),
-  loginRequestCode: (email: string, password: string, tenantId?: string) =>
+  loginRequestCode: (email: string, password: string, tenantId?: string, expectedRole?: string) =>
     postForm(
       "/api/v1/auth/login/request-code",
-      { username: email, password, grant_type: "password" },
+      { username: email, password, grant_type: "password", expected_role: expectedRole || "" },
       tenantId
     ),
   loginVerify: (email: string, code: string, tenantId?: string) =>
