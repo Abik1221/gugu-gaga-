@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -13,6 +14,13 @@ import ownerRegistrationImage from "@/public/owner_registration.jpeg";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Head from "next/head";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Business Owner Registration | MesobAI",
+  description: "Register your business with MesobAI - The leading AI-powered business management system in Ethiopia.",
+};
+
 
 type FieldKey =
   | "businessName"
@@ -373,11 +381,10 @@ export default function OwnerRegisterPage() {
                         clearFieldError("businessName");
                         setBusinessName(e.target.value);
                       }}
-                      className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.businessName
-                          ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                          : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                      className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.businessName
+                        ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                        : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                        }`}
                     />
                     {fieldErrors.businessName && (
                       <p className="mt-1 text-xs text-red-500">
@@ -397,11 +404,10 @@ export default function OwnerRegisterPage() {
                         clearFieldError("email");
                         setEmail(e.target.value);
                       }}
-                      className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.email
-                          ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                          : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                      className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.email
+                        ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                        : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                        }`}
                     />
                     {fieldErrors.email && (
                       <p className="mt-1 text-xs text-red-500">
@@ -421,11 +427,10 @@ export default function OwnerRegisterPage() {
                         clearFieldError("password");
                         setPassword(e.target.value);
                       }}
-                      className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.password
-                          ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                          : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                      className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.password
+                        ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                        : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                        }`}
                     />
                     {fieldErrors.password && (
                       <p className="mt-1 text-xs text-red-500">
@@ -445,11 +450,10 @@ export default function OwnerRegisterPage() {
                         setTinNumber(e.target.value);
                       }}
                       placeholder="Tax Identification Number"
-                      className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.tinNumber
-                          ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                          : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                      className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.tinNumber
+                        ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                        : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                        }`}
                     />
                     {fieldErrors.tinNumber && (
                       <p className="mt-1 text-xs text-red-500">
@@ -492,9 +496,8 @@ export default function OwnerRegisterPage() {
                         clearFieldError("licenseFile");
                         setLicenseFile(e.target.files?.[0] || null);
                       }}
-                      className={`mt-2 w-full text-xs text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 ${
-                        fieldErrors.licenseFile ? "border border-red-400" : ""
-                      }`}
+                      className={`mt-2 w-full text-xs text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 ${fieldErrors.licenseFile ? "border border-red-400" : ""
+                        }`}
                     />
                     {licenseFile && (
                       <p className="mt-1 text-xs text-slate-600">

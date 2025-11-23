@@ -15,11 +15,11 @@ export const metadata: Metadata = {
   ),
   title: {
     default:
-      "MesobAI - AI-Powered Bussiness Management System | Ethiopia | Africa",
+      "MesobAI - AI-Powered Business Management System | Ethiopia | Africa",
     template: "%s | MesobAI - AI in Business Solutions",
   },
   description:
-    "MesobAI: Revolutionary AI in business solution for Ethiopian bussinesses. Advanced mesob technology platform offering AI-powered bussiness management, inventory control, and business intelligence for Ethiopia's bussiness sector.",
+    "MesobAI: Revolutionary AI in business solution for Ethiopian businesses. Advanced mesob technology platform offering AI-powered business management, inventory control, and business intelligence for Ethiopia's business sector.",
   keywords: [
     "business management software Ethiopia",
     "AI business automation Africa",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "enterprise resource planning ERP",
     "small business software Africa",
     "business intelligence tools",
-    "bussiness management software",
+    "business management software",
     "retail management system",
     "POS system Ethiopia",
     "business software Africa",
@@ -59,9 +59,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://mymesob.com",
     siteName: "MesobAI - AI Business Management Software",
-    title: "MesobAI - AI-Powered Bussiness Management System for Ethiopia",
+    title: "MesobAI - AI-Powered Business Management System for Ethiopia",
     description:
-      "MesobAI: Revolutionary AI in business solution for Ethiopian bussiness. Advanced mesob technology platform.",
+      "MesobAI: Revolutionary AI in business solution for Ethiopian business. Advanced mesob technology platform.",
     images: [
       {
         url: "/mesoblogo.jpeg",
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MesobAI - AI in Ethiopia Business Solutions",
     description:
-      "Revolutionary mesob AI technology for Ethiopian bussiness management and healthcare business intelligence.",
+      "Revolutionary mesob AI technology for Ethiopian business management and healthcare business intelligence.",
     images: ["/mesoblogo.jpeg"],
     creator: "@MesobAI",
   },
@@ -118,21 +118,6 @@ export default function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9433053488658352"
           crossOrigin="anonymous"
         ></script>
-        <link rel="icon" href="/mesoblogo.jpeg" type="image/jpeg" sizes="any" />
-        <link
-          rel="icon"
-          href="/mesoblogo.jpeg"
-          type="image/jpeg"
-          sizes="32x32"
-        />
-        <link
-          rel="icon"
-          href="/mesoblogo.jpeg"
-          type="image/jpeg"
-          sizes="16x16"
-        />
-        <link rel="apple-touch-icon" href="/mesoblogo.jpeg" sizes="180x180" />
-        <link rel="shortcut icon" href="/mesoblogo.jpeg" type="image/jpeg" />
         <link rel="canonical" href="https://mymesob.com" />
         <script
           type="application/ld+json"
@@ -143,9 +128,9 @@ export default function RootLayout({
               "@graph": [
                 {
                   "@type": "SoftwareApplication",
-                  name: "MesobAI - AI-Powered Bussiness Management System",
+                  name: "MesobAI - AI-Powered Business Management System",
                   description:
-                    "MesobAI: Revolutionary AI in business solution for Ethiopian bussinesses. Advanced mesob technology platform offering AI-powered bussiness management.",
+                    "MesobAI: Revolutionary AI in business solution for Ethiopian businesses. Advanced mesob technology platform offering AI-powered business management.",
                   url: "https://mymesob.com",
                   applicationCategory: "BusinessApplication",
                   operatingSystem: "Web Browser",

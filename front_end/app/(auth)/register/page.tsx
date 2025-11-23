@@ -18,7 +18,7 @@ function RegisterContent() {
     if (tab === "affiliate") {
       router.replace(`/register/affiliate${query ? `?${query}` : ""}`);
     } else {
-      router.replace(`/register/pharmacy${query ? `?${query}` : ""}`);
+      router.replace(`/register/owner${query ? `?${query}` : ""}`);
     }
   }, [router, searchParams]);
 
