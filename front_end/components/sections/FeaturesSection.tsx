@@ -127,11 +127,12 @@ export default function FeaturesSection() {
                 >
                   <Image
                     src={feature.image}
-                    width={10}
-                    height={10}
-                    alt="super market image"
-                    placeholder="empty"
-                    className="rounded-2xl shadow-xl w-full"
+                    width={600}
+                    height={400}
+                    alt={`${feature.title} - Mesob feature illustration`}
+                    placeholder="blur"
+                    priority={index === 0}
+                    className="rounded-2xl shadow-xl w-full h-auto"
                   />
                 </motion.div>
               </motion.div>
