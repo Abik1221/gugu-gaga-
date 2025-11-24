@@ -42,8 +42,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.next()
     }
 
-    // Check for authentication token in cookies
-    const accessToken = request.cookies.get('access_token')?.value
+
 
     // If no token, redirect to appropriate login page
     if (!accessToken) {
