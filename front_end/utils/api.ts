@@ -11,7 +11,7 @@ try {
   API_BASE_PATH = "";
 }
 
-function setCookie(name: string, value: string, days: number) {
+export function setCookie(name: string, value: string, days: number) {
   if (typeof document === "undefined") return;
   let expires = "";
   if (days) {
@@ -277,6 +277,7 @@ async function refreshTokens(): Promise<boolean> {
     if (typeof window !== "undefined") {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
+      setCookie("access_token", data.access_token, 7);
     }
     return true;
   } catch {
@@ -406,6 +407,11 @@ export type AuthTokenResponse = {
   refresh_token: string;
   token_type: string;
   session_id: number;
+  user?: {
+    role?: string;
+    tenant_id?: string;
+  };
+  tenant_id?: string;
 };
 
 export type SessionInfo = {
@@ -433,9 +439,33 @@ export type TenantActivityRecord = {
 };
 
 export const AuthAPI = {
-  registerAffiliate: (body: any) => postJSON("/api/v1/auth/register/affiliate", body),
-  registerPharmacy: (body: any) => postJSON("/api/v1/auth/register/owner", body),
-  registerSupplier: (body: any) => postJSON("/api/v1/auth/register/supplier", body),
+  registerAffiliate: async (body: any) => {
+    const resp = await postJSON<AuthTokenResponse>("/api/v1/auth/register/affiliate", body);
+    if (typeof window !== "undefined" && resp.access_token) {
+      localStorage.setItem("access_token", resp.access_token);
+      localStorage.setItem("refresh_token", resp.refresh_token);
+      setCookie("access_token", resp.access_token, 7);
+    }
+    return resp;
+  },
+  registerPharmacy: async (body: any) => {
+    const resp = await postJSON<AuthTokenResponse>("/api/v1/auth/register/owner", body);
+    if (typeof window !== "undefined" && resp.access_token) {
+      localStorage.setItem("access_token", resp.access_token);
+      localStorage.setItem("refresh_token", resp.refresh_token);
+      setCookie("access_token", resp.access_token, 7);
+    }
+    return resp;
+  },
+  registerSupplier: async (body: any) => {
+    const resp = await postJSON<AuthTokenResponse>("/api/v1/auth/register/supplier", body);
+    if (typeof window !== "undefined" && resp.access_token) {
+      localStorage.setItem("access_token", resp.access_token);
+      localStorage.setItem("refresh_token", resp.refresh_token);
+      setCookie("access_token", resp.access_token, 7);
+    }
+    return resp;
+  },
 
   registerVerify: async (email: string, code: string) => {
     try {
@@ -452,7 +482,13 @@ export const AuthAPI = {
           body: err.body,
         });
         try {
-          return await postJSON("/api/v1/auth/register/verify", { email, code });
+          const resp = await postJSON<AuthTokenResponse>("/api/v1/auth/register/verify", { email, code });
+          if (typeof window !== "undefined" && resp.access_token) {
+            localStorage.setItem("access_token", resp.access_token);
+            localStorage.setItem("refresh_token", resp.refresh_token);
+            setCookie("access_token", resp.access_token, 7);
+          }
+          return resp;
         } catch (err2: any) {
           const e: any = new Error(
             err2?.message || err?.message || "Verification failed"
@@ -1316,690 +1352,3 @@ export const SupplierAdminAPI = {
   rejectPayment: (code: string, notes?: string) =>
     postAuthJSON(`/api/v1/admin/suppliers/payments/${code}/reject`, { notes }),
 };
-
-// Other API objects (AffiliateAPI, AdminAPI, etc.) remain unchanged
-
-// export const API_BASE =
-//   process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api/v1";
-// export const TENANT_HEADER =
-//   process.env.NEXT_PUBLIC_TENANT_HEADER || "X-Tenant-ID";
-
-// function buildHeaders(
-//   initHeaders?: HeadersInit,
-//   tenantId?: string
-// ): HeadersInit {
-//   const headers: Record<string, string> = {
-//     ...(initHeaders as Record<string, string>),
-//   };
-//   if (tenantId) headers[TENANT_HEADER] = tenantId;
-//   return headers;
-// }
-
-// export async function putAuthJSON<T = any>(
-//   path: string,
-//   bodyData: any,
-//   tenantId?: string
-// ): Promise<T> {
-//   const res = await authFetch(
-//     path,
-//     {
-//       method: "PUT",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(bodyData),
-//     },
-//     true,
-//     tenantId
-//   );
-//   if (!res.ok) {
-//     try {
-//       const data = await res.json();
-//       const msg = data?.error || data?.detail || JSON.stringify(data);
-//       throw new Error(msg || `Request failed with ${res.status}`);
-//     } catch {
-//       const text = await res.text().catch(() => "");
-//       throw new Error(text || `Request failed with ${res.status}`);
-//     }
-//   }
-//   return (await res.json()) as T;
-// }
-
-// export async function postForm<T = any>(
-//   path: string,
-//   data: Record<string, string>,
-//   tenantId?: string
-// ): Promise<T> {
-//   const body = new URLSearchParams(data);
-//   const res = await fetch(`${API_BASE}${path}`, {
-//     method: "POST",
-//     headers: buildHeaders(
-//       {
-//         "Content-Type": "application/x-www-form-urlencoded",
-//       },
-//       tenantId
-//     ),
-//     body,
-//   });
-//   if (!res.ok) {
-//     try {
-//       const data = await res.json();
-//       const msg = data?.error || data?.detail || JSON.stringify(data);
-//       throw new Error(msg || `Request failed with ${res.status}`);
-//     } catch {
-//       const text = await res.text().catch(() => "");
-//       throw new Error(text || `Request failed with ${res.status}`);
-//     }
-//   }
-//   return (await res.json()) as T;
-// }
-
-// export async function postJSON<T = any>(
-//   path: string,
-//   body: any,
-//   tenantId?: string
-// ): Promise<T> {
-//   const res = await fetch(`${API_BASE}${path}`, {
-//     method: "POST",
-//     headers: buildHeaders({ "Content-Type": "application/json" }, tenantId),
-//     body: JSON.stringify(body),
-//   });
-//   if (!res.ok) {
-//     try {
-//       const data = await res.json();
-//       const msg = data?.error || data?.detail || JSON.stringify(data);
-//       throw new Error(msg || `Request failed with ${res.status}`);
-//     } catch {
-//       const text = await res.text().catch(() => "");
-//       throw new Error(text || `Request failed with ${res.status}`);
-//     }
-//   }
-//   return (await res.json()) as T;
-// }
-
-// export async function postMultipart<T = any>(
-//   path: string,
-//   formData: FormData,
-//   tenantId?: string
-// ): Promise<T> {
-//   const res = await fetch(`${API_BASE}${path}`, {
-//     method: "POST",
-//     headers: buildHeaders(undefined, tenantId),
-//     body: formData,
-//   });
-//   if (!res.ok) {
-//     try {
-//       const data = await res.json();
-//       const msg = data?.error || data?.detail || JSON.stringify(data);
-//       throw new Error(msg || `Request failed with ${res.status}`);
-//     } catch {
-//       let message = `Request failed with ${res.status}`;
-//       throw new Error(message);
-//     }
-//   }
-//   return (await res.json()) as T;
-// }
-
-// export function getAccessToken(): string | null {
-//   if (typeof window === "undefined") return null;
-//   return localStorage.getItem("access_token");
-// }
-
-// function getRefreshToken(): string | null {
-//   if (typeof window === "undefined") return null;
-//   return localStorage.getItem("refresh_token");
-// }
-
-// async function refreshTokens(): Promise<boolean> {
-//   const rt = getRefreshToken();
-//   if (!rt) return false;
-//   const url = `${API_BASE}/api/v1/auth/refresh?refresh_token=${encodeURIComponent(
-//     rt
-//   )}`;
-//   const res = await fetch(url, { method: "POST" });
-//   if (!res.ok) return false;
-//   try {
-//     const data = (await res.json()) as {
-//       access_token: string;
-//       refresh_token: string;
-//       token_type: string;
-//       expires_in: number;
-//     };
-//     if (typeof window !== "undefined") {
-//       localStorage.setItem("access_token", data.access_token);
-//       localStorage.setItem("refresh_token", data.refresh_token);
-//     }
-//     return true;
-//   } catch {
-//     return false;
-//   }
-// }
-
-// async function authFetch(
-//   path: string,
-//   init?: RequestInit,
-//   retry = true,
-//   tenantId?: string
-// ): Promise<Response> {
-//   const token = getAccessToken();
-//   const headers: HeadersInit = buildHeaders(
-//     {
-//       ...(init?.headers || {}),
-//       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-//     },
-//     tenantId
-//   );
-//   const res = await fetch(`${API_BASE}${path}`, { ...(init || {}), headers });
-//   if (res.status === 401 && retry) {
-//     const ok = await refreshTokens();
-//     if (ok) {
-//       const newToken = getAccessToken();
-//       const retryHeaders: HeadersInit = buildHeaders(
-//         {
-//           ...(init?.headers || {}),
-//           ...(newToken ? { Authorization: `Bearer ${newToken}` } : {}),
-//         },
-//         tenantId
-//       );
-//       return fetch(`${API_BASE}${path}`, {
-//         ...(init || {}),
-//         headers: retryHeaders,
-//       });
-//     }
-//   }
-//   return res;
-// }
-
-// export async function getAuthJSON<T = any>(
-//   path: string,
-//   tenantId?: string
-// ): Promise<T> {
-//   const res = await authFetch(path, undefined, true, tenantId);
-//   if (!res.ok) {
-//     try {
-//       const data = await res.json();
-//       const msg = data?.error || data?.detail || JSON.stringify(data);
-//       throw new Error(msg || `Request failed with ${res.status}`);
-//     } catch {
-//       const text = await res.text().catch(() => "");
-//       throw new Error(text || `Request failed with ${res.status}`);
-//     }
-//   }
-//   return (await res.json()) as T;
-// }
-
-// export async function postAuthJSON<T = any>(
-//   path: string,
-//   bodyData: any,
-//   tenantId?: string
-// ): Promise<T> {
-//   const res = await authFetch(
-//     path,
-//     {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(bodyData),
-//     },
-//     true,
-//     tenantId
-//   );
-//   if (!res.ok) {
-//     try {
-//       const data = await res.json();
-//       const msg = data?.error || data?.detail || JSON.stringify(data);
-//       throw new Error(msg || `Request failed with ${res.status}`);
-//     } catch {
-//       const text = await res.text().catch(() => "");
-//       throw new Error(text || `Request failed with ${res.status}`);
-//     }
-//   }
-//   return (await res.json()) as T;
-// }
-
-// // Convenience wrappers for key flows
-// export const AuthAPI = {
-//   registerAffiliate: (body: any) => postJSON("/auth/register/affiliate", body),
-//   registerPharmacy: (body: any) => postJSON("/auth/register/pharmacy", body),
-//   registerVerify: (email: string, code: string) =>
-//     postForm("/auth/register/verify", { email, code }),
-//   verifyRegistration: (email: string, code: string) =>
-//     postForm("/auth/register/verify", { email, code }),
-//   login: (email: string, password: string, tenantId?: string) =>
-//     postForm("/auth/login", { username: email, password }, tenantId),
-//   loginRequestCode: (email: string, password: string, tenantId?: string) =>
-//     postForm(
-//       "/auth/login/request-code",
-//       { username: email, password },
-//       tenantId
-//     ),
-//   loginVerify: (email: string, code: string, tenantId?: string) =>
-//     postJSON("/auth/login/verify", { email, code }, tenantId),
-//   me: () => getAuthJSON("/auth/me"),
-// };
-
-// export const AffiliateAPI = {
-//   getLinks: () => getAuthJSON("/affiliate/register-link"),
-//   createLink: () => getAuthJSON("/affiliate/register-link?create_new=true"),
-//   deactivate: (token: string) =>
-//     postAuthJSON(
-//       `/affiliate/links/${encodeURIComponent(token)}/deactivate`,
-//       {}
-//     ),
-//   rotate: (token: string) =>
-//     postAuthJSON(`/affiliate/links/${encodeURIComponent(token)}/rotate`, {}),
-//   dashboard: () => getAuthJSON("/affiliate/dashboard"),
-//   payouts: (status?: string) =>
-//     getAuthJSON(
-//       `/affiliate/payouts${
-//         status ? `?status_filter=${encodeURIComponent(status)}` : ""
-//       }`
-//     ),
-//   requestPayout: (month?: string, percent = 5) =>
-//     postAuthJSON("/affiliate/payouts/request", { month, percent }),
-//   updateProfile: (body: any) => postAuthJSON("/affiliate/profile", body),
-// };
-
-// export const AdminAPI = {
-//   pharmacies: (page = 1, pageSize = 20, q?: string) =>
-//     getAuthJSON(
-//       `/admin/pharmacies?page=${page}&page_size=${pageSize}${
-//         q ? `&q=${encodeURIComponent(q)}` : ""
-//       }`
-//     ),
-//   affiliates: (page = 1, pageSize = 20, q?: string) =>
-//     getAuthJSON(
-//       `/admin/affiliates?page=${page}&page_size=${pageSize}${
-//         q ? `&q=${encodeURIComponent(q)}` : ""
-//       }`
-//     ),
-//   approvePharmacy: (
-//     tenantId: string,
-//     applicationId: number,
-//     body?: { issue_temp_password?: boolean; temp_password?: string }
-//   ) =>
-//     postAuthJSON(
-//       `/admin/pharmacies/${applicationId}/approve`,
-//       body || {},
-//       tenantId
-//     ),
-//   rejectPharmacy: (tenantId: string, applicationId: number) =>
-//     postAuthJSON(`/admin/pharmacies/${applicationId}/reject`, {}, tenantId),
-//   verifyPayment: (tenantId: string, code?: string | null) =>
-//     postAuthJSON(`/admin/payments/verify`, { code: code || null }, tenantId),
-//   rejectPayment: (tenantId: string, code?: string | null) =>
-//     postAuthJSON(`/admin/payments/reject`, { code: code || null }, tenantId),
-//   analyticsOverview: (days = 30) =>
-//     getAuthJSON(`/admin/analytics/overview?days=${days}`),
-//   downloadPharmacyLicense: async (applicationId: number) => {
-//     const res = await authFetch(
-//       `/admin/pharmacies/${applicationId}/license`,
-//       { method: "GET" },
-//       true
-//     );
-//     if (!res.ok) {
-//       const text = await res.text().catch(() => "");
-//       throw new Error(text || `HTTP ${res.status}`);
-//     }
-//     const blob = await res.blob();
-//     let filename = `license-${applicationId}`;
-//     const disposition = res.headers.get("Content-Disposition") || "";
-//     const match = disposition.match(
-//       /filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i
-//     );
-//     const extracted = match?.[1] || match?.[2];
-//     if (extracted) {
-//       try {
-//         filename = decodeURIComponent(extracted);
-//       } catch {
-//         filename = extracted;
-//       }
-//     }
-//     const url = window.URL.createObjectURL(blob);
-//     const link = document.createElement("a");
-//     link.href = url;
-//     link.download = filename;
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-//     window.URL.revokeObjectURL(url);
-//   },
-//   approveAffiliate: (userId: number) =>
-//     postAuthJSON(`/admin/affiliates/${userId}/approve`, {}),
-//   rejectAffiliate: (userId: number) =>
-//     postAuthJSON(`/admin/affiliates/${userId}/reject`, {}),
-//   listAffiliatePayouts: (status?: string) =>
-//     getAuthJSON(
-//       `/admin/affiliate/payouts${
-//         status ? `?status=${encodeURIComponent(status)}` : ""
-//       }`
-//     ),
-//   markPayoutPaid: (payoutId: number) =>
-//     postAuthJSON(`/admin/affiliate/payouts/${payoutId}/mark-paid`, {}),
-//   approvePayout: (payoutId: number) =>
-//     postAuthJSON(`/admin/affiliate/payouts/${payoutId}/approve`, {}),
-//   usage: (days = 30) => getAuthJSON(`/admin/usage?days=${days}`),
-//   audit: (params?: { tenant_id?: string; action?: string; limit?: number }) =>
-//     getAuthJSON(
-//       `/admin/audit${(() => {
-//         const qs = new URLSearchParams();
-//         if (params?.tenant_id) qs.set("tenant_id", params.tenant_id);
-//         if (params?.action) qs.set("action", params.action);
-//         if (params?.limit) qs.set("limit", String(params.limit));
-//         const s = qs.toString();
-//         return s ? `?${s}` : "";
-//       })()}`
-//     ),
-// };
-
-// export const StaffAPI = {
-//   createCashier: (tenantId: string, body: any) =>
-//     postAuthJSON("/staff", body, tenantId),
-//   list: (tenantId: string) => getAuthJSON("/staff", tenantId),
-//   update: (tenantId: string, userId: number, body: { is_active?: boolean }) =>
-//     authFetch(
-//       `/staff/${userId}`,
-//       {
-//         method: "PATCH",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(body),
-//       },
-//       true,
-//       tenantId
-//     ).then(async (res) => {
-//       if (!res.ok) {
-//         const t = await res.text();
-//         throw new Error(t || `HTTP ${res.status}`);
-//       }
-//       return res.json();
-//     }),
-//   remove: (tenantId: string, userId: number) =>
-//     authFetch(`/staff/${userId}`, { method: "DELETE" }, true, tenantId).then(
-//       async (res) => {
-//         if (!res.ok) {
-//           const t = await res.text();
-//           throw new Error(t || `HTTP ${res.status}`);
-//         }
-//         return res.json();
-//       }
-//     ),
-// };
-
-// export const BillingAPI = {
-//   submitPaymentCode: (tenantId: string, code: string) =>
-//     postAuthJSON("/billing/payment-code", { code }, tenantId),
-// };
-
-// export const UploadAPI = {
-//   uploadKyc: async (
-//     file: File
-//   ): Promise<{ path: string; size: number; filename: string }> => {
-//     const fd = new FormData();
-//     fd.append("file", file);
-//     return await postMultipart(`/uploads/kyc`, fd);
-//   },
-// };
-
-// export const KYCAPI = {
-//   status: (tenantId: string) => getAuthJSON(`/owner/kyc/status`, tenantId),
-//   update: (tenantId: string, body: any) =>
-//     putAuthJSON(`/owner/kyc/status`, body, tenantId),
-// };
-
-// export const PharmaciesAPI = {
-//   list: (page = 1, pageSize = 20, q?: string) =>
-//     getAuthJSON(
-//       `/pharmacies?page=${page}&page_size=${pageSize}${
-//         q ? `&q=${encodeURIComponent(q)}` : ""
-//       }`
-//     ),
-//   get: (id: number) => getAuthJSON(`/pharmacies/${id}`),
-//   update: (id: number, body: { name?: string; address?: string }) =>
-//     authFetch(`/pharmacies/${id}`, {
-//       method: "PATCH",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(body),
-//     }).then(async (res) => {
-//       if (!res.ok) {
-//         const t = await res.text();
-//         throw new Error(t || `HTTP ${res.status}`);
-//       }
-//       return res.json();
-//     }),
-// };
-
-// export const ChatAPI = {
-//   listThreads: (tenantId: string) => getAuthJSON(`/chat/threads`, tenantId),
-//   createThread: (tenantId: string, title: string) =>
-//     postAuthJSON(`/chat/threads`, { title }, tenantId),
-//   listMessages: (tenantId: string, threadId: number) =>
-//     getAuthJSON(`/chat/threads/${threadId}/messages`, tenantId),
-//   sendMessage: (tenantId: string, threadId: number, prompt: string) =>
-//     postAuthJSON(`/chat/threads/${threadId}/messages`, { prompt }, tenantId),
-//   usage: (tenantId: string, days = 30) =>
-//     getAuthJSON(`/chat/usage?days=${days}`, tenantId),
-//   sendStream: async (
-//     tenantId: string,
-//     threadId: number,
-//     prompt: string,
-//     onEvent: (evt: { event: string; data?: any }) => void
-//   ): Promise<void> => {
-//     const res = await authFetch(
-//       `/chat/threads/${threadId}/messages/stream`,
-//       {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ prompt }),
-//       },
-//       true,
-//       tenantId
-//     );
-//     if (!res.ok || !res.body) {
-//       const t = await res.text().catch(() => "");
-//       throw new Error(t || `HTTP ${res.status}`);
-//     }
-//     const reader = res.body.getReader();
-//     const decoder = new TextDecoder();
-//     let buf = "";
-//     while (true) {
-//       const { done, value } = await reader.read();
-//       if (done) break;
-//       buf += decoder.decode(value, { stream: true });
-//       let idx;
-//       while ((idx = buf.indexOf("\n\n")) !== -1) {
-//         const chunk = buf.slice(0, idx).trim();
-//         buf = buf.slice(idx + 2);
-//         if (chunk.startsWith("data:")) {
-//           try {
-//             const jsonStr = chunk.slice(5).trim();
-//             const obj = JSON.parse(jsonStr);
-//             onEvent(obj);
-//           } catch {}
-//         }
-//       }
-//     }
-//   },
-// };
-
-// ----------------- Generic API Wrapper -----------------
-export const api = {
-  get: async (url: string, config?: any) => {
-    let finalUrl = url;
-    if (config?.params) {
-      const searchParams = new URLSearchParams();
-      Object.entries(config.params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          searchParams.append(key, String(value));
-        }
-      });
-      const qs = searchParams.toString();
-      if (qs) {
-        finalUrl += (finalUrl.includes('?') ? '&' : '?') + qs;
-      }
-    }
-    const data = await getAuthJSON(finalUrl);
-    return { data };
-  },
-  post: async (url: string, data: any) => {
-    const res = await postAuthJSON(url, data);
-    return { data: res };
-  },
-  patch: async (url: string, data: any) => {
-    const res = await authFetch(url, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    }, true);
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(text || `Request failed with ${res.status}`);
-    }
-    const json = await res.json().catch(() => ({}));
-    return { data: json };
-  },
-  delete: async (url: string) => {
-    const res = await authFetch(url, { method: "DELETE" }, true);
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(text || `Request failed with ${res.status}`);
-    }
-    const json = await res.json().catch(() => ({}));
-    return { data: json };
-  }
-};
-// ----------------- GoalsAPI -----------------
-export enum GoalType {
-  REVENUE = "revenue",
-  PROFIT = "profit",
-  CUSTOMERS = "customers",
-  SALES_COUNT = "sales_count",
-}
-
-export enum GoalStatus {
-  ACTIVE = "active",
-  ACHIEVED = "achieved",
-  MISSED = "missed",
-  ARCHIVED = "archived",
-}
-
-export type Milestone = {
-  id: number;
-  goal_id: number;
-  title: string;
-  target_value: number;
-  achieved: boolean;
-  achieved_at?: string;
-  description?: string;
-  created_at: string;
-};
-
-export type BusinessGoal = {
-  id: number;
-  tenant_id: string;
-  title: string;
-  goal_type: GoalType;
-  target_amount: number;
-  current_amount: number;
-  start_date: string;
-  end_date: string;
-  status: GoalStatus;
-  description?: string;
-  created_at: string;
-  updated_at: string;
-  milestones: Milestone[];
-  progress_percentage?: number;
-  days_remaining?: number;
-  is_on_track?: boolean;
-};
-
-export const GoalsAPI = {
-  list: (tenantId: string, params?: { status?: GoalStatus; goal_type?: GoalType }) => {
-    const search = new URLSearchParams();
-    if (params?.status) search.set("status", params.status);
-    if (params?.goal_type) search.set("goal_type", params.goal_type);
-    return getAuthJSON<BusinessGoal[]>(`/api/v1/goals?${search.toString()}`, tenantId);
-  },
-  create: (tenantId: string, body: any) => postAuthJSON<BusinessGoal>("/api/v1/goals", body, tenantId),
-  get: (tenantId: string, id: number) => getAuthJSON<BusinessGoal>(`/api/v1/goals/${id}`, tenantId),
-  update: (tenantId: string, id: number, body: any) =>
-    authFetch(`/api/v1/goals/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }, true, tenantId).then(res => res.json()),
-  delete: (tenantId: string, id: number) =>
-    authFetch(`/api/v1/goals/${id}`, { method: "DELETE" }, true, tenantId).then(res => res.json()),
-  addMilestone: (tenantId: string, goalId: number, body: any) =>
-    postAuthJSON(`/api/v1/goals/${goalId}/milestones`, body, tenantId),
-  getProgress: (tenantId: string, goalId: number) =>
-    getAuthJSON(`/api/v1/goals/${goalId}/progress`, tenantId),
-};
-
-// ----------------- NotificationsAPI -----------------
-export type Notification = {
-  id: number;
-  type: string;
-  title: string;
-  body: string;
-  is_read: boolean;
-  created_at: string;
-};
-
-export const NotificationsAPI = {
-  list: (tenantId: string) => getAuthJSON<Notification[]>("/api/v1/notifications", tenantId),
-  markRead: (tenantId: string, notificationId: number) =>
-    postAuthJSON(`/api/v1/notifications/${notificationId}/read`, {}, tenantId),
-  getUnreadCount: async (tenantId: string): Promise<number> => {
-    const notifications = await getAuthJSON<Notification[]>("/api/v1/notifications", tenantId);
-    return notifications.filter(n => !n.is_read).length;
-  },
-};
-
-// ----------------- ExpensesAPI -----------------
-export enum ExpenseCategory {
-  SALARY = "salary",
-  RENT = "rent",
-  TAX = "tax",
-  UTILITIES = "utilities",
-  SUPPLIES = "supplies",
-  MAINTENANCE = "maintenance",
-  OTHER = "other",
-}
-
-export enum ExpenseStatus {
-  PENDING = "pending",
-  PAID = "paid",
-  OVERDUE = "overdue",
-}
-
-export type Expense = {
-  id: number;
-  tenant_id: string;
-  title: string;
-  amount: number;
-  category: ExpenseCategory;
-  due_date?: string | null;
-  paid_date?: string | null;
-  status: ExpenseStatus;
-  description?: string | null;
-  created_at: string;
-  updated_at: string;
-};
-
-export const ExpensesAPI = {
-  list: (tenantId: string, params?: { status?: ExpenseStatus; category?: ExpenseCategory }) => {
-    const search = new URLSearchParams();
-    if (params?.status) search.set("status", params.status);
-    if (params?.category) search.set("category", params.category);
-    return getAuthJSON<Expense[]>(`/api/v1/expenses?${search.toString()}`, tenantId);
-  },
-  create: (tenantId: string, body: any) => postAuthJSON<Expense>("/api/v1/expenses", body, tenantId),
-  update: (tenantId: string, id: number, body: any) =>
-    authFetch(`/api/v1/expenses/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }, true, tenantId).then(res => res.json()),
-  delete: (tenantId: string, id: number) =>
-    authFetch(`/api/v1/expenses/${id}`, { method: "DELETE" }, true, tenantId).then(res => res.json()),
-};
-
-// ----------------- End of API -----------------
-

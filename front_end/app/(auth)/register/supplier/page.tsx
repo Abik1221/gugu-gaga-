@@ -62,6 +62,18 @@ export default function SupplierRegisterPage() {
       ...prev,
       [key]: null,
     }));
+  // Helper function to set cookies
+  const setCookie = (name: string, value: string, days: number) => {
+    if (typeof document === "undefined") return;
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+  };
+
   async function submitSupplier(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -141,6 +153,7 @@ export default function SupplierRegisterPage() {
       if (data.access_token) {
         localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("token", data.access_token); // Also store as 'token'
+        setCookie("access_token", data.access_token, 7);
       }
       if (data.refresh_token) {
         localStorage.setItem("refresh_token", data.refresh_token);
@@ -181,6 +194,7 @@ export default function SupplierRegisterPage() {
       if (verifyData.access_token) {
         localStorage.setItem("access_token", verifyData.access_token);
         localStorage.setItem("token", verifyData.access_token); // Also store as 'token'
+        setCookie("access_token", verifyData.access_token, 7);
       }
       if (verifyData.refresh_token) {
         localStorage.setItem("refresh_token", verifyData.refresh_token);
@@ -360,11 +374,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("supplierName");
                         setSupplierName(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.supplierName
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.supplierName
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Use your registered business name.
@@ -387,11 +400,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("email");
                         setEmail(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.email
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.email
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Business email for account notifications.
@@ -414,11 +426,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("password");
                         setPassword(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.password
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.password
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Minimum 6 characters for security.
@@ -440,11 +451,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("nationalId");
                         setNationalId(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.nationalId
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.nationalId
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Government-issued identification number.
@@ -466,11 +476,10 @@ export default function SupplierRegisterPage() {
                         clearFieldError("tinNumber");
                         setTinNumber(e.target.value);
                       }}
-                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${
-                        fieldErrors.tinNumber
+                      className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.tinNumber
                           ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                           : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
-                      }`}
+                        }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
                       Tax Identification Number for business verification.
@@ -499,11 +508,10 @@ export default function SupplierRegisterPage() {
                       />
                       <label
                         htmlFor="license-upload"
-                        className={`flex items-center justify-between px-4 py-2.5 border rounded-lg cursor-pointer transition bg-white ${
-                          fieldErrors.licenseImage
+                        className={`flex items-center justify-between px-4 py-2.5 border rounded-lg cursor-pointer transition bg-white ${fieldErrors.licenseImage
                             ? "border-red-400/60 hover:border-red-300"
                             : "border-slate-200 hover:border-green-400"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           {licenseImage && (
@@ -606,8 +614,8 @@ export default function SupplierRegisterPage() {
                     ? "Verifying..."
                     : "Registering..."
                   : otpSent
-                  ? "Verify Email"
-                  : "Register as Supplier"}
+                    ? "Verify Email"
+                    : "Register as Supplier"}
               </Button>
 
               <p className="text-center text-xs text-slate-700">
