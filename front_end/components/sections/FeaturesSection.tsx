@@ -4,7 +4,7 @@ import branch1 from "@/public/branch1.jpeg";
 import branch2 from "@/public/branch2.jpeg";
 import branch3 from "@/public/branch3.jpeg";
 import memory from "@/public/memory.png";
-import branch4 from "@/public/branch4.png";
+import supplierregistration from "@/public/supplierregistration.jpeg";
 
 import {
   Building2,
@@ -57,7 +57,7 @@ export default function FeaturesSection() {
       title: "Supplier Marketplace",
       description:
         "Connect directly with verified suppliers who promote their products on your dashboard. Discover new products, compare prices, and order with confidence.",
-      image: branch4,
+      image: supplierregistration,
     },
   ];
 
