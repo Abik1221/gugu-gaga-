@@ -134,10 +134,10 @@ export function PWAInstructionsDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-md bg-white">
+            <DialogContent className="sm:max-w-md bg-white text-gray-900">
                 <DialogHeader>
-                    <DialogTitle>Install MesobAI</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className="text-gray-900">Install MesobAI</DialogTitle>
+                    <DialogDescription className="text-gray-600">
                         Follow these steps to install the app on your device for a better experience.
                     </DialogDescription>
                 </DialogHeader>
