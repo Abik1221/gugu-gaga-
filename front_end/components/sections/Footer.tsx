@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Brain, Linkedin, Twitter, Mail } from "lucide-react";
+import { Brain, Linkedin, Send, Mail } from "lucide-react";
 
 const footerNav = {
   product: [
@@ -34,7 +34,7 @@ export default function Footer() {
           </p>
           <div className="flex gap-3 text-emerald-100">
             <a
-              href="https://www.linkedin.com"
+              href="https://www.linkedin.com/in/nahom-keneni-638290330/"
               target="_blank"
               rel="noreferrer"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:text-emerald-200"
@@ -42,12 +42,12 @@ export default function Footer() {
               <Linkedin className="h-4 w-4" />
             </a>
             <a
-              href="https://twitter.com"
+              href="https://t.me/nahom_keneni"
               target="_blank"
               rel="noreferrer"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:border-emerald-300/40 hover:text-emerald-200"
             >
-              <Twitter className="h-4 w-4" />
+              <Send className="h-4 w-4" />
             </a>
             <a
               href="mailto:hello@zemenpharma.com"
