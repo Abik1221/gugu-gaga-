@@ -77,6 +77,18 @@ export default function OwnerRegisterPage() {
       [key]: null,
     }));
 
+  // Helper function to set cookies
+  const setCookie = (name: string, value: string, days: number) => {
+    if (typeof document === "undefined") return;
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+  };
+
   async function submitOwner(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -158,6 +170,7 @@ export default function OwnerRegisterPage() {
       if (data.access_token) {
         localStorage.setItem("access_token", data.access_token);
         localStorage.setItem("token", data.access_token); // Also store as 'token'
+        setCookie("access_token", data.access_token, 7);
       }
       if (data.refresh_token) {
         localStorage.setItem("refresh_token", data.refresh_token);
@@ -203,6 +216,7 @@ export default function OwnerRegisterPage() {
       if (verifyData.access_token) {
         localStorage.setItem("access_token", verifyData.access_token);
         localStorage.setItem("token", verifyData.access_token); // Also store as 'token'
+        setCookie("access_token", verifyData.access_token, 7);
       }
       if (verifyData.refresh_token) {
         localStorage.setItem("refresh_token", verifyData.refresh_token);

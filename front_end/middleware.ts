@@ -30,12 +30,19 @@ export function middleware(request: NextRequest) {
     // Check if the current path is protected
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
 
+    // Check for authentication token in cookies
+    const accessToken = request.cookies.get('access_token')?.value
+
+    // Redirect logged-in users from landing page to dashboard
+    if (pathname === '/' && accessToken) {
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+
     if (!isProtectedRoute) {
         return NextResponse.next()
     }
 
-    // Check for authentication token in cookies
-    const accessToken = request.cookies.get('access_token')?.value
+
 
     // If no token, redirect to appropriate login page
     if (!accessToken) {
