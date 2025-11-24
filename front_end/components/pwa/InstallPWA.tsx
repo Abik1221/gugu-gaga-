@@ -16,9 +16,17 @@ export function InstallPWA() {
   const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
+    // Check localStorage first
+    const installedFromStorage = localStorage.getItem('pwa-installed');
+    if (installedFromStorage === 'true') {
+      setIsInstalled(true);
+      return;
+    }
+
+    // Check if already installed (running in standalone mode)
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
+      localStorage.setItem('pwa-installed', 'true');
       return;
     }
 
@@ -28,12 +36,20 @@ export function InstallPWA() {
       setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
+    // Listen for appinstalled event
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      localStorage.setItem('pwa-installed', 'true');
+    };
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, [isInstalled]);
+  }, []);
 
   const handleInstall = async () => {
     if (!deferredPrompt) {
@@ -46,6 +62,7 @@ export function InstallPWA() {
 
     if (outcome === 'accepted') {
       setIsInstalled(true);
+      localStorage.setItem('pwa-installed', 'true');
     }
 
     setDeferredPrompt(null);
@@ -79,21 +96,38 @@ export function InstallButton({ className = "", fullWidth = false }: { className
   const [showInstructions, setShowInstructions] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    // Check localStorage first
+    const installedFromStorage = localStorage.getItem('pwa-installed');
+    if (installedFromStorage === 'true') {
       setIsInstalled(true);
       return;
     }
 
+    // Check if already installed (running in standalone mode)
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+      localStorage.setItem('pwa-installed', 'true');
+      return;
+    }
+
+    // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
+    // Listen for appinstalled event
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      localStorage.setItem('pwa-installed', 'true');
+    };
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
@@ -108,6 +142,7 @@ export function InstallButton({ className = "", fullWidth = false }: { className
 
     if (outcome === 'accepted') {
       setIsInstalled(true);
+      localStorage.setItem('pwa-installed', 'true');
     }
 
     setDeferredPrompt(null);
