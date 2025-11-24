@@ -10,6 +10,9 @@ import {
 import { StaffSidebar } from "@/components/custom/staff-sidebar";
 import { AuthAPI } from "@/utils/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { NotificationPanel } from "@/components/notifications/NotificationPanel";
+import { NotificationProvider } from "@/contexts/NotificationContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export default function StaffLayout({
   children,
@@ -48,19 +51,24 @@ export default function StaffLayout({
   if (!user) return null;
 
   return (
-    <SidebarProvider>
-      <StaffSidebar user={user} />
-      <SidebarInset className="bg-white text-black">
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-white shadow-sm">
-          <SidebarTrigger className="-ml-1 text-black" />
-          <div className="flex-1">
-            <h1 className="font-semibold text-black text-lg">
-              Staff Dashboard
-            </h1>
-          </div>
-        </header>
-        <div className="flex-1 overflow-auto bg-gray-50">{children}</div>
-      </SidebarInset>
-    </SidebarProvider>
+    <AuthProvider>
+      <NotificationProvider>
+        <SidebarProvider>
+          <StaffSidebar user={user} />
+          <SidebarInset className="bg-white text-black">
+            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-white shadow-sm">
+              <SidebarTrigger className="-ml-1 text-black" />
+              <div className="flex-1">
+                <h1 className="font-semibold text-black text-lg">
+                  Staff Dashboard
+                </h1>
+              </div>
+              <NotificationPanel />
+            </header>
+            <div className="flex-1 overflow-auto bg-gray-50">{children}</div>
+          </SidebarInset>
+        </SidebarProvider>
+      </NotificationProvider>
+    </AuthProvider>
   );
 }

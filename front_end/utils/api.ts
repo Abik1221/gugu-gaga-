@@ -992,6 +992,9 @@ export type InventoryItem = {
   expiry_date?: string | null;
   lot_number?: string | null;
   sell_price?: number | null;
+  unit_type?: string;
+  packaging_data?: any;
+  price_per_unit?: number | null;
 };
 
 export type InventoryListResponse = {
@@ -1814,3 +1817,121 @@ export const SupplierAdminAPI = {
 //     }
 //   },
 // };
+
+// ----------------- Generic API Wrapper -----------------
+export const api = {
+  get: async (url: string, config?: any) => {
+    let finalUrl = url;
+    if (config?.params) {
+      const searchParams = new URLSearchParams();
+      Object.entries(config.params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+      const qs = searchParams.toString();
+      if (qs) {
+        finalUrl += (finalUrl.includes('?') ? '&' : '?') + qs;
+      }
+    }
+    const data = await getAuthJSON(finalUrl);
+    return { data };
+  },
+  post: async (url: string, data: any) => {
+    const res = await postAuthJSON(url, data);
+    return { data: res };
+  },
+  patch: async (url: string, data: any) => {
+    const res = await authFetch(url, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }, true);
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `Request failed with ${res.status}`);
+    }
+    const json = await res.json().catch(() => ({}));
+    return { data: json };
+  },
+  delete: async (url: string) => {
+    const res = await authFetch(url, { method: "DELETE" }, true);
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `Request failed with ${res.status}`);
+    }
+    const json = await res.json().catch(() => ({}));
+    return { data: json };
+  }
+};
+// ----------------- NotificationsAPI -----------------
+export type Notification = {
+  id: number;
+  type: string;
+  title: string;
+  body: string;
+  is_read: boolean;
+  created_at: string;
+};
+
+export const NotificationsAPI = {
+  list: (tenantId: string) => getAuthJSON<Notification[]>("/api/v1/notifications", tenantId),
+  markRead: (tenantId: string, notificationId: number) =>
+    postAuthJSON(`/api/v1/notifications/${notificationId}/read`, {}, tenantId),
+  getUnreadCount: async (tenantId: string): Promise<number> => {
+    const notifications = await getAuthJSON<Notification[]>("/api/v1/notifications", tenantId);
+    return notifications.filter(n => !n.is_read).length;
+  },
+};
+
+// ----------------- ExpensesAPI -----------------
+export enum ExpenseCategory {
+  SALARY = "salary",
+  RENT = "rent",
+  TAX = "tax",
+  UTILITIES = "utilities",
+  SUPPLIES = "supplies",
+  MAINTENANCE = "maintenance",
+  OTHER = "other",
+}
+
+export enum ExpenseStatus {
+  PENDING = "pending",
+  PAID = "paid",
+  OVERDUE = "overdue",
+}
+
+export type Expense = {
+  id: number;
+  tenant_id: string;
+  title: string;
+  amount: number;
+  category: ExpenseCategory;
+  due_date?: string | null;
+  paid_date?: string | null;
+  status: ExpenseStatus;
+  description?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export const ExpensesAPI = {
+  list: (tenantId: string, params?: { status?: ExpenseStatus; category?: ExpenseCategory }) => {
+    const search = new URLSearchParams();
+    if (params?.status) search.set("status", params.status);
+    if (params?.category) search.set("category", params.category);
+    return getAuthJSON<Expense[]>(`/api/v1/expenses?${search.toString()}`, tenantId);
+  },
+  create: (tenantId: string, body: any) => postAuthJSON<Expense>("/api/v1/expenses", body, tenantId),
+  update: (tenantId: string, id: number, body: any) =>
+    authFetch(`/api/v1/expenses/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }, true, tenantId).then(res => res.json()),
+  delete: (tenantId: string, id: number) =>
+    authFetch(`/api/v1/expenses/${id}`, { method: "DELETE" }, true, tenantId).then(res => res.json()),
+};
+
+// ----------------- End of API -----------------
+

@@ -13,7 +13,11 @@ from app.db.deps import get_db
 from app.models.medicine import InventoryItem, Medicine
 from app.models.sales import SaleItem
 from app.deps.ratelimit import rate_limit_user
-from app.schemas.inventory import IdResponse, StatusResponse, InventoryBulkResult, InventoryListResponse
+from app.schemas.inventory import (
+    IdResponse, StatusResponse, InventoryBulkResult, InventoryListResponse,
+    InventoryItemCreate, InventoryItemPacketCreate, InventoryAdjustment, InventoryItemOut
+)
+from app.services.inventory_service import InventoryService
 from app.services.audit import log_event
 
 router = APIRouter(prefix="/inventory", tags=["inventory"])
@@ -124,6 +128,177 @@ def upsert_item(
         },
     )
     return {"id": item.id}
+
+
+@router.post("/items/single", response_model=IdResponse)
+def add_single_item(
+    item_in: InventoryItemCreate,
+    tenant_id: str = Depends(require_tenant),
+    _role=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+    _rl=Depends(rate_limit_user("inventory_mutation_user")),
+):
+    # Find medicine
+    med = db.query(Medicine).filter(Medicine.name == item_in.medicine_name, Medicine.tenant_id == tenant_id).first()
+    if not med:
+        med = Medicine(name=item_in.medicine_name, tenant_id=tenant_id, sku=item_in.sku)
+        db.add(med)
+        db.commit()
+        db.refresh(med)
+    
+    existing = (
+        db.query(InventoryItem)
+        .filter(
+            InventoryItem.tenant_id == tenant_id,
+            InventoryItem.medicine_id == med.id,
+            InventoryItem.branch == item_in.branch,
+            InventoryItem.lot_number == item_in.lot_number,
+        )
+        .first()
+    )
+    
+    if existing:
+        existing.quantity = (existing.quantity or 0) + item_in.quantity
+        if item_in.expiry_date:
+            existing.expiry_date = item_in.expiry_date
+        if item_in.sell_price:
+            existing.sell_price = item_in.sell_price
+        existing.reorder_level = item_in.reorder_level
+        existing.last_updated_by = current_user.id
+        existing.last_update_reason = "Restock (Single)"
+        db.add(existing)
+        db.commit()
+        db.refresh(existing)
+        
+        InventoryService.log_transaction(
+            db, existing.id, "add", item_in.quantity, 
+            existing.quantity - item_in.quantity, existing.quantity, 
+            "Restock (Single)", current_user.id
+        )
+        return {"id": existing.id}
+    
+    item = InventoryItem(
+        tenant_id=tenant_id,
+        medicine_id=med.id,
+        branch=item_in.branch,
+        quantity=item_in.quantity,
+        reorder_level=item_in.reorder_level,
+        expiry_date=item_in.expiry_date,
+        lot_number=item_in.lot_number,
+        sell_price=item_in.sell_price,
+        unit_type=item_in.unit_type,
+        last_updated_by=current_user.id,
+        last_update_reason="Initial Stock (Single)"
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    
+    InventoryService.log_transaction(
+        db, item.id, "add", item_in.quantity, 
+        0, item_in.quantity, 
+        "Initial Stock (Single)", current_user.id
+    )
+    
+    return {"id": item.id}
+
+
+@router.post("/items/packet", response_model=IdResponse)
+def add_packet_item(
+    item_in: InventoryItemPacketCreate,
+    tenant_id: str = Depends(require_tenant),
+    _role=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+    _rl=Depends(rate_limit_user("inventory_mutation_user")),
+):
+    total_qty = InventoryService.calculate_packet_total(item_in.packaging_levels)
+    
+    med = db.query(Medicine).filter(Medicine.name == item_in.medicine_name, Medicine.tenant_id == tenant_id).first()
+    if not med:
+        med = Medicine(name=item_in.medicine_name, tenant_id=tenant_id, sku=item_in.sku)
+        db.add(med)
+        db.commit()
+        db.refresh(med)
+        
+    existing = (
+        db.query(InventoryItem)
+        .filter(
+            InventoryItem.tenant_id == tenant_id,
+            InventoryItem.medicine_id == med.id,
+            InventoryItem.branch == item_in.branch,
+            InventoryItem.lot_number == item_in.lot_number,
+        )
+        .first()
+    )
+    
+    packaging_data = {"levels": [l.dict() for l in item_in.packaging_levels]}
+    
+    if existing:
+        existing.quantity = (existing.quantity or 0) + total_qty
+        if item_in.expiry_date:
+            existing.expiry_date = item_in.expiry_date
+        existing.reorder_level = item_in.reorder_level
+        existing.packaging_data = packaging_data
+        existing.price_per_unit = item_in.sell_price_per_unit
+        existing.last_updated_by = current_user.id
+        existing.last_update_reason = "Restock (Packet)"
+        db.add(existing)
+        db.commit()
+        db.refresh(existing)
+        
+        InventoryService.log_transaction(
+            db, existing.id, "add", total_qty, 
+            existing.quantity - total_qty, existing.quantity, 
+            "Restock (Packet)", current_user.id
+        )
+        return {"id": existing.id}
+        
+    item = InventoryItem(
+        tenant_id=tenant_id,
+        medicine_id=med.id,
+        branch=item_in.branch,
+        quantity=total_qty,
+        reorder_level=item_in.reorder_level,
+        expiry_date=item_in.expiry_date,
+        lot_number=item_in.lot_number,
+        price_per_unit=item_in.sell_price_per_unit,
+        packaging_data=packaging_data,
+        unit_type="packet",
+        last_updated_by=current_user.id,
+        last_update_reason="Initial Stock (Packet)"
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    
+    InventoryService.log_transaction(
+        db, item.id, "add", total_qty, 
+        0, total_qty, 
+        "Initial Stock (Packet)", current_user.id
+    )
+    
+    return {"id": item.id}
+
+
+@router.post("/items/{item_id}/adjust", response_model=InventoryItemOut)
+def adjust_inventory_item(
+    item_id: int,
+    adjustment: InventoryAdjustment,
+    tenant_id: str = Depends(require_tenant),
+    _role=Depends(require_role(Role.admin, Role.pharmacy_owner, Role.cashier)),
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+    _ten=Depends(enforce_user_tenant),
+    _sub=Depends(enforce_subscription_active),
+    _rl=Depends(rate_limit_user("inventory_mutation_user")),
+):
+    return InventoryService.adjust_inventory(db, item_id, adjustment, current_user.id, tenant_id)
 
 
 @router.post("/bulk", response_model=InventoryBulkResult)
