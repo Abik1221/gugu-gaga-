@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-2 sm:pt-3 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white">
+    <section className="pt-2 sm:pt-3 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white overflow-hidden">
       <div className="w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch pt-10">
           {/* LEFT */}
@@ -124,6 +124,7 @@ export default function HeroSection() {
                 src={branch4}
                 alt="AI Dashboard"
                 fill
+                priority
                 className="object-cover rounded-2xl shadow-2xl"
                 sizes="(min-width:1024px) 50vw, 100vw"
               />

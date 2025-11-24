@@ -1,6 +1,6 @@
 // Marketing-specific layout (header with nav, footer)
 import Link from "next/link";
-import { ArrowLeft, Linkedin, Twitter, Mail } from "lucide-react";
+import { ArrowLeft, Linkedin, Mail } from "lucide-react";
 import Footer from "@/components/sections/Footer";
 
 const navLinks = [

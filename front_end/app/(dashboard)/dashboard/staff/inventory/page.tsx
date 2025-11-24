@@ -2,12 +2,14 @@
 
 export const dynamic = 'force-dynamic';
 
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AddItemDialog } from "@/components/inventory/AddItemDialog";
 import { EditItemDialog } from "@/components/inventory/EditItemDialog";
+import { Trash2 } from "lucide-react";
 import { api } from "@/utils/api";
 
 interface InventoryItem {
@@ -203,11 +205,6 @@ export default function StaffInventory() {
                         <p className="font-medium text-gray-900">
                           {item.quantity} units
                         </p>
-                        {/* 
-                        <p className="text-sm text-gray-600">
-                          {item.packs} packs + {item.singles} singles
-                        </p>
-                        */}
                         <p className="text-xs text-gray-500">
                           Reorder at: {item.reorder_level}
                         </p>

@@ -1,8 +1,8 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Mail, Clock, AlertTriangle, CheckCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, X, CheckCircle } from "lucide-react";
+import { Button } from "./button";
 
 interface OtpSentDialogProps {
   isOpen: boolean;
@@ -11,74 +11,75 @@ interface OtpSentDialogProps {
   purpose?: "register" | "login" | "password_reset";
 }
 
-export function OtpSentDialog({ isOpen, onClose, email, purpose = "register" }: OtpSentDialogProps) {
-  const purposeText = {
-    register: "registration",
-    login: "login", 
-    password_reset: "password reset"
-  }[purpose];
-
-  const expiryMinutes = purpose === "password_reset" ? "30" : "10";
-
+export function OtpSentDialog({ isOpen, onClose, email }: OtpSentDialogProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg border-0 shadow-2xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-3 text-green-600 text-xl">
-            <div className="p-2 bg-green-100 rounded-full">
-              <CheckCircle className="h-6 w-6" />
-            </div>
-            Code Sent Successfully!
-          </DialogTitle>
-        </DialogHeader>
-        
-        <div className="space-y-4 py-6">
-          <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200">
-            <div className="p-2 bg-green-100 rounded-full flex-shrink-0">
-              <Mail className="h-5 w-5 text-green-600" />
-            </div>
-            <div className="space-y-2">
-              <p className="text-base font-semibold text-green-800">
-                Check your email inbox
-              </p>
-              <p className="text-sm text-green-700">
-                We've sent a 6-digit verification code to:
-              </p>
-              <p className="text-sm font-bold text-green-900 bg-white px-3 py-1 rounded-lg break-all">
-                {email}
-              </p>
-            </div>
-          </div>
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            onClick={onClose}
+          />
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl shadow-2xl max-w-sm w-full p-8 relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={onClose}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-          <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border border-orange-200">
-            <div className="p-2 bg-orange-100 rounded-full flex-shrink-0">
-              <AlertTriangle className="h-4 w-4 text-orange-600" />
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-orange-800">
-                Don't see the email?
-              </p>
-              <p className="text-sm text-orange-700">
-                Check your <strong>spam/junk folder</strong> - sometimes emails end up there
-              </p>
-            </div>
-          </div>
+              <div className="flex flex-col items-center text-center space-y-4">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                  className="p-3 bg-white rounded-full shadow-sm"
+                >
+                  <Mail className="w-10 h-10 text-emerald-600" />
+                </motion.div>
 
-          <div className="flex items-center justify-center gap-2 text-gray-600 text-sm bg-gray-50 p-3 rounded-lg">
-            <Clock className="h-4 w-4" />
-            <span>Code expires in <strong>{expiryMinutes} minutes</strong></span>
-          </div>
-        </div>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="space-y-2"
+                >
+                  <h3 className="text-xl font-bold text-gray-900">Check your inbox</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    We've sent a verification code to <br />
+                    <span className="font-semibold text-gray-900">{email}</span>
+                  </p>
+                </motion.div>
 
-        <div className="flex justify-center pt-2">
-          <Button 
-            onClick={onClose} 
-            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-          >
-            Got it, thanks!
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="w-full pt-2"
+                >
+                  <Button
+                    onClick={onClose}
+                    className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold py-2.5 rounded-xl shadow-lg"
+                  >
+                    Got it
+                  </Button>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }

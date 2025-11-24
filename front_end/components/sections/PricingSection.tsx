@@ -7,27 +7,19 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { TrialDialog } from "@/components/ui/trial-dialog";
-import { ComingSoonDialog } from "@/components/ui/coming-soon-dialog";
 
 export default function PricingSection() {
   const [selectedType, setSelectedType] = useState<"owner" | "supplier">(
     "owner"
   );
-  const [comingSoonOpen, setComingSoonOpen] = useState(false);
   const router = useRouter();
 
-  const handleSupplierPlanClick = (planName: string) => {
-    setComingSoonOpen(true);
-  };
-
   const handlePlanClick = (plan: any) => {
-    if (selectedType === "supplier") {
-      handleSupplierPlanClick(plan.name);
-    } else if (plan.name === "Free Trial") {
+    if (plan.name === "Free Trial") {
       // Free trial buttons will use TrialDialog
       return;
     }
-    // Other owner plan buttons can have their own logic here
+    // Other plan buttons can have their own logic here
   };
 
   const ownerPlans = [
@@ -301,13 +293,6 @@ export default function PricingSection() {
           </p>
         </div>
       </div>
-
-      <ComingSoonDialog
-        open={comingSoonOpen}
-        onOpenChange={setComingSoonOpen}
-        title="Supplier Pricing Coming Soon"
-        description="Our supplier pricing plans are currently being finalized. This feature will allow suppliers to choose the perfect plan for their business needs. Stay tuned for updates!"
-      />
     </section>
   );
 }

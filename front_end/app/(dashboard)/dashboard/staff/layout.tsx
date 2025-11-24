@@ -55,11 +55,11 @@ export default function StaffLayout({
       <NotificationProvider>
         <SidebarProvider>
           <StaffSidebar user={user} />
-          <SidebarInset className="bg-white text-black">
+          <SidebarInset>
             <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-white shadow-sm">
-              <SidebarTrigger className="-ml-1 text-black" />
+              <SidebarTrigger className="-ml-1" />
               <div className="flex-1">
-                <h1 className="font-semibold text-black text-lg">
+                <h1 className="font-semibold text-gray-900 text-lg">
                   Staff Dashboard
                 </h1>
               </div>
