@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Clock, CheckCircle, CreditCard, Truck, X, Check } from "lucide-react";
 import { PaymentVerificationDialog } from "@/components/ui/payment-verification-dialog";
 import { getAuthJSON, putAuthJSON } from "@/utils/api";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function SupplierOrders() {
   const { show } = useToast();

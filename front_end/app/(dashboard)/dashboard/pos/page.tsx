@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { API_BASE, getAccessToken, getAuthJSON, postAuthJSON } from "@/utils/api";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";

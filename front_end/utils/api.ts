@@ -1864,6 +1864,74 @@ export const api = {
     return { data: json };
   }
 };
+// ----------------- GoalsAPI -----------------
+export enum GoalType {
+  REVENUE = "revenue",
+  PROFIT = "profit",
+  CUSTOMERS = "customers",
+  SALES_COUNT = "sales_count",
+}
+
+export enum GoalStatus {
+  ACTIVE = "active",
+  ACHIEVED = "achieved",
+  MISSED = "missed",
+  ARCHIVED = "archived",
+}
+
+export type Milestone = {
+  id: number;
+  goal_id: number;
+  title: string;
+  target_value: number;
+  achieved: boolean;
+  achieved_at?: string;
+  description?: string;
+  created_at: string;
+};
+
+export type BusinessGoal = {
+  id: number;
+  tenant_id: string;
+  title: string;
+  goal_type: GoalType;
+  target_amount: number;
+  current_amount: number;
+  start_date: string;
+  end_date: string;
+  status: GoalStatus;
+  description?: string;
+  created_at: string;
+  updated_at: string;
+  milestones: Milestone[];
+  progress_percentage?: number;
+  days_remaining?: number;
+  is_on_track?: boolean;
+};
+
+export const GoalsAPI = {
+  list: (tenantId: string, params?: { status?: GoalStatus; goal_type?: GoalType }) => {
+    const search = new URLSearchParams();
+    if (params?.status) search.set("status", params.status);
+    if (params?.goal_type) search.set("goal_type", params.goal_type);
+    return getAuthJSON<BusinessGoal[]>(`/api/v1/goals?${search.toString()}`, tenantId);
+  },
+  create: (tenantId: string, body: any) => postAuthJSON<BusinessGoal>("/api/v1/goals", body, tenantId),
+  get: (tenantId: string, id: number) => getAuthJSON<BusinessGoal>(`/api/v1/goals/${id}`, tenantId),
+  update: (tenantId: string, id: number, body: any) =>
+    authFetch(`/api/v1/goals/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }, true, tenantId).then(res => res.json()),
+  delete: (tenantId: string, id: number) =>
+    authFetch(`/api/v1/goals/${id}`, { method: "DELETE" }, true, tenantId).then(res => res.json()),
+  addMilestone: (tenantId: string, goalId: number, body: any) =>
+    postAuthJSON(`/api/v1/goals/${goalId}/milestones`, body, tenantId),
+  getProgress: (tenantId: string, goalId: number) =>
+    getAuthJSON(`/api/v1/goals/${goalId}/progress`, tenantId),
+};
+
 // ----------------- NotificationsAPI -----------------
 export type Notification = {
   id: number;

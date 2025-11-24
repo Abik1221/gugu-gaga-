@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { AdminAPI } from "@/utils/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 
 function formatDateTime(value?: string | null) {
   if (!value) return "-";

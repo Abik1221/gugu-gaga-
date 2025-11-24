@@ -31,6 +31,7 @@ import {
   BarChart3,
   Receipt,
   Bell,
+  Target,
 } from "lucide-react";
 import { InstallButton } from "@/components/pwa/InstallPWA";
 import { useNotifications } from "@/contexts/NotificationContext";
@@ -46,6 +47,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { href: "/dashboard/owner", label: "Dashboard", icon: <LayoutDashboard /> },
   { href: "/dashboard/owner/analytics", label: "Analytics", icon: <BarChart3 /> },
+  { href: "/dashboard/owner/goals", label: "Business Goals", icon: <Target /> },
   { href: "/dashboard/owner/notifications", label: "Notifications", icon: <Bell />, showBadge: true },
   { href: "/dashboard/owner/agent", label: "Agent", icon: <Users /> },
   { href: "/dashboard/owner/branches", label: "Branches", icon: <Building2 /> },

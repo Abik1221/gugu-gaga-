@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 
 type EditableFields = Pick<AuthProfile, "username" | "first_name" | "last_name" | "phone">;
 const editableKeys: Array<keyof EditableFields> = ["username", "first_name", "last_name", "phone"];

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { AuthAPI } from "@/utils/api";
 import Image from "next/image";
 import ownerRegistrationImage from "@/public/owner_registration.jpeg";

@@ -1,6 +1,6 @@
 "use client";
 
-"use client";
+export const dynamic = 'force-dynamic';
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Package, AlertCircle, Clock, DollarSign } from "lucide-react";
 

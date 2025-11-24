@@ -31,6 +31,7 @@ from .supplier_onboarding import router as supplier_onboarding_router
 from .seo import router as seo_router
 from .system import router as system_router
 from .expenses import router as expenses_router
+from .goals import router as goals_router
 
 
 api_router = APIRouter()
@@ -73,4 +74,4 @@ api_router.include_router(orders_router, prefix="/orders", tags=["orders"])
 api_router.include_router(supplier_onboarding_router, tags=["supplier_onboarding"])
 api_router.include_router(seo_router, tags=["seo"])
 api_router.include_router(expenses_router, prefix="/expenses", tags=["expenses"])
-
+api_router.include_router(goals_router, prefix="/goals", tags=["goals"])

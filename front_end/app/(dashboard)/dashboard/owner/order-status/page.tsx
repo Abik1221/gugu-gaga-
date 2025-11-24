@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +10,7 @@ import { ShoppingCart, Package, CreditCard, Truck, Star } from "lucide-react";
 import { PaymentCodeDialog } from "@/components/ui/payment-code-dialog";
 import { RatingFeedbackDialog } from "@/components/ui/rating-feedback-dialog";
 import { getAuthJSON, putAuthJSON, postAuthJSON } from "@/utils/api";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 
 function getTenantId() {
   if (typeof window === "undefined") return null;

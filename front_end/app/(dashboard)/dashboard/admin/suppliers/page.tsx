@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, X, Search, Eye, Star, Package } from "lucide-react";
 import { getAuthJSON, postAuthJSON } from "@/utils/api";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function AdminSuppliersPage() {
   const { show } = useToast();
@@ -180,16 +181,16 @@ export default function AdminSuppliersPage() {
 
                   {!supplier.is_verified && (
                     <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         onClick={() => handleApproveSupplier(supplier.id)}
                         className="flex items-center gap-1"
                       >
                         <Check className="h-4 w-4" />
                         Approve KYC
                       </Button>
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="destructive"
                         onClick={() => handleRejectSupplier(supplier.id)}
                         className="flex items-center gap-1"
@@ -244,16 +245,16 @@ export default function AdminSuppliersPage() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       onClick={() => handleApproveSupplier(supplier.id)}
                       className="flex items-center gap-1"
                     >
                       <Check className="h-4 w-4" />
                       Approve KYC
                     </Button>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="destructive"
                       onClick={() => handleRejectSupplier(supplier.id)}
                       className="flex items-center gap-1"
@@ -312,16 +313,16 @@ export default function AdminSuppliersPage() {
                   )}
 
                   <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       onClick={() => handleVerifyPayment(payment.id)}
                       className="flex items-center gap-1"
                     >
                       <Check className="h-4 w-4" />
                       Verify Payment
                     </Button>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="destructive"
                       onClick={() => handleRejectPayment(payment.id)}
                       className="flex items-center gap-1"
