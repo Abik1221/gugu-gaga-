@@ -3,7 +3,8 @@ import { Card } from "@/components/ui/card";
 import branch1 from "@/public/branch1.jpeg";
 import branch2 from "@/public/branch2.jpeg";
 import branch3 from "@/public/branch3.jpeg";
-import branch4 from "@/public/suppliermarketplace.jpeg";
+import memory from "@/public/memory.png";
+import branch4 from "@/public/branch4.png";
 
 import {
   Building2,
@@ -16,6 +17,7 @@ import {
   ShoppingBag,
   GitBranch,
   Zap,
+  Target,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -42,6 +44,13 @@ export default function FeaturesSection() {
       description:
         "Seamlessly connect with Google Sheets, ERP systems, accounting software, and more. No technical knowledge required—just one click to integrate your existing tools.",
       image: branch3,
+    },
+    {
+      icon: Target,
+      title: "Smart Expense & Goal Tracking",
+      description:
+        "Never miss a payment deadline again. Mesob automatically tracks and reminds you of tax payments, employee salaries, rent, license renewals, and all business expenses. Set revenue goals with time intervals, monitor your progress in real-time, and receive AI-powered insights to help you achieve your business targets and improve profitability.",
+      image: memory,
     },
     {
       icon: ShoppingBag,
@@ -91,9 +100,8 @@ export default function FeaturesSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className={`grid lg:grid-cols-2 gap-12 items-center ${
-                  !isEven ? "lg:flex-row-reverse" : ""
-                }`}
+                className={`grid lg:grid-cols-2 gap-12 items-center ${!isEven ? "lg:flex-row-reverse" : ""
+                  }`}
               >
                 <motion.div
                   initial={{ opacity: 0, x: isEven ? -30 : 30 }}

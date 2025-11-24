@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import branch4 from "@/public/branch4.jpeg";
+import branch4 from "@/public/branch4.png";
 import { TrialDialog } from "@/components/ui/trial-dialog";
 import { useRouter } from "next/navigation";
 
