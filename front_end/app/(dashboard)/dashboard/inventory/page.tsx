@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { getAuthJSON, postAuthJSON } from "@/utils/api";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { TableSkeletonRows } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 

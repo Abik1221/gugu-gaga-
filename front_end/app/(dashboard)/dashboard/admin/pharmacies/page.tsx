@@ -1,10 +1,11 @@
 "use client";
+export const dynamic = 'force-dynamic';
 import React, { useEffect, useMemo, useState } from "react";
 import { AdminAPI } from "@/utils/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -216,10 +217,10 @@ export default function AdminPharmaciesPage() {
           </div>
           <div className="flex gap-3">
             <div className="relative">
-              <Input 
-                placeholder="Search pharmacies..." 
-                value={q} 
-                onChange={(e)=>setQ(e.target.value)}
+              <Input
+                placeholder="Search pharmacies..."
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
                 className="pl-10 w-64 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -228,7 +229,7 @@ export default function AdminPharmaciesPage() {
                 </svg>
               </div>
             </div>
-            <Button onClick={()=>refresh(1)} className="bg-blue-600 hover:bg-blue-700 text-white px-6">Search</Button>
+            <Button onClick={() => refresh(1)} className="bg-blue-600 hover:bg-blue-700 text-white px-6">Search</Button>
           </div>
         </div>
         {loading ? (
@@ -539,10 +540,10 @@ function StatusPill({ children, tone = "primary" }: { children: React.ReactNode;
     tone === "primary"
       ? "bg-blue-100 text-blue-800 border border-blue-200"
       : tone === "danger"
-      ? "bg-red-100 text-red-800 border border-red-200"
-      : tone === "outline"
-      ? "border border-gray-300 text-gray-700 bg-white"
-      : "bg-gray-100 text-gray-700 border border-gray-200";
+        ? "bg-red-100 text-red-800 border border-red-200"
+        : tone === "outline"
+          ? "border border-gray-300 text-gray-700 bg-white"
+          : "bg-gray-100 text-gray-700 border border-gray-200";
   return <span className={cn("rounded-full px-3 py-1 text-xs font-semibold shadow-sm", styles)}>{children}</span>;
 }
 
@@ -598,11 +599,11 @@ function ConfirmDialog({
             <div className="font-semibold text-sm mb-3 text-blue-900">Payment Details</div>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Code:</span> 
+                <span className="text-gray-600">Code:</span>
                 <span className="font-mono bg-white px-2 py-1 rounded border text-blue-900">{paymentDetails.code}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Submitted:</span> 
+                <span className="text-gray-600">Submitted:</span>
                 <span className="text-gray-900">{formatDateTime(paymentDetails.submitted_at)}</span>
               </div>
             </div>

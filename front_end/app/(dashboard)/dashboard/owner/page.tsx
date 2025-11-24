@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
@@ -8,7 +10,7 @@ import {
   OwnerAnalyticsAPI,
   type OwnerAnalyticsResponse,
 } from "@/utils/api";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

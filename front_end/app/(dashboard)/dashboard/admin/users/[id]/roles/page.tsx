@@ -5,7 +5,7 @@ import { API_BASE, getAccessToken, getAuthJSON } from "@/utils/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 
 export default function UserRolesPage() {

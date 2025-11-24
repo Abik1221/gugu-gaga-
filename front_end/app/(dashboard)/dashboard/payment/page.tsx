@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { LogOut, DollarSign, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { getAuthJSON, postForm } from "@/utils/api";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import logoImage from "@/public/mesoblogo.jpeg";
@@ -79,15 +81,15 @@ export default function OwnerPaymentPage() {
     try {
       setLoading(true);
       const me = await getAuthJSON("/api/v1/auth/me");
-      
+
       if (me.kyc_status !== "approved") {
         router.replace("/dashboard/kyc");
         return;
       }
-      
+
       setTenantId(me.tenant_id);
       setSubscriptionStatus(me.subscription_status || "awaiting_payment");
-      
+
       if (me.subscription_status === "active") {
         router.replace("/dashboard/owner");
         return;
@@ -101,14 +103,14 @@ export default function OwnerPaymentPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!paymentCode.trim()) {
       show({ title: "Error", description: "Please enter a payment code", variant: "destructive" });
       return;
     }
 
     setIsSubmitting(true);
-    
+
     try {
       await postForm(`/api/v1/billing/payment-code?tenant_id=${tenantId}`, { code: paymentCode });
       show({ title: "Success", description: "Payment code submitted successfully. Awaiting admin verification.", variant: "success" });
@@ -219,9 +221,9 @@ export default function OwnerPaymentPage() {
                     <p className="text-xs text-gray-500 mt-1">Enter the payment code provided after completing your payment</p>
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    disabled={isSubmitting || subscriptionStatus === "pending_verification"} 
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting || subscriptionStatus === "pending_verification"}
                     className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 font-semibold"
                   >
                     {isSubmitting ? "Submitting..." : "Submit Payment Code"}

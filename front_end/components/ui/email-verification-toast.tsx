@@ -1,7 +1,8 @@
 "use client";
+
 import React from "react";
 import { Mail, Clock, AlertTriangle } from "lucide-react";
-import { useToast } from "./toast";
+import { useToast } from "./use-toast";
 
 export function useEmailVerificationToast() {
   const { show } = useToast();

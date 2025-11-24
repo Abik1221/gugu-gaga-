@@ -1,7 +1,7 @@
 from datetime import datetime, date
 from typing import Optional
 
-from sqlalchemy import Date, DateTime, Float, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Date, DateTime, Float, Integer, String, Boolean, ForeignKey, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
@@ -40,3 +40,27 @@ class InventoryItem(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     medicine: Mapped[Medicine] = relationship(Medicine, lazy="joined")
+    
+    unit_type: Mapped[Optional[str]] = mapped_column(String(50), default='unit')
+    packaging_data: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    last_updated_by: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
+    last_update_reason: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
+    price_per_unit: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    transactions: Mapped[list["InventoryTransaction"]] = relationship("InventoryTransaction", back_populates="inventory_item", cascade="all, delete-orphan")
+
+
+class InventoryTransaction(Base):
+    __tablename__ = "inventory_transactions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    inventory_item_id: Mapped[int] = mapped_column(ForeignKey("inventory_items.id"), index=True)
+    transaction_type: Mapped[str] = mapped_column(String(50))
+    quantity_change: Mapped[int] = mapped_column(Integer)
+    quantity_before: Mapped[int] = mapped_column(Integer)
+    quantity_after: Mapped[int] = mapped_column(Integer)
+    reason: Mapped[Optional[str]] = mapped_column(String(1000))
+    created_by: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    inventory_item: Mapped[InventoryItem] = relationship(InventoryItem, back_populates="transactions")

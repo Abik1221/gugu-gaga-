@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { ErrorDialog } from "@/components/ui/error-dialog";
 import { postJSON } from "@/utils/api";
 import { ArrowLeft, Mail, Lock, CheckCircle } from "lucide-react";

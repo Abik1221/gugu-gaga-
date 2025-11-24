@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+export const dynamic = 'force-dynamic';
+
+import { useToast } from "@/components/ui/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/ui/toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { AddItemDialog } from "@/components/inventory/AddItemDialog";
+import { EditItemDialog } from "@/components/inventory/EditItemDialog";
+import { api } from "@/utils/api";
 
 interface InventoryItem {
   id: number;
@@ -36,42 +36,13 @@ export default function StaffInventory() {
   const loadInventory = async () => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockItems: InventoryItem[] = [
-        {
-          id: 1,
-          medicine_id: 1,
-          medicine_name: "Paracetamol 500mg",
-          sku: "PARA500",
-          branch: "Main",
-          quantity: 150,
-          pack_size: 10,
-          packs: 15,
-          singles: 0,
-          reorder_level: 50,
-          expiry_date: "2025-12-31",
-          lot_number: "LOT123",
-          sell_price: 2.50
-        },
-        {
-          id: 2,
-          medicine_id: 2,
-          medicine_name: "Ibuprofen 200mg",
-          sku: "IBU200",
-          branch: "Main",
-          quantity: 25,
-          pack_size: 20,
-          packs: 1,
-          singles: 5,
-          reorder_level: 40,
-          expiry_date: "2024-06-15",
-          lot_number: "LOT456",
-          sell_price: 1.90
+      const res = await api.get("/inventory/items", {
+        params: {
+          q: searchQuery,
+          low_stock_only: lowStockOnly
         }
-      ];
-      
-      setItems(mockItems);
+      });
+      setItems(res.data.items);
     } catch (err: any) {
       show({
         variant: "destructive",
@@ -85,7 +56,9 @@ export default function StaffInventory() {
 
   useEffect(() => {
     loadInventory();
-  }, []);
+  }, [lowStockOnly]); // Reload when filter changes
+
+  // Add debounce for search query if needed, or just add a search button
 
   const isLowStock = (item: InventoryItem) => {
     return item.quantity <= item.reorder_level;
@@ -107,9 +80,9 @@ export default function StaffInventory() {
 
   const handleDelete = async (itemId: number) => {
     if (!confirm("Are you sure you want to delete this item?")) return;
-    
+
     try {
-      // API call would go here
+      await api.delete(`/inventory/items/${itemId}`);
       show({
         title: "Item deleted",
         description: "Inventory item has been removed",
@@ -124,7 +97,7 @@ export default function StaffInventory() {
     }
   };
 
-  if (loading) {
+  if (loading && items.length === 0) {
     return (
       <div className="p-6">
         <Skeleton className="h-8 w-48 mb-4" />
@@ -151,12 +124,16 @@ export default function StaffInventory() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Search Medicine
             </label>
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Name or SKU"
-              className="text-black"
-            />
+            <div className="flex gap-2">
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Name or SKU"
+                className="text-black"
+                onKeyDown={(e) => e.key === 'Enter' && loadInventory()}
+              />
+              <Button onClick={loadInventory} variant="secondary">Search</Button>
+            </div>
           </div>
           <div className="flex items-end">
             <label className="flex items-center space-x-2">
@@ -226,9 +203,11 @@ export default function StaffInventory() {
                         <p className="font-medium text-gray-900">
                           {item.quantity} units
                         </p>
+                        {/* 
                         <p className="text-sm text-gray-600">
                           {item.packs} packs + {item.singles} singles
                         </p>
+                        */}
                         <p className="text-xs text-gray-500">
                           Reorder at: {item.reorder_level}
                         </p>
@@ -240,9 +219,8 @@ export default function StaffInventory() {
                       </p>
                     </td>
                     <td className="px-6 py-4">
-                      <p className={`text-sm ${
-                        isExpiringSoon(item) ? "text-red-600 font-medium" : "text-gray-900"
-                      }`}>
+                      <p className={`text-sm ${isExpiringSoon(item) ? "text-red-600 font-medium" : "text-gray-900"
+                        }`}>
                         {formatDate(item.expiry_date)}
                       </p>
                     </td>
@@ -286,240 +264,5 @@ export default function StaffInventory() {
         </div>
       </div>
     </div>
-  );
-}
-
-function AddItemDialog({ onSuccess }: { onSuccess: () => void }) {
-  const { show } = useToast();
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    medicine_name: "",
-    sku: "",
-    branch: "",
-    quantity: "",
-    reorder_level: "",
-    sell_price: "",
-    expiry_date: "",
-    lot_number: ""
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      // API call would go here
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      show({
-        title: "Item added",
-        description: "New inventory item has been created",
-      });
-      
-      setOpen(false);
-      setFormData({
-        medicine_name: "",
-        sku: "",
-        branch: "",
-        quantity: "",
-        reorder_level: "",
-        sell_price: "",
-        expiry_date: "",
-        lot_number: ""
-      });
-      onSuccess();
-    } catch (err: any) {
-      show({
-        variant: "destructive",
-        title: "Failed to add item",
-        description: err?.message || "Unable to create inventory item",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Item
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md bg-white">
-        <DialogHeader>
-          <DialogTitle className="text-black">Add Inventory Item</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="medicine_name" className="text-black font-medium">Medicine Name</Label>
-            <Input
-              id="medicine_name"
-              value={formData.medicine_name}
-              onChange={(e) => setFormData({...formData, medicine_name: e.target.value})}
-              className="text-black bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="sku" className="text-black font-medium">SKU</Label>
-            <Input
-              id="sku"
-              value={formData.sku}
-              onChange={(e) => setFormData({...formData, sku: e.target.value})}
-              className="text-black bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="quantity" className="text-black font-medium">Quantity</Label>
-            <Input
-              id="quantity"
-              type="number"
-              value={formData.quantity}
-              onChange={(e) => setFormData({...formData, quantity: e.target.value})}
-              className="text-black bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="sell_price" className="text-black font-medium">Sell Price</Label>
-            <Input
-              id="sell_price"
-              type="number"
-              step="0.01"
-              value={formData.sell_price}
-              onChange={(e) => setFormData({...formData, sell_price: e.target.value})}
-              className="text-black bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="expiry_date" className="text-black font-medium">Expiry Date</Label>
-            <Input
-              id="expiry_date"
-              type="date"
-              value={formData.expiry_date}
-              onChange={(e) => setFormData({...formData, expiry_date: e.target.value})}
-              className="text-black bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Adding..." : "Add Item"}
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function EditItemDialog({ item, onSuccess }: { item: InventoryItem; onSuccess: () => void }) {
-  const { show } = useToast();
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    quantity: item.quantity.toString(),
-    reorder_level: item.reorder_level.toString(),
-    sell_price: item.sell_price?.toString() || "",
-    expiry_date: item.expiry_date || "",
-    lot_number: item.lot_number || ""
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      // API call would go here
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      show({
-        title: "Item updated",
-        description: "Inventory item has been updated",
-      });
-      
-      setOpen(false);
-      onSuccess();
-    } catch (err: any) {
-      show({
-        variant: "destructive",
-        title: "Failed to update item",
-        description: err?.message || "Unable to update inventory item",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Edit className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Edit {item.medicine_name}</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="quantity">Quantity</Label>
-            <Input
-              id="quantity"
-              type="number"
-              value={formData.quantity}
-              onChange={(e) => setFormData({...formData, quantity: e.target.value})}
-              className="text-black"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="reorder_level">Reorder Level</Label>
-            <Input
-              id="reorder_level"
-              type="number"
-              value={formData.reorder_level}
-              onChange={(e) => setFormData({...formData, reorder_level: e.target.value})}
-              className="text-black"
-            />
-          </div>
-          <div>
-            <Label htmlFor="sell_price">Sell Price</Label>
-            <Input
-              id="sell_price"
-              type="number"
-              step="0.01"
-              value={formData.sell_price}
-              onChange={(e) => setFormData({...formData, sell_price: e.target.value})}
-              className="text-black"
-            />
-          </div>
-          <div>
-            <Label htmlFor="expiry_date">Expiry Date</Label>
-            <Input
-              id="expiry_date"
-              type="date"
-              value={formData.expiry_date}
-              onChange={(e) => setFormData({...formData, expiry_date: e.target.value})}
-              className="text-black"
-            />
-          </div>
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Updating..." : "Update Item"}
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
   );
 }

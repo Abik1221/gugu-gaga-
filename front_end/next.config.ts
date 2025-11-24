@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
 
   experimental: {
     optimizePackageImports: ['@/components/ui'],
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
