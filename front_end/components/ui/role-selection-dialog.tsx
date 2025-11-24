@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Store, Users, Truck, X } from "lucide-react";
-import { ComingSoonDialog } from "@/components/ui/coming-soon-dialog";
 
 interface RoleSelectionDialogProps {
   children: React.ReactNode;
@@ -20,7 +19,6 @@ interface RoleSelectionDialogProps {
 
 export function RoleSelectionDialog({ children }: RoleSelectionDialogProps) {
   const [open, setOpen] = useState(false);
-  const [comingSoonOpen, setComingSoonOpen] = useState(false);
   const router = useRouter();
 
   const roles = [
@@ -48,13 +46,8 @@ export function RoleSelectionDialog({ children }: RoleSelectionDialogProps) {
   ];
 
   const handleRoleSelect = (roleId: string, route: string) => {
-    if (roleId === "supplier") {
-      setOpen(false);
-      setTimeout(() => setComingSoonOpen(true), 100);
-    } else {
-      setOpen(false);
-      router.push(route);
-    }
+    setOpen(false);
+    router.push(route);
   };
 
   return (
@@ -98,13 +91,6 @@ export function RoleSelectionDialog({ children }: RoleSelectionDialogProps) {
           </div>
         </DialogContent>
       </Dialog>
-
-      <ComingSoonDialog
-        open={comingSoonOpen}
-        onOpenChange={setComingSoonOpen}
-        title="Supplier Sign In Coming Soon"
-        description="We're working hard to bring you the supplier sign-in feature. This will allow suppliers to access their dashboard and manage their products. Stay tuned for updates!"
-      />
     </>
   );
 }

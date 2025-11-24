@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Package, Store } from "lucide-react";
-import { ComingSoonDialog } from "@/components/ui/coming-soon-dialog";
 
 interface TrialDialogProps {
   children: React.ReactNode;
@@ -21,7 +20,6 @@ interface TrialDialogProps {
 export function TrialDialog({ children }: TrialDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedType, setSelectedType] = useState<string>("");
-  const [comingSoonOpen, setComingSoonOpen] = useState(false);
   const router = useRouter();
 
   const userTypes = [
@@ -51,14 +49,8 @@ export function TrialDialog({ children }: TrialDialogProps) {
   const handleSubmit = () => {
     const selectedUserType = userTypes.find((type) => type.id === selectedType);
     if (selectedUserType) {
-      // Show coming soon dialog for supplier
-      if (selectedType === "supplier") {
-        setOpen(false);
-        setTimeout(() => setComingSoonOpen(true), 100);
-      } else {
-        router.push(selectedUserType.route);
-        setOpen(false);
-      }
+      router.push(selectedUserType.route);
+      setOpen(false);
     }
   };
 
@@ -78,8 +70,8 @@ export function TrialDialog({ children }: TrialDialogProps) {
                 <div
                   key={type.id}
                   className={`cursor-pointer transition-all ${selectedType === type.id
-                      ? "border-emerald-500 bg-emerald-50"
-                      : "border-gray-200 hover:border-emerald-300"
+                    ? "border-emerald-500 bg-emerald-50"
+                    : "border-gray-200 hover:border-emerald-300"
                     }`}
                   onClick={() => setSelectedType(type.id)}
                 >
@@ -87,14 +79,14 @@ export function TrialDialog({ children }: TrialDialogProps) {
                     <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
                       <div
                         className={`p-1.5 rounded-lg ${selectedType === type.id
-                            ? "bg-emerald-100"
-                            : "bg-gray-100"
+                          ? "bg-emerald-100"
+                          : "bg-gray-100"
                           }`}
                       >
                         <type.icon
                           className={`w-4 h-4 ${selectedType === type.id
-                              ? "text-emerald-600"
-                              : "text-gray-600"
+                            ? "text-emerald-600"
+                            : "text-gray-600"
                             }`}
                         />
                       </div>
@@ -131,13 +123,6 @@ export function TrialDialog({ children }: TrialDialogProps) {
           </div>
         </DialogContent>
       </Dialog>
-
-      <ComingSoonDialog
-        open={comingSoonOpen}
-        onOpenChange={setComingSoonOpen}
-        title="Supplier Registration Coming Soon"
-        description="We're working hard to bring you the supplier registration feature. This will allow suppliers to join our platform and connect with business owners. Stay tuned for updates!"
-      />
     </>
   );
 }
