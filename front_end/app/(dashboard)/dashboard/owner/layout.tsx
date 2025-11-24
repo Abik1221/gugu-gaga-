@@ -1,4 +1,3 @@
-```javascript
 "use client"
 import { OwnerSidebar } from "@/components/custom/owner-sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -23,9 +22,9 @@ function OwnerLayoutContent({ children }: { children: React.ReactNode }) {
                 router.replace("/dashboard/payment");
             }
         } else if (!loading && !user) {
-             // If not logged in or failed to fetch user, redirect to login
-             // However, middleware should catch this, but good to have as backup
-             router.replace("/auth/login");
+            // If not logged in or failed to fetch user, redirect to login
+            // However, middleware should catch this, but good to have as backup
+            router.replace("/auth/login");
         }
     }, [user, loading, router]);
 
@@ -43,7 +42,7 @@ function OwnerLayoutContent({ children }: { children: React.ReactNode }) {
     // If we are redirecting, we might still render for a split second before the router acts.
     // So we should return null or loader if the conditions aren't met.
     if (user?.kyc_status !== "approved" || user?.subscription_status !== "active") {
-         return (
+        return (
             <div className="flex h-screen w-full items-center justify-center bg-white">
                 <div className="flex flex-col items-center gap-4">
                     <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent"></div>
@@ -77,4 +76,3 @@ export default function OwnerLayout({ children }: { children: React.ReactNode })
         </AuthProvider>
     );
 }
-```
