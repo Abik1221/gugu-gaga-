@@ -14,11 +14,8 @@ export default function PricingSection() {
   const router = useRouter();
 
   const handlePlanClick = (plan: any) => {
-    if (plan.name === "Free Trial") {
-      // Free trial buttons will use TrialDialog
-      return;
-    }
-    // Other plan buttons can have their own logic here
+    // Redirect to the appropriate registration page based on selected type
+    router.push(selectedType === "owner" ? "/register/owner" : "/register/supplier");
   };
 
   const ownerPlans = [
