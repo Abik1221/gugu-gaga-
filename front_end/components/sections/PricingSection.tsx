@@ -7,15 +7,17 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { TrialDialog } from "@/components/ui/trial-dialog";
+import { ComingSoonDialog } from "@/components/ui/coming-soon-dialog";
 
 export default function PricingSection() {
   const [selectedType, setSelectedType] = useState<"owner" | "supplier">(
     "owner"
   );
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
   const router = useRouter();
 
   const handleSupplierPlanClick = (planName: string) => {
-    router.push("/register/supplier");
+    setComingSoonOpen(true);
   };
 
   const handlePlanClick = (plan: any) => {
@@ -188,22 +190,20 @@ export default function PricingSection() {
             <div className="bg-white rounded-lg p-1 shadow-md border">
               <Button
                 variant={selectedType === "owner" ? "default" : "ghost"}
-                className={`px-6 py-2 rounded-md transition-all ${
-                  selectedType === "owner"
-                    ? "bg-emerald-600 text-white shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
+                className={`px-6 py-2 rounded-md transition-all ${selectedType === "owner"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+                  }`}
                 onClick={() => setSelectedType("owner")}
               >
                 Bussiness Owner
               </Button>
               <Button
                 variant={selectedType === "supplier" ? "default" : "ghost"}
-                className={`px-6 py-2 rounded-md transition-all ${
-                  selectedType === "supplier"
-                    ? "bg-emerald-600 text-white shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
+                className={`px-6 py-2 rounded-md transition-all ${selectedType === "supplier"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+                  }`}
                 onClick={() => setSelectedType("supplier")}
               >
                 Supplier
@@ -213,9 +213,8 @@ export default function PricingSection() {
         </motion.div>
 
         <div
-          className={`grid gap-14 max-w-6xl mx-auto ${
-            selectedType === "supplier" ? "md:grid-cols-4" : "md:grid-cols-3"
-          }`}
+          className={`grid gap-14 max-w-6xl mx-auto ${selectedType === "supplier" ? "md:grid-cols-4" : "md:grid-cols-3"
+            }`}
         >
           {currentPlans.map((plan, index) => (
             <motion.div
@@ -226,11 +225,10 @@ export default function PricingSection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Card
-                className={`p-4 relative ${index === 2 ? "text-[14px]" : ""} ${
-                  plan.highlight
-                    ? "border-2 border-emerald-500 shadow-2xl md:scale-105"
-                    : "border border-gray-200"
-                }`}
+                className={`p-4 relative ${index === 2 ? "text-[14px]" : ""} ${plan.highlight
+                  ? "border-2 border-emerald-500 shadow-2xl md:scale-105"
+                  : "border border-gray-200"
+                  }`}
               >
                 {plan.popular && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white">
@@ -249,9 +247,8 @@ export default function PricingSection() {
                 </div>
 
                 <ul
-                  className={`text-[13px] ${
-                    index === 2 ? "space-y-1" : "space-y-2"
-                  } mb-4`}
+                  className={`text-[13px] ${index === 2 ? "space-y-1" : "space-y-2"
+                    } mb-4`}
                 >
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start gap-3">
@@ -264,11 +261,10 @@ export default function PricingSection() {
                 {plan.name === "Free Trial" ? (
                   <TrialDialog>
                     <Button
-                      className={`w-full ${
-                        plan.highlight
-                          ? "bg-emerald-600 hover:bg-emerald-700"
-                          : "bg-gray-900 hover:bg-gray-800"
-                      }`}
+                      className={`w-full ${plan.highlight
+                        ? "bg-emerald-600 hover:bg-emerald-700"
+                        : "bg-gray-900 hover:bg-gray-800"
+                        }`}
                       size="default"
                     >
                       {plan.cta}
@@ -276,11 +272,10 @@ export default function PricingSection() {
                   </TrialDialog>
                 ) : (
                   <Button
-                    className={`w-full ${
-                      plan.highlight
-                        ? "bg-emerald-600 hover:bg-emerald-700"
-                        : "bg-gray-900 hover:bg-gray-800"
-                    }`}
+                    className={`w-full ${plan.highlight
+                      ? "bg-emerald-600 hover:bg-emerald-700"
+                      : "bg-gray-900 hover:bg-gray-800"
+                      }`}
                     size="default"
                     onClick={() => handlePlanClick(plan)}
                   >
@@ -306,6 +301,13 @@ export default function PricingSection() {
           </p>
         </div>
       </div>
+
+      <ComingSoonDialog
+        open={comingSoonOpen}
+        onOpenChange={setComingSoonOpen}
+        title="Supplier Pricing Coming Soon"
+        description="Our supplier pricing plans are currently being finalized. This feature will allow suppliers to choose the perfect plan for their business needs. Stay tuned for updates!"
+      />
     </section>
   );
 }
