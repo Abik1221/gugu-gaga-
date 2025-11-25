@@ -115,7 +115,7 @@ export default function HeroSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative rounded-2xl overflow-hidden h-72 sm:h-80 lg:h-[450px] xl:h-[500px]"
+            className="relative rounded-2xl overflow-hidden h-72 sm:h-80 lg:h-[420px] xl:h-[470px]"
           >
             <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-3xl opacity-20" />
             {/* wrapper ensures the Image has a positioned parent for `fill` */}
