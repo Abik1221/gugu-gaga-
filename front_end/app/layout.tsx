@@ -127,15 +127,66 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@graph": [
                 {
+                  "@type": "Organization",
+                  "@id": "https://mymesob.com/#organization",
+                  name: "MesobAI",
+                  alternateName: "Mesob AI Technologies",
+                  url: "https://mymesob.com",
+                  logo: {
+                    "@type": "ImageObject",
+                    "@id": "https://mymesob.com/#logo",
+                    url: "https://mymesob.com/mesoblogo.jpeg",
+                    contentUrl: "https://mymesob.com/mesoblogo.jpeg",
+                    width: "512",
+                    height: "512",
+                    caption: "MesobAI Logo"
+                  },
+                  image: {
+                    "@id": "https://mymesob.com/#logo"
+                  },
+                  sameAs: [
+                    "https://twitter.com/MesobAI"
+                  ],
+                  description: "MesobAI: Revolutionary AI-powered business management solution for Ethiopian and African businesses.",
+                  address: {
+                    "@type": "PostalAddress",
+                    addressCountry: "ET",
+                    addressLocality: "Addis Ababa"
+                  },
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    email: "nahomkeneni4@gmail.com",
+                    contactType: "Customer Service"
+                  }
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://mymesob.com/#website",
+                  url: "https://mymesob.com",
+                  name: "MesobAI",
+                  description: "AI-Powered Business Management System for Ethiopia and Africa",
+                  publisher: {
+                    "@id": "https://mymesob.com/#organization"
+                  },
+                  potentialAction: {
+                    "@type": "SearchAction",
+                    target: "https://mymesob.com/search?q={search_term_string}",
+                    "query-input": "required name=search_term_string",
+                  },
+                  inLanguage: "en-US"
+                },
+                {
                   "@type": "SoftwareApplication",
+                  "@id": "https://mymesob.com/#software",
                   name: "MesobAI - AI-Powered Business Management System",
                   description:
                     "MesobAI: Revolutionary AI in business solution for Ethiopian businesses. Advanced mesob technology platform offering AI-powered business management.",
                   url: "https://mymesob.com",
                   applicationCategory: "BusinessApplication",
                   operatingSystem: "Web Browser",
-                  image: "https://mymesob.com/mesoblogo.jpeg",
-                  logo: "https://mymesob.com/mesoblogo.jpeg",
+                  image: {
+                    "@id": "https://mymesob.com/#logo"
+                  },
                   offers: {
                     "@type": "Offer",
                     price: "0",
@@ -143,32 +194,15 @@ export default function RootLayout({
                     description: "30-day free trial",
                   },
                   author: {
-                    "@type": "Organization",
-                    name: "MesobAI Technologies",
-                    url: "https://mymesob.com",
-                    logo: "https://mymesob.com/mesoblogo.jpeg",
+                    "@id": "https://mymesob.com/#organization"
+                  },
+                  publisher: {
+                    "@id": "https://mymesob.com/#organization"
                   },
                   aggregateRating: {
                     "@type": "AggregateRating",
                     ratingValue: "4.8",
                     ratingCount: "150",
-                  },
-                },
-                {
-                  "@type": "Organization",
-                  name: "MesobAI Technologies",
-                  url: "https://mymesob.com",
-                  logo: "https://mymesob.com/mesoblogo.jpeg",
-                  sameAs: ["https://twitter.com/MesobAI"],
-                },
-                {
-                  "@type": "WebSite",
-                  name: "MesobAI",
-                  url: "https://mymesob.com",
-                  potentialAction: {
-                    "@type": "SearchAction",
-                    target: "https://mymesob.com/search?q={search_term_string}",
-                    "query-input": "required name=search_term_string",
                   },
                 },
               ],
