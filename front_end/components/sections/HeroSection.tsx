@@ -20,7 +20,7 @@ export default function HeroSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="space-y-6 h-full flex flex-col justify-center -mt-8"
+            className="space-y-6 h-full flex flex-col justify-between"
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
