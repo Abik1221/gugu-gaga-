@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-8 sm:pt-12 pb-12 sm:pb-16 px-2 sm:px-6 lg:px-8 bg-white overflow-hidden min-h-[85vh] flex items-center">
+    <section className="pt-8 sm:pt-12 pb-12 sm:pb-16 px-2 sm:px-6 lg:px-8 bg-white overflow-hidden min-h-[85vh] flex items-center antialiased">
       <div className="w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
           {/* LEFT */}
@@ -46,7 +46,7 @@ export default function HeroSection() {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="space-y-4"
             >
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-bold text-gray-900 leading-[1.2] tracking-tight antialiased">
                 Transform Your{" "}
                 <span className="text-emerald-600">Business</span> with
                 AI-Powered Management Software
