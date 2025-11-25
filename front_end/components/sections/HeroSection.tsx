@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-8 sm:pt-12 pb-12 sm:pb-16 px-2 sm:px-6 lg:px-8 bg-white overflow-hidden min-h-[85vh] flex items-center antialiased">
+    <section className="pt-6 sm:pt-8 pb-12 sm:pb-16 px-2 sm:px-6 lg:px-8 bg-white overflow-hidden min-h-[85vh] flex items-center antialiased">
       <div className="w-full max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
           {/* LEFT */}
@@ -20,7 +20,7 @@ export default function HeroSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="space-y-6 h-full flex flex-col justify-center"
+            className="space-y-6 h-full flex flex-col justify-center -mt-8"
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -109,13 +109,13 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* RIGHT - Properly sized image */}
+          {/* RIGHT - Reduced image size */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative rounded-2xl overflow-hidden h-80 sm:h-96 lg:h-[520px] xl:h-[580px]"
+            className="relative rounded-2xl overflow-hidden h-72 sm:h-80 lg:h-[450px] xl:h-[500px]"
           >
             <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-3xl opacity-20" />
             {/* wrapper ensures the Image has a positioned parent for `fill` */}
