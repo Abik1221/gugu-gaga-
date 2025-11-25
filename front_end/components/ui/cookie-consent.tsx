@@ -5,7 +5,7 @@ import { X, Cookie } from "lucide-react";
 import Link from "next/link";
 
 export function CookieConsent() {
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const consent = localStorage.getItem("cookie-consent");
