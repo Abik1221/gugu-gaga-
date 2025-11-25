@@ -11,16 +11,16 @@ import { useRouter } from "next/navigation";
 export default function HeroSection() {
   const router = useRouter();
   return (
-    <section className="pt-2 sm:pt-3 pb-16 sm:pb-20 px-2 sm:px-6 lg:px-8 bg-white overflow-hidden">
+    <section className="pt-8 sm:pt-12 pb-12 sm:pb-16 px-2 sm:px-6 lg:px-8 bg-white overflow-hidden min-h-[85vh] flex items-center">
       <div className="w-full max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch pt-10">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
           {/* LEFT */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="space-y-8 h-full"
+            className="space-y-6 h-full flex flex-col justify-center"
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -46,7 +46,7 @@ export default function HeroSection() {
               transition={{ delay: 0.3, duration: 0.5 }}
               className="space-y-4"
             >
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl text-gray-900 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-bold text-gray-900 leading-tight">
                 Transform Your{" "}
                 <span className="text-emerald-600">Business</span> with
                 AI-Powered Management Software
@@ -84,38 +84,38 @@ export default function HeroSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5, duration: 0.5 }}
-              className="pt-4 overflow-x-auto"
+              className="pt-3 overflow-x-auto"
             >
               <div className="flex items-center gap-6 sm:gap-8 min-w-max">
                 <div className="flex-shrink-0">
-                  <div className="text-2xl sm:text-3xl text-gray-900">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
                     30 Days
                   </div>
-                  <div className="text-sm text-gray-600">Free Trial</div>
+                  <div className="text-sm sm:text-base text-gray-600">Free Trial</div>
                 </div>
                 <div className="h-12 w-px bg-gray-300 flex-shrink-0" />
                 <div className="flex-shrink-0">
-                  <div className="text-2xl sm:text-3xl text-gray-900">24/7</div>
-                  <div className="text-sm text-gray-600">AI Support</div>
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">24/7</div>
+                  <div className="text-sm sm:text-base text-gray-600">AI Support</div>
                 </div>
                 <div className="h-12 w-px bg-gray-300 flex-shrink-0" />
                 <div className="flex-shrink-0">
-                  <div className="text-2xl sm:text-3xl text-gray-900">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
                     {">"}99.9%
                   </div>
-                  <div className="text-sm text-gray-600">Uptime</div>
+                  <div className="text-sm sm:text-base text-gray-600">Uptime</div>
                 </div>
               </div>
             </motion.div>
           </motion.div>
 
-          {/* RIGHT - responsive height so image remains visible on small devices */}
+          {/* RIGHT - Properly sized image */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative rounded-2xl overflow-hidden h-64 sm:h-80 lg:h-full"
+            className="relative rounded-2xl overflow-hidden h-80 sm:h-96 lg:h-[520px] xl:h-[580px]"
           >
             <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-3xl opacity-20" />
             {/* wrapper ensures the Image has a positioned parent for `fill` */}
