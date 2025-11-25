@@ -132,6 +132,12 @@ export default function Navbar() {
                 >
                   Integrations
                 </Link>
+                <Link
+                  href="/blog"
+                  className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
+                >
+                  Blog
+                </Link>
 
               </div>
             </div>
@@ -270,6 +276,13 @@ export default function Navbar() {
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
                 Integrations
+              </Link>
+              <Link
+                href="/blog"
+                onClick={handleLinkClick}
+                className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
+              >
+                Blog
               </Link>
 
               <div className="px-3 py-2 space-y-2 pt-4 border-t border-gray-200">
