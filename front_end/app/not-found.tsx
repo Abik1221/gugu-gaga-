@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Home, ArrowLeft, Mail, Send, Sparkles } from "lucide-react";
+import { Home, ArrowLeft, Mail, Send, Sparkles, MessageCircle } from "lucide-react";
 import Navbar from "@/components/sections/Navbar";
 
 export default function NotFoundPage() {
@@ -199,30 +199,45 @@ export default function NotFoundPage() {
               <p className="text-sm text-gray-500 mb-6 font-semibold uppercase tracking-widest">
                 Need Assistance?
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8">
+              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 flex-wrap">
                 <motion.a
                   whileHover={{ scale: 1.08, y: -3 }}
                   transition={{ type: "spring", stiffness: 300 }}
                   href="mailto:nahomkeneni4@gmail.com"
-                  className="flex items-center justify-center gap-3 text-gray-600 hover:text-emerald-600 transition-colors group"
+                  className="flex items-center justify-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors group cursor-pointer"
                 >
                   <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 group-hover:from-emerald-50 group-hover:to-teal-50 rounded-xl transition-all duration-300 shadow-md group-hover:shadow-lg">
                     <Mail className="w-5 h-5" />
                   </div>
-                  <span className="font-semibold">nahomkeneni4@gmail.com</span>
+                  <span className="font-semibold text-sm">nahomkeneni4@gmail.com</span>
                 </motion.a>
+
                 <motion.a
                   whileHover={{ scale: 1.08, y: -3 }}
                   transition={{ type: "spring", stiffness: 300 }}
                   href="https://t.me/nahom_keneni"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 text-gray-600 hover:text-blue-600 transition-colors group"
+                  className="flex items-center justify-center gap-2 text-gray-600 hover:text-blue-600 transition-colors group cursor-pointer"
                 >
                   <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 group-hover:from-blue-50 group-hover:to-sky-50 rounded-xl transition-all duration-300 shadow-md group-hover:shadow-lg">
                     <Send className="w-5 h-5" />
                   </div>
-                  <span className="font-semibold">@nahom_keneni</span>
+                  <span className="font-semibold text-sm">@nahom_keneni</span>
+                </motion.a>
+
+                <motion.a
+                  whileHover={{ scale: 1.08, y: -3 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  href="https://wa.me/251983446134"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 text-gray-600 hover:text-green-600 transition-colors group cursor-pointer"
+                >
+                  <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 group-hover:from-green-50 group-hover:to-emerald-50 rounded-xl transition-all duration-300 shadow-md group-hover:shadow-lg">
+                    <MessageCircle className="w-5 h-5" />
+                  </div>
+                  <span className="font-semibold text-sm">+251 98 344 6134</span>
                 </motion.a>
               </div>
             </motion.div>
