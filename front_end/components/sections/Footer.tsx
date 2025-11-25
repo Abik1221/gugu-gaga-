@@ -8,7 +8,6 @@ const footerNav = {
     { href: "/#pricing", label: "Pricing" },
   ],
   company: [
-    { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
     { href: "/register?tab=affiliate", label: "Affiliates" },
   ],

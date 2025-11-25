@@ -1,52 +1,49 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Calendar, Clock, ArrowRight, Sparkles } from "lucide-react";
+import { Calendar, Clock, Sparkles } from "lucide-react";
 import Navbar from "@/components/sections/Navbar";
 import Footer from "@/components/sections/Footer";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const blogPosts = [
   {
     id: 1,
-    title: "How AI is Transforming Ethiopian Businesses in 2024",
-    excerpt: "Discover how Ethiopian businesses are leveraging AI-powered management software to streamline operations, reduce costs, and boost profitability through intelligent automation.",
-    date: "2024-11-20",
-    readTime: "5 min read",
+    title: "How AI is Transforming Ethiopian Businesses in 2018 EC",
+    excerpt: "Ethiopian businesses are experiencing a revolutionary transformation through AI-powered management software. From automated inventory tracking to intelligent sales forecasting, AI is helping local enterprises streamline their operations, reduce operational costs by up to 40%, and boost profitability. Smart analytics provide real-time insights into business performance, while automated workflows eliminate manual data entry errors. Machine learning algorithms optimize stock levels, predict customer demand patterns, and identify profitable opportunities. This technological leap is enabling Ethiopian SMEs to compete globally while maintaining their local market dominance.",
+    date: "Hidar 10, 2018 EC",
+    readTime: "3 min read",
     category: "AI Innovation",
-    image: "/ai_solution.jpg",
-    slug: "ai-transforming-ethiopian-businesses-2024"
+    image: "/ai_solution.jpg"
   },
   {
     id: 2,
     title: "Complete Guide to Inventory Management for Ethiopian Pharmacies",
-    excerpt: "Learn best practices for pharmacy inventory management in Ethiopia, including AI-powered stock optimization, regulatory compliance, and real-time tracking solutions.",
-    date: "2024-11-15",
-    readTime: "8 min read",
+    excerpt: "Managing pharmaceutical inventory in Ethiopia requires strict adherence to regulatory compliance, expiry tracking, and batch management. Modern inventory systems provide real-time stock monitoring, automated reorder alerts, and comprehensive batch tracking to prevent stockouts and minimize waste. AI-powered demand forecasting helps pharmacies maintain optimal stock levels while ensuring critical medications are always available. Integration with EFDA regulations ensures compliance with Ethiopian pharmaceutical standards. Advanced reporting features track expiry dates, monitor controlled substances, and generate regulatory reports automatically, saving hours of manual work.",
+    date: "Tahsas 5, 2018 EC",
+    readTime: "4 min read",
     category: "Inventory Management",
-    image: "/overview.jpeg",
-    slug: "inventory-management-ethiopian-pharmacies"
+    image: "/overview.jpeg"
   },
   {
     id: 3,
     title: "Why Ethiopian Businesses Choose Mesob AI Over International Solutions",
-    excerpt: "Understanding the unique advantages of locally-built business software designed specifically for Ethiopian market needs, culture, and regulatory requirements.",
-    date: "2024-11-10",
-    readTime: "6 min read",
+    excerpt: "Ethiopian businesses face unique challenges that international software often fails to address: local tax calculations (VAT, TOT), Ethiopian calendar integration, multiple currency support (Birr, USD, EUR), and bilingual interfaces (Amharic/English). Mesob AI is built specifically for the Ethiopian market, understanding local business practices, regulatory requirements, and cultural nuances. Unlike foreign solutions that require expensive customization, Mesob AI works out-of-the-box with Ethiopian fiscal year calendars, local payment methods like CBE Birr and Telebirr, and generates reports compliant with Ethiopian tax authorities. Local support teams understand your business context and provide assistance in your language.",
+    date: "Tahsas 30, 2018 EC",
+    readTime: "3 min read",
     category: "Business Strategy",
-    image: "/super.jpeg",
-    slug: "why-ethiopian-businesses-choose-mesob-ai"
+    image: "/super.jpeg"
   },
   {
     id: 4,
     title: "Digital Transformation for African Businesses: A Modern Approach",
-    excerpt: "Explore how African businesses are embracing digital transformation through cloud-based solutions, AI automation, and data-driven decision making.",
-    date: "2024-11-05",
-    readTime: "7 min read",
+    excerpt: "African businesses are rapidly embracing digital transformation to compete in the global marketplace. Cloud-based solutions eliminate the need for expensive infrastructure while providing scalability and accessibility from anywhere. Mobile-first platforms ensure business management on-the-go, crucial for Africa's mobile-dominant markets. Data-driven decision making through advanced analytics helps businesses identify trends, optimize operations, and maximize profitability. Automation of repetitive tasks frees up staff for strategic work, while integrated systems break down data silos and improve collaboration. This digital revolution is enabling African SMEs to leapfrog traditional business models and adopt cutting-edge technologies.",
+    date: "Tir 25, 2018 EC",
+    readTime: "4 min read",
     category: "Digital Transformation",
-    image: "/heroImage.jpg",
-    slug: "digital-transformation-african-businesses"
+    image: "/heroImage.jpg"
   }
 ];
 
@@ -122,8 +119,7 @@ export default function BlogPage() {
                 key={post.id}
                 variants={cardVariants}
                 transition={{ duration: 0.5 }}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="group bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:border-emerald-200/50 transition-all duration-300"
+                className="group bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:border-emerald-200/50 transition-all duration-300"
               >
                 {/* Image Section */}
                 <div className="relative h-56 overflow-hidden bg-gradient-to-br from-emerald-100 to-teal-100">
@@ -131,7 +127,7 @@ export default function BlogPage() {
                     src={post.image}
                     alt={post.title}
                     fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="object-cover transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60" />
                   <div className="absolute top-4 left-4">
@@ -146,7 +142,7 @@ export default function BlogPage() {
                   <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
                     <div className="flex items-center gap-1.5">
                       <Calendar className="w-4 h-4" />
-                      <time>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</time>
+                      <time>{post.date}</time>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Clock className="w-4 h-4" />
@@ -154,23 +150,13 @@ export default function BlogPage() {
                     </div>
                   </div>
 
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-emerald-600 transition-colors line-clamp-2">
-                    <Link href={`/blog/${post.slug}`}>
-                      {post.title}
-                    </Link>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    {post.title}
                   </h2>
 
-                  <p className="text-gray-600 mb-5 line-clamp-3 leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {post.excerpt}
                   </p>
-
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold group/link transition-colors"
-                  >
-                    <span>Read more</span>
-                    <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                  </Link>
                 </div>
               </motion.article>
             ))}
