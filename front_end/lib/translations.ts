@@ -336,6 +336,71 @@ export interface Translations {
         decline: string;
         accept: string;
     };
+
+    // Auth Pages
+    auth: {
+        // Common
+        signIn: string;
+        signUp: string;
+        emailOrPhone: string;
+        password: string;
+        forgotPassword: string;
+        rememberMe: string;
+        dontHaveAccount: string;
+        createOne: string;
+        alreadyHaveAccount: string;
+        termsAndPrivacy: string;
+        terms: string;
+        privacy: string;
+        verificationCode: string;
+        checkEmail: string;
+        verifyCode: string;
+        verifying: string;
+        sendingCode: string;
+        backToSignIn: string;
+
+        // Owner Sign In
+        ownerSignInTitle: string;
+        ownerSignInSubtitle: string;
+        ownerWelcome: string;
+
+        // Supplier Sign In
+        supplierSignInTitle: string;
+        supplierSignInSubtitle: string;
+        supplierWelcome: string;
+
+        // Affiliate Sign In
+        affiliateSignInTitle: string;
+        affiliateSignInSubtitle: string;
+        affiliateWelcome: string;
+
+        // Register
+        businessName: string;
+        tinNumber: string;
+        phoneNumber: string;
+        address: string;
+        licenseDocument: string;
+        registerOwner: string;
+        registerSupplier: string;
+        registerAffiliate: string;
+        ownerRegisterTitle: string;
+        ownerRegisterSubtitle: string;
+        supplierRegisterTitle: string;
+        supplierRegisterSubtitle: string;
+        affiliateRegisterTitle: string;
+        affiliateRegisterSubtitle: string;
+
+        // Forgot Password
+        resetPasswordTitle: string;
+        resetPasswordSubtitleEmail: string;
+        resetPasswordSubtitleCode: string;
+        sendResetCode: string;
+        resetCode: string;
+        newPassword: string;
+        confirmPassword: string;
+        resetPasswordButton: string;
+        didntReceiveCode: string;
+    };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -466,6 +531,24 @@ export const translations: Record<Language, Translations> = {
             feature7: 'API access',
             feature8: 'Priority support',
             feature9: 'Custom integrations',
+            footerText: '© 2024 Mesob. All rights reserved.',
+            ownerCta: 'Sign in as Owner',
+            supplierCta: 'Sign in as Supplier',
+            contactUs: 'Contact Us',
+        },
+        pwaInstall: {
+            installApp: 'Install App',
+            installTitle: 'Install Mesob',
+            installDescription: 'Add the app to your home screen for a better experience.',
+            iosStep1: 'Tap the share icon',
+            iosStep2: 'Select "Add to Home Screen"',
+            androidStep1: 'Tap the menu icon',
+            androidStep2: 'Select "Install App"',
+            desktopStep1: 'Click the install icon',
+            desktopStep2: 'in the address bar',
+            firefoxMessage: 'Please use Chrome or Edge to install the app',
+            defaultMessage: 'This browser does not support app installation',
+            gotIt: 'Got it',
         },
         integrations: {
             badge: 'Seamless Integrations',
@@ -625,6 +708,63 @@ export const translations: Record<Language, Translations> = {
             decline: 'Decline',
             accept: 'Accept',
         },
+        auth: {
+            signIn: 'Sign In',
+            signUp: 'Sign Up',
+            emailOrPhone: 'Email or phone',
+            password: 'Password',
+            forgotPassword: 'Forgot password?',
+            rememberMe: 'Remember me',
+            dontHaveAccount: "Don't have an account?",
+            createOne: 'Create one',
+            alreadyHaveAccount: 'Already have an account?',
+            termsAndPrivacy: 'By signing in you agree to our',
+            terms: 'Terms',
+            privacy: 'Privacy Policy',
+            verificationCode: 'Verification Code',
+            checkEmail: 'Check your email for the verification code',
+            verifyCode: 'Verify Code',
+            verifying: 'Verifying...',
+            sendingCode: 'Sending code...',
+            backToSignIn: 'Back to Sign In',
+
+            ownerSignInTitle: 'Business Owner Sign In',
+            ownerSignInSubtitle: 'Access your business dashboard, manage operations, and track performance.',
+            ownerWelcome: 'Welcome back — enter your credentials to continue.',
+
+            supplierSignInTitle: 'Supplier Sign In',
+            supplierSignInSubtitle: 'Manage your products, orders, and connect with businesses.',
+            supplierWelcome: 'Welcome back — sign in to your supplier portal.',
+
+            affiliateSignInTitle: 'Affiliate Sign In',
+            affiliateSignInSubtitle: 'Track your referrals, earnings, and performance.',
+            affiliateWelcome: 'Welcome back — sign in to your affiliate dashboard.',
+
+            businessName: 'Business Name',
+            tinNumber: 'TIN Number',
+            phoneNumber: 'Phone Number',
+            address: 'Business Address',
+            licenseDocument: 'Business License Document',
+            registerOwner: 'Register as Owner',
+            registerSupplier: 'Register as Supplier',
+            registerAffiliate: 'Register as Affiliate',
+            ownerRegisterTitle: 'Start your business management journey',
+            ownerRegisterSubtitle: 'Join thousands of business owners who trust our AI-powered platform.',
+            supplierRegisterTitle: 'Expand your market reach',
+            supplierRegisterSubtitle: 'Connect with thousands of businesses and grow your sales.',
+            affiliateRegisterTitle: 'Start earning with Mesob',
+            affiliateRegisterSubtitle: 'Join our affiliate program and earn recurring commissions.',
+
+            resetPasswordTitle: 'Reset Password',
+            resetPasswordSubtitleEmail: 'Enter your email to receive a reset code',
+            resetPasswordSubtitleCode: 'Enter the code and your new password',
+            sendResetCode: 'Send Reset Code',
+            resetCode: 'Reset Code',
+            newPassword: 'New Password',
+            confirmPassword: 'Confirm Password',
+            resetPasswordButton: 'Reset Password',
+            didntReceiveCode: "Didn't receive code? Try again",
+        },
     },
     am: {
         nav: {
@@ -753,6 +893,24 @@ export const translations: Record<Language, Translations> = {
             feature7: 'API መዳረሻ',
             feature8: 'ቅድሚያ ያለው ድጋፍ',
             feature9: 'ብጁ ግንኙነቶች',
+            footerText: '© 2024 መሶብ. መብቱ በህግ የተጠበቀ ነው።',
+            ownerCta: 'እንደ ባለቤት ይግቡ',
+            supplierCta: 'እንደ አቅራቢ ይግቡ',
+            contactUs: 'ያግኙን',
+        },
+        pwaInstall: {
+            installApp: 'መተግበሪያውን ይጫኑ',
+            installTitle: 'መሶብን ይጫኑ',
+            installDescription: 'ለተሻለ ተሞክሮ መተግበሪያውን ወደ መነሻ ስክሪንዎ ያክሉ።',
+            iosStep1: 'የማጋራት አዶውን ይንኩ',
+            iosStep2: '"ወደ መነሻ ገጽ አክል"ን ይምረጡ',
+            androidStep1: 'የምናሌ አዶውን ይንኩ',
+            androidStep2: '"መተግበሪያን ይጫኑ"ን ይምረጡ',
+            desktopStep1: 'የመጫን አዶውን ጠቅ ያድርጉ',
+            desktopStep2: 'በአድራሻ አሞሌው ውስጥ',
+            firefoxMessage: 'መተግበሪያውን ለመጫን እባክዎ Chrome ወይም Edge ይጠቀሙ',
+            defaultMessage: 'ይህ አሳሽ መተግበሪያውን መጫን አይደግፍም',
+            gotIt: 'ገባኝ',
         },
         integrations: {
             badge: 'ቀላል ግንኙነቶች',
@@ -912,6 +1070,63 @@ export const translations: Record<Language, Translations> = {
             decline: 'አይቀበሉ',
             accept: 'ይቀበሉ',
         },
+        auth: {
+            signIn: 'ግባ',
+            signUp: 'ተመዝገብ',
+            emailOrPhone: 'ኢሜይል ወይም ስልክ',
+            password: 'የይለፍ ቃል',
+            forgotPassword: 'የይለፍ ቃል ረሱ?',
+            rememberMe: 'አስታውሰኝ',
+            dontHaveAccount: 'መለያ የለዎትም?',
+            createOne: 'አዲስ ይፍጠሩ',
+            alreadyHaveAccount: 'መለያ አለዎት?',
+            termsAndPrivacy: 'በመግባት በሚከተሉት እንስማማለን',
+            terms: 'ውሎች',
+            privacy: 'የግላዊነት ፖሊሲ',
+            verificationCode: 'ማረጋገጫ ኮድ',
+            checkEmail: 'ለማረጋገጫ ኮድ ኢሜይልዎን ይፈትሹ',
+            verifyCode: 'ኮድ አረጋግጥ',
+            verifying: 'በማረጋገጥ ላይ...',
+            sendingCode: 'ኮድ በመላክ ላይ...',
+            backToSignIn: 'ወደ መግቢያ ተመለስ',
+
+            ownerSignInTitle: 'የንግድ ባለቤት መግቢያ',
+            ownerSignInSubtitle: 'የንግድ ዳሽቦርድዎን ይድረሱ፣ ስራዎችን ያስተዳድሩ እና አፈጻጸምን ይከታተሉ።',
+            ownerWelcome: 'እንኳን ደህና መጡ — ለመቀጠል መረጃዎን ያስገቡ።',
+
+            supplierSignInTitle: 'አቅራቢ መግቢያ',
+            supplierSignInSubtitle: 'ምርቶችዎን፣ ትዕዛዞችዎን ያስተዳድሩ እና ከንግዶች ጋር ይገናኙ።',
+            supplierWelcome: 'እንኳን ደህና መጡ — ወደ አቅራቢ መግቢያዎ ይግቡ።',
+
+            affiliateSignInTitle: 'አጋር መግቢያ',
+            affiliateSignInSubtitle: 'ሪፈራሎችዎን፣ ገቢዎን እና አፈጻጸምዎን ይከታተሉ።',
+            affiliateWelcome: 'እንኳን ደህና መጡ — ወደ አጋር ዳሽቦርድዎ ይግቡ።',
+
+            businessName: 'የንግድ ስም',
+            tinNumber: 'የግብር መለያ ቁጥር (TIN)',
+            phoneNumber: 'ስልክ ቁጥር',
+            address: 'የንግድ አድራሻ',
+            licenseDocument: 'የንግድ ፈቃድ ሰነድ',
+            registerOwner: 'እንደ ባለቤት ይመዝገቡ',
+            registerSupplier: 'እንደ አቅራቢ ይመዝገቡ',
+            registerAffiliate: 'እንደ አጋር ይመዝገቡ',
+            ownerRegisterTitle: 'የንግድ አስተዳደር ጉዞዎን ይጀምሩ',
+            ownerRegisterSubtitle: 'በ AI የተጎላበተውን መድረካችንን የሚያምኑ በሺዎች የሚቆጠሩ የንግድ ባለቤቶችን ይቀላቀሉ።',
+            supplierRegisterTitle: 'የገበያ ተደራሽነትዎን ያስፋፉ',
+            supplierRegisterSubtitle: 'ከሺዎች ከሚቆጠሩ ንግዶች ጋር ይገናኙ እና ሽያጭዎን ያሳድጉ።',
+            affiliateRegisterTitle: 'በመሶብ ማትረፍ ይጀምሩ',
+            affiliateRegisterSubtitle: 'የአጋር ፕሮግራማችንን ይቀላቀሉ እና ተደጋጋሚ ኮሚሽኖችን ያግኙ።',
+
+            resetPasswordTitle: 'የይለፍ ቃል ዳግም ያስጀምሩ',
+            resetPasswordSubtitleEmail: 'የዳግም ማስጀመሪያ ኮድ ለማግኘት ኢሜይልዎን ያስገቡ',
+            resetPasswordSubtitleCode: 'ኮዱን እና አዲሱን የይለፍ ቃል ያስገቡ',
+            sendResetCode: 'የዳግም ማስጀመሪያ ኮድ ላክ',
+            resetCode: 'የዳግም ማስጀመሪያ ኮድ',
+            newPassword: 'አዲስ የይለፍ ቃል',
+            confirmPassword: 'የይለፍ ቃል አረጋግጥ',
+            resetPasswordButton: 'የይለፍ ቃል ዳግም አስጀምር',
+            didntReceiveCode: "ኮድ አልደረሰዎትም? እንደገና ይሞክሩ",
+        },
     },
     or: {
         nav: {
@@ -1040,6 +1255,24 @@ export const translations: Record<Language, Translations> = {
             feature7: 'Qaqqabummaa API',
             feature8: 'Deeggarsa dursa',
             feature9: 'Walitti makuu dhuunfaa',
+            footerText: '© 2024 Mesob. Mirgi hundaa eegamaa dha.',
+            ownerCta: 'Akka Abbaa Daldalaatti Seeni',
+            supplierCta: 'Akka Dhiyeessaatti Seeni',
+            contactUs: 'Nu Quunnamaa',
+        },
+        pwaInstall: {
+            installApp: 'App Fe\'i',
+            installTitle: 'Mesob Fe\'i',
+            installDescription: 'Muuxannoo fooyya\'aaf appicha gara skiriinii man\'ee keetti dabali.',
+            iosStep1: 'Mallattoo qooduu tuqi',
+            iosStep2: '"Gara Man\'eetti Dabali" filadhu',
+            androidStep1: 'Mallattoo menu tuqi',
+            androidStep2: '"App Fe\'i" filadhu',
+            desktopStep1: 'Mallattoo fe\'uu cuqaasi',
+            desktopStep2: 'Barruu teessoo keessatti',
+            firefoxMessage: 'Appicha fe\'uuf maaloo Chrome ykn Edge fayyadami',
+            defaultMessage: 'Browser kun appicha fe\'uu hin deeggaru',
+            gotIt: 'Na Galeera',
         },
         integrations: {
             badge: 'Walitti Makuu Salphaa',
@@ -1199,6 +1432,63 @@ export const translations: Record<Language, Translations> = {
             decline: 'Diduu',
             accept: 'Fudhu',
         },
+        auth: {
+            signIn: 'Seeni',
+            signUp: 'Galmaa\'i',
+            emailOrPhone: 'Email ykn Bilbila',
+            password: 'Jecha Darbi',
+            forgotPassword: 'Jecha darbi dagatte?',
+            rememberMe: 'Na yaadadhu',
+            dontHaveAccount: 'Akkaawuntii hin qabduu?',
+            createOne: 'Tokko uumi',
+            alreadyHaveAccount: 'Akkaawuntii qabdaa?',
+            termsAndPrivacy: 'Seenuudhaan kanaan walii galta',
+            terms: 'Waliigaltee',
+            privacy: 'Imaammata Dhuunfummaa',
+            verificationCode: 'Koodii Mirkaneessaa',
+            checkEmail: 'Koodii mirkaneessaaf email kee ilaali',
+            verifyCode: 'Koodii Mirkaneessi',
+            verifying: 'Mirkaneessaa jira...',
+            sendingCode: 'Koodii ergaa jira...',
+            backToSignIn: 'Gara Seensatti Deebi\'i',
+
+            ownerSignInTitle: 'Seensa Abbaa Daldalaa',
+            ownerSignInSubtitle: 'Dashboard daldala kee seeni, hojiiwwan bulchi, fi raawwii hordofi.',
+            ownerWelcome: 'Baga nagaan dhufte — itti fufuuf odeeffannoo kee galchi.',
+
+            supplierSignInTitle: 'Seensa Dhiyeessaa',
+            supplierSignInSubtitle: 'Oomishaalee, ajaja, fi daldala wajjin walqunnamtii bulchi.',
+            supplierWelcome: 'Baga nagaan dhufte — gara portal dhiyeessaa keetti seeni.',
+
+            affiliateSignInTitle: 'Seensa Hiriyyaa',
+            affiliateSignInSubtitle: 'Referrals, galii, fi raawwii kee hordofi.',
+            affiliateWelcome: 'Baga nagaan dhufte — gara dashboard hiriyyaa keetti seeni.',
+
+            businessName: 'Maqaa Daldalaa',
+            tinNumber: 'Lakkoofsa TIN',
+            phoneNumber: 'Lakkoofsa Bilbilaa',
+            address: 'Teessoo Daldalaa',
+            licenseDocument: 'Sanada Hayyama Daldalaa',
+            registerOwner: 'Akka Abbaa Daldalaatti Galmaa\'i',
+            registerSupplier: 'Akka Dhiyeessaatti Galmaa\'i',
+            registerAffiliate: 'Akka Hiriyyaatti Galmaa\'i',
+            ownerRegisterTitle: 'Imala bulchiinsa daldala kee jalqabi',
+            ownerRegisterSubtitle: 'Abbootii daldalaa kumaatama platform AI keenya amananii wajjin makami.',
+            supplierRegisterTitle: 'Gabaa kee babal\'isi',
+            supplierRegisterSubtitle: 'Daldala kumaatama wajjin walqunnamii fi gurgurtaa kee guddisi.',
+            affiliateRegisterTitle: 'Mesob wajjin argachuu jalqabi',
+            affiliateRegisterSubtitle: 'Sagantaa hiriyyaa keenyatti makamiitii komishinii irra deebi\'ii argadhu.',
+
+            resetPasswordTitle: 'Jecha Darbi Haaromsi',
+            resetPasswordSubtitleEmail: 'Koodii haaromsaa argachuuf email kee galchi',
+            resetPasswordSubtitleCode: 'Koodii fi jecha darbi haaraa galchi',
+            sendResetCode: 'Koodii Haaromsaa Ergi',
+            resetCode: 'Koodii Haaromsaa',
+            newPassword: 'Jecha Darbi Haaraa',
+            confirmPassword: 'Jecha Darbi Mirkaneessi',
+            resetPasswordButton: 'Jecha Darbi Haaromsi',
+            didntReceiveCode: "Koodiin sin qaqqabnee? Irra deebi'ii yaali",
+        },
     },
     ti: {
         nav: {
@@ -1327,6 +1617,24 @@ export const translations: Record<Language, Translations> = {
             feature7: 'API መእተዊ',
             feature8: 'ቀዳምነት ዘለዎ ደገፍ',
             feature9: 'ፍሉይ ምትእስሳር',
+            footerText: '© 2024 መሶብ. ኩሉ መሰል ዝተሓለወ እዩ።',
+            ownerCta: 'ከም ዋና እተው',
+            supplierCta: 'ከም ኣቕራቢ እተው',
+            contactUs: 'ርኸቡና',
+        },
+        pwaInstall: {
+            installApp: 'ኣፕ ጽዓን',
+            installTitle: 'መሶብ ጽዓን',
+            installDescription: 'ንዝሓሸ ተሞክሮ ነቲ ኣፕ ናብ መበገሲ ስክሪንካ ወስኸሉ።',
+            iosStep1: 'ናይ ምክፋል ምልክት ጠውቕ',
+            iosStep2: '"ናብ መበገሲ ገጽ ወስኽ" ምረጽ',
+            androidStep1: 'ናይ ሜኑ ምልክት ጠውቕ',
+            androidStep2: '"ኣፕ ጽዓን" ምረጽ',
+            desktopStep1: 'ናይ ምጽዓን ምልክት ጠውቕ',
+            desktopStep2: 'ኣብ ናይ ኣድራሻ ባር',
+            firefoxMessage: 'ነቲ ኣፕ ንምጽዓን በጃኻ Chrome ወይ Edge ተጠቐም',
+            defaultMessage: 'እዚ ብራውዘር ኣፕ ምጽዓን ኣይድግፍን እዩ',
+            gotIt: 'ተረዲኡኒ',
         },
         integrations: {
             badge: 'ቀሊል ምትእስሳር',
@@ -1486,6 +1794,64 @@ export const translations: Record<Language, Translations> = {
             decline: 'ኣይቀበልን',
             accept: 'ይቀበል',
         },
+        auth: {
+            signIn: 'እተው',
+            signUp: 'ተመዝገብ',
+            emailOrPhone: 'ኢሜይል ወይ ስልክ',
+            password: 'መሕለፊ ቃል',
+            forgotPassword: 'መሕለፊ ቃል ረሲዕካ?',
+            rememberMe: 'ዘክረኒ',
+            dontHaveAccount: 'ኣካውንት የብልካን?',
+            createOne: 'ሓደ ፍጠር',
+            alreadyHaveAccount: 'ኣካውንት ኣለካ?',
+            termsAndPrivacy: 'ብምእታው በዚ ትሰማማዕ',
+            terms: 'ውላት',
+            privacy: 'ናይ ውልቃዊነት ፖሊሲ',
+            verificationCode: 'ኮድ መረጋገጺ',
+            checkEmail: 'ንኮድ መረጋገጺ ኢሜይልካ ርኣይ',
+            verifyCode: 'ኮድ ኣረጋግጽ',
+            verifying: 'የረጋግጽ ኣሎ...',
+            sendingCode: 'ኮድ ይሰድድ ኣሎ...',
+            backToSignIn: 'ናብ መእተዊ ተመለስ',
+
+            ownerSignInTitle: 'ናይ ንግዲ ዋና መእተዊ',
+            ownerSignInSubtitle: 'ናይ ንግዲ ዳሽቦርድካ ርከብ፣ ስራሓት ኣመሓድር፣ ከምኡውን ኣፈጻጽማ ተኸታተል።',
+            ownerWelcome: 'እንቋዕ ብደሓን መጻእካ — ንምቕጻል ሓበሬታኻ ኣእቱ።',
+
+            supplierSignInTitle: 'ኣቕራቢ መእተዊ',
+            supplierSignInSubtitle: 'ምርታትካ፣ ትእዛዛትካ ኣመሓድር፣ ከምኡውን ምስ ንግድታት ተራኽብ።',
+            supplierWelcome: 'እንቋዕ ብደሓን መጻእካ — ናብ ኣቕራቢ መእተዊኻ እተው።',
+
+            affiliateSignInTitle: 'መሻርኽቲ መእተዊ',
+            affiliateSignInSubtitle: 'ሪፈራልካ፣ ኣታዊኻን ኣፈጻጽማኻን ተኸታተል።',
+            affiliateWelcome: 'እንቋዕ ብደሓን መጻእካ — ናብ መሻርኽቲ ዳሽቦርድካ እተው።',
+
+            businessName: 'ስም ንግዲ',
+            tinNumber: 'ቁጽሪ መለለዪ ግብሪ (TIN)',
+            phoneNumber: 'ቁጽሪ ስልክ',
+            address: 'ኣድራሻ ንግዲ',
+            licenseDocument: 'ሰነድ ፈቓድ ንግዲ',
+            registerOwner: 'ከም ዋና ተመዝገብ',
+            registerSupplier: 'ከም ኣቕራቢ ተመዝገብ',
+            registerAffiliate: 'ከም መሻርኽቲ ተመዝገብ',
+            ownerRegisterTitle: 'ናይ ንግዲ ምሕደራ ጉዕዞኻ ጀምር',
+            ownerRegisterSubtitle: 'ነቲ ብ AI ዝሰርሕ መድረኽና ዝኣምኑ ኣሽሓት ዋናታት ንግዲ ተሓወስ።',
+            supplierRegisterTitle: 'ናይ ዕዳጋ ተበጻሕነትካ ኣስፊሕ',
+            supplierRegisterSubtitle: 'ምስ ኣሽሓት ንግድታት ተራኽብ እሞ መሸጣኻ ኣዕቢ።',
+            affiliateRegisterTitle: 'ብመሶብ ምትራፍ ጀምር',
+            affiliateRegisterSubtitle: 'ናይ መሻርኽቲ መደብና ተሓወስ እሞ ቀጻሊ ኮሚሽን ረብሕ።',
+
+            resetPasswordTitle: 'መሕለፊ ቃል ዳግም ጀምር',
+            resetPasswordSubtitleEmail: 'ናይ ዳግም መጀመሪ ኮድ ንምርካብ ኢሜይልካ ኣእቱ',
+            resetPasswordSubtitleCode: 'ኮድን ሓዲሽ መሕለፊ ቃልን ኣእቱ',
+            sendResetCode: 'ናይ ዳግም መጀመሪ ኮድ ስደድ',
+            resetCode: 'ናይ ዳግም መጀመሪ ኮድ',
+            newPassword: 'ሓዲሽ መሕለፊ ቃል',
+            confirmPassword: 'መሕለፊ ቃል ኣረጋግጽ',
+            resetPasswordButton: 'መሕለፊ ቃል ዳግም ጀምር',
+            didntReceiveCode: "ኮድ ኣይበጽሓካን? እንደገና ፈትን",
+        },
+
     },
 };
 

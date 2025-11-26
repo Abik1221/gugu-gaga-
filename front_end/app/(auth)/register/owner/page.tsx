@@ -14,6 +14,7 @@ import ownerRegistrationImage from "@/public/owner_registration.jpeg";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Head from "next/head";
+import { useLanguage } from "@/contexts/language-context";
 
 
 
@@ -38,6 +39,7 @@ const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
 
 export default function OwnerRegisterPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { show } = useToast();
 
   const [loading, setLoading] = useState(false);
@@ -282,11 +284,10 @@ export default function OwnerRegisterPage() {
                 className="mt-8 rounded-xl shadow-lg mx-auto"
               />
               <h1 className="mt-10 text-4xl font-bold leading-tight text-black text-center">
-                Start your business management journey
+                {t.auth.ownerRegisterTitle}
               </h1>
               <p className="mt-4 text-lg text-slate-500 text-center lg:text-left">
-                Join thousands of business owners who trust our AI-powered
-                platform to streamline their operations and boost profitability.
+                {t.auth.ownerRegisterSubtitle}
               </p>
 
               <ul className="mt-10 space-y-4 text-slate-700">
@@ -328,10 +329,10 @@ export default function OwnerRegisterPage() {
             >
               <div className="mb-8 text-center">
                 <h2 className="text-3xl font-bold text-black">
-                  Register as Business Owner
+                  {t.auth.registerOwner}
                 </h2>
                 <p className="mt-2 text-sm text-slate-600">
-                  Create your business management account today.
+                  {t.auth.ownerRegisterSubtitle}
                 </p>
                 {affiliateToken && (
                   <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
@@ -356,7 +357,7 @@ export default function OwnerRegisterPage() {
                 <form onSubmit={handleVerifyOtp} className="space-y-5">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Verification Code*
+                      {t.auth.verificationCode}*
                     </label>
                     <Input
                       value={otp}
@@ -366,7 +367,7 @@ export default function OwnerRegisterPage() {
                       className="mt-2 border border-slate-200 bg-white/5 text-slate-700 text-center text-2xl tracking-widest"
                     />
                     <p className="mt-2 text-xs text-slate-600">
-                      Check your email for the verification code
+                      {t.auth.checkEmail}
                     </p>
                   </div>
 
@@ -375,14 +376,14 @@ export default function OwnerRegisterPage() {
                     disabled={loading}
                     className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-green-600 hover:bg-green-700 px-6 py-3 font-semibold text-white shadow-lg shadow-green-500/30 transition duration-300 hover:scale-[1.01] hover:shadow-green-400/40"
                   >
-                    {loading ? "Verifying..." : "Verify Code"}
+                    {loading ? t.auth.verifying : t.auth.verifyCode}
                   </Button>
                 </form>
               ) : (
                 <form onSubmit={submitOwner} className="space-y-5">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Business Name*
+                      {t.auth.businessName}*
                     </label>
                     <Input
                       value={businessName}
@@ -404,7 +405,7 @@ export default function OwnerRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Email Address*
+                      {t.auth.emailOrPhone}*
                     </label>
                     <Input
                       type="email"
@@ -427,7 +428,7 @@ export default function OwnerRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Password*
+                      {t.auth.password}*
                     </label>
                     <Input
                       type="password"
@@ -450,7 +451,7 @@ export default function OwnerRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      TIN Number*
+                      {t.auth.tinNumber}*
                     </label>
                     <Input
                       value={tinNumber}
@@ -473,7 +474,7 @@ export default function OwnerRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Phone Number
+                      {t.auth.phoneNumber}
                     </label>
                     <Input
                       value={phone}
@@ -485,7 +486,7 @@ export default function OwnerRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Business Address
+                      {t.auth.address}
                     </label>
                     <Input
                       value={address}
@@ -496,7 +497,7 @@ export default function OwnerRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Business License Document*
+                      {t.auth.licenseDocument}*
                     </label>
                     <input
                       type="file"
@@ -546,34 +547,34 @@ export default function OwnerRegisterPage() {
                         />
                       </svg>
                     ) : null}
-                    {loading ? "Registering..." : "Register as Owner"}
+                    {loading ? "Registering..." : t.auth.registerOwner}
                   </Button>
                 </form>
               )}
 
               {!otpSent && (
                 <p className="mt-4 text-center text-xs text-slate-700">
-                  Already have an account?{" "}
+                  {t.auth.alreadyHaveAccount}{" "}
                   <Link
                     href="/owner-signin"
                     className="font-medium text-green-600 hover:underline"
                   >
-                    Sign in
+                    {t.auth.signIn}
                   </Link>
                 </p>
               )}
 
               <p className="mt-8 text-center text-[11px] text-slate-700">
-                By continuing you agree to our{" "}
+                {t.auth.termsAndPrivacy}{" "}
                 <Link href="/terms" className="text-green-600 hover:underline">
-                  Terms
+                  {t.auth.terms}
                 </Link>{" "}
-                and{" "}
+                &{" "}
                 <Link
                   href="/privacy"
                   className="text-green-600 hover:underline"
                 >
-                  Privacy Policy
+                  {t.auth.privacy}
                 </Link>
                 .
               </p>

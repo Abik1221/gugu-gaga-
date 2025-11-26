@@ -12,6 +12,7 @@ import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Navbar from "@/components/sections/Navbar";
 import Head from "next/head";
+import { useLanguage } from "@/contexts/language-context";
 
 const highlights = [
   "Track referrals and payouts in real time",
@@ -21,6 +22,7 @@ const highlights = [
 
 export default function AffiliateLoginPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { show } = useToast();
   const [step, setStep] = useState<"request" | "verify">("request");
   const [email, setEmail] = useState("");
@@ -190,11 +192,10 @@ export default function AffiliateLoginPage() {
             </div>
 
             <h1 className="mt-10 text-4xl font-bold leading-tight text-slate-900">
-              Welcome back, partner
+              {t.auth.affiliateWelcome}
             </h1>
             <p className="mt-4 text-lg text-slate-600">
-              Securely access your referral analytics, payouts, and marketing
-              assets with our two-step sign-in.
+              {t.auth.affiliateSignInSubtitle}
             </p>
 
             <ul className="mt-10 space-y-4 text-slate-600">
@@ -239,7 +240,7 @@ export default function AffiliateLoginPage() {
           >
             <div className="mb-8 text-center">
               <h2 className="text-3xl font-bold text-slate-900">
-                Affiliate sign in
+                {t.auth.affiliateSignInTitle}
               </h2>
               <p className="mt-2 text-sm text-slate-500">
                 Use your credentials to receive a one-time code.
@@ -249,16 +250,16 @@ export default function AffiliateLoginPage() {
             <div className="mb-6 flex items-center justify-center gap-3 text-xs uppercase tracking-[0.3em] text-emerald-600">
               <span
                 className={`relative overflow-hidden rounded-full px-3 py-1 ${step === "request"
-                    ? "bg-emerald-100 text-emerald-700"
-                    : "bg-emerald-50 text-emerald-400"
+                  ? "bg-emerald-100 text-emerald-700"
+                  : "bg-emerald-50 text-emerald-400"
                   }`}
               >
                 Step 1
               </span>
               <span
                 className={`relative overflow-hidden rounded-full px-3 py-1 ${step === "verify"
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-emerald-50 text-emerald-400"
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-emerald-50 text-emerald-400"
                   }`}
               >
                 Step 2
@@ -275,7 +276,7 @@ export default function AffiliateLoginPage() {
               <form onSubmit={requestCode} className="space-y-5">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                    Email*
+                    {t.auth.emailOrPhone}*
                   </label>
                   <Input
                     type="email"
@@ -288,13 +289,13 @@ export default function AffiliateLoginPage() {
                 <div>
                   <div className="flex items-center justify-between">
                     <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                      Password*
+                      {t.auth.password}*
                     </label>
                     <Link
                       href="/forgot-password"
                       className="text-xs font-medium text-emerald-600 hover:text-emerald-700 hover:underline"
                     >
-                      Forgot password?
+                      {t.auth.forgotPassword}
                     </Link>
                   </div>
                   <Input
@@ -332,14 +333,14 @@ export default function AffiliateLoginPage() {
                       />
                     </svg>
                   ) : null}
-                  {loading ? "Sending code..." : "Send login code"}
+                  {loading ? t.auth.sendingCode : "Send login code"}
                 </Button>
               </form>
             ) : (
               <form onSubmit={verifyCode} className="space-y-5">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                    Email
+                    {t.auth.emailOrPhone}
                   </label>
                   <Input
                     type="email"
@@ -351,7 +352,7 @@ export default function AffiliateLoginPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                    Login code*
+                    {t.auth.verificationCode}*
                   </label>
                   <Input
                     value={code}
@@ -387,7 +388,7 @@ export default function AffiliateLoginPage() {
                       />
                     </svg>
                   ) : null}
-                  {loading ? "Verifying..." : "Sign in"}
+                  {loading ? t.auth.verifying : t.auth.signIn}
                 </Button>
 
                 <button
@@ -404,12 +405,12 @@ export default function AffiliateLoginPage() {
             )}
 
             <p className="mt-8 text-center text-xs text-slate-500">
-              Need an affiliate account?{" "}
+              {t.auth.dontHaveAccount}{" "}
               <Link
                 href="/auth?tab=affiliate"
                 className="font-medium text-emerald-600 hover:underline"
               >
-                Register here
+                {t.auth.createOne}
               </Link>
             </p>
           </motion.div>

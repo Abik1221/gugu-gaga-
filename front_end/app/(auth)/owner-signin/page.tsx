@@ -8,6 +8,7 @@ import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Link from "next/link";
 import Head from "next/head";
+import { useLanguage } from "@/contexts/language-context";
 
 type Errors = {
   identifier?: string;
@@ -16,6 +17,7 @@ type Errors = {
 };
 
 export default function PharmacySignInPage(): JSX.Element {
+  const { t } = useLanguage();
   const [identifier, setIdentifier] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -252,9 +254,7 @@ export default function PharmacySignInPage(): JSX.Element {
               </div>
 
               <p className="text-slate-600 leading-relaxed">
-                Access your business dashboard, manage operations, and track
-                performance. Sign in to continue to your business management
-                platform.
+                {t.auth.ownerSignInSubtitle}
               </p>
 
               <ul className="mt-6 space-y-2 text-sm text-slate-600">
@@ -269,10 +269,10 @@ export default function PharmacySignInPage(): JSX.Element {
           <main className="p-8 md:p-12 flex flex-col justify-center bg-white">
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-slate-900">
-                Business Owner Sign In
+                {t.auth.ownerSignInTitle}
               </h1>
               <p className="text-sm text-slate-500 mt-1">
-                Welcome back — enter your credentials to continue.
+                {t.auth.ownerWelcome}
               </p>
             </div>
 
@@ -293,7 +293,7 @@ export default function PharmacySignInPage(): JSX.Element {
                       htmlFor="identifier"
                       className="block text-sm font-medium text-slate-700 mb-2"
                     >
-                      Email or phone
+                      {t.auth.emailOrPhone}
                     </label>
                     <input
                       id="identifier"
@@ -327,7 +327,7 @@ export default function PharmacySignInPage(): JSX.Element {
                       htmlFor="password"
                       className="block text-sm font-medium text-slate-700 mb-2"
                     >
-                      Password
+                      {t.auth.password}
                     </label>
                     <div className="relative">
                       <input
@@ -375,7 +375,7 @@ export default function PharmacySignInPage(): JSX.Element {
                     htmlFor="otp"
                     className="block text-sm font-medium text-slate-700 mb-2"
                   >
-                    Verification Code
+                    {t.auth.verificationCode}
                   </label>
                   <input
                     id="otp"
@@ -388,7 +388,7 @@ export default function PharmacySignInPage(): JSX.Element {
                     maxLength={6}
                   />
                   <p className="mt-2 text-sm text-slate-600">
-                    Check your email for the verification code
+                    {t.auth.checkEmail}
                   </p>
                 </div>
               )}
@@ -401,14 +401,14 @@ export default function PharmacySignInPage(): JSX.Element {
                     onChange={(e) => setRemember(e.target.checked)}
                     className="h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-400"
                   />
-                  <span className="text-slate-600">Remember me</span>
+                  <span className="text-slate-600">{t.auth.rememberMe}</span>
                 </label>
 
                 <a
                   href="/forgot-password?role=pharmacy_owner"
                   className="text-sm text-emerald-600 hover:underline"
                 >
-                  Forgot password?
+                  {t.auth.forgotPassword}
                 </a>
               </div>
 
@@ -420,34 +420,34 @@ export default function PharmacySignInPage(): JSX.Element {
                 >
                   {loading
                     ? otpSent
-                      ? "Verifying..."
-                      : "Sending code..."
+                      ? t.auth.verifying
+                      : t.auth.sendingCode
                     : otpSent
-                      ? "Verify Code"
-                      : "Sign in"}
+                      ? t.auth.verifyCode
+                      : t.auth.signIn}
                 </button>
               </div>
 
               <div className="text-center text-sm text-slate-500">
-                Don't have an account?{" "}
+                {t.auth.dontHaveAccount}{" "}
                 <Link
                   href="/register/owner"
                   className="text-emerald-600 hover:underline"
                 >
-                  Create one
+                  {t.auth.createOne}
                 </Link>
               </div>
             </form>
 
             <div className="mt-6 text-xs text-slate-400">
               <p>
-                By signing in you agree to our{" "}
+                {t.auth.termsAndPrivacy}{" "}
                 <a href="/terms" className="text-emerald-600 hover:underline">
-                  Terms
+                  {t.auth.terms}
                 </a>{" "}
-                and{" "}
+                &{" "}
                 <a href="/privacy" className="text-emerald-600 hover:underline">
-                  Privacy Policy
+                  {t.auth.privacy}
                 </a>
                 .
               </p>

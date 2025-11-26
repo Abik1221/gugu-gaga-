@@ -13,10 +13,12 @@ import { ArrowLeft, Mail, Lock, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
+import { useLanguage } from "@/contexts/language-context";
 
 function ForgotPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
   const { show } = useToast();
   const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
@@ -177,12 +179,12 @@ function ForgotPasswordContent() {
               <Link href="/auth" className="text-gray-600 hover:text-gray-900">
                 <ArrowLeft className="h-5 w-5" />
               </Link>
-              <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
+              <CardTitle className="text-2xl font-bold">{t.auth.resetPasswordTitle}</CardTitle>
             </div>
             <p className="text-sm text-gray-600">
               {step === "email"
-                ? "Enter your email to receive a reset code"
-                : "Enter the code and your new password"}
+                ? t.auth.resetPasswordSubtitleEmail
+                : t.auth.resetPasswordSubtitleCode}
             </p>
           </CardHeader>
           <CardContent>
@@ -191,7 +193,7 @@ function ForgotPasswordContent() {
                 <div className="space-y-2">
                   <Label htmlFor="email" className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-emerald-600" />
-                    Email Address
+                    {t.auth.emailOrPhone}
                   </Label>
                   <Input
                     id="email"
@@ -203,7 +205,7 @@ function ForgotPasswordContent() {
                     className="h-11"
                     autoFocus
                   />
-                  <p className="text-xs text-gray-500">Enter the email associated with your account</p>
+                  <p className="text-xs text-gray-500">{t.auth.resetPasswordSubtitleEmail}</p>
                 </div>
 
                 <Button
@@ -211,12 +213,12 @@ function ForgotPasswordContent() {
                   disabled={loading}
                   className="w-full h-11 bg-emerald-600 hover:bg-emerald-700"
                 >
-                  {loading ? "Sending..." : "Send Reset Code"}
+                  {loading ? t.auth.sendingCode : t.auth.sendResetCode}
                 </Button>
 
                 <div className="text-center text-sm">
                   <Link href="/auth" className="text-emerald-600 hover:text-emerald-700">
-                    Back to Sign In
+                    {t.auth.backToSignIn}
                   </Link>
                 </div>
               </form>
@@ -225,7 +227,7 @@ function ForgotPasswordContent() {
                 <div className="space-y-2">
                   <Label htmlFor="code" className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-emerald-600" />
-                    Reset Code
+                    {t.auth.resetCode}
                   </Label>
                   <Input
                     id="code"
@@ -238,13 +240,13 @@ function ForgotPasswordContent() {
                     className="h-11 text-center text-lg tracking-widest"
                     autoFocus
                   />
-                  <p className="text-xs text-gray-500">Check your email ({email}) for the 6-digit code</p>
+                  <p className="text-xs text-gray-500">{t.auth.checkEmail}</p>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="newPassword" className="flex items-center gap-2">
                     <Lock className="h-4 w-4 text-emerald-600" />
-                    New Password
+                    {t.auth.newPassword}
                   </Label>
                   <Input
                     id="newPassword"
@@ -259,7 +261,7 @@ function ForgotPasswordContent() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Label htmlFor="confirmPassword">{t.auth.confirmPassword}</Label>
                   <Input
                     id="confirmPassword"
                     type="password"
@@ -277,7 +279,7 @@ function ForgotPasswordContent() {
                   disabled={loading}
                   className="w-full h-11 bg-emerald-600 hover:bg-emerald-700"
                 >
-                  {loading ? "Resetting..." : "Reset Password"}
+                  {loading ? t.auth.verifying : t.auth.resetPasswordButton}
                 </Button>
 
                 <div className="text-center text-sm space-y-2">
@@ -286,10 +288,10 @@ function ForgotPasswordContent() {
                     onClick={() => setStep("email")}
                     className="text-emerald-600 hover:text-emerald-700 block w-full"
                   >
-                    Didn't receive code? Try again
+                    {t.auth.didntReceiveCode}
                   </button>
                   <Link href="/auth" className="text-gray-600 hover:text-gray-900 block">
-                    Back to Sign In
+                    {t.auth.backToSignIn}
                   </Link>
                 </div>
               </form>
