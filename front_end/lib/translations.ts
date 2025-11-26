@@ -844,7 +844,6 @@ export const translations: Record<Language, Translations> = {
             support: 'ድጋፍ',
         },
         contactPage: {
-        contactPage: {
             title: 'ማሳያ በቀጠሮ ይቀርቡ',
             subtitle: 'መሶብ የንግድዎን ሥራዎች እንዴት ሊቀይር እንደሚችል ለማየት ዝግጁ ነዎት? ለፍላጎትዎ የተበጀ ግላዊ ማሳያ እናቀናጅ።',
             formHeading: 'ማሳያዎን ይጠይቁ',
