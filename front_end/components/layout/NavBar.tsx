@@ -14,6 +14,8 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
+import { useLanguage } from "@/contexts/language-context";
+
 type NavItem = {
   id: string;
   label: string;
@@ -35,14 +37,16 @@ export default function NavBar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const navItems: readonly NavItem[] = [
-    { id: "hero", label: "Home" },
-    { id: "features", label: "Features" },
-    { id: "ai-solutions", label: "Solutions" },
-    { id: "pricing", label: "Pricing" },
-    { id: "cta", label: "Contact", href: "/contact" },
+  const { t } = useLanguage();
+
+  const navItems: NavItem[] = [
+    { id: "hero", label: t.nav.home },
+    { id: "features", label: t.nav.features },
+    { id: "ai-solutions", label: t.nav.solutions },
+    { id: "pricing", label: t.nav.pricing },
+    { id: "cta", label: t.nav.contact, href: "/contact" },
     // { id: "affiliate", label: "Affiliate" },
-  ] as const;
+  ];
 
   const menuVariants = {
     closed: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
