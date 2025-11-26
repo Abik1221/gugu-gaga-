@@ -11,8 +11,11 @@ import Link from "next/link";
 import Image from "next/image";
 import logoImage from "@/public/mesoblogo.jpeg";
 import Navbar from "@/components/sections/Navbar";
+import { useLanguage } from "@/contexts/language-context";
+
 export default function ContactPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -47,11 +50,11 @@ export default function ContactPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-10">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Schedule a <span className="text-emerald-600">Demo</span>
+            {t.contactPage.title.split(' ').slice(0, 2).join(' ')}{' '}
+            <span className="text-emerald-600">{t.contactPage.title.split(' ').slice(2).join(' ')}</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Ready to see how Mesob can transform your business operations? Let's
-            schedule a personalized demo tailored to your needs.
+            {t.contactPage.subtitle}
           </p>
         </div>
 
@@ -60,7 +63,7 @@ export default function ContactPage() {
           <Card className="shadow-lg">
             <CardContent className="p-8">
               <h3 className="text-2xl font-semibold text-gray-900 mb-6">
-                Request Your Demo
+                {t.contactPage.formHeading}
               </h3>
 
               {success ? (
@@ -81,11 +84,10 @@ export default function ContactPage() {
                     </svg>
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                    Demo Request Sent!
+                    {t.contactPage.successTitle}
                   </h4>
                   <p className="text-gray-600">
-                    We'll contact you within 24 hours to schedule your
-                    personalized demo.
+                    {t.contactPage.successMessage}
                   </p>
                 </div>
               ) : (
@@ -93,7 +95,7 @@ export default function ContactPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name*
+                        {t.contactPage.nameLabel}
                       </label>
                       <Input
                         value={formData.name}
@@ -106,7 +108,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address*
+                        {t.contactPage.emailLabel}
                       </label>
                       <Input
                         type="email"
@@ -122,7 +124,7 @@ export default function ContactPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Company/Business Name
+                      {t.contactPage.companyLabel}
                     </label>
                     <Input
                       value={formData.company}
@@ -135,15 +137,15 @@ export default function ContactPage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tell us about your needs
+                      {t.contactPage.messageLabel}
                     </label>
                     <Textarea
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
-                      placeholder="What challenges are you facing with your business? What features are you most interested in?"
-                      className="bg-white border-gray-300 focus:border-emerald-500 focus:ring-emerald-500"
+                      placeholder={t.contactPage.messagePlaceholder}
+                      className="bg-white border-gray-300 ocus:border-emerald-500 focus:ring-emerald-500"
                       rows={4}
                     />
                   </div>
@@ -153,7 +155,7 @@ export default function ContactPage() {
                     disabled={loading}
                     className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3"
                   >
-                    {loading ? "Sending Request..." : "Schedule My Demo"}
+                    {loading ? t.contactPage.submitting : t.contactPage.submitButton}
                   </Button>
                 </form>
               )}
@@ -164,7 +166,7 @@ export default function ContactPage() {
           <div className="space-y-8">
             <div>
               <h3 className="text-2xl font-semibold text-gray-900 mb-6">
-                Get in Touch
+                {t.contactPage.contactInfoHeading}
               </h3>
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
@@ -172,10 +174,10 @@ export default function ContactPage() {
                     <Mail className="w-6 h-6 text-emerald-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">Email</h4>
-                    <p className="text-gray-600">nahomkeneni4@gmail.com</p>
+                    <h4 className="font-semibold text-gray-900">{t.contactPage.emailHeading}</h4>
+                    <p className="text-gray-600">{t.contactPage.emailText}</p>
                     <p className="text-sm text-gray-500">
-                      We respond within 24 hours
+                      {t.contactPage.emailResponseTime}
                     </p>
                   </div>
                 </div>
@@ -185,10 +187,10 @@ export default function ContactPage() {
                     <Phone className="w-6 h-6 text-emerald-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">Phone</h4>
-                    <p className="text-gray-600">+251983446134</p>
+                    <h4 className="font-semibold text-gray-900">{t.contactPage.phoneHeading}</h4>
+                    <p className="text-gray-600">{t.contactPage.phoneText}</p>
                     <p className="text-sm text-gray-500">
-                      Mon-Fri, 9AM-6PM EAT
+                      {t.contactPage.phoneHours}
                     </p>
                   </div>
                 </div>
@@ -198,11 +200,10 @@ export default function ContactPage() {
                     <MapPin className="w-6 h-6 text-emerald-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">Office</h4>
-                    <p className="text-gray-600">Bole, Addis Ababa, Ethiopia</p>
+                    <h4 className="font-semibold text-gray-900">{t.contactPage.officeHeading}</h4>
+                    <p className="text-gray-600">{t.contactPage.officeAddress}</p>
                     <p className="text-sm text-gray-500">
-                      Business Hours: Monday - Friday, 8:30 AM - 5:30 PM (East
-                      Africa Time)
+                      {t.contactPage.officeHours}
                     </p>
                   </div>
                 </div>
@@ -215,14 +216,14 @@ export default function ContactPage() {
                   <Clock className="w-6 h-6 text-emerald-600 mt-1" />
                   <div>
                     <h4 className="font-semibold text-emerald-900 mb-2">
-                      What to Expect in Your Demo
+                      {t.contactPage.demoExpectationsHeading}
                     </h4>
                     <ul className="space-y-2 text-sm text-emerald-800">
-                      <li>• 30-minute personalized walkthrough</li>
-                      <li>• See features specific to your business type</li>
-                      <li>• Live Q&A with our product experts</li>
-                      <li>• Custom pricing discussion</li>
-                      <li>• Implementation timeline and support</li>
+                      <li>{t.contactPage.demoExpectation1}</li>
+                      <li>{t.contactPage.demoExpectation2}</li>
+                      <li>{t.contactPage.demoExpectation3}</li>
+                      <li>{t.contactPage.demoExpectation4}</li>
+                      <li>{t.contactPage.demoExpectation5}</li>
                     </ul>
                   </div>
                 </div>
