@@ -7,9 +7,11 @@ import Image from "next/image";
 import branch4 from "@/public/branch4.png";
 import { TrialDialog } from "@/components/ui/trial-dialog";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function HeroSection() {
   const router = useRouter();
+  const { t } = useLanguage();
   return (
     <section className="pt-6 sm:pt-8 pb-12 sm:pb-16 px-2 sm:px-6 lg:px-8 bg-white overflow-hidden min-h-[85vh] flex items-center antialiased">
       <div className="w-full max-w-7xl mx-auto">
@@ -31,11 +33,11 @@ export default function HeroSection() {
             >
               <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-[9px] sm:text-sm">
                 <Sparkles className="text-[9px] w-3 h-3 mr-1" />
-                Business Revolution with AI
+                {t.hero.badge1}
               </Badge>
               <Badge className="bg-blue-100 text-blue-700 border-blue-200 text-[9px] sm:text-sm">
                 <span className="text-[9px] sm:text-base mr-1">🇪🇹</span>
-                Built by Ethiopia for Africa
+                {t.hero.badge2}
               </Badge>
             </motion.div>
 
@@ -47,9 +49,8 @@ export default function HeroSection() {
               className="space-y-4"
             >
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-bold text-gray-900 leading-[1.2] tracking-tight antialiased">
-                Transform Your{" "}
-                <span className="text-emerald-600">Business</span> with
-                AI-Powered Management Software
+                {t.hero.title1}{" "}
+                <span className="text-emerald-600">{t.hero.title2}</span> {t.hero.title3}
               </h1>
             </motion.div>
 
@@ -65,7 +66,7 @@ export default function HeroSection() {
                   size="lg"
                   className="bg-emerald-600 hover:bg-emerald-700 text-base sm:text-lg px-4 sm:px-8"
                 >
-                  Start 30-Day Free Trial
+                  {t.hero.cta1}
                   <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </TrialDialog>
@@ -75,7 +76,7 @@ export default function HeroSection() {
                 className="text-base sm:text-lg px-4 sm:px-8"
                 onClick={() => router.push("/contact")}
               >
-                Watch Demo
+                {t.hero.cta2}
               </Button>
             </motion.div>
 
@@ -89,21 +90,21 @@ export default function HeroSection() {
               <div className="flex items-center gap-6 sm:gap-8 min-w-max">
                 <div className="flex-shrink-0">
                   <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
-                    30 Days
+                    {t.hero.stat1Value}
                   </div>
-                  <div className="text-sm sm:text-base text-gray-600">Free Trial</div>
+                  <div className="text-sm sm:text-base text-gray-600">{t.hero.stat1Label}</div>
                 </div>
                 <div className="h-12 w-px bg-gray-300 flex-shrink-0" />
                 <div className="flex-shrink-0">
-                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">24/7</div>
-                  <div className="text-sm sm:text-base text-gray-600">AI Support</div>
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">{t.hero.stat2Value}</div>
+                  <div className="text-sm sm:text-base text-gray-600">{t.hero.stat2Label}</div>
                 </div>
                 <div className="h-12 w-px bg-gray-300 flex-shrink-0" />
                 <div className="flex-shrink-0">
                   <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
-                    {">"}99.9%
+                    {t.hero.stat3Value}
                   </div>
-                  <div className="text-sm sm:text-base text-gray-600">Uptime</div>
+                  <div className="text-sm sm:text-base text-gray-600">{t.hero.stat3Label}</div>
                 </div>
               </div>
             </motion.div>

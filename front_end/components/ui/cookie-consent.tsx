@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { X, Cookie } from "lucide-react";
 import Link from "next/link";
 
+import { useLanguage } from "@/contexts/language-context";
+
 export function CookieConsent() {
   const [show, setShow] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const consent = localStorage.getItem("cookie-consent");
@@ -32,15 +35,14 @@ export function CookieConsent() {
         <div className="flex items-start gap-3 flex-1">
           <Cookie className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-gray-700">
-            <p className="font-medium mb-1">We use cookies</p>
+            <p className="font-medium mb-1">{t.cookieConsent.title}</p>
             <p>
-              We use essential cookies for authentication and analytics cookies
-              to improve your experience.{" "}
+              {t.cookieConsent.description}{" "}
               <Link
                 href="/privacy"
                 className="text-emerald-600 hover:underline"
               >
-                Learn more
+                {t.cookieConsent.learnMore}
               </Link>
             </p>
           </div>
@@ -52,14 +54,14 @@ export function CookieConsent() {
             onClick={declineCookies}
             className="flex-1 sm:flex-none"
           >
-            Decline
+            {t.cookieConsent.decline}
           </Button>
           <Button
             size="sm"
             onClick={acceptCookies}
             className="bg-emerald-600 hover:bg-emerald-700 flex-1 sm:flex-none"
           >
-            Accept
+            {t.cookieConsent.accept}
           </Button>
         </div>
       </div>

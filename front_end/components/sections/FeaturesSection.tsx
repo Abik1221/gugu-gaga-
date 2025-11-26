@@ -21,51 +21,51 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function FeaturesSection() {
+  const { t } = useLanguage();
+
+  // Features using professional Amharic translations
   const features = [
     {
       icon: Building2,
-      title: "Multi-Branch Management",
-      description:
-        "Manage all your store locations from a single, unified dashboard. Get real-time visibility into stock levels, sales, and performance across every branch.",
+      title: t.features.feature1Title, // "ብልጥ የዕቃ አስተዳደር" / "Smart Inventory Management"
+      description: t.features.feature1Desc,
       image: branch1,
     },
     {
       icon: Users,
-      title: "Staff & Team Management",
-      description:
-        "Create staff accounts with custom permissions, track activities, and ensure accountability across your organization with role-based access control.",
+      title: t.features.feature2Title, // "የሽያጭ እና POS ስርዓት" / "Sales & POS System"
+      description: t.features.feature2Desc,
       image: branch2,
     },
     {
       icon: Plug,
-      title: "One-Click Integrations",
-      description:
-        "Seamlessly connect with Google Sheets, ERP systems, accounting software, and more. No technical knowledge required—just one click to integrate your existing tools.",
+      title: t.features.feature3Title, // "የገንዘብ አስተዳደር" / "Financial Management"
+      description: t.features.feature3Desc,
       image: branch3,
     },
     {
       icon: Target,
-      title: "Smart Expense & Goal Tracking",
-      description:
-        "Never miss a payment deadline again. Mesob automatically tracks and reminds you of tax payments, employee salaries, rent, license renewals, and all business expenses. Set revenue goals with time intervals, monitor your progress in real-time, and receive AI-powered insights to help you achieve your business targets and improve profitability.",
+      title: t.features.feature4Title, // "የሰራተኛ አስተዳደር" / "Employee Management"
+      description: t.features.feature4Desc,
       image: memory,
     },
     {
       icon: ShoppingBag,
-      title: "Supplier Marketplace",
-      description:
-        "Connect directly with verified suppliers who promote their products on your dashboard. Discover new products, compare prices, and order with confidence.",
+      title: t.features.feature5Title, // "የደንበኛ ግንዛቤ" / "Customer Insights"
+      description: t.features.feature5Desc,
       image: supplierregistration,
     },
   ];
 
+  // Quick features with Amharic translations
   const quickFeatures = [
-    { icon: BarChart3, text: "Real-time Analytics" },
-    { icon: Zap, text: "Automated Alerts" },
-    { icon: GitBranch, text: "Stock Transfers" },
-    { icon: TrendingUp, text: "Sales Forecasting" },
+    { icon: BarChart3, text: t.features.quickFeature1 },
+    { icon: Zap, text: t.features.quickFeature2 },
+    { icon: GitBranch, text: t.features.quickFeature3 },
+    { icon: TrendingUp, text: t.features.quickFeature4 },
   ];
 
   return (
@@ -79,12 +79,10 @@ export default function FeaturesSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl text-gray-900 mb-4">
-            Everything You Need in{" "}
-            <span className="text-emerald-600">One Platform</span>
+            {t.features.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            A complete, modern bussiness management system designed specifically
-            for Ethiopian shops, pharmacies, and retail businesses.
+            {t.features.subtitle}
           </p>
         </motion.div>
 

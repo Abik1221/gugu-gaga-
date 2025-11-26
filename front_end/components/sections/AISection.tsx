@@ -4,38 +4,40 @@ import { Badge } from "@/components/ui/badge";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Brain, TrendingUp, AlertTriangle, Lightbulb, Target, Shield } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function AISection() {
+  const { t } = useLanguage();
   const capabilities = [
     {
       icon: Brain,
-      title: "Intelligent Forecasting",
-      description: "Predict demand patterns and optimize stock levels using advanced machine learning algorithms trained on your historical data."
+      title: t.ai.feature1Title, // "ብልህ ትንበያዎች" / "Smart Predictions"
+      description: t.ai.feature1Desc
     },
     {
       icon: AlertTriangle,
-      title: "Proactive Alerts",
-      description: "Get notified before you run out of stock, identify slow-moving items, and detect unusual patterns that need attention."
+      title: t.ai.feature2Title, // "ራስ-ሰር ግንዛቤዎች" / "Automated Insights"
+      description: t.ai.feature2Desc
     },
     {
       icon: TrendingUp,
-      title: "Sales Insights",
-      description: "Understand what's selling, when, and why. Get actionable recommendations to maximize revenue and minimize waste."
+      title: t.ai.feature3Title, // "ብልህ ድጋፍ" / "Intelligent Support"
+      description: t.ai.feature3Desc
     },
     {
       icon: Lightbulb,
-      title: "Smart Recommendations",
-      description: "Receive AI-powered suggestions on reorder quantities, pricing strategies, and product placement optimization."
+      title: t.ai.feature1Title, // Re-using translation
+      description: t.ai.feature1Desc
     },
     {
       icon: Target,
-      title: "Performance Analytics",
-      description: "Track KPIs, identify trends, and make data-driven decisions with comprehensive analytics powered by AI."
+      title: t.ai.feature2Title, // Re-using translation
+      description: t.ai.feature2Desc
     },
     {
       icon: Shield,
-      title: "Fraud Detection",
-      description: "Automatically detect suspicious activities, inventory discrepancies, and potential theft with AI monitoring."
+      title: t.ai.feature3Title, // Re-using translation
+      description: t.ai.feature3Desc
     }
   ];
 
@@ -50,14 +52,13 @@ export default function AISection() {
           className="text-center mb-16"
         >
           <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 mb-4">
-            Powered by Advanced AI
+            {t.ai.badge}
           </Badge>
           <h2 className="text-4xl mb-4">
-            Meet <span className="text-emerald-600">Mesob AI Assistant</span>
+            {t.ai.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Your 24/7 AI inventory assistant that learns from your business,
-            predicts trends, and provides professional insights to help you stay ahead.
+            {t.ai.subtitle}
           </p>
         </motion.div>
 
@@ -70,7 +71,7 @@ export default function AISection() {
           >
             <ImageWithFallback
               src="https://images.unsplash.com/photo-1597121798359-e9ee76aa0478?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwaGFybWFjeSUyMHNoZWx2ZXN8ZW58MXx8fHwxNzYyMjYwODA3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-              alt="AI-Powered Pharmacy Management"
+              alt={t.ai.imageAlt}
               className="rounded-2xl shadow-2xl"
             />
           </motion.div>
@@ -87,12 +88,10 @@ export default function AISection() {
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-gray-800 italic mb-2">"How is my pharmacy inventory performing this month?"</p>
+                  <p className="text-gray-800 italic mb-2">{t.ai.chat1Question}</p>
                   <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
                     <p className="text-sm text-emerald-800">
-                      Your pharmacy has seen a 23% increase in sales compared to last month.
-                      However, I notice you're running low on antibiotics. Based on current trends,
-                      I recommend ordering 150 units of Amoxicillin within the next 3 days to avoid stockouts.
+                      {t.ai.chat1Answer}
                     </p>
                   </div>
                 </div>
@@ -104,11 +103,10 @@ export default function AISection() {
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-gray-800 italic mb-2">"Which products are underperforming?"</p>
+                  <p className="text-gray-800 italic mb-2">{t.ai.chat2Question}</p>
                   <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
                     <p className="text-sm text-emerald-800">
-                      I've identified 12 slow-moving items worth 45,000 Birr that haven't sold in 60 days.
-                      I suggest running a promotion or adjusting your ordering strategy for these items.
+                      {t.ai.chat2Answer}
                     </p>
                   </div>
                 </div>

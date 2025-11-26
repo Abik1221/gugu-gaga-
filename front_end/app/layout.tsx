@@ -6,6 +6,7 @@ import { ServiceWorkerProvider } from "@/components/providers/service-worker-pro
 import { CookieVersionChecker } from "@/components/providers/cookie-version-checker";
 import { InstallPWA } from "@/components/pwa/InstallPWA";
 import logoImage from "@/public/mesoblogo.jpeg";
+import { ClientProviders } from "@/components/providers/client-providers";
 
 // Removed force-dynamic for better performance
 
@@ -212,11 +213,13 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased overflow-x-hidden">
         <CookieVersionChecker />
-        <ToastProvider>
-          {children}
-          <Toaster />
-          <InstallPWA />
-        </ToastProvider>
+        <ClientProviders>
+          <ToastProvider>
+            {children}
+            <Toaster />
+            <InstallPWA />
+          </ToastProvider>
+        </ClientProviders>
         <ServiceWorkerProvider />
       </body>
     </html>

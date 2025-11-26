@@ -12,12 +12,15 @@ import Image from "next/image";
 import { AuthAPI, AuthProfile } from "@/utils/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User, LayoutDashboard } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
+import { LanguageSelector } from "@/components/ui/language-selector";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<AuthProfile | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,43 +109,44 @@ export default function Navbar() {
                   href="/#features"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
-                  Features
+                  {t.nav.features}
                 </Link>
                 <Link
                   href="/#how-it-works"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
-                  How It Works
+                  {t.nav.howItWorks}
                 </Link>
                 <Link
                   href="/#security"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
-                  Security
+                  {t.nav.security}
                 </Link>
                 <Link
                   href="/#pricing"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
-                  Pricing
+                  {t.nav.pricing}
                 </Link>
                 <Link
                   href="/#integrations"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
-                  Integrations
+                  {t.nav.integrations}
                 </Link>
                 <Link
                   href="/blog"
                   className="text-gray-700 hover:text-emerald-600 px-2 py-2 transition-colors text-sm"
                 >
-                  Blog
+                  {t.nav.blog}
                 </Link>
 
               </div>
             </div>
           </div>
           <div className="hidden lg:flex items-center space-x-4">
+            <LanguageSelector />
             <InstallButton />
             {loading ? (
               <div className="h-10 w-24 bg-gray-100 animate-pulse rounded-md" />
@@ -189,14 +193,14 @@ export default function Navbar() {
                           onClick={() => setUserMenuOpen(false)}
                         >
                           <LayoutDashboard className="w-4 h-4 mr-2" />
-                          Dashboard
+                          {t.nav.dashboard}
                         </Link>
                         <button
                           onClick={handleLogout}
                           className="w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <LogOut className="w-4 h-4 mr-2" />
-                          Sign Out
+                          {t.nav.signOut}
                         </button>
                       </div>
                     </motion.div>
@@ -207,18 +211,19 @@ export default function Navbar() {
               <>
                 <RoleSelectionDialog>
                   <Button variant="ghost" size="sm" className="text-black">
-                    Sign In
+                    {t.nav.signIn}
                   </Button>
                 </RoleSelectionDialog>
                 <TrialDialog>
                   <Button className="bg-emerald-600 hover:bg-emerald-700">
-                    Start Free Trial
+                    {t.nav.startFreeTrial}
                   </Button>
                 </TrialDialog>
               </>
             )}
           </div>
           <div className="lg:hidden flex items-center space-x-2">
+            <LanguageSelector />
             <InstallButton />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -247,42 +252,42 @@ export default function Navbar() {
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
-                Features
+                {t.nav.features}
               </Link>
               <Link
                 href="/#how-it-works"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
-                How It Works
+                {t.nav.howItWorks}
               </Link>
               <Link
                 href="/#security"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
-                Security
+                {t.nav.security}
               </Link>
               <Link
                 href="/#pricing"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
-                Pricing
+                {t.nav.pricing}
               </Link>
               <Link
                 href="/#integrations"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
-                Integrations
+                {t.nav.integrations}
               </Link>
               <Link
                 href="/blog"
                 onClick={handleLinkClick}
                 className="block px-3 py-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors"
               >
-                Blog
+                {t.nav.blog}
               </Link>
 
               <div className="px-3 py-2 space-y-2 pt-4 border-t border-gray-200">
@@ -305,7 +310,7 @@ export default function Navbar() {
                     <Link href="/dashboard">
                       <Button className="w-full bg-emerald-600 hover:bg-emerald-700 mb-2">
                         <LayoutDashboard className="w-4 h-4 mr-2" />
-                        Dashboard
+                        {t.nav.dashboard}
                       </Button>
                     </Link>
                     <Button
@@ -314,19 +319,19 @@ export default function Navbar() {
                       onClick={handleLogout}
                     >
                       <LogOut className="w-4 h-4 mr-2" />
-                      Sign Out
+                      {t.nav.signOut}
                     </Button>
                   </div>
                 ) : (
                   <>
                     <RoleSelectionDialog>
                       <Button variant="outline" className="w-full">
-                        Sign In
+                        {t.nav.signIn}
                       </Button>
                     </RoleSelectionDialog>
                     <TrialDialog>
                       <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
-                        Start Free Trial
+                        {t.nav.startFreeTrial}
                       </Button>
                     </TrialDialog>
                   </>

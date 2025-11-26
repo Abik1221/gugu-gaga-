@@ -1,5 +1,7 @@
+"use client";
 import Link from "next/link";
 import { Brain, Linkedin, Send, Mail } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 const footerNav = {
   product: [
@@ -19,6 +21,23 @@ const footerNav = {
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const { t } = useLanguage();
+
+  const footerNav = {
+    product: [
+      { href: "/#features", label: t.footer.featureOverview },
+      { href: "/#ai-solutions", label: t.footer.aiSolutions },
+      { href: "/#pricing", label: t.footer.pricing },
+    ],
+    company: [
+      { href: "/contact", label: t.footer.contact },
+      { href: "/register?tab=affiliate", label: t.footer.affiliates },
+    ],
+    resources: [
+      { href: "/privacy", label: t.footer.privacyPolicy },
+      { href: "/terms", label: t.footer.termsOfService },
+    ],
+  };
 
   return (
     <footer className="border-t border-white bg-black">
@@ -28,8 +47,7 @@ export default function Footer() {
             <span className="text-lg font-semibold">Mesob</span>
           </Link>
           <p className="max-w-sm text-sm text-emerald-100">
-            Multi-tenant, AI-powered management for modern bussiness. Insightful
-            dashboards, secure workflows, and supplier experiences.
+            {t.footer.description}
           </p>
           <div className="flex gap-3 text-emerald-100">
             <a
@@ -59,7 +77,7 @@ export default function Footer() {
 
         <div className="grid gap-8 text-sm text-emerald-100 md:col-span-3 md:grid-cols-3">
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-white">Product</h3>
+            <h3 className="text-sm font-semibold text-white">{t.footer.productTitle}</h3>
             <ul className="space-y-2">
               {footerNav.product.map((link) => (
                 <li key={link.href}>
@@ -74,7 +92,7 @@ export default function Footer() {
             </ul>
           </div>
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-white">Company</h3>
+            <h3 className="text-sm font-semibold text-white">{t.footer.companyTitle}</h3>
             <ul className="space-y-2">
               {footerNav.company.map((link) => (
                 <li key={link.href}>
@@ -89,7 +107,7 @@ export default function Footer() {
             </ul>
           </div>
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-white">Resources</h3>
+            <h3 className="text-sm font-semibold text-white">{t.footer.legalTitle}</h3>
             <ul className="space-y-2">
               {footerNav.resources.map((link) => (
                 <li key={link.href}>
@@ -108,16 +126,16 @@ export default function Footer() {
 
       <div className="border-t border-white bg-black">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-6 py-6 text-xs text-emerald-100/60 md:flex-row md:items-center md:justify-between">
-          <p>© {year} Mesob. All rights reserved.</p>
+          <p>© {year} Mesob. {t.footer.rightsReserved}</p>
           <div className="flex gap-4">
             <Link href="/privacy" className="transition hover:text-emerald-200">
-              Privacy
+              {t.footer.privacy}
             </Link>
             <Link href="/terms" className="transition hover:text-emerald-200">
-              Terms
+              {t.footer.terms}
             </Link>
             <Link href="/contact" className="transition hover:text-emerald-200">
-              Support
+              {t.footer.support}
             </Link>
           </div>
         </div>
