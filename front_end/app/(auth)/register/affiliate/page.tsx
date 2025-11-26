@@ -14,10 +14,12 @@ import affiliateRegistrationImage from "@/public/affiliateregistration.jpeg";
 import logoImage from "@/public/mesoblogo.jpeg";
 import Navbar from "@/components/sections/Navbar";
 import Head from "next/head";
-import { title } from "process";
+
+import { useLanguage } from "@/contexts/language-context";
 
 export default function AffiliateRegisterPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { show } = useToast();
   const { showEmailSentNotification } = useEmailVerificationToast();
 
@@ -57,9 +59,9 @@ export default function AffiliateRegisterPage() {
       showEmailSentNotification(affEmail, "register");
       setTimeout(
         () =>
-          (window.location.href = `/verify?email=${encodeURIComponent(
-            affEmail
-          )}&purpose=register`),
+        (window.location.href = `/verify?email=${encodeURIComponent(
+          affEmail
+        )}&purpose=register`),
         2000
       );
     } catch (err: any) {
@@ -114,8 +116,7 @@ export default function AffiliateRegisterPage() {
                 className="my-10 mx-auto"
               />
               <p className="mt-4 text-lg text-slate-600 text-center lg:text-left">
-                Become a trusted partner for bussiness digitization. Unlock
-                recurring earnings with every successful registration.
+                {t.auth.affiliateRegisterSubtitle}
               </p>
 
               <ul className="mt-10 space-y-4 text-slate-600">
@@ -138,10 +139,10 @@ export default function AffiliateRegisterPage() {
             >
               <div className="mb-8 text-center">
                 <h2 className="text-3xl font-bold text-slate-900">
-                  Join the affiliate program
+                  {t.auth.affiliateRegisterTitle}
                 </h2>
                 <p className="mt-2 text-sm text-slate-500">
-                  Earn commissions every time a pharmacy goes live.
+                  {t.auth.affiliateRegisterSubtitle}
                 </p>
               </div>
 
@@ -160,7 +161,7 @@ export default function AffiliateRegisterPage() {
                 <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                      Email*
+                      {t.auth.emailOrPhone}*
                     </label>
                     <Input
                       type="email"
@@ -172,7 +173,7 @@ export default function AffiliateRegisterPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                      Password*
+                      {t.auth.password}*
                     </label>
                     <Input
                       type="password"
@@ -195,7 +196,7 @@ export default function AffiliateRegisterPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                      Phone number*
+                      {t.auth.phoneNumber}*
                     </label>
                     <Input
                       type="tel"
@@ -207,7 +208,7 @@ export default function AffiliateRegisterPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">
-                      Address*
+                      {t.auth.address}*
                     </label>
                     <Input
                       value={address}
@@ -244,34 +245,34 @@ export default function AffiliateRegisterPage() {
                       />
                     </svg>
                   ) : null}
-                  {loading ? "Registering..." : "Sign Up"}
+                  {loading ? t.auth.verifying : t.auth.signUp}
                 </Button>
 
                 <p className="text-center text-xs text-slate-500">
-                  Already part of the network?{" "}
+                  {t.auth.alreadyHaveAccount}{" "}
                   <Link
                     href="/auth?tab=signin"
                     className="font-medium text-emerald-600 hover:underline"
                   >
-                    Sign in
+                    {t.auth.signIn}
                   </Link>
                 </p>
               </form>
 
               <p className="mt-8 text-center text-[11px] text-slate-400">
-                By continuing you agree to our{" "}
+                {t.auth.termsAndPrivacy}{" "}
                 <Link
                   href="/terms"
                   className="text-emerald-600 hover:underline"
                 >
-                  Terms
+                  {t.auth.terms}
                 </Link>{" "}
-                and{" "}
+                &{" "}
                 <Link
                   href="/privacy"
                   className="text-emerald-600 hover:underline"
                 >
-                  Privacy Policy
+                  {t.auth.privacy}
                 </Link>
                 .
               </p>

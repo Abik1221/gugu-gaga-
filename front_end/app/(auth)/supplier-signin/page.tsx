@@ -11,9 +11,11 @@ import { API_BASE } from "@/utils/api";
 import AuthNavBar from "@/components/layout/AuthNavBar";
 import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Head from "next/head";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function SupplierSignInPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { show } = useToast();
 
   const [loading, setLoading] = useState(false);
@@ -199,11 +201,10 @@ export default function SupplierSignInPage() {
             className="max-w-lg"
           >
             <h1 className="mt-10 text-4xl font-bold leading-tight text-black">
-              Welcome back, supplier
+              {t.auth.supplierWelcome}
             </h1>
             <p className="mt-4 text-lg text-slate-500">
-              Access your supplier dashboard to manage orders, track
-              performance, and grow your business.
+              {t.auth.supplierSignInSubtitle}
             </p>
 
             <ul className="mt-10 space-y-4 text-slate-700">
@@ -245,10 +246,10 @@ export default function SupplierSignInPage() {
           >
             <div className="mb-8 text-center">
               <h2 className="text-3xl font-bold text-black">
-                Supplier Sign In
+                {t.auth.supplierSignInTitle}
               </h2>
               <p className="mt-2 text-sm text-slate-600">
-                Access your supplier dashboard and manage your business.
+                {t.auth.supplierSignInSubtitle}
               </p>
             </div>
 
@@ -266,7 +267,7 @@ export default function SupplierSignInPage() {
                 <>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Email Address
+                      {t.auth.emailOrPhone}
                     </label>
                     <Input
                       type="email"
@@ -280,7 +281,7 @@ export default function SupplierSignInPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Password
+                      {t.auth.password}
                     </label>
                     <Input
                       type="password"
@@ -295,7 +296,7 @@ export default function SupplierSignInPage() {
               ) : (
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                    Verification Code
+                    {t.auth.verificationCode}
                   </label>
                   <Input
                     type="text"
@@ -307,7 +308,7 @@ export default function SupplierSignInPage() {
                     maxLength={6}
                   />
                   <p className="mt-2 text-xs text-slate-600">
-                    Check your email for the verification code
+                    {t.auth.checkEmail}
                   </p>
                 </div>
               )}
@@ -318,13 +319,13 @@ export default function SupplierSignInPage() {
                     type="checkbox"
                     className="mr-2 h-4 w-4 rounded border-slate-300 text-green-600 focus:ring-green-500"
                   />
-                  <span className="text-slate-700">Remember me</span>
+                  <span className="text-slate-700">{t.auth.rememberMe}</span>
                 </label>
                 <Link
                   href="/forgot-password?role=supplier"
                   className="text-green-600 hover:underline"
                 >
-                  Forgot password?
+                  {t.auth.forgotPassword}
                 </Link>
               </div>
 
@@ -356,11 +357,11 @@ export default function SupplierSignInPage() {
                 ) : null}
                 {loading
                   ? otpSent
-                    ? "Verifying..."
-                    : "Sending code..."
+                    ? t.auth.verifying
+                    : t.auth.sendingCode
                   : otpSent
-                    ? "Verify Code"
-                    : "Sign In"}
+                    ? t.auth.verifyCode
+                    : t.auth.signIn}
               </Button>
 
               <div className="relative">
@@ -369,7 +370,7 @@ export default function SupplierSignInPage() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="bg-white px-2 text-slate-500">
-                    New to our platform?
+                    {t.auth.dontHaveAccount}
                   </span>
                 </div>
               </div>
@@ -380,7 +381,7 @@ export default function SupplierSignInPage() {
                 className="w-full rounded-2xl border-slate-300 bg-white/5 text-slate-700 hover:bg-slate-50"
                 onClick={() => router.push("/register/supplier")}
               >
-                Register as Supplier
+                {t.auth.registerSupplier}
               </Button>
             </form>
 
@@ -391,14 +392,14 @@ export default function SupplierSignInPage() {
                   href="/register/owner"
                   className="text-green-600 hover:underline"
                 >
-                  bussiness Owner
+                  {t.auth.registerOwner}
                 </Link>{" "}
                 |{" "}
                 <Link
                   href="/register/affiliate"
                   className="text-green-600 hover:underline"
                 >
-                  Affiliate
+                  {t.auth.registerAffiliate}
                 </Link>
               </p>
             </div>
@@ -406,7 +407,7 @@ export default function SupplierSignInPage() {
             <p className="mt-6 text-center text-[11px] text-slate-700">
               Protected by industry-standard security.{" "}
               <Link href="/privacy" className="text-green-600 hover:underline">
-                Privacy Policy
+                {t.auth.privacy}
               </Link>
             </p>
           </motion.div>

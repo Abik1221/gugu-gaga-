@@ -13,6 +13,7 @@ import { OtpSentDialog } from "@/components/ui/otp-sent-dialog";
 import Image from "next/image";
 import supplierRegistrationImage from "@/public/supplierregistration.jpeg";
 import Head from "next/head";
+import { useLanguage } from "@/contexts/language-context";
 
 // Redefine the missing `FieldKey` type
 type FieldKey =
@@ -35,6 +36,7 @@ const createEmptyFieldErrors = (): Record<FieldKey, string | null> => ({
 
 export default function SupplierRegisterPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { show } = useToast();
 
   const [loading, setLoading] = useState(false);
@@ -275,11 +277,10 @@ export default function SupplierRegisterPage() {
               />
             </div>
             <h1 className="mt-17 lg:mt-10 text-4xl font-bold leading-tight text-black text-center">
-              Join our supplier network
+              {t.auth.supplierRegisterTitle}
             </h1>
             <p className="mt-4 text-lg text-slate-500 text-center">
-              Manage your entire business seamlessly with our powerful business
-              management software designed for growth and efficiency.
+              {t.auth.supplierRegisterSubtitle}
             </p>
 
             <ul className="mt-10 space-y-4 text-slate-700">
@@ -323,10 +324,10 @@ export default function SupplierRegisterPage() {
           >
             <div className="mb-6 lg:mb-8 text-center">
               <h2 className="text-2xl lg:text-3xl font-bold text-black">
-                Register as Supplier
+                {t.auth.registerSupplier}
               </h2>
               <p className="mt-2 text-sm text-slate-600">
-                Join our verified supplier network today.
+                {t.auth.supplierRegisterSubtitle}
               </p>
             </div>
 
@@ -348,7 +349,7 @@ export default function SupplierRegisterPage() {
               {otpSent ? (
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                    Verification Code
+                    {t.auth.verificationCode}
                   </label>
                   <Input
                     value={otp}
@@ -358,15 +359,14 @@ export default function SupplierRegisterPage() {
                     maxLength={6}
                   />
                   <p className="mt-1 text-xs text-slate-500">
-                    Check your email ({registeredEmail}) for the verification
-                    code.
+                    {t.auth.checkEmail}
                   </p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Supplier/Company Name*
+                      {t.auth.businessName}*
                     </label>
                     <Input
                       value={supplierName}
@@ -375,8 +375,8 @@ export default function SupplierRegisterPage() {
                         setSupplierName(e.target.value);
                       }}
                       className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.supplierName
-                          ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                          : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                        ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                        : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                         }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
@@ -391,7 +391,7 @@ export default function SupplierRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Email Address*
+                      {t.auth.emailOrPhone}*
                     </label>
                     <Input
                       type="email"
@@ -401,8 +401,8 @@ export default function SupplierRegisterPage() {
                         setEmail(e.target.value);
                       }}
                       className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.email
-                          ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                          : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                        ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                        : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                         }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
@@ -417,7 +417,7 @@ export default function SupplierRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Password*
+                      {t.auth.password}*
                     </label>
                     <Input
                       type="password"
@@ -427,8 +427,8 @@ export default function SupplierRegisterPage() {
                         setPassword(e.target.value);
                       }}
                       className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.password
-                          ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                          : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                        ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                        : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                         }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
@@ -452,8 +452,8 @@ export default function SupplierRegisterPage() {
                         setNationalId(e.target.value);
                       }}
                       className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.nationalId
-                          ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                          : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                        ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                        : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                         }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
@@ -468,7 +468,7 @@ export default function SupplierRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      TIN Number*
+                      {t.auth.tinNumber}*
                     </label>
                     <Input
                       value={tinNumber}
@@ -477,8 +477,8 @@ export default function SupplierRegisterPage() {
                         setTinNumber(e.target.value);
                       }}
                       className={`mt-2 border bg-white text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.tinNumber
-                          ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
-                          : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
+                        ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
+                        : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                         }`}
                     />
                     <p className="mt-1 text-xs text-slate-500">
@@ -493,7 +493,7 @@ export default function SupplierRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Supplier License Image*
+                      {t.auth.licenseDocument}*
                     </label>
                     <div className="relative mt-2">
                       <input
@@ -509,8 +509,8 @@ export default function SupplierRegisterPage() {
                       <label
                         htmlFor="license-upload"
                         className={`flex items-center justify-between px-4 py-2.5 border rounded-lg cursor-pointer transition bg-white ${fieldErrors.licenseImage
-                            ? "border-red-400/60 hover:border-red-300"
-                            : "border-slate-200 hover:border-green-400"
+                          ? "border-red-400/60 hover:border-red-300"
+                          : "border-slate-200 hover:border-green-400"
                           }`}
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -554,7 +554,7 @@ export default function SupplierRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Phone Number
+                      {t.auth.phoneNumber}
                     </label>
                     <Input
                       value={phone}
@@ -569,7 +569,7 @@ export default function SupplierRegisterPage() {
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-slate-900">
-                      Business Address
+                      {t.auth.address}
                     </label>
                     <Input
                       value={address}
@@ -614,29 +614,29 @@ export default function SupplierRegisterPage() {
                     ? "Verifying..."
                     : "Registering..."
                   : otpSent
-                    ? "Verify Email"
-                    : "Register as Supplier"}
+                    ? t.auth.verifyCode
+                    : t.auth.registerSupplier}
               </Button>
 
               <p className="text-center text-xs text-slate-700">
-                Already have a supplier account?{" "}
+                {t.auth.alreadyHaveAccount}{" "}
                 <Link
                   href="/supplier-signin"
                   className="font-medium text-green-600 hover:underline"
                 >
-                  Sign in
+                  {t.auth.signIn}
                 </Link>
               </p>
             </form>
 
             <p className="mt-6 lg:mt-8 text-center text-[11px] text-slate-700">
-              By continuing you agree to our{" "}
+              {t.auth.termsAndPrivacy}{" "}
               <Link href="/terms" className="text-green-600 hover:underline">
-                Terms
+                {t.auth.terms}
               </Link>{" "}
-              and{" "}
+              &{" "}
               <Link href="/privacy" className="text-green-600 hover:underline">
-                Privacy Policy
+                {t.auth.privacy}
               </Link>
               .
             </p>
