@@ -7,31 +7,34 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import personImg from "@/public/personImg.jpeg";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/language-context";
+
 export default function AffiliateSection() {
+  const { t } = useLanguage();
+
+  // Check if current language is Amharic
+  const isAmharic = t.nav.features === "ባህሪያት";
+
   const benefits = [
     {
       icon: DollarSign,
-      title: "Earn Generous Commissions",
-      description:
-        "Receive competitive commissions for every successful referral, whether it's a supplier or inventory owner.",
+      title: t.affiliate.benefit1Title,
+      description: t.affiliate.benefit1Desc,
     },
     {
       icon: Link2,
-      title: "Simple Link Sharing",
-      description:
-        "Generate your unique referral link instantly and share it anywhere—social media, email, or your website.",
+      title: t.affiliate.benefit2Title,
+      description: t.affiliate.benefit2Desc,
     },
     {
       icon: Users,
-      title: "Dual Revenue Streams",
-      description:
-        "Earn from both supplier referrals and inventory owner sign-ups. Double your earning potential.",
+      title: t.affiliate.benefit3Title,
+      description: t.affiliate.benefit3Desc,
     },
     {
       icon: TrendingUp,
-      title: "Real-Time Tracking",
-      description:
-        "Monitor your referrals, conversions, and earnings in real-time through your dedicated affiliate dashboard.",
+      title: t.affiliate.benefit4Title,
+      description: t.affiliate.benefit4Desc,
     },
   ];
 
@@ -49,13 +52,10 @@ export default function AffiliateSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl mb-4">
-            Turn Your Network into{" "}
-            <span className="text-emerald-700">Revenue</span>
+            {t.affiliate.title}
           </h2>
           <p className="text-xl text-gray-800 max-w-3xl mx-auto">
-            Join our affiliate program and earn money by connecting suppliers
-            with inventory owners. No inventory, no upfront costs—just share and
-            earn.
+            {t.affiliate.subtitle}
           </p>
         </motion.div>
 
@@ -68,17 +68,16 @@ export default function AffiliateSection() {
             className="space-y-8"
           >
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-              <h3 className="text-2xl mb-6">How It Works</h3>
+              <h3 className="text-2xl mb-6">{t.affiliate.howItWorksTitle}</h3>
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <div className="w-10 h-10 rounded-full bg-emerald-400 text-emerald-900 flex items-center justify-center flex-shrink-0">
                     1
                   </div>
                   <div>
-                    <h4 className="text-lg mb-1">Sign Up for Free</h4>
+                    <h4 className="text-lg mb-1">{t.affiliate.step1Title}</h4>
                     <p className="text-emerald-800">
-                      Create your affiliate account in minutes. No application
-                      process.
+                      {t.affiliate.step1Desc}
                     </p>
                   </div>
                 </div>
@@ -87,10 +86,9 @@ export default function AffiliateSection() {
                     2
                   </div>
                   <div>
-                    <h4 className="text-lg mb-1">Generate Your Link</h4>
+                    <h4 className="text-lg mb-1">{t.affiliate.step2Title}</h4>
                     <p className="text-emerald-800">
-                      Get your unique referral link with one click from your
-                      dashboard.
+                      {t.affiliate.step2Desc}
                     </p>
                   </div>
                 </div>
@@ -99,10 +97,9 @@ export default function AffiliateSection() {
                     3
                   </div>
                   <div>
-                    <h4 className="text-lg mb-1">Share & Promote</h4>
+                    <h4 className="text-lg mb-1">{t.affiliate.step3Title}</h4>
                     <p className="text-emerald-800">
-                      Share your link with suppliers and business owners in your
-                      network.
+                      {t.affiliate.step3Desc}
                     </p>
                   </div>
                 </div>
@@ -111,10 +108,9 @@ export default function AffiliateSection() {
                     4
                   </div>
                   <div>
-                    <h4 className="text-lg mb-1">Earn Commissions</h4>
+                    <h4 className="text-lg mb-1">{t.affiliate.step4Title}</h4>
                     <p className="text-emerald-800">
-                      Get paid for every successful subscription through your
-                      referral link.
+                      {t.affiliate.step4Desc}
                     </p>
                   </div>
                 </div>
@@ -125,7 +121,7 @@ export default function AffiliateSection() {
                 size="lg"
                 className="bg-white text-emerald-600 hover:bg-emerald-50 w-full"
               >
-                Become an Affiliate Partner
+                {t.affiliate.cta}
               </Button>
             </Link>
           </motion.div>
@@ -137,7 +133,7 @@ export default function AffiliateSection() {
           >
             <Image
               src={personImg}
-              alt="Affiliate Dashboard"
+              alt={t.affiliate.dashboardAlt}
               className="rounded-2xl shadow-2xl"
             />
           </motion.div>

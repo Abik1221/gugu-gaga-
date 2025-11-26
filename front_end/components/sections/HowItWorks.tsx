@@ -5,6 +5,7 @@ import messobconnector from '@/public/messobconnector.jpeg';
 import ownerOverview from "@/public/owner-overview.jpg";
 import overview from '@/public/overview.jpeg'
 import Image from "next/image";
+import { useLanguage } from "@/contexts/language-context";
 // Variants for the container to stagger child animations
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -47,6 +48,7 @@ const circleVariants = {
 };
 
 export default function HowItWorks() {
+  const { t } = useLanguage();
   return (
     <motion.section
       id="how-it-works"
@@ -61,14 +63,14 @@ export default function HowItWorks() {
         className="mb-20 text-center text-2xl font-bold text-black"
         variants={titleVariants}
       >
-        How Mesob Works
+        {t.howItWorks.title}
       </motion.h3>
       <div className="grid gap-8 md:grid-cols-2 mb-10 py-5 px-2 shadow-[0_25px_80px_-35px_rgba(255,255,255,0.45)]">
         <div className="overflow-hidden rounded-lg">
           <Image
             className="h-full w-full object-contain"
             src={overview}
-            alt="Dashboard-image"
+            alt={t.howItWorks.imageAlt1}
           />
         </div>
         <div className="flex flex-col gap-8">
@@ -76,14 +78,14 @@ export default function HowItWorks() {
             <Image
               className="h-full w-full object-fill"
               src={righttop}
-              alt="AI-assistant-image"
+              alt={t.howItWorks.imageAlt2}
             />
           </div>
           <div className="flex-1 overflow-hidden rounded-lg">
             <Image
               className="h-full w-full object-cover"
               src={messobconnector}
-              alt="Owner-overview-image"
+              alt={t.howItWorks.imageAlt3}
             />
           </div>
         </div>
@@ -98,10 +100,10 @@ export default function HowItWorks() {
             <span className="text-2xl font-bold text-white">1</span>
           </motion.div>
           <h4 className="mb-3 text-xl font-semibold text-black">
-            Quick Setup
+            {t.howItWorks.step1Title}
           </h4>
           <p className="text-gray-700">
-            Get started in minutes with easy setup and seamless integration with your existing systems.
+            {t.howItWorks.step1Desc}
           </p>
         </motion.div>
 
@@ -114,10 +116,10 @@ export default function HowItWorks() {
             <span className="text-2xl font-bold text-white">2</span>
           </motion.div>
           <h4 className="mb-3 text-xl font-semibold text-black">
-            Smart Analytics
+            {t.howItWorks.step2Title}
           </h4>
           <p className="text-gray-700">
-            AI-powered insights help you make better decisions with real-time analytics and predictions.
+            {t.howItWorks.step2Desc}
           </p>
         </motion.div>
 
@@ -130,10 +132,10 @@ export default function HowItWorks() {
             <span className="text-2xl font-bold text-white">3</span>
           </motion.div>
           <h4 className="mb-3 text-xl font-semibold text-black">
-            Scale & Grow
+            {t.howItWorks.step3Title}
           </h4>
           <p className="text-gray-700">
-            Expand confidently with multi-branch support, automated workflows, and continuous optimization.
+            {t.howItWorks.step3Desc}
           </p>
         </motion.div>
       </div>

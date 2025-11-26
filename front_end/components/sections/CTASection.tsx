@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Zap, HeadphonesIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { TrialDialog } from "@/components/ui/trial-dialog";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function CTASection() {
   const router = useRouter();
+  const { t } = useLanguage();
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white text-gray-900">
@@ -18,8 +20,7 @@ export default function CTASection() {
           transition={{ duration: 0.6 }}
           className="text-4xl lg:text-5xl mb-6"
         >
-          Ready to Transform Your{" "}
-          <span className="text-emerald-700">Bussiness Management?</span>
+          {t.cta.title}
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 30 }}
@@ -28,8 +29,7 @@ export default function CTASection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-xl text-gray-800 mb-8 max-w-3xl mx-auto"
         >
-          Join the business management revolution. Start your 30-day free trial
-          today— no credit card required, no commitment, just results.
+          {t.cta.subtitle}
         </motion.p>
 
         <motion.div
@@ -44,7 +44,7 @@ export default function CTASection() {
               size="lg"
               className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
             >
-              Start Your Free Trial
+              {t.cta.button}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </TrialDialog>
@@ -54,7 +54,7 @@ export default function CTASection() {
             className="text-lg px-8 border-emerald-600 text-emerald-600 hover:bg-emerald-50"
             onClick={() => router.push('/contact')}
           >
-            Schedule a Demo
+            {t.hero.cta2}
           </Button>
         </motion.div>
 
@@ -67,23 +67,23 @@ export default function CTASection() {
         >
           <div className="flex flex-col items-center gap-3">
             <Shield className="w-10 h-10 text-emerald-400" />
-            <div className="text-lg">GDPR Compliant</div>
+            <div className="text-lg">{t.cta.feature1Title}</div>
             <p className="text-sm text-gray-900">
-              Enterprise-grade security with complete tenant isolation
+              {t.cta.feature1Desc}
             </p>
           </div>
           <div className="flex flex-col items-center gap-3">
             <Zap className="w-10 h-10 text-emerald-400" />
-            <div className="text-lg">Quick Setup</div>
+            <div className="text-lg">{t.cta.feature2Title}</div>
             <p className="text-sm text-gray-900">
-              Get started in under an hour with guided onboarding
+              {t.cta.feature2Desc}
             </p>
           </div>
           <div className="flex flex-col items-center gap-3">
             <HeadphonesIcon className="w-10 h-10 text-emerald-400" />
-            <div className="text-lg">24/7 Support</div>
+            <div className="text-lg">{t.cta.feature3Title}</div>
             <p className="text-sm text-gray-900">
-              AI and human support always available to help
+              {t.cta.feature3Desc}
             </p>
           </div>
         </motion.div>

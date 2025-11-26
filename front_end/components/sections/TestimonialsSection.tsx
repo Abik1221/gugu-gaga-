@@ -2,34 +2,43 @@
 import { Card } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function TestimonialsSection() {
+  const { t } = useLanguage();
+
+  // Check if current language is Amharic
+  const isAmharic = t.nav.features === "ባህሪያት";
+
   const testimonials = [
     {
-      name: "Alemayehu Tadesse",
-      role: "Pharmacy Owner, Bishoftu",
+      name: isAmharic ? "አለማየሁ ታደሰ" : "Alemayehu Tadesse",
+      role: isAmharic ? "የመድሃኒት ቤት ባለቤት፣ ቢሾፍቱ" : "Pharmacy Owner, Bishoftu",
       image:
         "https://images.unsplash.com/photo-1687422809654-579d81c29d32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwYnVzaW5lc3MlMjBvd25lcnxlbnwxfHx8fDE3NjIzMzk1NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      content:
-        "I'm ready to stop losing track of my inventory and finally get real-time insights. Can't wait to see how AI will help me manage my pharmacy branches efficiently.",
+      content: isAmharic
+        ? "የእቃዎቼን መረጃ ማጣት ለማቆም ዝግጁ ነኝ። AI እንዴት የመድሃኒት ቤት ቅርንጫፎቼን በብቃት ለማስተዳደር እንደሚረዳኝ ለማየት ጓጉቻለሁ።"
+        : "I'm ready to stop losing track of my inventory and finally get real-time insights. Can't wait to see how AI will help me manage my pharmacy branches efficiently.",
       rating: 5,
     },
     {
-      name: "Meseret Haile",
-      role: "Retail Store Chain Manager",
+      name: isAmharic ? "መሰረት ሀይሌ" : "Meseret Haile",
+      role: isAmharic ? "የችርቻሮ መደብር ሰንሰለት ስራ አስኪያጅ" : "Retail Store Chain Manager",
       image:
         "https://images.unsplash.com/photo-1687422809654-579d81c29d32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwYnVzaW5lc3MlMjBvd25lcnxlbnwxfHx8fDE3NjIzMzk1NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      content:
-        "Managing multiple stores manually is exhausting. I'm excited to have everything in one dashboard and connect with better suppliers through the marketplace.",
+      content: isAmharic
+        ? "በርካታ መደብሮችን በእጅ ማስተዳደር አድካሚ ነው። ሁሉንም በአንድ ዳሽቦርድ ላይ ለማግኘት እና በገበያ ቦታው በኩል ከተሻሉ አቅራቢዎች ጋር ለመገናኘት ጓጉቻለሁ።"
+        : "Managing multiple stores manually is exhausting. I'm excited to have everything in one dashboard and connect with better suppliers through the marketplace.",
       rating: 5,
     },
     {
-      name: "Dawit Kebede",
-      role: "Wholesaler, Hawassa",
+      name: isAmharic ? "ዳዊት ከበደ" : "Dawit Kebede",
+      role: isAmharic ? "ጅምላ ሻጭ፣ ሀዋሳ" : "Wholesaler, Hawassa",
       image:
         "https://images.unsplash.com/photo-1687422809654-579d81c29d32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwYnVzaW5lc3MlMjBvd25lcnxlbnwxfHx8fDE3NjIzMzk1NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      content:
-        "I need accurate demand forecasting to avoid overstocking or running out. Looking forward to AI predictions that will help me stock smarter and grow my revenue.",
+      content: isAmharic
+        ? "ከመጠን በላይ ክምችትን ወይም እጥረትን ለማስወገድ ትክክለኛ የፍላጎት ትንበያ ያስፈልገኛል። በብልህነት ለማከማቸት እና ገቢዬን ለማሳደግ የሚረዱኝን የ AI ትንበያዎች በጉጉት እጠብቃለሁ።"
+        : "I need accurate demand forecasting to avoid overstocking or running out. Looking forward to AI predictions that will help me stock smarter and grow my revenue.",
       rating: 5,
     },
   ];
@@ -45,12 +54,10 @@ export default function TestimonialsSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl text-gray-900 mb-4">
-            Trusted by{" "}
-            <span className="text-emerald-600">Ethiopian Business Owners</span>
+            {t.testimonials.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Become the next successful business leader to transform your
-            operations and accelerate your growth with Mesob AI.
+            {t.testimonials.subtitle}
           </p>
         </motion.div>
 

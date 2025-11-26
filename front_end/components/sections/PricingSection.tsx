@@ -6,154 +6,196 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function PricingSection() {
+  const { t } = useLanguage();
   const [selectedType, setSelectedType] = useState<"owner" | "supplier">(
     "owner"
   );
   const router = useRouter();
+
 
   const handlePlanClick = (plan: any) => {
     // Redirect to the appropriate registration page based on selected type
     router.push(selectedType === "owner" ? "/register/owner" : "/register/supplier");
   };
 
-  const ownerPlans = [
+  // Owner plans with context-aware Amharic translations
+  const ownerPlans = t.pricing ? [
     {
       name: "Free Trial",
+      nameAm: "ነጻ ሙከራ",
       price: "0",
+      priceAm: "0",
       period: "30 Days",
+      periodAm: "30 ቀናት",
       description: "Perfect for testing all features",
+      descriptionAm: "ሁሉንም ባህሪያት ለመሞከር ፍጹም",
       popular: false,
       features: [
-        "All Premium features included",
-        "Multi-branch management",
-        "AI Stock Sentinel access",
-        "All integrations unlocked",
-        "Supplier marketplace",
-        "Full analytics dashboard",
-        "Priority support",
+        { en: "All Premium features included", am: "ሁሉም የፕሪሚየም ባህሪያት ተካተዋል" },
+        { en: "Multi-branch management", am: "ባለብዙ-ቅርንጫፍ አስተዳደር" },
+        { en: "AI Stock Sentinel access", am: "AI የእቃ ጠባቂ መዳረሻ" },
+        { en: "All integrations unlocked", am: "ሁሉም ግንኙነቶች ተከፍተዋል" },
+        { en: "Supplier marketplace", am: "የአቅራቢዎች ገበያ" },
+        { en: "Full analytics dashboard", am: "ሙሉ የትንታኔ ዳሽቦርድ" },
+        { en: "Priority support", am: "ቅድሚያ ያለው ድጋፍ" },
       ],
       cta: "Start Free Trial",
+      ctaAm: "ነጻ ሙከራ ጀምር",
       highlight: false,
     },
     {
       name: "Essential",
+      nameAm: "ኤሴንሻል",
       price: "1,299",
+      priceAm: "1,299",
       period: "Birr/month",
+      periodAm: "ብር/ወር",
       description: "For single-branch businesses",
+      descriptionAm: "ለአንድ-ቅርንጫፍ ንግዶች",
       popular: false,
       features: [
-        "Single branch management",
-        "AI Stock Sentinel chat",
-        "Basic integrations",
-        "Stock tracking & alerts",
-        "Sales analytics",
-        "Staff management (up to 5 users)",
-        "Email support",
-        "Mobile app access",
+        { en: "Single branch management", am: "የአንድ ቅርንጫፍ አስተዳደር" },
+        { en: "AI Stock Sentinel chat", am: "AI የእቃ ጠባቂ ውይይት" },
+        { en: "Basic integrations", am: "መሰረታዊ ግንኙነቶች" },
+        { en: "Stock tracking & alerts", am: "የእቃ ክትትል እና ማንቂያዎች" },
+        { en: "Sales analytics", am: "የሽያጭ ትንታኔ" },
+        { en: "Staff management (up to 5 users)", am: "የሰራተኞች አስተዳደር (እስከ 5 ተጠቃሚዎች)" },
+        { en: "Email support", am: "የኢሜይል ድጋፍ" },
+        { en: "Mobile app access", am: "የሞባይል መተግበሪያ መዳረሻ" },
       ],
       cta: "Get Started",
+      ctaAm: "ይጀምሩ",
       highlight: false,
     },
     {
       name: "Professional",
+      nameAm: "ፕሮፌሽናል",
       price: "2,499",
+      priceAm: "2,499",
       period: "Birr/month",
+      periodAm: "ብር/ወር",
       description: "For growing multi-branch businesses",
+      descriptionAm: "ለበዙ ለማደግ ባለብዙ-ቅርንጫፍ ንግዶች",
       popular: true,
       features: [
-        "Unlimited branches",
-        "Advanced AI insights & forecasting",
-        "All integrations (Google Sheets, ERP, etc.)",
-        "Supplier marketplace access",
-        "Affiliate program participation",
-        "Priority AI support 24/7",
-        "Unlimited staff accounts",
-        "Advanced analytics & reports",
-        "Custom integrations",
-        "Dedicated account manager",
+        { en: "Unlimited branches", am: "ያልተገደቡ ቅርንጫፎች" },
+        { en: "Advanced AI insights & forecasting", am: "የላቁ AI ግንዛቤዎች እና ትንበያ" },
+        { en: "All integrations (Google Sheets, ERP, etc.)", am: "ሁሉም ግንኙነቶች (Google Sheets፣ ERP፣ ወዘተ)" },
+        { en: "Supplier marketplace access", am: "የአቅራቢዎች ገበያ መዳረሻ" },
+        { en: "Affiliate program participation", am: "የአጋር መርሃ ግብር ተሳትፎ" },
+        { en: "Priority AI support 24/7", am: "ቅድሚያ ያለው AI ድጋፍ 24/7" },
+        { en: "Unlimited staff accounts", am: "ያልተገደቡ የሰራተኛ መለያዎች" },
+        { en: "Advanced analytics & reports", am: "የላቁ ትንታኔዎች እና ሪፖርቶች" },
+        { en: "Custom integrations", am: "ብጁ ግንኙነቶች" },
+        { en: "Dedicated account manager", am: "ልዩ መለያ አስተዳዳሪ" },
       ],
       cta: "Go Professional",
+      ctaAm: "ፕሮፌሽናል ይሁኑ",
       highlight: true,
     },
-  ];
+  ] : [];
 
   const supplierPlans = [
     {
       name: "Free Trial",
+      nameAm: "ነጻ ሙከራ",
       price: "0",
+      priceAm: "0",
       period: "30 Days",
+      periodAm: "30 ቀናት",
       description: "Test all supplier features",
+      descriptionAm: "ሁሉንም የአቅራቢ ባህሪያት ይሞክሩ",
       popular: false,
       features: [
-        "All Growth features included",
-        "Product catalog management",
-        "Order processing",
-        "Customer communication",
-        "Advanced analytics",
-        "Priority marketplace listing",
-        "24/7 support",
+        { en: "All Growth features included", am: "ሁሉም የእድገት ባህሪያት ተካተዋል" },
+        { en: "Product catalog management", am: "የምርት ካታሎግ አስተዳደር" },
+        { en: "Order processing", am: "የትዕዛዝ ሂደት" },
+        { en: "Customer communication", am: "የደንበኛ ግንኙነት" },
+        { en: "Advanced analytics", am: "የላቁ ትንታኔዎች" },
+        { en: "Priority marketplace listing", am: "ቅድሚያ ያለው የገበያ ዝርዝር" },
+        { en: "24/7 support", am: "24/7 ድጋፍ" },
       ],
       cta: "Start Free Trial",
+      ctaAm: "ነጻ ሙከራ ጀምር",
       highlight: false,
     },
     {
       name: "Starter",
+      nameAm: "መጀመሪያ",
       price: "799",
+      priceAm: "799",
       period: "Birr/month",
+      periodAm: "ብር/ወር",
       description: "Perfect for small suppliers",
+      descriptionAm: "ለትናንሽ አቅራቢዎች ፍጹም",
       popular: false,
       features: [
-        "Product catalog management",
-        "Basic order processing",
-        "Customer communication",
-        "Payment tracking",
-        "Monthly reports",
-        "Email support",
+        { en: "Product catalog management", am: "የምርት ካታሎግ አስተዳደር" },
+        { en: "Basic order processing", am: "መሰረታዊ የትዕዛዝ ሂደት" },
+        { en: "Customer communication", am: "የደንበኛ ግንኙነት" },
+        { en: "Payment tracking", am: "የክፍያ ክትትል" },
+        { en: "Monthly reports", am: "ወርሃዊ ሪፖርቶች" },
+        { en: "Email support", am: "የኢሜይል ድጋፍ" },
       ],
       cta: "Start Supplying",
+      ctaAm: "አቅርቦት ጀምር",
       highlight: false,
     },
     {
       name: "Growth",
+      nameAm: "እድገት",
       price: "1,299",
+      priceAm: "1,299",
       period: "Birr/month",
+      periodAm: "ብር/ወር",
       description: "For expanding supplier businesses",
+      descriptionAm: "ለማደግ ላሉ የአቅራቢ ንግዶች",
       popular: true,
       features: [
-        "Everything in Starter",
-        "Advanced analytics",
-        "Bulk order management",
-        "Inventory forecasting",
-        "Priority marketplace listing",
-        "24/7 phone support",
-        "Custom branding",
+        { en: "Everything in Starter", am: "በመጀመሪያ ውስጥ ያለው ሁሉ" },
+        { en: "Advanced analytics", am: "የላቁ ትንታኔዎች" },
+        { en: "Bulk order management", am: "የጅምላ ትዕዛዝ አስተዳደር" },
+        { en: "Inventory forecasting", am: "የእቃ ትንበያ" },
+        { en: "Priority marketplace listing", am: "ቅድሚያ ያለው የገበያ ዝርዝር" },
+        { en: "24/7 phone support", am: "24/7 የስልክ ድጋፍ" },
+        { en: "Custom branding", am: "ብጁ የምርት ስም" },
       ],
       cta: "Scale Your Business",
+      ctaAm: "ንግድዎን ያሳድጉ",
       highlight: true,
     },
     {
       name: "Enterprise",
+      nameAm: "ድርጅታዊ",
       price: "Custom",
+      priceAm: "ብጁ",
       period: "Contact us",
+      periodAm: "ያነጋግሩን",
       description: "For large-scale suppliers",
+      descriptionAm: "ለትላልቅ አቅራቢዎች",
       popular: false,
       features: [
-        "Everything in Growth",
-        "API access",
-        "Custom integrations",
-        "Dedicated account manager",
-        "White-label solutions",
-        "SLA guarantees",
-        "On-site training",
+        { en: "Everything in Growth", am: "በእድገት ውስጥ ያለው ሁሉ" },
+        { en: "API access", am: "API መዳረሻ" },
+        { en: "Custom integrations", am: "ብጁ ግንኙነቶች" },
+        { en: "Dedicated account manager", am: "ልዩ መለያ አስተዳዳሪ" },
+        { en: "White-label solutions", am: "ነጭ-መለያ መፍትሄዎች" },
+        { en: "SLA guarantees", am: "SLA ዋስትናዎች" },
+        { en: "On-site training", am: "በቦታ ላይ ስልጠና" },
       ],
       cta: "Contact Sales",
+      ctaAm: "ሽያጮችን ያነጋግሩ",
       highlight: false,
     },
   ];
 
   const currentPlans = selectedType === "owner" ? ownerPlans : supplierPlans;
+
+  // Get the current language
+  const isAmharic = t.nav.features === "ባህሪያት";
 
   return (
     <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
@@ -166,12 +208,10 @@ export default function PricingSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl text-gray-900 mb-4">
-            Simple,{" "}
-            <span className="text-emerald-600">Transparent Pricing</span>
+            {t.pricing.title}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Choose the plan that fits your business. Start with a 30-day free
-            trial, then select the tier that matches your needs.
+            {t.pricing.subtitle}
           </p>
 
           <div className="flex justify-center mb-8">
@@ -221,27 +261,39 @@ export default function PricingSection() {
                 {plan.popular && (
                   <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white">
                     <Star className="w-3 h-3 mr-1" />
-                    Most Popular
+                    {t.pricing.mostPopular}
                   </Badge>
                 )}
 
                 <div className="text-center mb-4">
-                  <h3 className="text-2xl text-gray-900 mb-2">{plan.name}</h3>
-                  <p className="text-gray-600 mb-4">{plan.description}</p>
+                  <h3 className="text-2xl text-gray-900 mb-2">
+                    {isAmharic ? plan.nameAm || plan.name : plan.name}
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    {isAmharic ? plan.descriptionAm || plan.description : plan.description}
+                  </p>
                   <div className="mb-2">
-                    <span className="text-4xl text-gray-900">{plan.price}</span>
+                    <span className="text-4xl text-gray-900">
+                      {isAmharic && plan.priceAm ? plan.priceAm : plan.price}
+                    </span>
                   </div>
-                  <div className="text-gray-600">{plan.period}</div>
+                  <div className="text-gray-600">
+                    {isAmharic ? plan.periodAm || plan.period : plan.period}
+                  </div>
                 </div>
 
                 <ul
                   className={`text-[13px] ${index === 2 ? "space-y-1" : "space-y-2"
                     } mb-4`}
                 >
-                  {plan.features.map((feature, featureIndex) => (
+                  {plan.features.map((feature: any, featureIndex: number) => (
                     <li key={featureIndex} className="flex items-start gap-3">
                       <Check className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700">{feature}</span>
+                      <span className="text-gray-700">
+                        {typeof feature === 'string'
+                          ? feature
+                          : (isAmharic ? feature.am : feature.en)}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -255,7 +307,7 @@ export default function PricingSection() {
                     size="default"
                     onClick={() => router.push(selectedType === "owner" ? "/register/owner" : "/register/supplier")}
                   >
-                    {plan.cta}
+                    {isAmharic ? plan.ctaAm || plan.cta : plan.cta}
                   </Button>
                 ) : (
                   <Button
@@ -266,7 +318,7 @@ export default function PricingSection() {
                     size="default"
                     onClick={() => handlePlanClick(plan)}
                   >
-                    {plan.cta}
+                    {isAmharic ? plan.ctaAm || plan.cta : plan.cta}
                   </Button>
                 )}
               </Card>

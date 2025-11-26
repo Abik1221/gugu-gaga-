@@ -14,6 +14,7 @@ import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { GoogleAds } from "@/components/ads/google-ads";
+
 export default function App() {
   const structuredData = {
     "@context": "https://schema.org",
