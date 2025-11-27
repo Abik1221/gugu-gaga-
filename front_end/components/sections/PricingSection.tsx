@@ -296,7 +296,7 @@ export default function PricingSection() {
                   }`}
                 onClick={() => setSelectedType("owner")}
               >
-                Bussiness Owner
+                Business Owner
               </Button>
               <Button
                 variant={selectedType === "supplier" ? "default" : "ghost"}

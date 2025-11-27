@@ -74,10 +74,10 @@ export default function AffiliateRegisterPage() {
   }
 
   const programHighlights = [
-    "Earn commission for every bussiness you onboard",
-    "Real-time tracking of referrals and payouts",
-    "Dedicated success manager and training toolkit",
-    "Fast payouts to the bank account you choose",
+    t.authSidebar.affiliate.feature1,
+    t.authSidebar.affiliate.feature2,
+    t.authSidebar.affiliate.feature3,
+    t.authSidebar.affiliate.feature4,
   ];
 
   return (

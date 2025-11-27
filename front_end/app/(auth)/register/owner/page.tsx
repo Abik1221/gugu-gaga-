@@ -249,10 +249,10 @@ export default function OwnerRegisterPage() {
   }
 
   const featureBullets = [
-    "Multi-branch business management",
-    "AI-powered inventory optimization",
-    "Real-time sales analytics",
-    "Staff management system",
+    t.authSidebar.owner.feature1,
+    t.authSidebar.owner.feature2,
+    t.authSidebar.owner.feature3,
+    t.authSidebar.owner.feature4,
   ];
 
   return (
@@ -307,14 +307,13 @@ export default function OwnerRegisterPage() {
               className="space-y-4 text-sm text-slate-700 text-center lg:text-left mt-8 lg:mt-0"
             >
               <p>
-                "Mesob has revolutionized how we manage our business. The AI
-                insights are incredible!"
+                "{t.authSidebar.owner.testimonial}"
               </p>
               <div className="h-px w-24 bg-black/20 mx-auto lg:mx-0" />
               <p>
-                Need help?{" "}
+                {t.authSidebar.owner.supportText}{" "}
                 <Link href="/contact" className="text-black hover:underline">
-                  Contact our support team
+                  {t.authSidebar.owner.contactTeam}
                 </Link>
               </p>
             </motion.div>
