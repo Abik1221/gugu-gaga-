@@ -48,7 +48,7 @@ export function InstallPWA() {
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
-      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ServiceWorkerProvider } from "@/components/providers/service-worker-provider";
 import { CookieVersionChecker } from "@/components/providers/cookie-version-checker";
 import { InstallPWA } from "@/components/pwa/InstallPWA";
+import { OpenInAppBanner } from "@/components/pwa/OpenInAppBanner";
 import logoImage from "@/public/mesoblogo.jpeg";
 import { ClientProviders } from "@/components/providers/client-providers";
 
@@ -213,6 +214,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased overflow-x-hidden">
         <CookieVersionChecker />
+        <OpenInAppBanner />
         <ClientProviders>
           <ToastProvider>
             {children}
