@@ -61,6 +61,7 @@ export default function OwnerRegisterPage() {
   const [address, setAddress] = useState("");
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [affiliateToken, setAffiliateToken] = useState<string | null>(null);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
 
   useEffect(() => {
     // Check for affiliate token from URL params or localStorage
@@ -90,6 +91,23 @@ export default function OwnerRegisterPage() {
     }
     document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
   };
+
+  async function handleEmailBlur() {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) return;
+
+    setIsCheckingEmail(true);
+    try {
+      const res = await AuthAPI.checkEmail(trimmedEmail);
+      if (res.exists) {
+        setFieldErrors((prev) => ({ ...prev, email: res.message }));
+      }
+    } catch (error) {
+      console.error("Failed to check email", error);
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  }
 
   async function submitOwner(e: React.FormEvent) {
     e.preventDefault();
@@ -413,11 +431,13 @@ export default function OwnerRegisterPage() {
                         clearFieldError("email");
                         setEmail(e.target.value);
                       }}
+                      onBlur={handleEmailBlur}
                       className={`mt-2 border bg-white/5 text-slate-700 placeholder:text-slate-700 transition focus-visible:ring-2 ${fieldErrors.email
                         ? "border-red-400/60 focus-visible:border-red-300 focus-visible:ring-red-300/60"
                         : "border-slate-200 focus-visible:border-green-400 focus-visible:ring-green-400/50"
                         }`}
                     />
+                    {isCheckingEmail && <p className="mt-1 text-xs text-slate-500">Checking email...</p>}
                     {fieldErrors.email && (
                       <p className="mt-1 text-xs text-red-500">
                         {fieldErrors.email}
