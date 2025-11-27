@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, X, CheckCircle } from "lucide-react";
 import { Button } from "./button";
+import { useLanguage } from "@/contexts/language-context";
 
 interface OtpSentDialogProps {
   isOpen: boolean;
@@ -12,6 +13,8 @@ interface OtpSentDialogProps {
 }
 
 export function OtpSentDialog({ isOpen, onClose, email }: OtpSentDialogProps) {
+  const { t } = useLanguage();
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -55,9 +58,9 @@ export function OtpSentDialog({ isOpen, onClose, email }: OtpSentDialogProps) {
                   transition={{ delay: 0.3 }}
                   className="space-y-2"
                 >
-                  <h3 className="text-xl font-bold text-gray-900">Check your inbox</h3>
+                  <h3 className="text-xl font-bold text-gray-900">{t.dialogs.otpSentTitle}</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    We've sent a verification code to <br />
+                    {t.dialogs.otpSentMessage} <br />
                     <span className="font-semibold text-gray-900">{email}</span>
                   </p>
                 </motion.div>
@@ -72,7 +75,7 @@ export function OtpSentDialog({ isOpen, onClose, email }: OtpSentDialogProps) {
                     onClick={onClose}
                     className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold py-2.5 rounded-xl shadow-lg"
                   >
-                    Got it
+                    {t.dialogs.otpSentButton}
                   </Button>
                 </motion.div>
               </div>

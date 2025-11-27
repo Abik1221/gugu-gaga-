@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { XCircle, AlertCircle, CheckCircle, X } from "lucide-react";
 import { Button } from "./button";
+import { useLanguage } from "@/contexts/language-context";
 
 interface ErrorDialogProps {
   isOpen: boolean;
@@ -19,6 +20,8 @@ export function ErrorDialog({
   message,
   type = "error",
 }: ErrorDialogProps) {
+  const { t } = useLanguage();
+
   const icons = {
     error: <XCircle className="w-16 h-16 text-red-500" />,
     warning: <AlertCircle className="w-16 h-16 text-yellow-500" />,
@@ -89,7 +92,7 @@ export function ErrorDialog({
                     onClick={onClose}
                     className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold py-3 rounded-xl shadow-lg"
                   >
-                    Got it
+                    {t.dialogs.errorDialogButton}
                   </Button>
                 </motion.div>
               </div>

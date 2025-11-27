@@ -361,6 +361,26 @@ export interface Translations {
         loading: string;
     };
 
+    // Dialogs
+    dialogs: {
+        // OTP Sent Dialog
+        otpSentTitle: string;
+        otpSentMessage: string;
+        otpSentButton: string;
+
+        // Error/Success Dialog
+        errorDialogButton: string;
+
+        // Payment Verification Dialog
+        verifyPaymentTitle: string;
+        orderIdLabel: string;
+        paymentCodeLabel: string;
+        verifyPaymentMessage: string;
+        cancelButton: string;
+        rejectPaymentButton: string;
+        verifyPaymentButton: string;
+    };
+
     // Testimonials Section
     testimonials: {
         badge: string;
@@ -921,6 +941,24 @@ export const translations: Record<Language, Translations> = {
             signOut: 'Sign out',
             loading: 'Loading...',
         },
+        dialogs: {
+            // OTP Sent Dialog
+            otpSentTitle: 'Check your inbox',
+            otpSentMessage: 'We\'ve sent a verification code to',
+            otpSentButton: 'Got it',
+
+            // Error/Success Dialog
+            errorDialogButton: 'Got it',
+
+            // Payment Verification Dialog
+            verifyPaymentTitle: 'Verify Payment',
+            orderIdLabel: 'Order ID',
+            paymentCodeLabel: 'Payment Code',
+            verifyPaymentMessage: 'Please verify this payment code with your payment records before proceeding.',
+            cancelButton: 'Cancel',
+            rejectPaymentButton: 'Reject Payment',
+            verifyPaymentButton: 'Verify Payment',
+        },
         testimonials: {
             badge: 'Testimonials',
             title: 'Trusted by Businesses Across Africa',
@@ -1453,6 +1491,24 @@ export const translations: Record<Language, Translations> = {
             generateLinkNav: 'አገናኝ ይፍጠሩ',
             signOut: 'ውጣ',
             loading: 'በመጫን ላይ...',
+        },
+        dialogs: {
+            // OTP Sent Dialog
+            otpSentTitle: 'የእርስዎን የገቢ ሳጥን ይመልከቱ',
+            otpSentMessage: 'የማረጋገጫ ኮድ ወደ ላክንልዎታል',
+            otpSentButton: 'ገባኝ',
+
+            // Error/Success Dialog
+            errorDialogButton: 'ገባኝ',
+
+            // Payment Verification Dialog
+            verifyPaymentTitle: 'ክፍያ ያረጋግጡ',
+            orderIdLabel: 'የትዕዛዝ መታወቂያ',
+            paymentCodeLabel: 'የክፍያ ኮድ',
+            verifyPaymentMessage: 'ከመቀጠልዎ በፊት እባክዎ ይህንን የክፍያ ኮድ ከክፍያ መዝገቦችዎ ጋር ያረጋግጡ።',
+            cancelButton: 'ይቅር',
+            rejectPaymentButton: 'ክፍያ ውድቅ አድርግ',
+            verifyPaymentButton: 'ክፍያ አረጋግጥ',
         },
         testimonials: {
             badge: 'ምስክርነቶች',
@@ -1991,6 +2047,24 @@ export const translations: Record<Language, Translations> = {
             signOut: 'Ba\'i',
             loading: 'Fe\'aa jira...',
         },
+        dialogs: {
+            // OTP Sent Dialog
+            otpSentTitle: 'Saanduqa ergaa kee ilaali',
+            otpSentMessage: 'Koodii mirkaneessaa gara',
+            otpSentButton: 'Hubadhe',
+
+            // Error/Success Dialog
+            errorDialogButton: 'Hubadhe',
+
+            // Payment Verification Dialog
+            verifyPaymentTitle: 'Kaffaltii Mirkaneessi',
+            orderIdLabel: 'Eenyummaa Ajajaa',
+            paymentCodeLabel: 'Koodii Kaffaltii',
+            verifyPaymentMessage: 'Maaloo dura hin deemiin dura koodii kaffaltii kana galmee kaffaltii kee waliin mirkaneessi.',
+            cancelButton: 'Haqii',
+            rejectPaymentButton: 'Kaffaltii Didi',
+            verifyPaymentButton: 'Kaffaltii Mirkaneessi',
+        },
         testimonials: {
             badge: 'Dhugaabaarsaa',
             title: 'Daldala Afrikaa Hunda Amanamee',
@@ -2527,6 +2601,24 @@ export const translations: Record<Language, Translations> = {
             generateLinkNav: 'ሊንክ ፍጠር',
             signOut: 'ውጻእ',
             loading: 'ይጽዕን ኣሎ...',
+        },
+        dialogs: {
+            // OTP Sent Dialog
+            otpSentTitle: 'ናይ መእተዊ ሳጹንካ ርአ',
+            otpSentMessage: 'ናይ ምርግጋጽ ኮድ ናብ ሰደድናልካ',
+            otpSentButton: 'ተረዲኡኒ',
+
+            // Error/Success Dialog
+            errorDialogButton: 'ተረዲኡኒ',
+
+            // Payment Verification Dialog
+            verifyPaymentTitle: 'ክፍሊት ኣረጋግጽ',
+            orderIdLabel: 'መለለዪ ትእዛዝ',
+            paymentCodeLabel: 'ኮድ ክፍሊት',
+            verifyPaymentMessage: 'ቅድሚ ምቕጻልካ እባ ነዚ ናይ ክፍሊት ኮድ ምስ ናይ ክፍሊት መዝገባትካ ኣረጋግጾ።',
+            cancelButton: 'ሰርዝ',
+            rejectPaymentButton: 'ክፍሊት ንጽግ',
+            verifyPaymentButton: 'ክፍሊት ኣረጋግጽ',
         },
         testimonials: {
             badge: 'ምስክርነት',
