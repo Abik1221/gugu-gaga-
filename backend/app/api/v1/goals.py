@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
-from app.db.deps import get_db, require_tenant
+from app.db.deps import get_db
+from app.deps.tenant import require_tenant
 from app.models.business_goal import BusinessGoal, Milestone, GoalStatus, GoalType
 from app.schemas.business_goal import (
     BusinessGoalCreate,
