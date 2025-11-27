@@ -224,6 +224,143 @@ export interface Translations {
         dashboardAlt: string;
     };
 
+    // Affiliate Dashboard
+    affiliateDashboard: {
+        // Header
+        badge: string;
+        heading: string;
+        description: string;
+
+        // Actions
+        createReferralLink: string;
+        requestPayout: string;
+        refreshData: string;
+        refreshing: string;
+        submit: string;
+        submitting: string;
+
+        // Stats
+        currentCommission: string;
+        pendingReview: string;
+        paidToDate: string;
+        activeReferrals: string;
+        referrals: string;
+        paidThisMonth: string;
+        pendingPayout: string;
+        verifiedPharmacies: string;
+
+        // Descriptions
+        projectedPayout: string;
+        awaitingFinanceApproval: string;
+        lifetimeEarnings: string;
+        pharmaciesOnboarded: string;
+        pharmaciesReferred: string;
+
+        // Sidebar
+        overview: string;
+        overviewDesc: string;
+        payouts: string;
+        payoutsDesc: string;
+        commissions: string;
+        commissionsDesc: string;
+        affiliates: string;
+        affiliatesDesc: string;
+        partnerHub: string;
+        yourPerformance: string;
+        performanceHighlights: string;
+        quickNavigation: string;
+
+        // Sections
+        whyTeamsStay: string;
+        earningCommission: string;
+        referredPharmaciesTracked: string;
+        alreadyPaidOut: string;
+
+        // Commissions Page
+        successfullyOnboarded: string;
+        projectedPayoutPeriod: string;
+        awaitingReviewProcessing: string;
+        totalEarningsTransferred: string;
+
+        // Payouts Page
+        payoutsTitle: string;
+        payoutsSubtitle: string;
+        thisPeriodGlance: string;
+        commissionSummaryFor: string;
+        percent: string;
+        commission: string;
+        referredPharmaciesLabel: string;
+        tenantIdsCredited: string;
+        credited: string;
+        noPharmaciesYet: string;
+        requestPayoutTitle: string;
+        requestPayoutDesc: string;
+        monthLabel: string;
+        monthPlaceholder: string;
+        commissionPercent: string;
+        bankName: string;
+        accountHolderName: string;
+        accountNumber: string;
+        enterBankName: string;
+        enterAccountName: string;
+        enterAccountNumber: string;
+        submitPayoutRequest: string;
+        payoutHistory: string;
+        payoutHistoryDesc: string;
+        noPayoutRequests: string;
+        status: string;
+        amount: string;
+
+        // Status & Messages
+        paid: string;
+        pending: string;
+        rejected: string;
+        noCommissionYet: string;
+        allBankDetailsRequired: string;
+        activePharmaciesLabel: string;
+
+        // Toast Messages
+        linkCreated: string;
+        linkCreatedDesc: string;
+        linkRotated: string;
+        linkRotatedDesc: string;
+        linkDeactivated: string;
+        linkDeactivatedDesc: string;
+        copied: string;
+        copiedDesc: string;
+        payoutRequested: string;
+        payoutRequestedDesc: string;
+        failedToCreateLink: string;
+        failedToRotate: string;
+        failedToDeactivate: string;
+        copyFailed: string;
+        requestFailed: string;
+        clipboardUnavailable: string;
+
+        // Generate Link Page
+        generateReferralLink: string;
+        linkLimitReached: string;
+        activeLinksInUse: string;
+        generateNewLinkToShare: string;
+        deactivateToFreeSlot: string;
+        noReferralLinksYet: string;
+        referralLink: string;
+        active: string;
+        inactive: string;
+        copy: string;
+        deactivate: string;
+        rotate: string;
+
+        // Register Page
+        registerTitle: string;
+        comingSoon: string;
+
+        // Layout & Loading
+        generateLinkNav: string;
+        signOut: string;
+        loading: string;
+    };
+
     // Testimonials Section
     testimonials: {
         badge: string;
@@ -649,6 +786,141 @@ export const translations: Record<Language, Translations> = {
             step4Desc: 'Get paid for every successful sign-up.',
             dashboardAlt: 'Affiliate Dashboard',
         },
+        affiliateDashboard: {
+            // Header
+            badge: 'Affiliate Dashboard',
+            heading: 'Grow partner revenue with the same polish as your landing page.',
+            description: 'Keep your business partners engaged with a calm, minimal control center. Review earnings, generate links, and submit payout requests with live numbers pulled directly from the partner API.',
+
+            // Actions
+            createReferralLink: 'Create referral link',
+            requestPayout: 'Request payout',
+            refreshData: 'Refresh data',
+            refreshing: 'Refreshing...',
+            submit: 'Submit payout request',
+            submitting: 'Submitting...',
+
+            // Stats
+            currentCommission: 'Current commission',
+            pendingReview: 'Pending review',
+            paidToDate: 'Paid to date',
+            activeReferrals: 'Active referrals',
+            referrals: 'Referrals',
+            paidThisMonth: 'Paid this month',
+            pendingPayout: 'Pending payout',
+            verifiedPharmacies: 'Verified pharmacies',
+
+            // Descriptions
+            projectedPayout: 'Projected payout',
+            awaitingFinanceApproval: 'Awaiting finance approval',
+            lifetimeEarnings: 'Lifetime transferred earnings',
+            pharmaciesOnboarded: 'Pharmacies onboarded via your links',
+            pharmaciesReferred: 'Pharmacies you\'ve successfully onboarded',
+
+            // Sidebar
+            overview: 'Overview',
+            overviewDesc: 'Snapshot of current performance and actions',
+            payouts: 'Payouts',
+            payoutsDesc: 'Track requests and statuses',
+            commissions: 'Commissions',
+            commissionsDesc: 'Review earned commissions',
+            affiliates: 'Affiliates',
+            affiliatesDesc: 'Manage referred pharmacies',
+            partnerHub: 'Partner hub',
+            yourPerformance: 'Your partner performance',
+            performanceHighlights: 'Performance highlights',
+            quickNavigation: 'Quick navigation',
+
+            // Sections
+            whyTeamsStay: 'Why teams stay',
+            earningCommission: 'You\'re earning a {percent}% commission rate this month.',
+            referredPharmaciesTracked: '{count} referred pharmacies are being tracked in real-time.',
+            alreadyPaidOut: '{amount} has already been paid out – keep sharing links to grow it.',
+
+            // Commissions Page
+            successfullyOnboarded: 'Pharmacies you\'ve successfully onboarded',
+            projectedPayoutPeriod: 'Projected payout for this period',
+            awaitingReviewProcessing: 'Awaiting review & processing',
+            totalEarningsTransferred: 'Total earnings transferred to you',
+
+            // Payouts Page
+            payoutsTitle: 'Commission payouts',
+            payoutsSubtitle: 'Track requests, statuses, and submit new payout claims.',
+            thisPeriodGlance: 'This period at a glance',
+            commissionSummaryFor: 'Commission summary for {period}.',
+            percent: 'Percent',
+            commission: 'Commission',
+            referredPharmaciesLabel: 'Referred Pharmacies',
+            tenantIdsCredited: 'Tenant IDs credited',
+            credited: 'Credited',
+            noPharmaciesYet: 'No pharmacies referred yet this month. Share your link to get started.',
+            requestPayoutTitle: 'Request payout',
+            requestPayoutDesc: 'Submit a commission payout request for a specific month.',
+            monthLabel: 'Month (YYYY-MM)',
+            monthPlaceholder: '2025-10',
+            commissionPercent: 'Commission percent',
+            bankName: 'Bank name*',
+            accountHolderName: 'Account holder name*',
+            accountNumber: 'Account number*',
+            enterBankName: 'Enter bank name',
+            enterAccountName: 'Enter account holder name',
+            enterAccountNumber: 'Enter account number',
+            submitPayoutRequest: 'Submit payout request',
+            payoutHistory: 'Payout history',
+            payoutHistoryDesc: 'Latest payout requests with status updates.',
+            noPayoutRequests: 'No payout requests yet. Submit your first payout to see it listed here.',
+            status: 'Status',
+            amount: 'Amount',
+
+            // Status & Messages
+            paid: 'Paid',
+            pending: 'Pending',
+            rejected: 'Rejected',
+            noCommissionYet: 'You haven\'t earned any commission yet. Share your referral link to start earning before requesting a payout.',
+            allBankDetailsRequired: 'All bank details are required for payout requests.',
+            activePharmaciesLabel: 'Active pharmacies',
+
+            // Toast Messages
+            linkCreated: 'Link created',
+            linkCreatedDesc: 'A new referral link is now active.',
+            linkRotated: 'Link rotated',
+            linkRotatedDesc: 'The referral link has been refreshed.',
+            linkDeactivated: 'Link deactivated',
+            linkDeactivatedDesc: 'The referral link is now inactive.',
+            copied: 'Copied',
+            copiedDesc: 'Referral link copied to clipboard.',
+            payoutRequested: 'Payout requested',
+            payoutRequestedDesc: 'Finance will review your request shortly.',
+            failedToCreateLink: 'Failed to create link',
+            failedToRotate: 'Failed to rotate',
+            failedToDeactivate: 'Failed to deactivate',
+            copyFailed: 'Copy failed',
+            requestFailed: 'Request failed',
+            clipboardUnavailable: 'Clipboard API unavailable',
+
+            // Generate Link Page
+            generateReferralLink: 'Generate referral link',
+            linkLimitReached: 'Link limit reached',
+            activeLinksInUse: '{count} of {max} active links in use',
+            generateNewLinkToShare: 'Generate a new link to start sharing',
+            deactivateToFreeSlot: 'Deactivate one to free a slot',
+            noReferralLinksYet: 'No referral links yet. Generate one to start sharing.',
+            referralLink: 'Referral link',
+            active: 'Active',
+            inactive: 'Inactive',
+            copy: 'Copy',
+            deactivate: 'Deactivate',
+            rotate: 'Rotate',
+
+            // Register Page
+            registerTitle: 'Affiliate Registration',
+            comingSoon: 'Coming soon...',
+
+            // Layout & Loading
+            generateLinkNav: 'Generate Link',
+            signOut: 'Sign out',
+            loading: 'Loading...',
+        },
         testimonials: {
             badge: 'Testimonials',
             title: 'Trusted by Businesses Across Africa',
@@ -1046,6 +1318,141 @@ export const translations: Record<Language, Translations> = {
             step4Title: 'ኮሚሽን ያግኙ',
             step4Desc: 'ለእያንዳንዱ ስኬታማ ምዝገባ ክፍያ ያግኙ።',
             dashboardAlt: 'የአጋር ዳሽቦርድ',
+        },
+        affiliateDashboard: {
+            // Header
+            badge: 'የአጋር ዳሽቦርድ',
+            heading: 'ልክ እንደ ማረፊያ ገጽዎ ሁሉ የአጋር ገቢዎን ያሳድጉ።',
+            description: 'የንግድ አጋሮችዎን በተረጋጋ እና አነስተኛ የመቆጣጠሪያ ማዕከል ያሳትፉ። ገቢዎችን ይገምግሙ፣ አገናኞችን ያመንጩ እና ከአጋር API በቀጥታ በተወሰዱ የቀጥታ ቁጥሮች የክፍያ ጥያቄዎችን ያስገቡ።',
+
+            // Actions
+            createReferralLink: 'የሪፈራል አገናኝ ይፍጠሩ',
+            requestPayout: 'ክፍያ ይጠይቁ',
+            refreshData: 'መረጃ ያድሱ',
+            refreshing: 'በማደስ ላይ...',
+            submit: 'የክፍያ ጥያቄ ያስገቡ',
+            submitting: 'በማስገባት ላይ...',
+
+            // Stats
+            currentCommission: 'የአሁን ኮሚሽን',
+            pendingReview: 'በግምገማ ላይ',
+            paidToDate: 'እስከዛሬ የተከፈለ',
+            activeReferrals: 'ንቁ ሪፈራሎች',
+            referrals: 'ሪፈራሎች',
+            paidThisMonth: 'በዚህ ወር የተከፈለ',
+            pendingPayout: 'በመጠባበቅ ላይ ያለ ክፍያ',
+            verifiedPharmacies: 'የተረጋገጡ መድኃኒት ቤቶች',
+
+            // Descriptions
+            projectedPayout: 'የሚጠበቅ ክፍያ',
+            awaitingFinanceApproval: 'የፋይናንስ ማረጋገጫ በመጠባበቅ ላይ',
+            lifetimeEarnings: 'እስከዛሬ የተላለፈ ገቢ',
+            pharmaciesOnboarded: 'በእርስዎ አገናኞች በኩል የተመዘገቡ መድኃኒት ቤቶች',
+            pharmaciesReferred: 'በስኬት ያስመዘገቡዋቸው መድኃኒት ቤቶች',
+
+            // Sidebar
+            overview: 'አጠቃላይ እይታ',
+            overviewDesc: 'የአሁን አፈጻጸም እና እርምጃዎች ቅጽበታዊ እይታ',
+            payouts: 'ክፍያዎች',
+            payoutsDesc: 'ጥያቄዎችን እና ሁኔታዎችን ይከታተሉ',
+            commissions: 'ኮሚሽኖች',
+            commissionsDesc: 'የተገኙ ኮሚሽኖችን ይገምግሙ',
+            affiliates: 'አጋሮች',
+            affiliatesDesc: 'የተመሩ መድኃኒት ቤቶችን ያስተዳድሩ',
+            partnerHub: 'የአጋር ማዕከል',
+            yourPerformance: 'የእርስዎ አጋር አፈጻጸም',
+            performanceHighlights: 'የአፈጻጸም ዋና ዋና ነጥቦች',
+            quickNavigation: 'ፈጣን አሰሳ',
+
+            // Sections
+            whyTeamsStay: 'ቡድኖች ለምን ይቆያሉ',
+            earningCommission: 'በዚህ ወር የ {percent}% የኮሚሽን ተመን እያገኙ ነው።',
+            referredPharmaciesTracked: '{count} የተመሩ መድኃኒት ቤቶች በእውነተኛ ጊዜ እየተከታተሉ ነው።',
+            alreadyPaidOut: '{amount} አስቀድሞ ተከፍሏል - ለማሳደግ አገናኞችን ማጋራትዎን ይቀጥሉ።',
+
+            // Commissions Page
+            successfullyOnboarded: 'በስኬት ያስመዘገቡዋቸው መድኃኒት ቤቶች',
+            projectedPayoutPeriod: 'ለዚህ ጊዜ የሚጠበቅ ክፍያ',
+            awaitingReviewProcessing: 'ግምገማ እና ማቀናበር በመጠባበቅ ላይ',
+            totalEarningsTransferred: 'ወደ እርስዎ የተላለፈ አጠቃላይ ገቢ',
+
+            // Payouts Page
+            payoutsTitle: 'የኮሚሽን ክፍያዎች',
+            payoutsSubtitle: 'ጥያቄዎችን፣ ሁኔታዎችን ይከታተሉ እና አዲስ የክፍያ ጥያቄዎችን ያስገቡ።',
+            thisPeriodGlance: 'ይህ ጊዜ በጨረፍታ',
+            commissionSummaryFor: 'የኮሚሽን ማጠቃለያ ለ {period}።',
+            percent: 'መቶኛ',
+            commission: 'ኮሚሽን',
+            referredPharmaciesLabel: 'የተመሩ መድኃኒት ቤቶች',
+            tenantIdsCredited: 'የተመዘገቡ ተከራይ መታወቂያዎች',
+            credited: 'ተመዝግቧል',
+            noPharmaciesYet: 'በዚህ ወር እስካሁን የተመሩ መድኃኒት ቤቶች የሉም። ለመጀመር አገናኝዎን ያጋሩ።',
+            requestPayoutTitle: 'ክፍያ ይጠይቁ',
+            requestPayoutDesc: 'ለተወሰነ ወር የኮሚሽን ክፍያ ጥያቄ ያስገቡ።',
+            monthLabel: 'ወር (YYYY-MM)',
+            monthPlaceholder: '2025-10',
+            commissionPercent: 'የኮሚሽን መቶኛ',
+            bankName: 'የባንክ ስም*',
+            accountHolderName: 'የሂሳብ ባለቤት ስም*',
+            accountNumber: 'የሂሳብ ቁጥር*',
+            enterBankName: 'የባንክ ስም ያስገቡ',
+            enterAccountName: 'የሂሳብ ባለቤት ስም ያስገቡ',
+            enterAccountNumber: 'የሂሳብ ቁጥር ያስገቡ',
+            submitPayoutRequest: 'የክፍያ ጥያቄ ያስገቡ',
+            payoutHistory: 'የክፍያ ታሪክ',
+            payoutHistoryDesc: 'የቅርብ ጊዜ የክፍያ ጥያቄዎች ከሁኔታ ዝመናዎች ጋር።',
+            noPayoutRequests: 'እስካሁን ምንም የክፍያ ጥያቄዎች የሉም። እዚህ ተዘርዝሮ ለማየት የመጀመሪያ ክፍያዎን ያስገቡ።',
+            status: 'ሁኔታ',
+            amount: 'መጠን',
+
+            // Status & Messages
+            paid: 'ተከፍሏል',
+            pending: 'በመጠባበቅ ላይ',
+            rejected: 'ተቀባይነት አላገኘም',
+            noCommissionYet: 'እስካሁን ምንም ኮሚሽን አላገኙም። ክፍያ ከመጠየቅዎ በፊት ገቢ ማግኘት ለመጀመር የሪፈራል አገናኝዎን ያጋሩ።',
+            allBankDetailsRequired: 'ለክፍያ ጥያቄዎች ሁሉም የባንክ ዝርዝሮች ያስፈልጋሉ።',
+            activePharmaciesLabel: 'ንቁ መድኃኒት ቤቶች',
+
+            // Toast Messages
+            linkCreated: 'አገናኝ ተፈጥሯል',
+            linkCreatedDesc: 'አዲስ የሪፈራል አገናኝ አሁን ንቁ ነው።',
+            linkRotated: 'አገናኝ ታድሷል',
+            linkRotatedDesc: 'የሪፈራል አገናኙ ታድሷል።',
+            linkDeactivated: 'አገናኝ ተሰናክሏል',
+            linkDeactivatedDesc: 'የሪፈራል አገናኙ አሁን ንቁ አይደለም።',
+            copied: 'ተቀድቷል',
+            copiedDesc: 'የሪፈራል አገናኝ ወደ ቅንጥብ ሰሌዳ ተቀድቷል።',
+            payoutRequested: 'ክፍያ ተጠይቋል',
+            payoutRequestedDesc: 'ፋይናንስ ጥያቄዎን በቅርቡ ይገመግማል።',
+            failedToCreateLink: 'አገናኝ መፍጠር አልተቻለም',
+            failedToRotate: 'ማደስ አልተቻለም',
+            failedToDeactivate: 'ማሰናከል አልተቻለም',
+            copyFailed: 'መቅዳት አልተቻለም',
+            requestFailed: 'ጥያቄው አልተሳካም',
+            clipboardUnavailable: 'የቅንጥብ ሰሌዳ ኤፒአይ አይገኝም',
+
+            // Generate Link Page
+            generateReferralLink: 'የሪፈራል አገናኝ ይፍጠሩ',
+            linkLimitReached: 'የአገናኝ ገደብ ላይ ደርሷል',
+            activeLinksInUse: '{count} ከ {max} ንቁ አገናኞች ጥቅም ላይ ውለዋል',
+            generateNewLinkToShare: 'ማጋራት ለመጀመር አዲስ አገናኝ ይፍጠሩ',
+            deactivateToFreeSlot: 'ቦታ ለማስለቀቅ አንዱን ያሰናክሉ',
+            noReferralLinksYet: 'እስካሁን ምንም የሪፈራል አገናኞች የሉም። ማጋራት ለመጀመር አንድ ይፍጠሩ።',
+            referralLink: 'የሪፈራል አገናኝ',
+            active: 'ንቁ',
+            inactive: 'ቦዘን',
+            copy: 'ቅዳ',
+            deactivate: 'አሰናክል',
+            rotate: 'አሽከርክር',
+
+            // Register Page
+            registerTitle: 'የአጋር ምዝገባ',
+            comingSoon: 'በቅርብ ቀን...',
+
+            // Layout & Loading
+            generateLinkNav: 'አገናኝ ይፍጠሩ',
+            signOut: 'ውጣ',
+            loading: 'በመጫን ላይ...',
         },
         testimonials: {
             badge: 'ምስክርነቶች',
@@ -1449,6 +1856,141 @@ export const translations: Record<Language, Translations> = {
             step4Desc: 'Galmee milkaa\'aa hundaaf kaffaltii argadhu.',
             dashboardAlt: 'Dashboard Hiriyyaa',
         },
+        affiliateDashboard: {
+            // Header
+            badge: 'Dashboard Hiriyyaa',
+            heading: 'Galii hiriyyaa kee akkuma fuula qubannaa keetii bareedinaan guddisi.',
+            description: 'Hiriyyoota daldala kee wiirtuu to\'annoo tasgabbaa\'aa fi xiqqaa ta\'een hirmaachisi. Galii gamaaggami, linkii maddisiisi, fi lakkoofsa kallattiin API hiriyyaa irraa fudhatameen gaaffii kaffaltii dhiyeessi.',
+
+            // Actions
+            createReferralLink: 'Linkii Hiriyyaa Uumi',
+            requestPayout: 'Kaffaltii Gaafadhu',
+            refreshData: 'Odeeffannoo Haaromsi',
+            refreshing: 'Haaromsaa jira...',
+            submit: 'Gaaffii Kaffaltii Galchi',
+            submitting: 'Galchaa jira...',
+
+            // Stats
+            currentCommission: 'Komishinii Ammaa',
+            pendingReview: 'Gamaaggama Eegaa Jira',
+            paidToDate: 'Hanga Har\'aatti Kaffalame',
+            activeReferrals: 'Hiriyyoota Nageenya',
+            referrals: 'Hiriyyoota',
+            paidThisMonth: 'Ji\'a Kana Kaffalame',
+            pendingPayout: 'Kaffaltii Eegaa Jira',
+            verifiedPharmacies: 'Manneen Qorichaa Mirkanaa\'an',
+
+            // Descriptions
+            projectedPayout: 'Kaffaltii Tilmaamame',
+            awaitingFinanceApproval: 'Mirkaneessa Faayinaansii Eegaa Jira',
+            lifetimeEarnings: 'Galii Daddarbaa Jireenyaa',
+            pharmaciesOnboarded: 'Manneen qorichaa linkii keetiin galmaa\'an',
+            pharmaciesReferred: 'Manneen qorichaa ati milkaa\'inaan galmeessiste',
+
+            // Sidebar
+            overview: 'Waliigala',
+            overviewDesc: 'Ilaalcha yeroo ammaa raawwii fi tarkaanfiiwwanii',
+            payouts: 'Kaffaltiiwwan',
+            payoutsDesc: 'Gaaffiiwwan fi haalota hordofi',
+            commissions: 'Komishiniiwwan',
+            commissionsDesc: 'Komishinii argame gamaaggami',
+            affiliates: 'Hiriyyoota',
+            affiliatesDesc: 'Manneen qorichaa hiriyoomfaman bulchi',
+            partnerHub: 'Wiirtuu Hiriyyaa',
+            yourPerformance: 'Raawwii Hiriyyaa Kee',
+            performanceHighlights: 'Ibsa Raawwii',
+            quickNavigation: 'Aseessa Saffisaa',
+
+            // Sections
+            whyTeamsStay: 'Gareewwan Maaliif Turu',
+            earningCommission: 'Ji\'a kana komishinii {percent}% argachaa jirta.',
+            referredPharmaciesTracked: 'Manneen qorichaa hiriyoomfaman {count} yeroo dhugaa hordofamaa jiru.',
+            alreadyPaidOut: '{amount} duraan kaffalameera - guddisuuf linkii qooduu itti fufi.',
+
+            // Commissions Page
+            successfullyOnboarded: 'Manneen qorichaa ati milkaa\'inaan galmeessiste',
+            projectedPayoutPeriod: 'Kaffaltii tilmaamame yeroo kanaaf',
+            awaitingReviewProcessing: 'Gamaaggama & adeemsa eegaa jira',
+            totalEarningsTransferred: 'Waliigala galii siif daddarbee',
+
+            // Payouts Page
+            payoutsTitle: 'Kaffaltiiwwan Komishinii',
+            payoutsSubtitle: 'Gaaffiiwwan, haalota hordofi, fi gaaffii kaffaltii haaraa galchi.',
+            thisPeriodGlance: 'Yeroo kana ilaalchaan',
+            commissionSummaryFor: 'Guduunfaa komishinii {period} tiif.',
+            percent: 'Dhibbeentaa',
+            commission: 'Komishinii',
+            referredPharmaciesLabel: 'Manneen Qorichaa Hiriyoomfaman',
+            tenantIdsCredited: 'Eenyummeessa kireeffataa galmaa\'an',
+            credited: 'Galmaa\'eera',
+            noPharmaciesYet: 'Ji\'a kana manneen qorichaa hiriyoomfaman hin jiran. Jalqabuuf linkii kee qoodi.',
+            requestPayoutTitle: 'Kaffaltii Gaafadhu',
+            requestPayoutDesc: 'Gaaffii kaffaltii komishinii ji\'a murtaa\'eef galchi.',
+            monthLabel: 'Ji\'a (YYYY-MM)',
+            monthPlaceholder: '2025-10',
+            commissionPercent: 'Dhibbeentaa Komishinii',
+            bankName: 'Maqaa Baankii*',
+            accountHolderName: 'Maqaa Abbaa Herregaa*',
+            accountNumber: 'Lakkoofsa Herregaa*',
+            enterBankName: 'Maqaa baankii galchi',
+            enterAccountName: 'Maqaa abbaa herregaa galchi',
+            enterAccountNumber: 'Lakkoofsa herregaa galchi',
+            submitPayoutRequest: 'Gaaffii Kaffaltii Galchi',
+            payoutHistory: 'Seenaa Kaffaltii',
+            payoutHistoryDesc: 'Gaaffiiwwan kaffaltii dhiyoo haalota wajjin.',
+            noPayoutRequests: 'Gaaffiin kaffaltii hin jiru. Asitti tarreeffamee arguuf kaffaltii jalqabaa galchi.',
+            status: 'Haala',
+            amount: 'Hanga',
+
+            // Status & Messages
+            paid: 'Kaffalame',
+            pending: 'Eegaa Jira',
+            rejected: 'Kufaa Ta\'e',
+            noCommissionYet: 'Ammatti komishinii hin arganne. Kaffaltii gaafachuu dura galii argachuuf linkii hiriyyaa kee qoodi.',
+            allBankDetailsRequired: 'Gaaffii kaffaltii hundaaf bal\'inni baankii ni barbaachisa.',
+            activePharmaciesLabel: 'Manneen Qorichaa Nageenya',
+
+            // Toast Messages
+            linkCreated: 'Linkiin Uumameera',
+            linkCreatedDesc: 'Linkiin hiriyyaa haaraan amma hojjechaa jira.',
+            linkRotated: 'Linkiin Haaromfameera',
+            linkRotatedDesc: 'Linkiin hiriyyaa haaromfameera.',
+            linkDeactivated: 'Linkiin Cufameera',
+            linkDeactivatedDesc: 'Linkiin hiriyyaa amma hin hojjetu.',
+            copied: 'Waraabameera',
+            copiedDesc: 'Linkiin hiriyyaa waraabameera.',
+            payoutRequested: 'Kaffaltiin Gaafatameera',
+            payoutRequestedDesc: 'Faayinaansiin dhiyeenya kana gaaffii kee ni gamaaggama.',
+            failedToCreateLink: 'Linkii uumuu hin dandeenye',
+            failedToRotate: 'Haaromsuu hin dandeenye',
+            failedToDeactivate: 'Cufuu hin dandeenye',
+            copyFailed: 'Waraabuu hin dandeenye',
+            requestFailed: 'Gaaffiin hin milkoofne',
+            clipboardUnavailable: 'API waraabbii hin jiru',
+
+            // Generate Link Page
+            generateReferralLink: 'Linkii hiriyyaa uumi',
+            linkLimitReached: 'Daangaan linkii ga\'eera',
+            activeLinksInUse: 'Linkiiwwan {count} {max} keessaa hojjechaa jiru',
+            generateNewLinkToShare: 'Qooduu jalqabuuf linkii haaraa uumi',
+            deactivateToFreeSlot: 'Bakka bilisa gochuuf tokko cufi',
+            noReferralLinksYet: 'Ammatti linkiin hiriyyaa hin jiru. Qooduu jalqabuuf tokko uumi.',
+            referralLink: 'Linkii hiriyyaa',
+            active: 'Nageenya',
+            inactive: 'Hin hojjetu',
+            copy: 'Waraabi',
+            deactivate: 'Cufi',
+            rotate: 'Naannessii',
+
+            // Register Page
+            registerTitle: 'Galmee Hiriyyaa',
+            comingSoon: 'Dhiyeenyatti...',
+
+            // Layout & Loading
+            generateLinkNav: 'Linkii Uumi',
+            signOut: 'Ba\'i',
+            loading: 'Fe\'aa jira...',
+        },
         testimonials: {
             badge: 'Dhugaabaarsaa',
             title: 'Daldala Afrikaa Hunda Amanamee',
@@ -1850,6 +2392,141 @@ export const translations: Record<Language, Translations> = {
             step4Title: 'ኮሚሽን ርከብ',
             step4Desc: 'ንነፍሲ ወከፍ ዕውት ምዝገባ ክፍሊት ርከብ።',
             dashboardAlt: 'ናይ መሻርኽቲ ዳሽቦርድ',
+        },
+        affiliateDashboard: {
+            // Header
+            badge: 'ናይ መሻርኽቲ ዳሽቦርድ',
+            heading: 'ልክዕ ከምቲ ናይ መእተዊ ገጽካ፣ ናይ መሻርኽቲ ኣታዊኻ ኣዕቢ።',
+            description: 'ንናይ ንግዲ መሻርኽትኻ ብህዱእን ንኡስን ናይ ምቁጽጻር ማእከል ኣሳትፎም። ኣታዊታት ገምግም፣ ሊንክታት ኣዳሉ፣ ከምኡውን ካብ መሻርኽቲ API ብቀጥታ ብዝተወስዱ ናይ ቀጥታ ቁጽርታት ናይ ክፍሊት ሕቶታት ኣቕርብ።',
+
+            // Actions
+            createReferralLink: 'ናይ ሪፈራል ሊንክ ፍጠር',
+            requestPayout: 'ክፍሊት ሕተት',
+            refreshData: 'ዳታ ኣሐድስ',
+            refreshing: 'የሐድስ ኣሎ...',
+            submit: 'ናይ ክፍሊት ሕቶ ኣቕርብ',
+            submitting: 'የቕርብ ኣሎ...',
+
+            // Stats
+            currentCommission: 'ናይ ሕጂ ኮሚሽን',
+            pendingReview: 'ኣብ ገምጋም ዘሎ',
+            paidToDate: 'ክሳብ ሕጂ ዝተከፍለ',
+            activeReferrals: 'ንጡፋት ሪፈራላት',
+            referrals: 'ሪፈራላት',
+            paidThisMonth: 'ኣብዚ ወርሒ ዝተከፍለ',
+            pendingPayout: 'ኣብ ትጽቢት ዘሎ ክፍሊት',
+            verifiedPharmacies: 'ዝተረጋገጻ ፋርማሲታት',
+
+            // Descriptions
+            projectedPayout: 'ዝግመት ክፍሊት',
+            awaitingFinanceApproval: 'ናይ ፋይናንስ ምርግጋጽ ዝጽበ ዘሎ',
+            lifetimeEarnings: 'ክሳብ ሕጂ ዝተሰጋገረ ኣታዊ',
+            pharmaciesOnboarded: 'ብሊንክታትካ ዝተመዝገባ ፋርማሲታት',
+            pharmaciesReferred: 'ብዓወት ዘመዝገብካየን ፋርማሲታት',
+
+            // Sidebar
+            overview: 'ሓፈሻዊ ርእይቶ',
+            overviewDesc: 'ናይ ሕጂ ኣፈጻጽማን ስጉምትታትን ቅጽበታዊ ርእይቶ',
+            payouts: 'ክፍሊታት',
+            payoutsDesc: 'ሕቶታትን ኩነታትን ተኸታተል',
+            commissions: 'ኮሚሽናት',
+            commissionsDesc: 'ዝተረኽቡ ኮሚሽናት ገምግም',
+            affiliates: 'መሻርኽቲ',
+            affiliatesDesc: 'ዝተመርሓ ፋርማሲታት ኣመሓድር',
+            partnerHub: 'ናይ መሻርኽቲ ማእከል',
+            yourPerformance: 'ናይ መሻርኽቲ ኣፈጻጽማኻ',
+            performanceHighlights: 'ናይ ኣፈጻጽማ ቀንዲ ነጥብታት',
+            quickNavigation: 'ቅልጡፍ ምድላይ',
+
+            // Sections
+            whyTeamsStay: 'ጋንታታት ስለምንታይ ይጸንሓ',
+            earningCommission: 'ኣብዚ ወርሒ ናይ {percent}% ናይ ኮሚሽን መጠን ትረክብ ኣለኻ።',
+            referredPharmaciesTracked: '{count} ዝተመርሓ ፋርማሲታት ብቀጥታ ይክትተላ ኣለዋ።',
+            alreadyPaidOut: '{amount} ድሮ ተከፊሉ እዩ - ንምዕባይ ሊንክታት ምክፋል ቀጽል።',
+
+            // Commissions Page
+            successfullyOnboarded: 'ብዓወት ዘመዝገብካየን ፋርማሲታት',
+            projectedPayoutPeriod: 'ንዚ ግዜ ዝግመት ክፍሊት',
+            awaitingReviewProcessing: 'ገምጋምን መስርሕን ዝጽበ ዘሎ',
+            totalEarningsTransferred: 'ናባኻ ዝተሰጋገረ ጠቕላላ ኣታዊ',
+
+            // Payouts Page
+            payoutsTitle: 'ናይ ኮሚሽን ክፍሊታት',
+            payoutsSubtitle: 'ሕቶታት፣ ኩነታት ተኸታተል፣ ከምኡውን ሓድሽ ናይ ክፍሊት ሕቶታት ኣቕርብ።',
+            thisPeriodGlance: 'እዚ ግዜ ብሓጺሩ',
+            commissionSummaryFor: 'ናይ ኮሚሽን ጽማቕ ን {period}።',
+            percent: 'ሚእታዊት',
+            commission: 'ኮሚሽን',
+            referredPharmaciesLabel: 'ዝተመርሓ ፋርማሲታት',
+            tenantIdsCredited: 'ዝተመዝገቡ መለለይ ተኻረይቲ',
+            credited: 'ተመዝጊቡ',
+            noPharmaciesYet: 'ኣብዚ ወርሒ ክሳብ ሕጂ ዝተመርሓ ፋርማሲታት የለዋን። ንምጅማር ሊንክኻ ኣካፍል።',
+            requestPayoutTitle: 'ክፍሊት ሕተት',
+            requestPayoutDesc: 'ንዝተወሰነ ወርሒ ናይ ኮሚሽን ክፍሊት ሕቶ ኣቕርብ።',
+            monthLabel: 'ወርሒ (YYYY-MM)',
+            monthPlaceholder: '2025-10',
+            commissionPercent: 'ናይ ኮሚሽን ሚእታዊት',
+            bankName: 'ስም ባንኪ*',
+            accountHolderName: 'ስም ዋና ሒሳብ*',
+            accountNumber: 'ቁጽሪ ሒሳብ*',
+            enterBankName: 'ስም ባንኪ ኣእቱ',
+            enterAccountName: 'ስም ዋና ሒሳብ ኣእቱ',
+            enterAccountNumber: 'ቁጽሪ ሒሳብ ኣእቱ',
+            submitPayoutRequest: 'ናይ ክፍሊት ሕቶ ኣቕርብ',
+            payoutHistory: 'ናይ ክፍሊት ታሪክ',
+            payoutHistoryDesc: 'ናይ ቀረባ ግዜ ናይ ክፍሊት ሕቶታት ምስ ኩነታት ዝመና።',
+            noPayoutRequests: 'ክሳብ ሕጂ ዝኾነ ናይ ክፍሊት ሕቶ የለን። ኣብዚ ተዘርዚሩ ንምርኣይ ናይ መጀመርታ ክፍሊትካ ኣቕርብ።',
+            status: 'ኩነታት',
+            amount: 'መጠን',
+
+            // Status & Messages
+            paid: 'ተከፊሉ',
+            pending: 'ኣብ ትጽቢት',
+            rejected: 'ተነጺጉ',
+            noCommissionYet: 'ክሳብ ሕጂ ዝኾነ ኮሚሽን ኣይረኸብካን። ክፍሊት ቅድሚ ምሕታትካ ኣታዊ ንምርካብ ናይ ሪፈራል ሊንክኻ ኣካፍል።',
+            allBankDetailsRequired: 'ንናይ ክፍሊት ሕቶታት ኩሉ ናይ ባንኪ ዝርዝራት የድሊ።',
+            activePharmaciesLabel: 'ንጡፋት ፋርማሲታት',
+
+            // Toast Messages
+            linkCreated: 'ሊንክ ተፈጢሩ',
+            linkCreatedDesc: 'ሓድሽ ናይ ሪፈራል ሊንክ ሕጂ ንጡፍ እዩ።',
+            linkRotated: 'ሊንክ ተሓዲሱ',
+            linkRotatedDesc: 'ናይ ሪፈራል ሊንክ ተሓዲሱ።',
+            linkDeactivated: 'ሊንክ ተዓጽዩ',
+            linkDeactivatedDesc: 'ናይ ሪፈራል ሊንክ ሕጂ ንጡፍ ኣይኮነን።',
+            copied: 'ተቐዲሑ',
+            copiedDesc: 'ናይ ሪፈራል ሊንክ ተቐዲሑ።',
+            payoutRequested: 'ክፍሊት ተሓቲቱ',
+            payoutRequestedDesc: 'ፋይናንስ ሕቶኻ ድሕሪ ሓጺር ግዜ ክገምግሞ እዩ።',
+            failedToCreateLink: 'ሊንክ ምፍጣር ኣይተኻእለን',
+            failedToRotate: 'ምሕዳስ ኣይተኻእለን',
+            failedToDeactivate: 'ምዕጻው ኣይተኻእለን',
+            copyFailed: 'ምቕዳሕ ኣይተኻእለን',
+            requestFailed: 'ሕቶ ኣይተሳኽዐን',
+            clipboardUnavailable: 'ናይ ቅዳሕ API የለን',
+
+            // Generate Link Page
+            generateReferralLink: 'ናይ ሪፈራል ሊንክ ፍጠር',
+            linkLimitReached: 'ደረት ሊንክ በጺሑ',
+            activeLinksInUse: '{count} ካብ {max} ንጡፋት ሊንክታት ኣብ ጥቕሚ ይውዕሉ ኣለዉ',
+            generateNewLinkToShare: 'ምክፋል ንምጅማር ሓድሽ ሊንክ ፍጠር',
+            deactivateToFreeSlot: 'ቦታ ንምልቃቕ ሓደ ኣሰናክል',
+            noReferralLinksYet: 'ክሳብ ሕጂ ናይ ሪፈራል ሊንክታት የለን። ምክፋል ንምጅማር ሓደ ፍጠር።',
+            referralLink: 'ናይ ሪፈራል ሊንክ',
+            active: 'ንጡፍ',
+            inactive: 'ዘይንጡፍ',
+            copy: 'ቅዳሕ',
+            deactivate: 'ኣሰናክል',
+            rotate: 'ኣሽከርክር',
+
+            // Register Page
+            registerTitle: 'ምዝገባ መሻርኽቲ',
+            comingSoon: 'ኣብ ቀረባ ግዜ...',
+
+            // Layout & Loading
+            generateLinkNav: 'ሊንክ ፍጠር',
+            signOut: 'ውጻእ',
+            loading: 'ይጽዕን ኣሎ...',
         },
         testimonials: {
             badge: 'ምስክርነት',
