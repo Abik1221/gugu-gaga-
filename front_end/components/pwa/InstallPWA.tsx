@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { PWAInstructionsDialog } from "./PWAInstructionsDialog";
+import { useLanguage } from "@/contexts/language-context";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -14,6 +15,7 @@ export function InstallPWA() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Check localStorage first
@@ -46,7 +48,7 @@ export function InstallPWA() {
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
@@ -77,7 +79,7 @@ export function InstallPWA() {
         <Button
           onClick={handleInstall}
           className="h-14 w-14 rounded-full bg-emerald-600 hover:bg-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300"
-          title="Install MesobAI App"
+          title={t.pwaInstall.installFloating}
         >
           <Download className="w-6 h-6 text-white" />
         </Button>
@@ -94,6 +96,7 @@ export function InstallButton({ className = "", fullWidth = false }: { className
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Check localStorage first
@@ -160,7 +163,7 @@ export function InstallButton({ className = "", fullWidth = false }: { className
         className={`flex items-center gap-2 border-emerald-200 text-emerald-700 hover:bg-emerald-50 ${fullWidth ? 'w-full' : ''} ${className}`}
       >
         <Download className="w-4 h-4" />
-        <span className={fullWidth ? "" : "hidden sm:inline"}>Install App</span>
+        <span className={fullWidth ? "" : "hidden sm:inline"}>{t.pwaInstall.installButton}</span>
       </Button>
       <PWAInstructionsDialog
         open={showInstructions}

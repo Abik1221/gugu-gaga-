@@ -227,10 +227,10 @@ export default function SupplierRegisterPage() {
   }
 
   const featureBullets = [
-    "Access to verified bussiness network",
-    "Real-time order management system",
-    "Advanced analytics and reporting",
-    "Secure payment processing",
+    t.authSidebar.supplier.feature1,
+    t.authSidebar.supplier.feature2,
+    t.authSidebar.supplier.feature3,
+    t.authSidebar.supplier.feature4,
   ];
 
   return (
@@ -300,15 +300,13 @@ export default function SupplierRegisterPage() {
             className="space-y-4 text-sm text-slate-700 mt-8 lg:mt-0"
           >
             <p className="text-center lg:text-left">
-              "Mesob's business management platform has streamlined our
-              operations and connected us with quality business partners
-              nationwide."
+              "{t.authSidebar.supplier.testimonial}"
             </p>
             <div className="h-px w-24 bg-slate-300 mx-auto lg:mx-0" />
             <p className="text-center lg:text-left">
-              Need help?{" "}
+              {t.authSidebar.supplier.supportText}{" "}
               <Link href="/contact" className="text-black hover:underline">
-                Contact our supplier support team
+                {t.authSidebar.supplier.contactTeam}
               </Link>
             </p>
           </motion.div>

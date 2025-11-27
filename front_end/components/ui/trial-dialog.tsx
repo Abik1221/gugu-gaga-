@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Dialog,
   DialogContent,
@@ -21,26 +22,27 @@ export function TrialDialog({ children }: TrialDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedType, setSelectedType] = useState<string>("");
   const router = useRouter();
+  const { t } = useLanguage();
 
   const userTypes = [
     {
       id: "owner",
-      title: "Bussiness Owner",
-      description: "Manage your bussiness operations",
+      title: t.trial.ownerTitle,
+      description: t.trial.ownerDesc,
       icon: Store,
       route: "/register/owner",
     },
     {
       id: "supplier",
-      title: "Supplier",
-      description: "Supply products to pharmacies",
+      title: t.trial.supplierTitle,
+      description: t.trial.supplierDesc,
       icon: Package,
       route: "/register/supplier",
     },
     {
       id: "affiliate",
-      title: "Affiliate",
-      description: "Earn commissions by referring",
+      title: t.trial.affiliateTitle,
+      description: t.trial.affiliateDesc,
       icon: Users,
       route: "/register/affiliate",
     },
@@ -61,7 +63,7 @@ export function TrialDialog({ children }: TrialDialogProps) {
         <DialogContent className="sm:max-w-sm bg-white p-6">
           <DialogHeader>
             <DialogTitle className="text-black text-center text-md">
-              Choose Your Role
+              {t.trial.title}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-1">
@@ -110,14 +112,14 @@ export function TrialDialog({ children }: TrialDialogProps) {
                 className="flex-1 text-sm"
                 onClick={() => setOpen(false)}
               >
-                Cancel
+                {t.trial.cancel}
               </Button>
               <Button
                 className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-sm"
                 onClick={handleSubmit}
                 disabled={!selectedType}
               >
-                Start Trial
+                {t.trial.start}
               </Button>
             </div>
           </div>

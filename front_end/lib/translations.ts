@@ -36,6 +36,19 @@ export interface Translations {
         stat3Label: string;
     };
 
+    // Trial Dialog
+    trial: {
+        title: string;
+        ownerTitle: string;
+        ownerDesc: string;
+        supplierTitle: string;
+        supplierDesc: string;
+        affiliateTitle: string;
+        affiliateDesc: string;
+        cancel: string;
+        start: string;
+    };
+
     // Problem Solution Section
     problemSolution: {
         title: string;
@@ -150,6 +163,9 @@ export interface Translations {
     // PWA Install
     pwaInstall: {
         installApp: string;
+        installButton: string;         // For inline button text
+        installFloating: string;        // For floating action button tooltip
+        installPrompt: string;          // For installation dialog/prompt title
         installTitle: string;
         installDescription: string;
         iosStep1: string;
@@ -401,6 +417,34 @@ export interface Translations {
         resetPasswordButton: string;
         didntReceiveCode: string;
     };
+
+    // Auth Sidebar
+    authSidebar: {
+        owner: {
+            feature1: string;
+            feature2: string;
+            feature3: string;
+            feature4: string;
+            testimonial: string;
+            supportText: string;
+            contactTeam: string;
+        };
+        supplier: {
+            feature1: string;
+            feature2: string;
+            feature3: string;
+            feature4: string;
+            testimonial: string;
+            supportText: string;
+            contactTeam: string;
+        };
+        affiliate: {
+            feature1: string;
+            feature2: string;
+            feature3: string;
+            feature4: string;
+        };
+    };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -435,6 +479,17 @@ export const translations: Record<Language, Translations> = {
             stat3Value: '>99.9%',
             stat3Label: 'Uptime',
         },
+        trial: {
+            title: 'Choose Your Role',
+            ownerTitle: 'Business Owner',
+            ownerDesc: 'Manage your business operations',
+            supplierTitle: 'Supplier',
+            supplierDesc: 'Supply products to pharmacies',
+            affiliateTitle: 'Affiliate',
+            affiliateDesc: 'Earn commissions by referring',
+            cancel: 'Cancel',
+            start: 'Start Trial',
+        },
         problemSolution: {
             title: 'The Challenge African Businesses Face',
             subtitle: 'And How We Solve It',
@@ -450,21 +505,21 @@ export const translations: Record<Language, Translations> = {
             solution2Desc: 'Instant insights into your business performance with intelligent dashboards',
             solution3Title: 'All-in-One Platform',
             solution3Desc: 'Everything you need in one place - inventory, sales, HR, and more',
-            intro: 'Traditional Bussiness management is holding Ethiopian businesses back. It\'s time for a revolution.',
+            intro: 'Traditional Business management is holding Ethiopian businesses back. It\'s time for a revolution.',
             oldWay: 'Old Way Problems',
             mesobWay: 'Mesob Way',
         },
         features: {
             badge: 'Powerful Features',
             title: 'Everything You Need in One Platform',
-            subtitle: 'A complete, modern bussiness management system designed specifically for Ethiopian shops, pharmacies, and retail businesses.',
+            subtitle: 'A complete, modern business management system designed specifically for Ethiopian shops, pharmacies, and retail businesses.',
             feature1Title: 'Multi-Branch Management',
             feature1Desc: 'Manage all your store locations from a single, unified dashboard. Get real-time visibility into stock levels, sales, and performance across every branch.',
-            feature2Title: 'Staff & Team Management',
+            feature2Title: 'Staff \u0026 Team Management',
             feature2Desc: 'Create staff accounts with custom permissions, track activities, and ensure accountability across your organization with role-based access control.',
             feature3Title: 'One-Click Integrations',
             feature3Desc: 'Seamlessly connect with Google Sheets, ERP systems, accounting software, and more. No technical knowledge required—just one click to integrate your existing tools.',
-            feature4Title: 'Smart Expense & Goal Tracking',
+            feature4Title: 'Smart Expense \u0026 Goal Tracking',
             feature4Desc: 'Never miss a payment deadline again. Mesob automatically tracks and reminds you of tax payments, employee salaries, rent, license renewals, and all business expenses.',
             feature5Title: 'Supplier Marketplace',
             feature5Desc: 'Connect directly with verified suppliers who promote their products on your dashboard. Discover new products, compare prices, and order with confidence.',
@@ -538,6 +593,9 @@ export const translations: Record<Language, Translations> = {
         },
         pwaInstall: {
             installApp: 'Install App',
+            installButton: 'Get the App',
+            installFloating: 'Install App',
+            installPrompt: 'Install Mesob App',
             installTitle: 'Install Mesob',
             installDescription: 'Add the app to your home screen for a better experience.',
             iosStep1: 'Tap the share icon',
@@ -758,12 +816,33 @@ export const translations: Record<Language, Translations> = {
             resetPasswordTitle: 'Reset Password',
             resetPasswordSubtitleEmail: 'Enter your email to receive a reset code',
             resetPasswordSubtitleCode: 'Enter the code and your new password',
-            sendResetCode: 'Send Reset Code',
-            resetCode: 'Reset Code',
-            newPassword: 'New Password',
-            confirmPassword: 'Confirm Password',
-            resetPasswordButton: 'Reset Password',
-            didntReceiveCode: "Didn't receive code? Try again",
+        },
+
+        authSidebar: {
+            owner: {
+                feature1: 'Multi-branch business management',
+                feature2: 'AI-powered inventory optimization',
+                feature3: 'Real-time sales analytics',
+                feature4: 'Staff management system',
+                testimonial: 'Mesob has revolutionized how we manage our business. The AI insights are incredible!',
+                supportText: 'Need help?',
+                contactTeam: 'Contact our support team',
+            },
+            supplier: {
+                feature1: 'Access to verified business network',
+                feature2: 'Real-time order management system',
+                feature3: 'Advanced analytics and reporting',
+                feature4: 'Secure payment processing',
+                testimonial: 'Mesob\'s business management platform has streamlined our operations and connected us with quality business partners nationwide.',
+                supportText: 'Need help?',
+                contactTeam: 'Contact our supplier support team',
+            },
+            affiliate: {
+                feature1: 'Earn commission for every business you onboard',
+                feature2: 'Real-time tracking of referrals and payouts',
+                feature3: 'Dedicated success manager and training toolkit',
+                feature4: 'Fast payouts to the bank account you choose',
+            },
         },
     },
     am: {
@@ -796,6 +875,17 @@ export const translations: Record<Language, Translations> = {
             stat2Label: 'AI ድጋፍ',
             stat3Value: '>99.9%',
             stat3Label: 'አገልግሎት ጊዜ',
+        },
+        trial: {
+            title: 'ሚናዎን ይምረጡ',
+            ownerTitle: 'የንግድ ባለቤት',
+            ownerDesc: 'የንግድ ስራዎን ያስተዳድሩ',
+            supplierTitle: 'አቅራቢ',
+            supplierDesc: 'ምርቶችን ለመድኃኒት ቤቶች ያቅርቡ',
+            affiliateTitle: 'አጋር',
+            affiliateDesc: 'በማጣቀስ ኮሚሽን ያግኙ',
+            cancel: 'ይቅር',
+            start: 'ሙከራ ጀምር',
         },
         problemSolution: {
             title: 'የአፍሪካ ንግዶች የሚገጥማቸው ፈተና',
@@ -883,6 +973,7 @@ export const translations: Record<Language, Translations> = {
             professionalName: 'ሙያዊ',
             professionalDesc: 'የላቁ ባህሪያትን ለሚፈልጉ እያደጉ ላሉ ንግዶች',
             enterpriseName: 'ድርጅታዊ',
+
             enterpriseDesc: 'ለትላልቅ ድርጅቶች ብጁ መፍትሄዎች',
             feature1: 'እስከ 5 ተጠቃሚዎች',
             feature2: 'መሠረታዊ የዕቃ አስተዳደር',
@@ -900,6 +991,9 @@ export const translations: Record<Language, Translations> = {
         },
         pwaInstall: {
             installApp: 'መተግበሪያውን ይጫኑ',
+            installButton: 'መተግበሪያውን ያግኙ',
+            installFloating: 'መተግበሪያ ጫን',
+            installPrompt: 'የመሶብ መተግበሪያን ይጫኑ',
             installTitle: 'መሶብን ይጫኑ',
             installDescription: 'ለተሻለ ተሞክሮ መተግበሪያውን ወደ መነሻ ስክሪንዎ ያክሉ።',
             iosStep1: 'የማጋራት አዶውን ይንኩ',
@@ -1057,7 +1151,7 @@ export const translations: Record<Language, Translations> = {
             section10Body: 'ይህን ፖሊሲ በኢትዮጵያ ደንቦች ወይም በአገልግሎቶቻችን ላይ ላሉ ለውጦች ለማንጸባረቅ ማሻሻል እንችላለን። አስፈላጊ ለውጦች ከመተግበራቸው ቢያንስ 14 ቀናት በፊት በኢሜይልና በመተግበሪያው ማሳሰቢያዎች ይገለጻሉ። ከተግባራዊ ቀን በኋላ መቀጠል የአዲሱን ፖሊሲ መቀበል ያመለክታል።',
             contactUsHeading: 'ያግኙን',
             contactUsIntro: 'ስለዚህ የግላዊነት ፖሊሲ ወይም መረጃዎን እንዴት እንደምናስተናግድ ጥያቄዎች ካሉዎት እባክዎ ያግኙን፡',
-            contactEmail: 'ኢሜይል፡',
+            contactEmail: 'ኢሜይል',
             contactPhone: 'ስልክ፡ +251983446134',
             contactAddress: 'አድራሻ፡ ቦሌ፣ አዲስ አበባ፣ ኢትዮጵያ',
             contactBusinessHours: 'የንግድ ሰዓቶች፡ ሰኞ - አርብ፣ 8:30 ጥዋት - 5:30 ከሰዓት (የምስራቅ አፍሪካ ሰዓት)',
@@ -1096,11 +1190,11 @@ export const translations: Record<Language, Translations> = {
 
             supplierSignInTitle: 'አቅራቢ መግቢያ',
             supplierSignInSubtitle: 'ምርቶችዎን፣ ትዕዛዞችዎን ያስተዳድሩ እና ከንግዶች ጋር ይገናኙ።',
-            supplierWelcome: 'እንኳን ደህና መጡ — ወደ አቅራቢ መግቢያዎ ይግቡ።',
+            supplierWelcome: 'እንኳን ደህና መጡ — sign in to your supplier portal.',
 
             affiliateSignInTitle: 'አጋር መግቢያ',
             affiliateSignInSubtitle: 'ሪፈራሎችዎን፣ ገቢዎን እና አፈጻጸምዎን ይከታተሉ።',
-            affiliateWelcome: 'እንኳን ደህና መጡ — ወደ አጋር ዳሽቦርድዎ ይግቡ።',
+            affiliateWelcome: 'እንኳን ደህና መጡ — sign in to your affiliate dashboard.',
 
             businessName: 'የንግድ ስም',
             tinNumber: 'የግብር መለያ ቁጥር (TIN)',
@@ -1125,7 +1219,33 @@ export const translations: Record<Language, Translations> = {
             newPassword: 'አዲስ የይለፍ ቃል',
             confirmPassword: 'የይለፍ ቃል አረጋግጥ',
             resetPasswordButton: 'የይለፍ ቃል ዳግም አስጀምር',
-            didntReceiveCode: "ኮድ አልደረሰዎትም? እንደገና ይሞክሩ",
+            didntReceiveCode: 'ኮድ አልደረሰዎትም?',
+        },
+        authSidebar: {
+            owner: {
+                feature1: 'የብዙ ቅርንጫፍ ንግድ አስተዳደር',
+                feature2: 'በ AI የተደገፈ የዕቃ ዝርዝር ማመቻቸት',
+                feature3: 'የእውነተኛ ጊዜ የሽያጭ ትንታኔ',
+                feature4: 'የሰራተኞች አስተዳደር ስርዓት',
+                testimonial: 'መሶብ ንግዶቻችንን የምናስተዳድርበትን መንገድ ቀይሮታል። የ AI ግንዛቤዎች አስደናቂ ናቸው!',
+                supportText: 'እርዳታ ይፈልጋሉ?',
+                contactTeam: 'የድጋፍ ቡድናችንን ያግኙ',
+            },
+            supplier: {
+                feature1: 'የተረጋገጠ የንግድ አውታረ መረብ መዳረሻ',
+                feature2: 'የእውነተኛ ጊዜ ትዕዛዝ አስተዳደር ስርዓት',
+                feature3: 'የላቀ ትንታኔ እና ሪፖርት ማድረግ',
+                feature4: 'ደህንነቱ የተጠበቀ የክፍያ ሂደት',
+                testimonial: 'የመሶብ የንግድ አስተዳደር መድረክ ስራዎቻችንን አቀላጥፏል እና በአገር አቀፍ ደረጃ ጥራት ካላቸው የንግድ አጋሮች ጋር አገናኝቶናል።',
+                supportText: 'እርዳታ ይፈልጋሉ?',
+                contactTeam: 'የአቅራቢ ድጋፍ ቡድናችንን ያግኙ',
+            },
+            affiliate: {
+                feature1: 'ለሚያመጡት እያንዳንዱ ንግድ ኮሚሽን ያግኙ',
+                feature2: 'የሪፈራሎች እና ክፍያዎች የእውነተኛ ጊዜ ክትትል',
+                feature3: 'የተወሰነ የስኬት አስተዳዳሪ እና የስልጠና መሣሪያ ስብስብ',
+                feature4: 'ወደ መረጡት የባንክ ሂሳብ ፈጣን ክፍያዎች',
+            },
         },
     },
     or: {
@@ -1158,6 +1278,17 @@ export const translations: Record<Language, Translations> = {
             stat2Label: 'Gargaarsa AI',
             stat3Value: '>99.9%',
             stat3Label: 'Yeroo Hojii',
+        },
+        trial: {
+            title: 'Gahee Keessan Filadhaa',
+            ownerTitle: 'Abbaa Daldalaa',
+            ownerDesc: 'Hojii daldala keessanii bulchaa',
+            supplierTitle: 'Dhiyeessaa',
+            supplierDesc: 'Oomishaalee qoricha manneeniif dhiyeessaa',
+            affiliateTitle: 'Hiriyyaa',
+            affiliateDesc: 'Namoota affeeruun komishinii argadhaa',
+            cancel: 'Dhiisi',
+            start: 'Yaalii Jalqabi',
         },
         problemSolution: {
             title: 'Rakkoolee Daldaltoonni Afrikaa Mudatan',
@@ -1255,13 +1386,16 @@ export const translations: Record<Language, Translations> = {
             feature7: 'Qaqqabummaa API',
             feature8: 'Deeggarsa dursa',
             feature9: 'Walitti makuu dhuunfaa',
-            footerText: '© 2024 Mesob. Mirgi hundaa eegamaa dha.',
+            footerText: '© 2024 Mesob. Mirgi hundaa eegamee dha.',
             ownerCta: 'Akka Abbaa Daldalaatti Seeni',
             supplierCta: 'Akka Dhiyeessaatti Seeni',
             contactUs: 'Nu Quunnamaa',
         },
         pwaInstall: {
             installApp: 'App Fe\'i',
+            installButton: 'App Argadhu',
+            installFloating: 'App Fe\'i',
+            installPrompt: 'App Mesob Fe\'i',
             installTitle: 'Mesob Fe\'i',
             installDescription: 'Muuxannoo fooyya\'aaf appicha gara skiriinii man\'ee keetti dabali.',
             iosStep1: 'Mallattoo qooduu tuqi',
@@ -1351,7 +1485,7 @@ export const translations: Record<Language, Translations> = {
             support1: 'Giddugala Gargaarsa',
             support2: 'Sanadoota',
             support3: 'Wabii API',
-            rightsReserved: 'Mirga hunduu eegamee.',
+            rightsReserved: 'Mirga hunduu eegamee dha.',
             featureOverview: 'Ilaalcha amaloota',
             aiSolutions: 'Furmaata AI',
             pricing: 'Gatii',
@@ -1419,7 +1553,7 @@ export const translations: Record<Language, Translations> = {
             section10Body: 'Imaammata kana jijjiirama dambii Itoophiyaa ykn tajaajiloota keenyaa irratti mul\'ataniif haaromsuuf ni dandenya. Jijjiiramni barbaachisaa emaila fi beeksisa app keessaa karaa ta\'ee yoo xiqqaate guyyaa 14 dura kan beeksifamudha. Guyyaa hojiirra ooluu booda itti fufuun imaammata haaromfame fudhachuu agarsiisa.',
             contactUsHeading: 'Nu Quunnamaa',
             contactUsIntro: 'Waa\'ee Imaammata Dhuunfummaa kanaa ykn akkamitti daataa keessan akka bulchinu gaaffii yoo qabaattan mee nu quunnamaa:',
-            contactEmail: 'Emaila:',
+            contactEmail: 'Emaila',
             contactPhone: 'Bilbila: +251983446134',
             contactAddress: 'Teessoo: Boolee, Finfinnee, Itoophiyaa',
             contactBusinessHours: 'Sa\'aatii Hojii: Wiixata - Jimaata, 8:30 ganama - 5:30 galgala (Sa\'aatii Afrikaa Bahaa)',
@@ -1487,7 +1621,33 @@ export const translations: Record<Language, Translations> = {
             newPassword: 'Jecha Darbi Haaraa',
             confirmPassword: 'Jecha Darbi Mirkaneessi',
             resetPasswordButton: 'Jecha Darbi Haaromsi',
-            didntReceiveCode: "Koodiin sin qaqqabnee? Irra deebi'ii yaali",
+            didntReceiveCode: 'Koodiin isin hin qaqqabnee?',
+        },
+        authSidebar: {
+            owner: {
+                feature1: 'Bulchiinsa daldala damee hedduu',
+                feature2: 'Fooyyessa qabeenyaa AI-n deeggarame',
+                feature3: 'Xiinxala gurgurtaa yeroo dhugaa',
+                feature4: 'Sirna bulchiinsa hojjettootaa',
+                testimonial: 'Mesob akkaataa nuti daldala keenya itti bulchinu jijjiireera. Hubannoon AI ajaa\'iba!',
+                supportText: 'Gargaarsa barbaadduu?',
+                contactTeam: 'Garee deeggarsa keenya qunnamaa',
+            },
+            supplier: {
+                feature1: 'Argama neetworkii daldala mirkanaa\'e',
+                feature2: 'Sirna bulchiinsa ajaja yeroo dhugaa',
+                feature3: 'Xiinxala fi gabaasa sadarkaa olaanaa',
+                feature4: 'Adeemsa kaffaltii nageenyummaan isaa eegame',
+                testimonial: 'Platformiin bulchiinsa daldalaa Mesob hojii keenya saffisiiseera fi daldaltoota qulqullina qaban waliin biyya guutuutti walitti nu hidheera.',
+                supportText: 'Gargaarsa barbaadduu?',
+                contactTeam: 'Garee deeggarsa dhiyeessitootaa qunnamaa',
+            },
+            affiliate: {
+                feature1: 'Daldala galmeessitaniif komishinii argadhaa',
+                feature2: 'Hordoffii affeerraa fi kaffaltii yeroo dhugaa',
+                feature3: 'Hogganaa milkaa\'inaa fi meeshaalee leenjii',
+                feature4: 'Kaffaltii saffisaa gara herrega baankii filattaniitti',
+            },
         },
     },
     ti: {
@@ -1521,6 +1681,17 @@ export const translations: Record<Language, Translations> = {
             stat3Value: '>99.9%',
             stat3Label: 'ግዜ ኣገልግሎት',
         },
+        trial: {
+            title: 'ተራኹም ምረጹ',
+            ownerTitle: 'ዋና ንግዲ',
+            ownerDesc: 'ንግድኹም ኣመሓድሩ',
+            supplierTitle: 'ኣቕራቢ',
+            supplierDesc: 'መድሃኒታት ንፋርማሲታት ኣቕርቡ',
+            affiliateTitle: 'መሻርኽቲ',
+            affiliateDesc: 'ሰባት ብምዕዳም ኮሚሽን ረክቡ',
+            cancel: 'ሰርዝ',
+            start: 'ፈተነ ጀምር',
+        },
         problemSolution: {
             title: 'ኣፍሪካውያን ነጋዶ ዝገጥሞም ብድሆታት',
             subtitle: 'ንሕና ከመይ ንፈትሖ',
@@ -1544,16 +1715,16 @@ export const translations: Record<Language, Translations> = {
             badge: 'ሓያላት ባህርያት',
             title: 'ዝደልዮ ኩሉ ኣብ ሓደ መድረኽ',
             subtitle: 'ንኢትዮጵያ ድኳናት፣ ፋርማሲታትን ችርቻሮ ንግድታትን ዝተዳለወ ምሉእ ዘመናዊ ንግዳዊ ምሕደራ ስርዓት።',
-            feature1Title: 'ምሕደራ ብዙሓት ጨናፍር',
-            feature1Desc: 'ኩሉ ናይ ድኳን ቦታታትካ ካብ ሓደ ዳሽቦርድ ኣመሓድር። ኣብ ነፍሲ ወከፍ ጨንፈር ብዛዕባ ንብረት፣ መሸጣን ኣፈጻጽማን ናይ ቀጥታ ርእይቶ ርከብ።',
-            feature2Title: 'ምሕደራ ሰራሕተኛታትን ጋንታን',
-            feature2Desc: 'ፍሉይ ፍቃድ ዘለዎም ናይ ሰራሕተኛ ኣካውንት ፍጠር፣ ንጥፈታት ተኸታተል፣ ከምኡውን ኣብ ትካልካ ተሓታትነት ኣረጋግጽ።',
-            feature3Title: 'ናይ ሓደ ጠውቃ ምትእስሳር',
-            feature3Desc: 'ምስ Google Sheets፣ ERP ስርዓታት፣ ናይ ሒሳብ ሶፍትዌርን ካልኦትን ብቀሊሉ ተራኽብ። ዝኾነ ቴክኒካዊ ፍልጠት ኣየድልን - ዘለዉኻ መሳርሒታት ንምራኻብ ሓደ ጠውቃ ጥራይ።',
-            feature4Title: 'ስለይቲ ወጻኢን ሸቶን ምክትታል',
-            feature4Desc: 'ናይ ክፍሊት ግዜ መወዳእታ ፈጺሙ ኣይሕለፍካ። መሶብ ብኣውቶማቲክ ናይ ግብሪ ክፍሊት፣ ደሞዝ ሰራሕተኛ፣ ክራይ፣ ምሕዳስ ፍቃድን ኩሉ ንግዳዊ ወጻኢታትን ይከታተልን የዘኻኽረካን።',
-            feature5Title: 'ዕዳጋ ኣቕረብቲ',
-            feature5Desc: 'ምርቶም ኣብ ዳሽቦርድካ ምስ ዘተአላልፉ ዝተረጋገጹ ኣቕረብቲ ብቀጥታ ተራኽብ። ሓደስቲ ምርትታት ርከብ፣ ዋጋታት ኣወዳድር፣ ከምኡውን ብምትእምማን እዘዝ።',
+            feature1Title: 'ባለብዙ-ቅርንጫፍ አስተዳደር',
+            feature1Desc: 'ሁሉንም የመደብር ቦታዎችዎን ከአንድ ወጥ ዳሽቦርድ ያስተዳድሩ። በእያንዳንዱ ቅርንጫፍ ላይ ስለ እቃዎች፣ ሽያጮች እና አፈጻጸም የእውነተኛ ጊዜ እይታ ያግኙ።',
+            feature2Title: 'የሰራተኞች እና የቡድን አስተዳደር',
+            feature2Desc: 'ብጁ ፈቃዶች ያላቸው የሰራተኛ መለያዎችን ይፍጠሩ፣ እንቅስቃሴዎችን ይከታተሉ እና በድርጅትዎ ውስጥ በተጠያቂነት ላይ የተመሰረተ ተጠያቂነትን ያረጋግጡ።',
+            feature3Title: 'የአንድ ጠቅታ ግንኙነቶች',
+            feature3Desc: 'ከ Google Sheets፣ ERP ስርዓቶች፣ የሂሳብ ሶፍትዌር እና ሌሎችም ጋር በሰላም ይገናኙ። ምንም ቴክኒካዊ እውቀት አያስፈልግም - ነባር መሳሪያዎችዎን ለማገናኘት አንድ ጠቅታ ብቻ።',
+            feature4Title: 'ብልጥ ወጪ እና ግብ ክትትል',
+            feature4Desc: 'የክፍያ ቀነ-ገደብ በጭራሽ አያምልጥዎ። መሶብ የግብር ክፍያዎችን፣ የሰራተኛ ደመወዝን፣ ኪራይን፣ የፍቃድ እድሳትን እና ሁሉንም የንግድ ወጪዎችን በራስ-ሰር ይከታተላል እና ያስታውስዎታል።',
+            feature5Title: 'የአቅራቢዎች ገበያ',
+            feature5Desc: 'ምርቶቻቸውን በዳሽቦርድዎ ላይ ከሚያስተዋውቁ የተረጋገጡ አቅራቢዎች ጋር በቀጥታ ይገናኙ። አዳዲስ ምርቶችን ያግኙ፣ ዋጋዎችን ያወዳድሩ እና በልበ ሙሉነት ይዘዙ።',
             quickFeature1: 'ናይ ቀጥታ ትንተና',
             quickFeature2: 'ኣውቶማቲክ መጠንቀቕታ',
             quickFeature3: 'ምውርዋር ንብረት',
@@ -1585,14 +1756,14 @@ export const translations: Record<Language, Translations> = {
             step2Title: 'ስለይቲ ትንተና',
             step2Desc: 'ብ AI ዝሰርሑ ርድኢታት ብናይ ቀጥታ ትንተናን ትንበያታትን ዝሓሸ ውሳነ ክትወስድ ይሕግዙኻ።',
             step3Title: 'ዕበን ስፋሕን',
-            step3Desc: 'ብናይ ብዙሓት ጨናፍር ደገፍ፣ ኣውቶማቲክ መስርሓትን ቀጻሊ ምምሕያሽን ብምትእምማን ስፋሕ።',
+            step3Desc: 'በባለብዙ ቅርንጫፍ ድጋፍ፣ በራስ-ሰር የሥራ ሂደቶች እና በተከታታይ ማሻሻያ በልበ ሙሉነት ያስፋፉ።',
             imageAlt1: 'ናይ ዳሽቦርድ ሓፈሻዊ ርእይቶ',
             imageAlt2: 'ናይ AI ሓጋዚ መተሓላለፊ',
             imageAlt3: 'ናይ ዋና ሓፈሻዊ ርእይቶ',
         },
         pricing: {
             badge: 'ተለዋዋጢ ዋጋ',
-            title: 'ንንግድኻ ዝሰማማዕ ትልሚ ምረጽ',
+            title: 'ለንግድኻ ዝሰማማዕ ትልሚ ምረጽ',
             subtitle: 'ብናይ 30 መዓልቲ ነጻ ፈተነ ጀምር። ክሬዲት ካርድ ኣየድልን።',
             monthly: 'በብወርሒ',
             annually: 'በብዓመት',
@@ -1608,15 +1779,15 @@ export const translations: Record<Language, Translations> = {
             professionalDesc: 'ዝለዓለ ባህርያት ንዝደልዩ ዝዓብዩ ዘለዉ ንግድታት',
             enterpriseName: 'ትካል',
             enterpriseDesc: 'ንዓበይቲ ትካላት ዝተዳለወ ፍሉይ መፍትሒ',
-            feature1: 'ክሳብ 5 ተጠቀምቲ',
-            feature2: 'መሰረታዊ ምሕደራ ንብረት',
-            feature3: 'ምክትታል መሸጣ',
-            feature4: 'ናይ ኢሜይል ደገፍ',
-            feature5: 'ዘይተገደቡ ተጠቀምቲ',
-            feature6: 'ዝተራቀቐ ትንተና',
-            feature7: 'API መእተዊ',
-            feature8: 'ቀዳምነት ዘለዎ ደገፍ',
-            feature9: 'ፍሉይ ምትእስሳር',
+            feature1: 'እስከ 5 ተጠቃሚዎች',
+            feature2: 'መሰረታዊ የዕቃ አስተዳደር',
+            feature3: 'የሽያጭ ክትትል',
+            feature4: 'የኢሜይል ድጋፍ',
+            feature5: 'ያልተገደቡ ተጠቃሚዎች',
+            feature6: 'የላቁ ትንታኔዎች',
+            feature7: 'API መዳረሻ',
+            feature8: 'ቅድሚያ ያለው ድጋፍ',
+            feature9: 'ብጁ ግንኙነቶች',
             footerText: '© 2024 መሶብ. ኩሉ መሰል ዝተሓለወ እዩ።',
             ownerCta: 'ከም ዋና እተው',
             supplierCta: 'ከም ኣቕራቢ እተው',
@@ -1624,6 +1795,9 @@ export const translations: Record<Language, Translations> = {
         },
         pwaInstall: {
             installApp: 'ኣፕ ጽዓን',
+            installButton: 'ኣፕ ረኽቡ',
+            installFloating: 'ኣፕ ጽዓን',
+            installPrompt: 'ናይ መሶብ ኣፕ ጽዓን',
             installTitle: 'መሶብ ጽዓን',
             installDescription: 'ንዝሓሸ ተሞክሮ ነቲ ኣፕ ናብ መበገሲ ስክሪንካ ወስኸሉ።',
             iosStep1: 'ናይ ምክፋል ምልክት ጠውቕ',
@@ -1768,9 +1942,9 @@ export const translations: Record<Language, Translations> = {
             section4Heading: 'ምስ ሕጊ ኢትዮጵያ ምስምማዕ',
             section4Body: 'ምስ ናይ ኢትዮጵያ ንግዳዊ ሕጊ፣ ደንቢ ግብሪን መስፈርታት ፈቓድ ንግድን ብምሉእ ብምስምማዕ ንሰርሕ። ከም ወተሃደር ንግድን ኢንዳስትሪን መሪሕነት ጉምሩክ ኢትዮጵያን ዝሓቱ መዝገባት ንሕዝ። ናይ ንግዲ ንግዲ ዳታ ከም ሕጋዊ መስፈርቲ ኢትዮጵያ (ቢያንስ 5 ዓመት ንዓላማ ግብሪ) ይኽዘን።',
             section5Heading: 'ዳታ ምክፋልን ምግላጽን',
-            section5Body: 'ዳታ እነካፍለሉ ካብ እትሓታታ አገልግሎት ኣቕረብቲ (ኣመራርሓ ክፍሊት፣ ኣቕረብቲ SMS፣ ምእንጋድ ደበና) ጥራይ እዩ ብጥብቅ ስምምዕ ምስጢራዊነት ውሽጢ። ኣብ ግዜ ሕጊ እንተ ሓቲቱ (ምርመራ ግብሪ፣ ምስምማዕ ቁጽጽር፣ ትእዛዛት ቤት ፍርዲ) ሓበሬታ ንባለስልጣናት መንግስቲ ኢትዮጵያ ከነብርሕ ንኽእል። ንግዳዊ ዳታኻ ንተወዳደርቲ ወይ ሳልሳይ ወገናት ፈቓድ ዘይብሎም ፈጺምና ኣንካፍልን።',
+            section5Body: 'ዳታ እነካፍለሉ ካብ እትሓታታ አገልግሎት ኣቕረብቲ (ኣመራርሓ ክፍሊት፣ ኣቕረብቲ SMS፣ ምእንጋድ ደበና) ጥራይ እዩ ብጥብቅ ስምምዕ ምስጢራዊነት ውሽጢ። ኣብ ግዜ ሕጊ እንተ ሓቲቱ (ምርመራ ግብሪ፣ ምስምማዕ ቁጽጽር፣ ትእዛዛት ቤት ፍርዲ) ሓበሬታ ንባለስልጣናት መንግስቲ ኢትዮጵያ ከነብርሕ ንኽእል። ንግዳዊ ዳታኻ ንተወዳደርቲ ወይ ሳልሳይ ወገናት ፈጺምና ኣንካፍልን።',
             section6Heading: 'ናይ ክፍሊትን ፋይናንስን ዳታ',
-            section6Body: 'መስርሕ ክፍሊት ብመንገዲ ፈቓድ ዘለዎም ናይ ኢትዮጵያ አቕረብቲ አገልግሎት ክፍሊት እዩ ዝካየድ። ሓበሬታ ሂሳብ ባንክ ብድሕነት ንምክፋል ም subscribeን ክፍሊት ኣቕረብትን ንኽዝን። ኩላ ንግድታት ፋይናንስ ምስ ደንቢ ብሄራዊ ባንክ ኢትዮጵያን መስፈርታት ምዝንባር ገንዘብን ዝስማማዕ እዩ።',
+            section6Body: 'መስርሕ ክፍሊት ብመንገዲ ፈቓድ ዘለዎም ናይ ኢትዮጵያ አቕረብቲ አገልግሎት ክፍሊት እዩ ዝካየድ። ሓበሬታ ሂሳብ ባንክ ብድሕነት ንምክፋል ም subscribeን ክፍሊት ኣቕረብትን ንኽዝን። ኩላ ንግድታት ፋይናንስ ምስ ደንቢ ብሄራዊ ባንክ ኢትዮጵያ ንመስፈርታት ምዝንባር ገንዘብን ዝስማማዕ እዩ።',
             section7Heading: 'መሰላትካ',
             section7Body: 'ናይ ውልቃዊ ዳታኻ ምእታው፣ ምእራምን ምድምሳስን መሰል ኣለካ። ናይ ንግዲ ዳታኻ ብዝኾነ ግዜ ብመንገዲ ምቕማጥካ ሒሳብ ከተልእ ትኽእል። ንሕቶታት ምድምሳስ ዳታ፣ መዝገባት ብሕጊ ኢትዮጵያ ዝሓትት ከሎና ኣብ ውሽጢ 30 መዓልቲ ኬነሽሩ። ንምልክታት ገበና ፈቓድ ብዝኾነ ግዜ ምልቃቕ ትኽእል።',
             section8Heading: 'ባለንብረት ዳታ ንግዲ',
@@ -1781,7 +1955,7 @@ export const translations: Record<Language, Translations> = {
             section10Body: 'ንዚህ ፖሊሲ ለውጥታት ኣብ ደንቢ ኢትዮጵያ ወይ ኣገልግሎታትና ንምንጸባርቕ ክንሓድሶ ንኽእል። ማዕርነታዊ ለውጥታት ብኢመይልን ንማስታወቂ ኣብ ውሽጢ መተግበሪን ቢያንስ 14 መዓልታት ቅድሚ ክወሃቡ ይግለጹ። ድሕሪ ዕለት ውጽኢት ምቕጻል ምቕባል ናይ ተሓደሰ ፖሊሲ ይሕብር።',
             contactUsHeading: 'ርኸቡና',
             contactUsIntro: 'ብዛዕባ እዚ ናይ ውልቃዊነት ፖሊሲ ወይ ከመይ ዳታኻ ከም ንኽውን ሕቶታት እንተሎካ በጃኻ ር ከቡና:',
-            contactEmail: 'ኢመይል:',
+            contactEmail: 'ኢመይል',
             contactPhone: 'ቴሌፎን: +251983446134',
             contactAddress: 'ኣድራሻ: ቦሌ፣ ኣዲስ ኣበባ፣ ኢትዮጵያ',
             contactBusinessHours: 'ሰዓታት ንግዲ: ሰኑይ - ዓርቢ፣ 8:30 ንጉሆ - 5:30 ድሕሪ ቀትሪ (ናይ ም ብራቕ ኣፍሪቃ ሰዓት)',
@@ -1849,9 +2023,34 @@ export const translations: Record<Language, Translations> = {
             newPassword: 'ሓዲሽ መሕለፊ ቃል',
             confirmPassword: 'መሕለፊ ቃል ኣረጋግጽ',
             resetPasswordButton: 'መሕለፊ ቃል ዳግም ጀምር',
-            didntReceiveCode: "ኮድ ኣይበጽሓካን? እንደገና ፈትን",
+            didntReceiveCode: 'ኮድ ኣይበጽሓካን?',
+        },
+        authSidebar: {
+            owner: {
+                feature1: 'ምምሕዳር ብዙሕ ጨንፈር ንግዲ',
+                feature2: 'ብ AI ዝተደገፈ ምምሕያሽ ንብረት',
+                feature3: 'ናይ ሎሚ መሸጣ ትንታነ',
+                feature4: 'ስርዓት ምምሕዳር ሰራሕተኛታት',
+                testimonial: 'መሶብ ንግድና እንመርሓሉ መንገዲ ቀይርዎ እዩ። እቲ ናይ AI ግንዛቤታት ዘገርም እዩ!',
+                supportText: 'ሓገዝ ይደልዩ?',
+                contactTeam: 'ናይ ደገፍ ጉጅለና ተወከሱ',
+            },
+            supplier: {
+                feature1: 'ምስ ዝተረጋገጸ ናይ ንግዲ መርበብ ምራኽብ',
+                feature2: 'ናይ ሎሚ ትእዛዝ ምምሕዳር ስርዓት',
+                feature3: 'ዝምዕበለ ትንታነን ጸብጻብን',
+                feature4: 'ውሑስ መስርሕ ክፍሊት',
+                testimonial: 'ናይ መሶብ ንግዲ ምምሕዳር መድረኽ ስራሕና ኣቀላጢፍዎ ምስ ብሉጻት ናይ ንግዲ መሻርኽቲ ኣብ መላእ ሃገር ኣራኺቡና።',
+                supportText: 'ሓገዝ ይደልዩ?',
+                contactTeam: 'ናይ ኣቕራቢ ደገፍ ጉጅለና ተወከሱ',
+            },
+            affiliate: {
+                feature1: 'ንዝምዝገብዎ ነፍሲ ወከፍ ንግዲ ኮሚሽን ይረኽቡ',
+                feature2: 'ናይ ሪፈራልን ክፍሊትን ምክትታል',
+                feature3: 'ዝተወፈየ ናይ ዓወት ኣካያዲን ናይ ስልጠና መሳርሒታትን',
+                feature4: 'ናብ ዝመረጽኩሞ ናይ ባንኪ ሕሳብ ቅልጡፍ ክፍሊት',
+            },
         },
 
     },
 };
-
