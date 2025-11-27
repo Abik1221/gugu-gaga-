@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Chrome, Globe, Share, MoreVertical, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/contexts/language-context";
 
 interface PWAInstructionsDialogProps {
     open: boolean;
@@ -22,6 +23,7 @@ export function PWAInstructionsDialog({
 }: PWAInstructionsDialogProps) {
     const [browser, setBrowser] = useState<"chrome" | "safari" | "firefox" | "edge" | "other">("other");
     const [os, setOs] = useState<"ios" | "android" | "desktop">("desktop");
+    const { t } = useLanguage();
 
     useEffect(() => {
         const userAgent = window.navigator.userAgent.toLowerCase();
@@ -57,13 +59,13 @@ export function PWAInstructionsDialog({
                         <div className="p-2 bg-green-50 rounded-lg">
                             <Share className="w-6 h-6 text-green-600" />
                         </div>
-                        <p className="text-black">1. Tap the <strong className="text-green-700">Share</strong> button in the menu bar.</p>
+                        <p className="text-black">{t.pwaInstall.iosStep1}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-green-50 rounded-lg">
                             <div className="w-6 h-6 flex items-center justify-center font-bold text-xl text-green-600">+</div>
                         </div>
-                        <p className="text-black">2. Scroll down and select <strong className="text-green-700">Add to Home Screen</strong>.</p>
+                        <p className="text-black">{t.pwaInstall.iosStep2}</p>
                     </div>
                 </div>
             );
@@ -76,13 +78,13 @@ export function PWAInstructionsDialog({
                         <div className="p-2 bg-green-50 rounded-lg">
                             <MoreVertical className="w-6 h-6 text-green-600" />
                         </div>
-                        <p className="text-black">1. Tap the <strong className="text-green-700">Menu</strong> icon (three dots).</p>
+                        <p className="text-black">{t.pwaInstall.androidStep1}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-green-50 rounded-lg">
                             <Globe className="w-6 h-6 text-green-600" />
                         </div>
-                        <p className="text-black">2. Select <strong className="text-green-700">Install</strong>.</p>
+                        <p className="text-black">{t.pwaInstall.androidStep2}</p>
                     </div>
                 </div>
             );
@@ -92,11 +94,8 @@ export function PWAInstructionsDialog({
             return (
                 <div className="space-y-4">
                     <p className="text-black">
-                        Firefox on desktop doesn't support automatic app installation.
+                        {t.pwaInstall.firefoxMessage}
                     </p>
-                    <div className="p-4 bg-green-50 text-green-800 rounded-lg text-sm border border-green-100">
-                        <strong>Tip:</strong> For the best experience, we recommend using <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>.
-                    </div>
                 </div>
             );
         }
@@ -108,13 +107,13 @@ export function PWAInstructionsDialog({
                         <div className="p-2 bg-green-50 rounded-lg">
                             <MoreVertical className="w-6 h-6 text-green-600" />
                         </div>
-                        <p className="text-black">1. Click the <strong className="text-green-700">Menu</strong> icon (three dots) or the <strong className="text-green-700">App Available</strong> icon in the address bar.</p>
+                        <p className="text-black">{t.pwaInstall.desktopStep1} {t.pwaInstall.desktopStep2}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-green-50 rounded-lg">
                             <Chrome className="w-6 h-6 text-green-600" />
                         </div>
-                        <p className="text-black">2. Select <strong className="text-green-700">Install MesobAI</strong>.</p>
+                        <p className="text-black">{t.pwaInstall.androidStep2}</p>
                     </div>
                 </div>
             );
@@ -123,11 +122,7 @@ export function PWAInstructionsDialog({
         // Default/Other
         return (
             <div className="space-y-4">
-                <p className="text-black">To install this app:</p>
-                <ul className="list-disc list-inside space-y-2 text-black ml-2">
-                    <li>Look for an <strong className="text-green-700">Install</strong> or <strong className="text-green-700">Add to Home Screen</strong> option in your browser menu.</li>
-                    <li>Or try using <strong className="text-green-700">Google Chrome</strong> or <strong className="text-green-700">Microsoft Edge</strong> for the best experience.</li>
-                </ul>
+                <p className="text-black">{t.pwaInstall.defaultMessage}</p>
             </div>
         );
     };
@@ -143,9 +138,9 @@ export function PWAInstructionsDialog({
                     <X className="h-6 w-6 text-red-600" />
                 </button>
                 <DialogHeader>
-                    <DialogTitle className="text-black text-xl">Install MesobAI</DialogTitle>
+                    <DialogTitle className="text-black text-xl">{t.pwaInstall.installTitle}</DialogTitle>
                     <DialogDescription className="text-gray-600">
-                        Follow these steps to install the app on your device for a better experience.
+                        {t.pwaInstall.installDescription}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -154,7 +149,7 @@ export function PWAInstructionsDialog({
                 </div>
 
                 <div className="flex justify-end">
-                    <Button onClick={() => onOpenChange(false)} className="bg-green-600 hover:bg-green-700 text-white">Got it</Button>
+                    <Button onClick={() => onOpenChange(false)} className="bg-green-600 hover:bg-green-700 text-white">{t.pwaInstall.gotIt}</Button>
                 </div>
             </DialogContent>
         </Dialog>
