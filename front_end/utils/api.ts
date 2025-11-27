@@ -439,6 +439,9 @@ export type TenantActivityRecord = {
 };
 
 export const AuthAPI = {
+  checkEmail: async (email: string) => {
+    return postJSON<{ exists: boolean; message: string }>("/api/v1/auth/check-email", { email });
+  },
   registerAffiliate: async (body: any) => {
     const resp = await postJSON<AuthTokenResponse>("/api/v1/auth/register/affiliate", body);
     if (typeof window !== "undefined" && resp.access_token) {
