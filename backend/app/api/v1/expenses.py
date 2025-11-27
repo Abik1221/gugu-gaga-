@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
-from app.api.deps import get_db, require_tenant
+from app.db.deps import get_db, require_tenant
 from app.models.expense import Expense, ExpenseStatus, ExpenseCategory
 from app.schemas.expense import ExpenseCreate, ExpenseUpdate, ExpenseOut
 
