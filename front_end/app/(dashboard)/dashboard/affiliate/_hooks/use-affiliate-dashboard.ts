@@ -89,35 +89,35 @@ function extractStats(data: any): AffiliateStats {
     currentCommission:
       toNumber(
         source.currentCommission ??
-          source.current_commission ??
-          source.current ??
-          source.amount ??
-          source.commission ??
-          0
+        source.current_commission ??
+        source.current ??
+        source.amount ??
+        source.commission ??
+        0
       ),
     pendingPayout: toNumber(
       source.pendingPayout ??
-        source.pending_payout ??
-        source.pending ??
-        payouts.pending_total ??
-        payouts.pending ??
-        0
+      source.pending_payout ??
+      source.pending ??
+      payouts.pending_total ??
+      payouts.pending ??
+      0
     ),
     paidPayout: toNumber(
       source.paidPayout ??
-        source.paid_payout ??
-        source.paid ??
-        payouts.paid_total ??
-        payouts.paid ??
-        0
+      source.paid_payout ??
+      source.paid ??
+      payouts.paid_total ??
+      payouts.paid ??
+      0
     ),
     referrals: toNumber(
       source.referrals ??
-        source.total_referrals ??
-        source.affiliates ??
-        source.referrals_count ??
-        source.activated_referrals ??
-        0
+      source.total_referrals ??
+      source.affiliates ??
+      source.referrals_count ??
+      source.activated_referrals ??
+      0
     ),
   };
 }
@@ -126,8 +126,8 @@ function normalizeLinks(payload: any): AffiliateLink[] {
   const list = Array.isArray(payload)
     ? payload
     : Array.isArray(payload?.links)
-    ? payload.links
-    : [];
+      ? payload.links
+      : [];
 
   return list
     .map((item: any) => ({
@@ -162,10 +162,10 @@ function extractMonthLabel(data: any): string {
 function extractPercent(data: any): number {
   return toNumber(
     data?.percent ??
-      data?.commission_percent ??
-      data?.stats?.percent ??
-      data?.current_percent ??
-      5
+    data?.commission_percent ??
+    data?.stats?.percent ??
+    data?.current_percent ??
+    5
   );
 }
 

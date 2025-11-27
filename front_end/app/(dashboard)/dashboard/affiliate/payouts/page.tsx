@@ -243,13 +243,12 @@ export default function PayoutsPage() {
                       <td className="px-4 py-3">{formatCurrency(payout.amount)}</td>
                       <td className="px-4 py-3 text-right">
                         <span
-                          className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] ${
-                            payout.status === "paid"
+                          className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] ${payout.status === "paid"
                               ? "bg-emerald-100 text-emerald-700"
                               : payout.status === "pending"
-                              ? "bg-amber-100 text-amber-700"
-                              : "bg-slate-200 text-slate-700"
-                          }`}
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-slate-200 text-slate-700"
+                            }`}
                         >
                           {payout.status}
                         </span>
