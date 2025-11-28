@@ -806,6 +806,81 @@ export interface Translations {
             viewDetails: string;
         };
     };
+
+    // Supplier Onboarding (KYC & Payment)
+    supplierOnboarding: {
+        // KYC Page
+        kycTitle: string;
+        kycSubtitle: string;
+        pendingReview: string;
+        approved: string;
+        rejected: string;
+        notSubmitted: string;
+        refreshStatus: string;
+        applicationRejected: string;
+        submitVerification: string;
+        updateInformation: string;
+        provideAccurateInfo: string;
+        supplierName: string;
+        nationalId: string;
+        tinNumber: string;
+        phoneNumber: string;
+        businessAddress: string;
+        licenseDocument: string;
+        currentLicense: string;
+        replaceLicense: string;
+        clickToUpload: string;
+        uploadHint: string;
+        change: string;
+        browse: string;
+        submitApplication: string;
+        updateApplication: string;
+        submitting: string;
+
+        // Payment Page
+        paymentTitle: string;
+        paymentSubtitle: string;
+        paymentStatus: string;
+        pendingVerification: string;
+        verified: string;
+        paymentUnderVerification: string;
+        paymentUnderVerificationMsg: string;
+        paymentVerified: string;
+        paymentVerifiedMsg: string;
+        paymentRejected: string;
+        paymentRejectedMsg: string;
+        accountActivated: string;
+        accountActivatedMsg: string;
+        goToDashboard: string;
+        paymentSubmission: string;
+        paymentSubmissionSubtitle: string;
+        adminNotes: string;
+        submittedCode: string;
+        paymentCode: string;
+        paymentCodeHint: string;
+        amount: string;
+        paymentMethod: string;
+        selectMethod: string;
+        bankTransfer: string;
+        cash: string;
+        check: string;
+        other: string;
+        additionalNotes: string;
+        additionalNotesPlaceholder: string;
+        submitPayment: string;
+        verificationInProgress: string;
+        verificationInProgressMsg: string;
+        paymentInstructions: string;
+        howToPay: string;
+        step1: string;
+        step2: string;
+        step3: string;
+        step4: string;
+        step5: string;
+        note: string;
+        noteMsg: string;
+    };
+
 }
 
 export const translations: Record<Language, Translations> = {

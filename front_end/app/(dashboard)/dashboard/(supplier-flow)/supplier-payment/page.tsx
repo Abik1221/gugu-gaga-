@@ -14,9 +14,11 @@ import { CreditCard, Clock, CheckCircle, AlertCircle, DollarSign, RefreshCw } fr
 import { getAuthJSON, postAuthJSON } from "@/utils/api";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function SupplierPaymentPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { show } = useToast();
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -77,20 +79,20 @@ export default function SupplierPaymentPage() {
       case "pending":
         return <Badge variant="secondary" className="flex items-center gap-1">
           <Clock className="h-3 w-3" />
-          Pending Verification
+          {t.supplierOnboarding.pendingVerification}
         </Badge>;
       case "verified":
         return <Badge variant="default" className="flex items-center gap-1">
           <CheckCircle className="h-3 w-3" />
-          Verified
+          {t.supplierOnboarding.verified}
         </Badge>;
       case "rejected":
         return <Badge variant="destructive" className="flex items-center gap-1">
           <AlertCircle className="h-3 w-3" />
-          Rejected
+          {t.supplierOnboarding.rejected}
         </Badge>;
       default:
-        return <Badge variant="outline">Not Submitted</Badge>;
+        return <Badge variant="outline">{t.supplierOnboarding.notSubmitted}</Badge>;
     }
   };
 
@@ -98,20 +100,20 @@ export default function SupplierPaymentPage() {
     switch (paymentStatus?.status) {
       case "pending":
         return {
-          title: "Payment Under Verification",
-          message: "Your payment code is being verified by our admin team. You will be notified once verification is complete.",
+          title: t.supplierOnboarding.paymentUnderVerification,
+          message: t.supplierOnboarding.paymentUnderVerificationMsg,
           color: "bg-yellow-50 text-yellow-800"
         };
       case "verified":
         return {
-          title: "Payment Verified",
-          message: "Your payment has been verified! Your supplier account is now fully activated.",
+          title: t.supplierOnboarding.paymentVerified,
+          message: t.supplierOnboarding.paymentVerifiedMsg,
           color: "bg-green-50 text-green-800"
         };
       case "rejected":
         return {
-          title: "Payment Rejected",
-          message: "Your payment submission has been rejected. Please check the admin notes and submit a valid payment code.",
+          title: t.supplierOnboarding.paymentRejected,
+          message: t.supplierOnboarding.paymentRejectedMsg,
           color: "bg-red-50 text-red-800"
         };
       default:
@@ -135,9 +137,9 @@ export default function SupplierPaymentPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="text-center">
           <CheckCircle className="mx-auto h-16 w-16 text-green-600 mb-4" />
-          <h1 className="text-3xl font-bold text-green-600">Account Activated!</h1>
+          <h1 className="text-3xl font-bold text-green-600">{t.supplierOnboarding.accountActivated}</h1>
           <p className="text-muted-foreground mt-2">
-            Your supplier account is now fully activated and ready to use.
+            {t.supplierOnboarding.accountActivatedMsg}
           </p>
         </div>
 
@@ -145,10 +147,10 @@ export default function SupplierPaymentPage() {
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
               <p className="text-sm text-muted-foreground">
-                You can now access your supplier dashboard and start managing your products and orders.
+                {t.supplierOnboarding.paymentVerifiedMsg}
               </p>
               <Button asChild>
-                <a href="/dashboard/supplier">Go to Dashboard</a>
+                <a href="/dashboard/supplier">{t.supplierOnboarding.goToDashboard}</a>
               </Button>
             </div>
           </CardContent>
@@ -161,16 +163,16 @@ export default function SupplierPaymentPage() {
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="text-center">
         <DollarSign className="mx-auto h-16 w-16 text-green-600 mb-4" />
-        <h1 className="text-3xl font-bold">Payment Submission</h1>
+        <h1 className="text-3xl font-bold">{t.supplierOnboarding.paymentSubmission}</h1>
         <p className="text-muted-foreground mt-2">
-          Submit your payment code to activate your supplier account
+          {t.supplierOnboarding.paymentSubmissionSubtitle}
         </p>
       </div>
 
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle>Payment Status</CardTitle>
+            <CardTitle>{t.supplierOnboarding.paymentStatus}</CardTitle>
             {getStatusBadge()}
           </div>
         </CardHeader>
@@ -182,14 +184,14 @@ export default function SupplierPaymentPage() {
               {paymentStatus?.admin_notes && (
                 <div className="mt-3 p-3 bg-white/50 rounded border">
                   <p className="text-sm">
-                    <strong>Admin Notes:</strong> {paymentStatus.admin_notes}
+                    <strong>{t.supplierOnboarding.adminNotes}</strong> {paymentStatus.admin_notes}
                   </p>
                 </div>
               )}
               {paymentStatus?.code && (
                 <div className="mt-3 p-3 bg-white/50 rounded border">
                   <p className="text-sm">
-                    <strong>Submitted Code:</strong> <code className="font-mono">{paymentStatus.code}</code>
+                    <strong>{t.supplierOnboarding.submittedCode}</strong> <code className="font-mono">{paymentStatus.code}</code>
                   </p>
                 </div>
               )}
@@ -199,7 +201,7 @@ export default function SupplierPaymentPage() {
           {(paymentStatus?.status === "not_submitted" || paymentStatus?.status === "rejected") && (
             <form onSubmit={handleSubmit} className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="code">Payment Code *</Label>
+                <Label htmlFor="code">{t.supplierOnboarding.paymentCode} *</Label>
                 <Input
                   id="code"
                   value={formData.code}
@@ -207,16 +209,16 @@ export default function SupplierPaymentPage() {
                     ...prev,
                     code: e.target.value
                   }))}
-                  placeholder="Enter your payment code"
+                  placeholder={t.supplierOnboarding.paymentCode}
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  Enter the payment code you received after making the payment
+                  {t.supplierOnboarding.paymentCodeHint}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="amount">Amount</Label>
+                <Label htmlFor="amount">{t.supplierOnboarding.amount}</Label>
                 <Input
                   id="amount"
                   type="number"
@@ -226,12 +228,12 @@ export default function SupplierPaymentPage() {
                     ...prev,
                     amount: e.target.value
                   }))}
-                  placeholder="Payment amount"
+                  placeholder={t.supplierOnboarding.amount}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="payment_method">Payment Method</Label>
+                <Label htmlFor="payment_method">{t.supplierOnboarding.paymentMethod}</Label>
                 <Select
                   value={formData.payment_method}
                   onValueChange={(value) => setFormData(prev => ({
@@ -240,19 +242,19 @@ export default function SupplierPaymentPage() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select payment method" />
+                    <SelectValue placeholder={t.supplierOnboarding.selectMethod} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-                    <SelectItem value="cash">Cash</SelectItem>
-                    <SelectItem value="check">Check</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="bank_transfer">{t.supplierOnboarding.bankTransfer}</SelectItem>
+                    <SelectItem value="cash">{t.supplierOnboarding.cash}</SelectItem>
+                    <SelectItem value="check">{t.supplierOnboarding.check}</SelectItem>
+                    <SelectItem value="other">{t.supplierOnboarding.other}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="notes">Additional Notes</Label>
+                <Label htmlFor="notes">{t.supplierOnboarding.additionalNotes}</Label>
                 <Textarea
                   id="notes"
                   value={formData.notes}
@@ -260,13 +262,13 @@ export default function SupplierPaymentPage() {
                     ...prev,
                     notes: e.target.value
                   }))}
-                  placeholder="Any additional payment details..."
+                  placeholder={t.supplierOnboarding.additionalNotesPlaceholder}
                   rows={3}
                 />
               </div>
 
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit Payment Code"}
+                {isSubmitting ? t.supplierOnboarding.submitting : t.supplierOnboarding.submitPayment}
               </Button>
             </form>
           )}
@@ -275,10 +277,10 @@ export default function SupplierPaymentPage() {
             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
               <div className="flex items-center gap-2 text-blue-800">
                 <Clock className="h-4 w-4" />
-                <span className="text-sm font-medium">Verification in Progress</span>
+                <span className="text-sm font-medium">{t.supplierOnboarding.verificationInProgress}</span>
               </div>
               <p className="text-sm text-blue-700 mt-1">
-                Please wait while our admin team verifies your payment. This usually takes 1-2 business days.
+                {t.supplierOnboarding.verificationInProgressMsg}
               </p>
             </div>
           )}
@@ -287,21 +289,21 @@ export default function SupplierPaymentPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Payment Instructions</CardTitle>
+          <CardTitle className="text-lg">{t.supplierOnboarding.paymentInstructions}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div className="p-3 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">How to make payment:</h4>
+            <h4 className="font-medium mb-2">{t.supplierOnboarding.howToPay}</h4>
             <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-              <li>Contact our admin team for payment details</li>
-              <li>Make the payment using your preferred method</li>
-              <li>Obtain the payment confirmation code</li>
-              <li>Submit the code using the form above</li>
-              <li>Wait for admin verification</li>
+              <li>{t.supplierOnboarding.step1}</li>
+              <li>{t.supplierOnboarding.step2}</li>
+              <li>{t.supplierOnboarding.step3}</li>
+              <li>{t.supplierOnboarding.step4}</li>
+              <li>{t.supplierOnboarding.step5}</li>
             </ol>
           </div>
           <p className="text-muted-foreground">
-            <strong>Note:</strong> Your supplier account will be activated only after payment verification is complete.
+            <strong>{t.supplierOnboarding.note}</strong> {t.supplierOnboarding.noteMsg}
           </p>
         </CardContent>
       </Card>
