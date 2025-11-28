@@ -17,6 +17,7 @@ interface LanguageSelectorProps {
     size?: "default" | "sm" | "lg";
     showLabel?: boolean;
     fullWidth?: boolean;
+    className?: string;
 }
 
 export function LanguageSelector({
@@ -24,6 +25,7 @@ export function LanguageSelector({
     size = "sm",
     showLabel = false,
     fullWidth = false,
+    className,
 }: LanguageSelectorProps) {
     const { language, setLanguage } = useLanguage();
 
@@ -42,7 +44,7 @@ export function LanguageSelector({
                 <Button
                     variant={variant}
                     size={size}
-                    className={`gap-2 ${fullWidth ? 'w-full' : ''}`}
+                    className={`gap-2 ${fullWidth ? 'w-full' : ''} ${className || ''}`}
                 >
                     <Globe className="h-4 w-4" />
                     <span className="text-base">{currentLanguage.flag}</span>

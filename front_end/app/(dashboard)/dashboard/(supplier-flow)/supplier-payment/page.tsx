@@ -16,6 +16,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/language-context";
 
+import { LanguageSelector } from "@/components/ui/language-selector";
+
 export default function SupplierPaymentPage() {
   const router = useRouter();
   const { t } = useLanguage();
@@ -161,6 +163,9 @@ export default function SupplierPaymentPage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      <div className="flex justify-end w-full">
+        <LanguageSelector />
+      </div>
       <div className="text-center">
         <DollarSign className="mx-auto h-16 w-16 text-green-600 mb-4" />
         <h1 className="text-3xl font-bold">{t.supplierOnboarding.paymentSubmission}</h1>

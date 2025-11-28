@@ -19,10 +19,13 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { FlowSidebar } from "@/components/custom/flow-sidebar";
+import { LanguageSelector } from "@/components/ui/language-selector";
 import { useLanguage } from "@/contexts/language-context";
 
 export default function SupplierKYCPage() {
   const router = useRouter();
+
+
   const { t } = useLanguage();
   const { show } = useToast();
   const [kycData, setKycData] = useState(null);
@@ -143,6 +146,7 @@ export default function SupplierKYCPage() {
               <p className="text-sm text-emerald-100 mt-0.5">{t.supplierOnboarding.kycSubtitle}</p>
             </div>
             <div className="flex items-center gap-3">
+              <LanguageSelector variant="ghost" className="text-white hover:bg-white/20 hover:text-white" />
               {getStatusBadge()}
               <Button
                 onClick={() => loadKYCData()}
