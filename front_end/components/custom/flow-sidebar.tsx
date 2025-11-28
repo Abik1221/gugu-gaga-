@@ -26,6 +26,9 @@ export function FlowSidebar({ showBackButton = true }: FlowSidebarProps) {
     const router = useRouter();
 
     const handleBackToHome = () => {
+        // Set a temporary cookie to allow homepage access for logged-in users
+        // This cookie expires in 10 seconds and allows bypassing the auto-redirect
+        document.cookie = "allow_homepage=true; path=/; max-age=10; SameSite=Lax";
         router.push("/");
     };
 

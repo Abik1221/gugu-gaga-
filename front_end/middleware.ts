@@ -34,8 +34,20 @@ export function middleware(request: NextRequest) {
     const accessToken = request.cookies.get('access_token')?.value
 
     // Redirect logged-in users from landing page to dashboard
+    // UNLESS they explicitly clicked "Back to Home" (indicated by allow_homepage cookie)
     if (pathname === '/' && accessToken) {
-        return NextResponse.redirect(new URL('/dashboard', request.url))
+        const allowHomepage = request.cookies.get('allow_homepage')?.value;
+
+        if (!allowHomepage) {
+            // No cookie = direct access, redirect to dashboard
+            return NextResponse.redirect(new URL('/dashboard', request.url))
+        }
+
+        // Cookie present = explicit navigation, allow homepage visit
+        // Clear the cookie so next direct access will redirect again
+        const response = NextResponse.next();
+        response.cookies.delete('allow_homepage');
+        return response;
     }
 
     if (!isProtectedRoute) {
