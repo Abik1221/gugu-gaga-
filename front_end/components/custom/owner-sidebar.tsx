@@ -32,6 +32,7 @@ import {
   Receipt,
   Bell,
   Target,
+  LogOut,
 } from "lucide-react";
 import { InstallButton } from "@/components/pwa/InstallPWA";
 import { useNotifications } from "@/contexts/NotificationContext";
@@ -104,6 +105,21 @@ export function OwnerSidebar() {
                   </SidebarMenuItem>
                 );
               })}
+              {/* Sign Out Button */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => {
+                    const { signOut } = require("@/utils/api");
+                    signOut();
+                  }}
+                  className="text-emerald-600 hover:bg-emerald-50 cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <LogOut />
+                    Sign Out
+                  </span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

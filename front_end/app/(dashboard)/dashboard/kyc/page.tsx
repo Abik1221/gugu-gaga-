@@ -9,61 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, Clock, CheckCircle, AlertCircle, FileText, Building2, Phone, MapPin, CreditCard, Hash, MessageSquare, Upload, RefreshCw } from "lucide-react";
+import { Clock, CheckCircle, AlertCircle, FileText, Building2, Phone, MapPin, CreditCard, Hash, MessageSquare, Upload, RefreshCw } from "lucide-react";
 import { getAuthJSON, postAuthJSON, API_BASE } from "@/utils/api";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import logoImage from "@/public/mesoblogo.jpeg";
 import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
-  SidebarHeader,
-  Sidebar,
-  SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
 } from "@/components/ui/sidebar";
-
-function OwnerKYCSidebar() {
-  const router = useRouter();
-  const { show } = useToast();
-
-  const handleSignOut = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('access_token');
-    router.push('/');
-    show({ title: "Success", description: "Signed out successfully", variant: "success" });
-  };
-
-  return (
-    <Sidebar className="!bg-white border-r border-gray-200">
-      <SidebarHeader className="p-6 border-b border-gray-200">
-        <div className="flex justify-center">
-          <Image
-            height={80}
-            width={80}
-            src={logoImage}
-            alt="Mesob Logo"
-            className="rounded-lg shadow-sm"
-          />
-        </div>
-      </SidebarHeader>
-      <SidebarContent className="p-4">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut} className="text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 cursor-pointer font-medium">
-              <LogOut className="h-4 w-4 text-emerald-600" />
-              <span className="text-emerald-600">Sign Out</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarContent>
-    </Sidebar>
-  );
-}
+import { FlowSidebar } from "@/components/custom/flow-sidebar";
 
 export default function OwnerKYCPage() {
   const router = useRouter();
@@ -191,7 +146,7 @@ export default function OwnerKYCPage() {
     return (
       <div>
         <SidebarProvider>
-          <OwnerKYCSidebar />
+          <FlowSidebar />
           <SidebarInset className="bg-neutral-50">
             <div className="flex items-center justify-center h-screen">
               <div className="text-center">
@@ -208,7 +163,7 @@ export default function OwnerKYCPage() {
   return (
     <div>
       <SidebarProvider>
-        <OwnerKYCSidebar />
+        <FlowSidebar />
         <SidebarInset className="bg-neutral-50 min-h-screen">
           <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-6 flex items-center gap-4 sticky top-0 z-10 shadow-lg">
             <SidebarTrigger className="text-white" />

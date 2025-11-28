@@ -8,61 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, DollarSign, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { DollarSign, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { getAuthJSON, postForm } from "@/utils/api";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import logoImage from "@/public/mesoblogo.jpeg";
 import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
-  SidebarHeader,
-  Sidebar,
-  SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
 } from "@/components/ui/sidebar";
-
-function OwnerPaymentSidebar() {
-  const router = useRouter();
-  const { show } = useToast();
-
-  const handleSignOut = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('access_token');
-    router.push('/');
-    show({ title: "Success", description: "Signed out successfully", variant: "success" });
-  };
-
-  return (
-    <Sidebar className="bg-gray-900">
-      <SidebarHeader className="p-6 border-b border-gray-800">
-        <div className="flex justify-center">
-          <Image
-            height={80}
-            width={80}
-            src={logoImage}
-            alt="Mesob Logo"
-            className="rounded"
-          />
-        </div>
-      </SidebarHeader>
-      <SidebarContent className="p-4">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut} className="text-white hover:text-white hover:bg-gray-800">
-              <LogOut className="h-4 w-4" />
-              <span>Sign Out</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarContent>
-    </Sidebar>
-  );
-}
+import { FlowSidebar } from "@/components/custom/flow-sidebar";
 
 export default function OwnerPaymentPage() {
   const router = useRouter();
@@ -101,7 +56,7 @@ export default function OwnerPaymentPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!paymentCode.trim()) {
@@ -116,7 +71,7 @@ export default function OwnerPaymentPage() {
       show({ title: "Success", description: "Payment code submitted successfully. Awaiting admin verification.", variant: "success" });
       setPaymentCode("");
       await loadStatus();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Submit error:", error);
       show({ title: "Error", description: error?.message || "Failed to submit payment code", variant: "destructive" });
     } finally {
@@ -141,12 +96,12 @@ export default function OwnerPaymentPage() {
     return (
       <div>
         <SidebarProvider>
-          <OwnerPaymentSidebar />
-          <SidebarInset className="p-3 bg-white">
+          <FlowSidebar />
+          <SidebarInset className="bg-neutral-50 min-h-screen">
             <div className="flex items-center justify-center h-screen">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                <p>Loading payment status...</p>
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-200 border-t-emerald-600 mx-auto mb-4"></div>
+                <p className="text-gray-800 font-medium">Loading payment status...</p>
               </div>
             </div>
           </SidebarInset>
@@ -158,24 +113,22 @@ export default function OwnerPaymentPage() {
   return (
     <div>
       <SidebarProvider>
-        <OwnerPaymentSidebar />
-        <SidebarInset className="bg-white min-h-screen">
-          <div className="bg-white px-6 py-4 flex items-center gap-3">
-            <SidebarTrigger />
-            <h1 className="text-xl font-semibold text-gray-900">Payment Verification</h1>
-          </div>
-          <div className="p-6 max-w-4xl mx-auto">
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-gray-600 text-sm">Submit your payment code to activate your subscription</p>
-                </div>
-                {getStatusBadge()}
-              </div>
+        <FlowSidebar />
+        <SidebarInset className="bg-neutral-50 min-h-screen">
+          <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-6 flex items-center gap-4 sticky top-0 z-10 shadow-lg">
+            <SidebarTrigger className="text-white" />
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold text-white">Payment Verification</h1>
+              <p className="text-sm text-emerald-100 mt-0.5">Submit your payment code to activate your subscription</p>
             </div>
+            <div className="flex items-center gap-3">
+              {getStatusBadge()}
+            </div>
+          </div>
 
+          <div className="p-6 max-w-4xl mx-auto space-y-6">
             {subscriptionStatus === "payment_rejected" && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
                   <div>
@@ -187,7 +140,7 @@ export default function OwnerPaymentPage() {
             )}
 
             {subscriptionStatus === "pending_verification" && (
-              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-blue-600 mt-0.5" />
                   <div>
@@ -232,7 +185,7 @@ export default function OwnerPaymentPage() {
               </CardContent>
             </Card>
 
-            <div className="mt-6 rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            <div className="rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
               After submitting your payment code, our admin team will verify it. Once approved, you'll have full access to your dashboard.
             </div>
           </div>
