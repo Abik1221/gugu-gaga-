@@ -104,8 +104,8 @@ export default function StaffInventory() {
       <div className="p-6">
         <Skeleton className="h-8 w-48 mb-4" />
         <Skeleton className="h-64 w-full" />
-      </d iv >
-      );
+      </div>
+    );
   }
 
   return (
