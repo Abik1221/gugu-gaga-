@@ -28,9 +28,16 @@ export default function SupplierKYCPage() {
 
   const { t } = useLanguage();
   const { show } = useToast();
-  const [kycData, setKycData] = useState(null);
+  const [kycData, setKycData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    supplier_name: string;
+    national_id: string;
+    tin_number: string;
+    business_license_image: File | null;
+    phone: string;
+    address: string;
+  }>({
     supplier_name: "",
     national_id: "",
     tin_number: "",
@@ -69,7 +76,7 @@ export default function SupplierKYCPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!existingLicenseImage && !formData.business_license_image) {
@@ -97,7 +104,7 @@ export default function SupplierKYCPage() {
       await loadKYCData();
     } catch (error) {
       console.error("Submit error:", error);
-      show({ title: "Error", description: error?.message || "Failed to update KYC information", variant: "destructive" });
+      show({ title: "Error", description: (error as any)?.message || "Failed to update KYC information", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }

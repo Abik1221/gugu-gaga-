@@ -22,7 +22,7 @@ export default function SupplierPaymentPage() {
   const router = useRouter();
   const { t } = useLanguage();
   const { show } = useToast();
-  const [paymentStatus, setPaymentStatus] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     code: "",
