@@ -55,99 +55,96 @@ function LayoutContent({
 
   return (
     <>
-        <Sidebar className="border-r fixed !bg-white border-neutral-200">
-          <SidebarHeader className="flex h-16 items-center justify-center border-b px-6 border-neutral-200">
-            {isAffiliate ? (
-              <Link href="/">
-                <img src="/mesoblogo.jpeg" alt="Mesob Logo" width={80} height={80} className="rounded cursor-pointer hover:opacity-80 transition-opacity" />
-              </Link>
-            ) : (
-              <Link href="/" className="flex items-center gap-2 py-3 font-semibold text-black cursor-pointer hover:opacity-80 transition-opacity">
-                Mesob
-              </Link>
-            )}
-          </SidebarHeader>
+      <Sidebar className="border-r fixed !bg-white border-neutral-200">
+        <SidebarHeader className="flex h-16 items-center justify-center border-b px-6 border-neutral-200">
+          {isAffiliate ? (
+            <Link href="/">
+              <img src="/mesoblogo.jpeg" alt="Mesob Logo" width={80} height={80} className="rounded cursor-pointer hover:opacity-80 transition-opacity" />
+            </Link>
+          ) : (
+            <Link href="/" className="flex items-center gap-2 py-3 font-semibold text-black cursor-pointer hover:opacity-80 transition-opacity">
+              Mesob
+            </Link>
+          )}
+        </SidebarHeader>
 
-          <SidebarGroupContent className="p-4">
-            <SidebarMenu className="space-y-2">
-              {nav.map((item) => {
-                const isActive = pathname === item.href || (item.href !== "/dashboard/affiliate" && pathname?.startsWith(item.href));
-                const activeClasses = "bg-emerald-600 text-white hover:bg-emerald-700";
-                const inactiveClasses = item.label === "Sign out" ? "text-emerald-600 hover:bg-emerald-50" : "text-black hover:bg-gray-100";
+        <SidebarGroupContent className="p-4">
+          <SidebarMenu className="space-y-2">
+            {nav.map((item) => {
+              const isActive = pathname === item.href || (item.href !== "/dashboard/affiliate" && pathname?.startsWith(item.href));
+              const activeClasses = "bg-emerald-600 text-white hover:bg-emerald-700";
+              const inactiveClasses = item.label === "Sign out" ? "text-emerald-600 hover:bg-emerald-50" : "text-black hover:bg-gray-100";
 
-                const handleClick = (e: React.MouseEvent) => {
-                  // Close mobile sidebar when any navigation link is clicked
-                  // This only affects mobile/tablet (<md breakpoint)
-                  // On desktop, sidebar stays open permanently
-                  setOpenMobile(false);
-                  
-                  if (item.label === "Sign out") {
-                    e.preventDefault();
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('access_token');
-                    window.location.href = item.href;
-                  }
-                };
+              const handleClick = (e: React.MouseEvent) => {
+                // Close mobile sidebar when any navigation link is clicked
+                // This only affects mobile/tablet (<md breakpoint)
+                // On desktop, sidebar stays open permanently
+                setOpenMobile(false);
 
-                return (
-                  <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-150 text-sm cursor-pointer ${
-                        isActive ? activeClasses : inactiveClasses
+                if (item.label === "Sign out") {
+                  e.preventDefault();
+                  // Use centralized signOut function
+                  const { signOut } = require("@/utils/api");
+                  signOut();
+                }
+              };
+
+              return (
+                <SidebarMenuItem key={item.label}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-150 text-sm cursor-pointer ${isActive ? activeClasses : inactiveClasses
                       }`}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={handleClick}
+                      className="flex w-full items-center gap-3"
                     >
-                      <Link
-                        href={item.href}
-                        onClick={handleClick}
-                        className="flex w-full items-center gap-3"
-                      >
-                        {item?.icon}
-                        <span>{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
+                      {item?.icon}
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroupContent>
 
-          {/* User section at bottom */}
-          <div className="mt-auto p-4 border-t border-neutral-200">
-            <div className="flex items-center gap-3 px-3 py-2">
-              <div className="w-8 h-8 rounded-full flex-shrink-0 bg-gray-200" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm truncate text-black font-semibold">
-                  {user?.name || "User"}
-                </p>
-                <p className="text-xs truncate text-gray-600">
-                  {user?.email || "user@example.com"}
-                </p>
-              </div>
+        {/* User section at bottom */}
+        <div className="mt-auto p-4 border-t border-neutral-200">
+          <div className="flex items-center gap-3 px-3 py-2">
+            <div className="w-8 h-8 rounded-full flex-shrink-0 bg-gray-200" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm truncate text-black font-semibold">
+                {user?.name || "User"}
+              </p>
+              <p className="text-xs truncate text-gray-600">
+                {user?.email || "user@example.com"}
+              </p>
             </div>
           </div>
-        </Sidebar>
+        </div>
+      </Sidebar>
 
-        <SidebarInset>
-          <div className="overflow-auto h-screen">
-            <Suspense fallback={<Loading />}>
-              <div className="flex-1 bg-white shadow-sm">
+      <SidebarInset>
+        <div className="overflow-auto h-screen">
+          <Suspense fallback={<Loading />}>
+            <div className="flex-1 bg-white shadow-sm">
               {/* Sticky header - stays at top when scrolling within SidebarInset */}
               {/* z-50 ensures header stays above all content */}
               {/* Solid background (no alpha/transparency) prevents flickering */}
               {/* No backdrop-blur to avoid transparency issues */}
-              <header className={`sticky top-0 z-50 flex flex-col gap-3 border-b p-6 sm:flex-row sm:items-center sm:justify-between transition-shadow duration-300 ${
-                isAffiliate 
+              <header className={`sticky top-0 z-50 flex flex-col gap-3 border-b p-6 sm:flex-row sm:items-center sm:justify-between transition-shadow duration-300 ${isAffiliate
                   ? "bg-emerald-600 border-emerald-800 shadow-lg"
                   : "bg-white border-neutral-200"
-              }`}>
+                }`}>
                 <div className="flex items-center gap-4">
                   <SidebarTrigger className={isAffiliate ? "text-white" : "text-neutral-600"} />
                   <div>
-                    <h1 className={`text-2xl font-bold ${
-                      isAffiliate ? "text-white" : "text-neutral-900"
-                    }`}>
+                    <h1 className={`text-2xl font-bold ${isAffiliate ? "text-white" : "text-neutral-900"
+                      }`}>
                       {nav.find((n) => pathname?.startsWith(n.href))?.label || "Overview"}
                     </h1>
                     {isAffiliate && (
@@ -168,11 +165,11 @@ function LayoutContent({
                   </button>
                 )}
               </header>
-                <main className="p-6 text-neutral-900">{children}</main>
-              </div>
-            </Suspense>
-          </div>
-        </SidebarInset>
+              <main className="p-6 text-neutral-900">{children}</main>
+            </div>
+          </Suspense>
+        </div>
+      </SidebarInset>
     </>
   );
 }

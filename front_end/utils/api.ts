@@ -66,6 +66,30 @@ export function checkAuthVersion() {
   }
 }
 
+/**
+ * Centralized sign out function.
+ * Clears all authentication tokens from both localStorage and cookies,
+ * then redirects to the homepage.
+ */
+export function signOut() {
+  if (typeof window === "undefined") return;
+
+  // Clear localStorage tokens
+  localStorage.removeItem("token");
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+
+  // Clear cookies by setting them to expire in the past
+  const cookiesToClear = ["access_token", "refresh_token", "token"];
+  cookiesToClear.forEach(name => {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
+  });
+
+  // Redirect to homepage
+  window.location.href = "/";
+}
+
+
 function buildHeaders(
   initHeaders?: HeadersInit,
   tenantId?: string
