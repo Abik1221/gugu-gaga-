@@ -78,8 +78,8 @@ export default function StaffPOS() {
 
   const updateQuantity = (index: number, newQuantity: number) => {
     if (newQuantity <= 0) return;
-    const updatedCart = cart.map((item, i) => 
-      i === index 
+    const updatedCart = cart.map((item, i) =>
+      i === index
         ? { ...item, quantity: newQuantity, total: newQuantity * item.unit_price }
         : item
     );
@@ -104,13 +104,13 @@ export default function StaffPOS() {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       show({
         variant: "success",
         title: "Sale completed",
         description: `Transaction processed successfully. Total: $${getTotalAmount().toFixed(2)}`,
       });
-      
+
       setCart([]);
     } catch (err: any) {
       show({
@@ -134,7 +134,7 @@ export default function StaffPOS() {
         {/* Product Search & Add */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Add Items</h2>
-          
+
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -176,7 +176,7 @@ export default function StaffPOS() {
               </div>
             </div>
 
-            <Button 
+            <Button
               onClick={addToCart}
               className="w-full bg-blue-600 hover:bg-blue-700"
             >

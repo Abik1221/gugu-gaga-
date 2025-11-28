@@ -39,7 +39,7 @@ export default function StaffSales() {
     try {
       // Simulate API call - replace with actual API
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Mock data
       const mockSales: Sale[] = [
         {
@@ -68,7 +68,7 @@ export default function StaffSales() {
           ]
         }
       ];
-      
+
       setSales(mockSales);
       setTotal(mockSales.length);
     } catch (err: any) {
@@ -151,7 +151,7 @@ export default function StaffSales() {
           <Button onClick={loadSales} variant="outline">
             Apply Filters
           </Button>
-          <Button 
+          <Button
             onClick={() => {
               setSearchQuery("");
               setFromDate("");

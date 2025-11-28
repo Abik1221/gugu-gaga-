@@ -602,6 +602,210 @@ export interface Translations {
             feature4: string;
         };
     };
+
+    // Owner Dashboard
+    ownerDashboard: {
+        // Common elements
+        common: {
+            loading: string;
+            refresh: string;
+            save: string;
+            cancel: string;
+            delete: string;
+            edit: string;
+            add: string;
+            search: string;
+            filter: string;
+            export: string;
+            import: string;
+            noData: string;
+            error: string;
+            success: string;
+            close: string;
+            confirm: string;
+            back: string;
+            next: string;
+            submit: string;
+            submitting: string;
+        };
+
+        // Main dashboard
+        main: {
+            welcomeBack: string;
+            subtitle: string;
+            connectTools: string;
+            inviteStaff: string;
+
+            // Time horizons
+            horizon24h: string;
+            horizon7d: string;
+            horizon30d: string;
+            horizon90d: string;
+            horizon12m: string;
+
+            // Trend options
+            weeks4: string;
+            weeks8: string;
+            weeks12: string;
+            weeks24: string;
+            weekTrajectory: string;
+
+            // Metrics
+            totalRevenue: string;
+            averageTicket: string;
+            unitsSold: string;
+            completedSales: string;
+            activeCashiers: string;
+            customersOnFile: string;
+            activeCustomers: string;
+            upcomingRefills: string;
+
+            // Charts & sections
+            revenueTrend: string;
+            inventoryHealth: string;
+            branchComparison: string;
+            staffProductivity: string;
+            staffActivity: string;
+            recentPaymentActivity: string;
+            topProducts: string;
+
+            // Table headers
+            branch: string;
+            revenue: string;
+            sales: string;
+            unitsColumn: string;
+            product: string;
+            quantity: string;
+
+            // Empty states
+            noSalesRecorded: string;
+            noSalesDesc: string;
+            noInventoryAudits: string;
+            noInventoryDesc: string;
+            noBranches: string;
+            noBranchesDesc: string;
+            noStaffSales: string;
+            noStaffSalesDesc: string;
+            noRecentActivity: string;
+            noActivityDesc: string;
+            noPayments: string;
+            noPaymentsDesc: string;
+            noProductInsights: string;
+            noProductsDesc: string;
+
+            // Other
+            unassigned: string;
+            avgTicket: string;
+            mostRecentBestSellers: string;
+            mostRecentChanges: string;
+            revenueTransactionsUnits: string;
+            viewStaffList: string;
+            analyticsRefreshed: string;
+            analyticsRefreshedDesc: string;
+            unauthorizedError: string;
+        };
+    };
+
+    // Staff Dashboard
+    staffDashboard: {
+        // Common elements
+        common: {
+            loading: string;
+            refresh: string;
+            save: string;
+            cancel: string;
+            delete: string;
+            edit: string;
+            add: string;
+            search: string;
+            filter: string;
+            export: string;
+            import: string;
+            noData: string;
+            error: string;
+            success: string;
+            close: string;
+            confirm: string;
+            back: string;
+            next: string;
+            submit: string;
+            submitting: string;
+        };
+
+        // Main dashboard
+        main: {
+            welcome: string;
+            subtitle: string;
+            posCardTitle: string;
+            posCardDesc: string;
+            posButton: string;
+            salesCardTitle: string;
+            salesCardDesc: string;
+            salesButton: string;
+            inventoryCardTitle: string;
+            inventoryCardDesc: string;
+            inventoryButton: string;
+            todaysSummary: string;
+            salesCount: string;
+            totalRevenue: string;
+            quickActions: string;
+            newSale: string;
+            checkStock: string;
+        };
+
+        // Point of Sale (POS)
+        pos: {
+            title: string;
+            subtitle: string;
+            addItems: string;
+            searchPlaceholder: string;
+            medicineName: string;
+            quantity: string;
+            unitPrice: string;
+            addToCart: string;
+            cartTitle: string;
+            cartEmpty: string;
+            total: string;
+            processSale: string;
+            processing: string;
+            saleCompleted: string;
+            saleFailed: string;
+            invalidInput: string;
+            invalidPrice: string;
+        };
+
+        // Inventory
+        inventory: {
+            title: string;
+            subtitle: string;
+            searchPlaceholder: string;
+            lowStockOnly: string;
+            medicineColumn: string;
+            stockColumn: string;
+            priceColumn: string;
+            expiryColumn: string;
+            statusColumn: string;
+            actionsColumn: string;
+            lowStock: string;
+            expiringSoon: string;
+            good: string;
+            deleteConfirm: string;
+            itemDeleted: string;
+            deleteFailed: string;
+        };
+
+        // Sales History
+        sales: {
+            title: string;
+            subtitle: string;
+            transactionId: string;
+            date: string;
+            items: string;
+            amount: string;
+            status: string;
+            viewDetails: string;
+        };
+    };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -1152,6 +1356,104 @@ export const translations: Record<Language, Translations> = {
                 feature2: 'Real-time tracking of referrals and payouts',
                 feature3: 'Dedicated success manager and training toolkit',
                 feature4: 'Fast payouts to the bank account you choose',
+            },
+        },
+        ownerDashboard: {
+            common: {
+                loading: 'Loading...',
+                refresh: 'Refresh',
+                save: 'Save',
+                cancel: 'Cancel',
+                delete: 'Delete',
+                edit: 'Edit',
+                add: 'Add',
+                search: 'Search',
+                filter: 'Filter',
+                export: 'Export',
+                import: 'Import',
+                noData: 'No data available',
+                error: 'Error',
+                success: 'Success',
+                close: 'Close',
+                confirm: 'Confirm',
+                back: 'Back',
+                next: 'Next',
+                submit: 'Submit',
+                submitting: 'Submitting...',
+            },
+            main: {
+                welcomeBack: 'Welcome back',
+                subtitle: 'Monitor revenue, compare branches, and coach your pharmacy team from a single command center.',
+                connectTools: 'Connect tools',
+                inviteStaff: 'Invite staff',
+
+                // Time horizons
+                horizon24h: '24h',
+                horizon7d: '7d',
+                horizon30d: '30d',
+                horizon90d: '90d',
+                horizon12m: '12m',
+
+                // Trend options
+                weeks4: '4 weeks',
+                weeks8: '8 weeks',
+                weeks12: '12 weeks',
+                weeks24: '24 weeks',
+                weekTrajectory: 'week trajectory',
+
+                // Metrics
+                totalRevenue: 'Total revenue',
+                averageTicket: 'Average ticket',
+                unitsSold: 'Units sold',
+                completedSales: 'Completed sales',
+                activeCashiers: 'Active cashiers',
+                customersOnFile: 'Customers on file',
+                activeCustomers: 'Active customers',
+                upcomingRefills: 'Upcoming refills (7d)',
+
+                // Charts & sections
+                revenueTrend: 'Revenue trend',
+                inventoryHealth: 'Inventory health',
+                branchComparison: 'Branch comparison',
+                staffProductivity: 'Staff productivity',
+                staffActivity: 'Staff activity',
+                recentPaymentActivity: 'Recent payment activity',
+                topProducts: 'Top products',
+
+                // Table headers
+                branch: 'Branch',
+                revenue: 'Revenue',
+                sales: 'Sales',
+                unitsColumn: 'Units sold',
+                product: 'Product',
+                quantity: 'Quantity',
+
+                // Empty states
+                noSalesRecorded: 'No sales recorded',
+                noSalesDesc: 'Capture a sale from the POS to start building your revenue history.',
+                noInventoryAudits: 'No inventory audits',
+                noInventoryDesc: 'Sync your inventory lots so owners know which medicines need attention.',
+                noBranches: 'No branches on record',
+                noBranchesDesc: 'Add the branch field when creating sales to see how each site performs.',
+                noStaffSales: 'No staff sales captured',
+                noStaffSalesDesc: 'Record a sale from the POS to start ranking your cashiers.',
+                noRecentActivity: 'No recent activity',
+                noActivityDesc: 'Inventory updates, POS sales and staff audits will show here.',
+                noPayments: 'No submissions yet',
+                noPaymentsDesc: 'Payment uploads appear here for the owner\'s records.',
+                noProductInsights: 'No product insights yet',
+                noProductsDesc: 'Run more sales through the POS to see which medicines drive revenue.',
+
+                // Other
+                unassigned: 'Unassigned',
+                avgTicket: 'avg ticket',
+                mostRecentBestSellers: 'Most recent best sellers',
+                mostRecentChanges: 'Most recent inventory & POS changes',
+                revenueTransactionsUnits: 'Revenue, transactions, and units sold',
+                viewStaffList: 'View staff list',
+                analyticsRefreshed: 'Analytics refreshed',
+                analyticsRefreshedDesc: 'Latest sales and inventory metrics are now visible.',
+                unauthorizedError: 'You are not authorised to view this dashboard',
             },
         },
     },
@@ -1710,6 +2012,90 @@ export const translations: Record<Language, Translations> = {
                 feature4: 'ወደ መረጡት የባንክ ሂሳብ ፈጣን ክፍያዎች',
             },
         },
+        ownerDashboard: {
+            common: {
+                loading: 'Loading...',
+                refresh: 'Refresh',
+                save: 'Save',
+                cancel: 'Cancel',
+                delete: 'Delete',
+                edit: 'Edit',
+                add: 'Add',
+                search: 'Search',
+                filter: 'Filter',
+                export: 'Export',
+                import: 'Import',
+                noData: 'No data available',
+                error: 'Error',
+                success: 'Success',
+                close: 'Close',
+                confirm: 'Confirm',
+                back: 'Back',
+                next: 'Next',
+                submit: 'Submit',
+                submitting: 'Submitting...',
+            },
+            main: {
+                welcomeBack: 'Welcome back',
+                subtitle: 'Monitor revenue, compare branches, and coach your pharmacy team from a single command center.',
+                connectTools: 'Connect tools',
+                inviteStaff: 'Invite staff',
+                horizon24h: '24h',
+                horizon7d: '7d',
+                horizon30d: '30d',
+                horizon90d: '90d',
+                horizon12m: '12m',
+                weeks4: '4 weeks',
+                weeks8: '8 weeks',
+                weeks12: '12 weeks',
+                weeks24: '24 weeks',
+                weekTrajectory: 'week trajectory',
+                totalRevenue: 'Total revenue',
+                averageTicket: 'Average ticket',
+                unitsSold: 'Units sold',
+                completedSales: 'Completed sales',
+                activeCashiers: 'Active cashiers',
+                customersOnFile: 'Customers on file',
+                activeCustomers: 'Active customers',
+                upcomingRefills: 'Upcoming refills (7d)',
+                revenueTrend: 'Revenue trend',
+                inventoryHealth: 'Inventory health',
+                branchComparison: 'Branch comparison',
+                staffProductivity: 'Staff productivity',
+                staffActivity: 'Staff activity',
+                recentPaymentActivity: 'Recent payment activity',
+                topProducts: 'Top products',
+                branch: 'Branch',
+                revenue: 'Revenue',
+                sales: 'Sales',
+                unitsColumn: 'Units sold',
+                product: 'Product',
+                quantity: 'Quantity',
+                noSalesRecorded: 'No sales recorded',
+                noSalesDesc: 'Capture a sale from the POS to start building your revenue history.',
+                noInventoryAudits: 'No inventory audits',
+                noInventoryDesc: 'Sync your inventory lots so owners know which medicines need attention.',
+                noBranches: 'No branches on record',
+                noBranchesDesc: 'Add the branch field when creating sales to see how each site performs.',
+                noStaffSales: 'No staff sales captured',
+                noStaffSalesDesc: 'Record a sale from the POS to start ranking your cashiers.',
+                noRecentActivity: 'No recent activity',
+                noActivityDesc: 'Inventory updates, POS sales and staff audits will show here.',
+                noPayments: 'No submissions yet',
+                noPaymentsDesc: 'Payment uploads appear here for the owner\'s records.',
+                noProductInsights: 'No product insights yet',
+                noProductsDesc: 'Run more sales through the POS to see which medicines drive revenue.',
+                unassigned: 'Unassigned',
+                avgTicket: 'avg ticket',
+                mostRecentBestSellers: 'Most recent best sellers',
+                mostRecentChanges: 'Most recent inventory & POS changes',
+                revenueTransactionsUnits: 'Revenue, transactions, and units sold',
+                viewStaffList: 'View staff list',
+                analyticsRefreshed: 'Analytics refreshed',
+                analyticsRefreshedDesc: 'Latest sales and inventory metrics are now visible.',
+                unauthorizedError: 'You are not authorised to view this dashboard',
+            },
+        },
     },
     or: {
         nav: {
@@ -2265,6 +2651,90 @@ export const translations: Record<Language, Translations> = {
                 feature4: 'Kaffaltii saffisaa gara herrega baankii filattaniitti',
             },
         },
+        ownerDashboard: {
+            common: {
+                loading: 'Loading...',
+                refresh: 'Refresh',
+                save: 'Save',
+                cancel: 'Cancel',
+                delete: 'Delete',
+                edit: 'Edit',
+                add: 'Add',
+                search: 'Search',
+                filter: 'Filter',
+                export: 'Export',
+                import: 'Import',
+                noData: 'No data available',
+                error: 'Error',
+                success: 'Success',
+                close: 'Close',
+                confirm: 'Confirm',
+                back: 'Back',
+                next: 'Next',
+                submit: 'Submit',
+                submitting: 'Submitting...',
+            },
+            main: {
+                welcomeBack: 'Welcome back',
+                subtitle: 'Monitor revenue, compare branches, and coach your pharmacy team from a single command center.',
+                connectTools: 'Connect tools',
+                inviteStaff: 'Invite staff',
+                horizon24h: '24h',
+                horizon7d: '7d',
+                horizon30d: '30d',
+                horizon90d: '90d',
+                horizon12m: '12m',
+                weeks4: '4 weeks',
+                weeks8: '8 weeks',
+                weeks12: '12 weeks',
+                weeks24: '24 weeks',
+                weekTrajectory: 'week trajectory',
+                totalRevenue: 'Total revenue',
+                averageTicket: 'Average ticket',
+                unitsSold: 'Units sold',
+                completedSales: 'Completed sales',
+                activeCashiers: 'Active cashiers',
+                customersOnFile: 'Customers on file',
+                activeCustomers: 'Active customers',
+                upcomingRefills: 'Upcoming refills (7d)',
+                revenueTrend: 'Revenue trend',
+                inventoryHealth: 'Inventory health',
+                branchComparison: 'Branch comparison',
+                staffProductivity: 'Staff productivity',
+                staffActivity: 'Staff activity',
+                recentPaymentActivity: 'Recent payment activity',
+                topProducts: 'Top products',
+                branch: 'Branch',
+                revenue: 'Revenue',
+                sales: 'Sales',
+                unitsColumn: 'Units sold',
+                product: 'Product',
+                quantity: 'Quantity',
+                noSalesRecorded: 'No sales recorded',
+                noSalesDesc: 'Capture a sale from the POS to start building your revenue history.',
+                noInventoryAudits: 'No inventory audits',
+                noInventoryDesc: 'Sync your inventory lots so owners know which medicines need attention.',
+                noBranches: 'No branches on record',
+                noBranchesDesc: 'Add the branch field when creating sales to see how each site performs.',
+                noStaffSales: 'No staff sales captured',
+                noStaffSalesDesc: 'Record a sale from the POS to start ranking your cashiers.',
+                noRecentActivity: 'No recent activity',
+                noActivityDesc: 'Inventory updates, POS sales and staff audits will show here.',
+                noPayments: 'No submissions yet',
+                noPaymentsDesc: 'Payment uploads appear here for the owner\'s records.',
+                noProductInsights: 'No product insights yet',
+                noProductsDesc: 'Run more sales through the POS to see which medicines drive revenue.',
+                unassigned: 'Unassigned',
+                avgTicket: 'avg ticket',
+                mostRecentBestSellers: 'Most recent best sellers',
+                mostRecentChanges: 'Most recent inventory & POS changes',
+                revenueTransactionsUnits: 'Revenue, transactions, and units sold',
+                viewStaffList: 'View staff list',
+                analyticsRefreshed: 'Analytics refreshed',
+                analyticsRefreshedDesc: 'Latest sales and inventory metrics are now visible.',
+                unauthorizedError: 'You are not authorised to view this dashboard',
+            },
+        },
     },
     ti: {
         nav: {
@@ -2818,6 +3288,90 @@ export const translations: Record<Language, Translations> = {
                 feature2: 'ናይ ሪፈራልን ክፍሊትን ምክትታል',
                 feature3: 'ዝተወፈየ ናይ ዓወት ኣካያዲን ናይ ስልጠና መሳርሒታትን',
                 feature4: 'ናብ ዝመረጽኩሞ ናይ ባንኪ ሕሳብ ቅልጡፍ ክፍሊት',
+            },
+        },
+        ownerDashboard: {
+            common: {
+                loading: 'Loading...',
+                refresh: 'Refresh',
+                save: 'Save',
+                cancel: 'Cancel',
+                delete: 'Delete',
+                edit: 'Edit',
+                add: 'Add',
+                search: 'Search',
+                filter: 'Filter',
+                export: 'Export',
+                import: 'Import',
+                noData: 'No data available',
+                error: 'Error',
+                success: 'Success',
+                close: 'Close',
+                confirm: 'Confirm',
+                back: 'Back',
+                next: 'Next',
+                submit: 'Submit',
+                submitting: 'Submitting...',
+            },
+            main: {
+                welcomeBack: 'Welcome back',
+                subtitle: 'Monitor revenue, compare branches, and coach your pharmacy team from a single command center.',
+                connectTools: 'Connect tools',
+                inviteStaff: 'Invite staff',
+                horizon24h: '24h',
+                horizon7d: '7d',
+                horizon30d: '30d',
+                horizon90d: '90d',
+                horizon12m: '12m',
+                weeks4: '4 weeks',
+                weeks8: '8 weeks',
+                weeks12: '12 weeks',
+                weeks24: '24 weeks',
+                weekTrajectory: 'week trajectory',
+                totalRevenue: 'Total revenue',
+                averageTicket: 'Average ticket',
+                unitsSold: 'Units sold',
+                completedSales: 'Completed sales',
+                activeCashiers: 'Active cashiers',
+                customersOnFile: 'Customers on file',
+                activeCustomers: 'Active customers',
+                upcomingRefills: 'Upcoming refills (7d)',
+                revenueTrend: 'Revenue trend',
+                inventoryHealth: 'Inventory health',
+                branchComparison: 'Branch comparison',
+                staffProductivity: 'Staff productivity',
+                staffActivity: 'Staff activity',
+                recentPaymentActivity: 'Recent payment activity',
+                topProducts: 'Top products',
+                branch: 'Branch',
+                revenue: 'Revenue',
+                sales: 'Sales',
+                unitsColumn: 'Units sold',
+                product: 'Product',
+                quantity: 'Quantity',
+                noSalesRecorded: 'No sales recorded',
+                noSalesDesc: 'Capture a sale from the POS to start building your revenue history.',
+                noInventoryAudits: 'No inventory audits',
+                noInventoryDesc: 'Sync your inventory lots so owners know which medicines need attention.',
+                noBranches: 'No branches on record',
+                noBranchesDesc: 'Add the branch field when creating sales to see how each site performs.',
+                noStaffSales: 'No staff sales captured',
+                noStaffSalesDesc: 'Record a sale from the POS to start ranking your cashiers.',
+                noRecentActivity: 'No recent activity',
+                noActivityDesc: 'Inventory updates, POS sales and staff audits will show here.',
+                noPayments: 'No submissions yet',
+                noPaymentsDesc: 'Payment uploads appear here for the owner\'s records.',
+                noProductInsights: 'No product insights yet',
+                noProductsDesc: 'Run more sales through the POS to see which medicines drive revenue.',
+                unassigned: 'Unassigned',
+                avgTicket: 'avg ticket',
+                mostRecentBestSellers: 'Most recent best sellers',
+                mostRecentChanges: 'Most recent inventory & POS changes',
+                revenueTransactionsUnits: 'Revenue, transactions, and units sold',
+                viewStaffList: 'View staff list',
+                analyticsRefreshed: 'Analytics refreshed',
+                analyticsRefreshedDesc: 'Latest sales and inventory metrics are now visible.',
+                unauthorizedError: 'You are not authorised to view this dashboard',
             },
         },
 
