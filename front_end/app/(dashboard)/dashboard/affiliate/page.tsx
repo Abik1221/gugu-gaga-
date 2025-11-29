@@ -6,10 +6,13 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { StatCard, MiniStat, SectionCard } from "./_components/cards";
 import { useAffiliateDashboardContext } from "./_context/affiliate-dashboard-context";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function AffiliateOverviewPage() {
   const { stats, dash, monthLabel, payoutPercent, actions, canCreateMore } =
     useAffiliateDashboardContext();
+  const { t } = useLanguage();
+  const affT = t.affiliateDashboard;
 
   const highlightItems = [
     `You’re earning a ${payoutPercent}% commission rate this month.`,
@@ -68,17 +71,14 @@ export default function AffiliateOverviewPage() {
         <div className="relative flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl space-y-6">
             <p className="inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-700">
-              Affiliate dashboard
+              {affT.badge}
             </p>
             <div className="space-y-4">
               <h1 className="text-3xl font-semibold leading-tight text-slate-900 sm:text-4xl">
-                Grow partner revenue with the same polish as your landing page.
+                {affT.heading}
               </h1>
               <p className="text-base text-slate-600">
-                Keep your bussiness partners engaged with a calm, minimal
-                control center. Review earnings, generate links, and submit
-                payout requests with live numbers pulled directly from the
-                partner API.
+                {affT.description}
               </p>
             </div>
             <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
@@ -89,21 +89,21 @@ export default function AffiliateOverviewPage() {
                 className="rounded-xl bg-emerald-600 px-6 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
                 disabled={!canCreateMore}
               >
-                Create referral link
+                {affT.createReferralLink}
               </Button>
               <Button
                 asChild
                 variant="outline"
                 className="rounded-xl border-slate-300 px-6 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-200 hover:bg-emerald-50/60 hover:text-emerald-700"
               >
-                <Link href="/dashboard/affiliate/payouts">Request payout</Link>
+                <Link href="/dashboard/affiliate/payouts">{affT.requestPayout}</Link>
               </Button>
             </div>
           </div>
 
           <div className="w-full max-w-sm space-y-4 rounded-3xl border border-slate-200 bg-slate-50/70 p-6 shadow-inner shadow-emerald-100/60 backdrop-blur">
             <h2 className="text-sm font-semibold uppercase tracking-[0.28em] text-slate-500">
-              Why teams stay
+              {affT.whyTeamsStay}
             </h2>
             <ul className="space-y-3 text-sm text-slate-600">
               {highlightItems.map((item) => (

@@ -11,6 +11,7 @@ import { AddItemDialog } from "@/components/inventory/AddItemDialog";
 import { EditItemDialog } from "@/components/inventory/EditItemDialog";
 import { Trash2 } from "lucide-react";
 import { api } from "@/utils/api";
+import { useLanguage } from "@/contexts/language-context";
 
 interface InventoryItem {
   id: number;
@@ -30,6 +31,8 @@ interface InventoryItem {
 
 export default function StaffInventory() {
   const { show } = useToast();
+  const { t } = useLanguage();
+  const invT = t.staffDashboard.inventory;
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -113,8 +116,8 @@ export default function StaffInventory() {
       <div className="mb-6">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Inventory Management</h2>
-            <p className="text-gray-600">Manage stock levels and medicine information</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{invT.title}</h2>
+            <p className="text-gray-600">{invT.subtitle}</p>
           </div>
           <AddItemDialog onSuccess={loadInventory} />
         </div>
@@ -134,7 +137,7 @@ export default function StaffInventory() {
                 className="text-black"
                 onKeyDown={(e) => e.key === 'Enter' && loadInventory()}
               />
-              <Button onClick={loadInventory} variant="secondary">Search</Button>
+              <Button onClick={loadInventory} variant="secondary">{t.ownerDashboard.common.search}</Button>
             </div>
           </div>
           <div className="flex items-end">
@@ -145,12 +148,12 @@ export default function StaffInventory() {
                 onChange={(e) => setLowStockOnly(e.target.checked)}
                 className="rounded border-gray-300"
               />
-              <span className="text-sm text-gray-700">Low stock only</span>
+              <span className="text-sm text-gray-700">{invT.lowStockOnly}</span>
             </label>
           </div>
           <div className="flex items-end">
             <Button onClick={loadInventory} variant="outline">
-              Refresh
+              {t.ownerDashboard.common.refresh}
             </Button>
           </div>
         </div>
@@ -162,22 +165,22 @@ export default function StaffInventory() {
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Medicine
+                  {invT.medicineColumn}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Stock
+                  {invT.stockColumn}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Price
+                  {invT.priceColumn}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Expiry
+                  {invT.expiryColumn}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Status
+                  {invT.statusColumn}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Actions
+                  {invT.actionsColumn}
                 </th>
               </tr>
             </thead>

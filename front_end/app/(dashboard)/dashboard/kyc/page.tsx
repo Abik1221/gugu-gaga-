@@ -19,6 +19,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { FlowSidebar } from "@/components/custom/flow-sidebar";
+import { useLanguage } from "@/contexts/language-context";
+import { LanguageSelector } from "@/components/ui/language-selector";
 
 interface KYCData {
   status?: string;
@@ -35,6 +37,7 @@ interface KYCData {
 
 export default function OwnerKYCPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const { show } = useToast();
   const [kycData, setKycData] = useState<KYCData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -61,7 +64,7 @@ export default function OwnerKYCPage() {
       const tenantId = me.tenant_id;
 
       if (!tenantId) {
-        show({ title: "Error", description: "No tenant ID found", variant: "destructive" });
+        show({ title: t.ownerOnboarding.error, description: t.ownerOnboarding.noTenantIdFound, variant: "destructive" });
         return;
       }
 
@@ -92,7 +95,7 @@ export default function OwnerKYCPage() {
       }
     } catch (error: unknown) {
       console.error("Failed to load user data:", error);
-      show({ title: "Error", description: "Failed to load user information", variant: "destructive" });
+      show({ title: t.ownerOnboarding.error, description: t.ownerOnboarding.failedToLoadUserInfo, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -102,7 +105,7 @@ export default function OwnerKYCPage() {
     e.preventDefault();
 
     if (!existingLicense && !licenseFile) {
-      show({ title: "Error", description: "Business license document is required", variant: "destructive" });
+      show({ title: t.ownerOnboarding.error, description: t.ownerOnboarding.businessLicenseRequired, variant: "destructive" });
       return;
     }
 
@@ -130,14 +133,14 @@ export default function OwnerKYCPage() {
       });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({} as { detail?: string })) as { detail?: string };
-        throw new Error(errorData.detail || 'Failed to update KYC');
+        throw new Error(errorData.detail || t.ownerOnboarding.failedToUpdateKyc);
       }
-      show({ title: "Success", description: "KYC information updated successfully. Redirecting...", variant: "success" });
+      show({ title: t.ownerOnboarding.success, description: t.ownerOnboarding.kycUpdatedRedirecting, variant: "success" });
       setTimeout(() => router.push("/dashboard/owner"), 1500);
     } catch (error: unknown) {
       console.error("Submit error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to update KYC information";
-      show({ title: "Error", description: errorMessage, variant: "destructive" });
+      const errorMessage = error instanceof Error ? error.message : t.ownerOnboarding.failedToUpdateKycInfo;
+      show({ title: t.ownerOnboarding.error, description: errorMessage, variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
@@ -146,13 +149,13 @@ export default function OwnerKYCPage() {
   const getStatusBadge = () => {
     switch (kycData?.status) {
       case "pending":
-        return <Badge className="bg-amber-100 text-amber-800 border-0 px-4 py-2 text-sm font-semibold"><Clock className="h-4 w-4 mr-2" />Pending Review</Badge>;
+        return <Badge className="bg-amber-100 text-amber-800 border-0 px-4 py-2 text-sm font-semibold"><Clock className="h-4 w-4 mr-2" />{t.ownerOnboarding.pendingReview}</Badge>;
       case "approved":
-        return <Badge className="bg-emerald-100 text-emerald-800 border-0 px-4 py-2 text-sm font-semibold"><CheckCircle className="h-4 w-4 mr-2" />Approved</Badge>;
+        return <Badge className="bg-emerald-100 text-emerald-800 border-0 px-4 py-2 text-sm font-semibold"><CheckCircle className="h-4 w-4 mr-2" />{t.ownerOnboarding.approved}</Badge>;
       case "rejected":
-        return <Badge className="bg-rose-100 text-rose-800 border-0 px-4 py-2 text-sm font-semibold"><AlertCircle className="h-4 w-4 mr-2" />Rejected</Badge>;
+        return <Badge className="bg-rose-100 text-rose-800 border-0 px-4 py-2 text-sm font-semibold"><AlertCircle className="h-4 w-4 mr-2" />{t.ownerOnboarding.rejected}</Badge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-800 border-0 px-4 py-2 text-sm font-semibold">Not Submitted</Badge>;
+        return <Badge className="bg-gray-100 text-gray-800 border-0 px-4 py-2 text-sm font-semibold">{t.ownerOnboarding.notSubmitted}</Badge>;
     }
   };
 
@@ -165,7 +168,7 @@ export default function OwnerKYCPage() {
             <div className="flex items-center justify-center h-screen">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-200 border-t-emerald-600 mx-auto mb-4"></div>
-                <p className="text-gray-800 font-medium">Loading your information...</p>
+                <p className="text-gray-800 font-medium">{t.ownerOnboarding.loadingInfo}</p>
               </div>
             </div>
           </SidebarInset>
@@ -182,10 +185,11 @@ export default function OwnerKYCPage() {
           <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-6 flex items-center gap-4 sticky top-0 z-10 shadow-lg">
             <SidebarTrigger className="text-white" />
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-white">KYC Verification</h1>
-              <p className="text-sm text-emerald-100 mt-0.5">Complete your business verification to get started</p>
+              <h1 className="text-2xl font-bold text-white">{t.ownerOnboarding.kycTitle}</h1>
+              <p className="text-sm text-emerald-100 mt-0.5">{t.ownerOnboarding.kycSubtitle}</p>
             </div>
             <div className="flex items-center gap-3">
+              <LanguageSelector variant="ghost" className="text-white hover:bg-white/20 hover:text-white" />
               {getStatusBadge()}
               <Button
                 onClick={() => loadKYCData()}
@@ -194,7 +198,7 @@ export default function OwnerKYCPage() {
                 className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white font-semibold"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh Status
+                {t.ownerOnboarding.refreshStatus}
               </Button>
             </div>
           </div>
@@ -209,7 +213,7 @@ export default function OwnerKYCPage() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-rose-600 mt-0.5" />
                   <div>
-                    <h3 className="font-bold text-rose-900 mb-1">Application Rejected</h3>
+                    <h3 className="font-bold text-rose-900 mb-1">{t.ownerOnboarding.applicationRejected}</h3>
                     <p className="text-sm text-rose-700">{kycData.admin_notes}</p>
                   </div>
                 </div>
@@ -228,8 +232,8 @@ export default function OwnerKYCPage() {
                       <FileText className="h-6 w-6" />
                     </div>
                     <div>
-                      <div className="font-bold text-lg">{kycData?.status === "not_submitted" ? "Submit Verification Documents" : "Update Your Information"}</div>
-                      <div className="text-emerald-50 text-sm font-normal mt-1">Provide accurate information for quick approval</div>
+                      <div className="font-bold text-lg">{kycData?.status === "not_submitted" ? t.ownerOnboarding.submitVerification : t.ownerOnboarding.updateInformation}</div>
+                      <div className="text-emerald-50 text-sm font-normal mt-1">{t.ownerOnboarding.provideAccurateInfo}</div>
                     </div>
                   </CardTitle>
                 </CardHeader>
@@ -244,12 +248,12 @@ export default function OwnerKYCPage() {
                       >
                         <Label className="text-gray-900 font-semibold flex items-center gap-2">
                           <Building2 className="h-4 w-4 text-emerald-600" />
-                          Business Name <span className="text-rose-500">*</span>
+                          {t.ownerOnboarding.businessName} <span className="text-rose-500">*</span>
                         </Label>
                         <Input
                           value={formData.pharmacy_name}
                           onChange={(e) => setFormData(prev => ({ ...prev, pharmacy_name: e.target.value }))}
-                          placeholder="Enter your registered business name"
+                          placeholder={t.ownerOnboarding.enterBusinessName}
                           className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                           required
                         />
@@ -263,7 +267,7 @@ export default function OwnerKYCPage() {
                       >
                         <Label className="text-gray-900 font-semibold flex items-center gap-2">
                           <Phone className="h-4 w-4 text-emerald-600" />
-                          Phone Number <span className="text-rose-500">*</span>
+                          {t.ownerOnboarding.phoneNumber} <span className="text-rose-500">*</span>
                         </Label>
                         <Input
                           value={formData.owner_phone}
@@ -283,12 +287,12 @@ export default function OwnerKYCPage() {
                     >
                       <Label className="text-gray-900 font-semibold flex items-center gap-2">
                         <MapPin className="h-4 w-4 text-emerald-600" />
-                        Business Address <span className="text-rose-500">*</span>
+                        {t.ownerOnboarding.businessAddress} <span className="text-rose-500">*</span>
                       </Label>
                       <Input
                         value={formData.pharmacy_address}
                         onChange={(e) => setFormData(prev => ({ ...prev, pharmacy_address: e.target.value }))}
-                        placeholder="Full business location address"
+                        placeholder={t.ownerOnboarding.fullBusinessAddress}
                         className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                         required
                       />
@@ -303,12 +307,12 @@ export default function OwnerKYCPage() {
                       >
                         <Label className="text-gray-900 font-semibold flex items-center gap-2">
                           <CreditCard className="h-4 w-4 text-emerald-600" />
-                          National ID Number <span className="text-rose-500">*</span>
+                          {t.ownerOnboarding.nationalId} <span className="text-rose-500">*</span>
                         </Label>
                         <Input
                           value={formData.id_number}
                           onChange={(e) => setFormData(prev => ({ ...prev, id_number: e.target.value }))}
-                          placeholder="Government-issued ID"
+                          placeholder={t.ownerOnboarding.govIssuedId}
                           className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                           required
                         />
@@ -322,12 +326,12 @@ export default function OwnerKYCPage() {
                       >
                         <Label className="text-gray-900 font-semibold flex items-center gap-2">
                           <Hash className="h-4 w-4 text-emerald-600" />
-                          TIN Number <span className="text-rose-500">*</span>
+                          {t.ownerOnboarding.tinNumber} <span className="text-rose-500">*</span>
                         </Label>
                         <Input
                           value={formData.tin_number}
                           onChange={(e) => setFormData(prev => ({ ...prev, tin_number: e.target.value }))}
-                          placeholder="Tax Identification Number"
+                          placeholder={t.ownerOnboarding.taxIdNumber}
                           className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                           required
                         />
@@ -342,12 +346,12 @@ export default function OwnerKYCPage() {
                     >
                       <Label className="text-gray-900 font-semibold flex items-center gap-2">
                         <MessageSquare className="h-4 w-4 text-emerald-600" />
-                        Additional Notes
+                        {t.ownerOnboarding.additionalNotes}
                       </Label>
                       <Input
                         value={formData.notes}
                         onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                        placeholder="Any additional information (optional)"
+                        placeholder={t.ownerOnboarding.anyAdditionalInfo}
                         className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                       />
                     </motion.div>
@@ -360,11 +364,11 @@ export default function OwnerKYCPage() {
                     >
                       <Label className="text-gray-900 font-semibold flex items-center gap-2">
                         <Upload className="h-4 w-4 text-emerald-600" />
-                        Business License Document <span className="text-rose-500">*</span>
+                        {t.ownerOnboarding.businessLicenseDoc} <span className="text-rose-500">*</span>
                       </Label>
                       {existingLicense && (
                         <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-                          <p className="text-sm text-emerald-900 font-semibold mb-2">✓ Current License Document</p>
+                          <p className="text-sm text-emerald-900 font-semibold mb-2">✓ {t.ownerOnboarding.currentLicenseDoc}</p>
                           {existingLicense.startsWith('data:image') ? (
                             <div className="relative w-full max-w-md">
                               <img
@@ -396,15 +400,15 @@ export default function OwnerKYCPage() {
                             </div>
                             <div>
                               <p className="text-sm font-semibold text-gray-900">
-                                {licenseFile ? licenseFile.name : existingLicense ? "Upload new document (optional)" : "Click to upload license"}
+                                {licenseFile ? licenseFile.name : existingLicense ? t.ownerOnboarding.uploadNewDocOptional : t.ownerOnboarding.clickToUploadLicense}
                               </p>
                               <p className="text-xs text-gray-500 mt-1">
-                                {existingLicense ? "Leave empty to keep current document" : "PDF, JPG, JPEG or PNG (max 10MB)"}
+                                {existingLicense ? t.ownerOnboarding.leaveEmptyToKeep : t.ownerOnboarding.fileFormatHint}
                               </p>
                             </div>
                           </div>
                           <div className="px-4 py-2 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition">
-                            BROWSE
+                            {t.ownerOnboarding.browse}
                           </div>
                         </label>
                       </div>
@@ -423,9 +427,9 @@ export default function OwnerKYCPage() {
                         {isSubmitting ? (
                           <span className="flex items-center justify-center gap-2">
                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                            Processing...
+                            {t.ownerOnboarding.processing}
                           </span>
-                        ) : kycData?.status === "not_submitted" ? "Submit KYC Application" : "Update KYC Information"}
+                        ) : kycData?.status === "not_submitted" ? t.ownerOnboarding.submitKycApp : t.ownerOnboarding.updateKycInfo}
                       </Button>
                     </motion.div>
                   </form>
@@ -442,8 +446,8 @@ export default function OwnerKYCPage() {
               <div className="flex items-start gap-3">
                 <Clock className="h-5 w-5 text-amber-600 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-amber-900 mb-1">What happens next?</h4>
-                  <p className="text-sm text-amber-800">After submitting your KYC information, our admin team will review it within 24-48 hours. Once approved, you'll proceed to payment verification and unlock your dashboard.</p>
+                  <h4 className="font-bold text-amber-900 mb-1">{t.ownerOnboarding.whatHappensNext}</h4>
+                  <p className="text-sm text-amber-800">{t.ownerOnboarding.whatHappensNextMsg}</p>
                 </div>
               </div>
             </motion.div>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/language-context";
 
 type AdminPharmacy = {
   id: number;
@@ -74,12 +75,12 @@ type ConfirmOptions = {
   tempPassword: string;
 };
 
-const STATUS_SECTIONS: { key: AdminPharmacy["status_category"]; title: string }[] = [
-  { key: "pending_kyc", title: "Pending KYC" },
-  { key: "awaiting_payment", title: "Awaiting Payment" },
-  { key: "pending_verification", title: "Awaiting Verification" },
-  { key: "active", title: "Active Pharmacies" },
-  { key: "blocked", title: "Blocked / Rejected" },
+const STATUS_KEYS: AdminPharmacy["status_category"][] = [
+  "pending_kyc",
+  "awaiting_payment",
+  "pending_verification",
+  "active",
+  "blocked",
 ];
 
 const STATUS_TONE: Record<string, "primary" | "muted" | "outline" | "danger"> = {
@@ -121,6 +122,16 @@ function formatDateTime(value?: string | null, options: Intl.DateTimeFormatOptio
 
 export default function AdminPharmaciesPage() {
   const { show } = useToast();
+  const { t } = useLanguage();
+  const pharmT = t.adminDashboard.pharmacies;
+
+  const statusSections = useMemo(() => [
+    { key: "pending_kyc", title: pharmT.pendingKyc },
+    { key: "awaiting_payment", title: pharmT.awaitingPayment },
+    { key: "pending_verification", title: pharmT.awaitingVerification },
+    { key: "active", title: pharmT.activePharmacies },
+    { key: "blocked", title: pharmT.blockedRejected },
+  ], [pharmT]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<AdminPharmacy[]>([]);
@@ -171,7 +182,7 @@ export default function AdminPharmaciesPage() {
 
   const grouped = useMemo(() => {
     const map = new Map<string, AdminPharmacy[]>();
-    STATUS_SECTIONS.forEach((section) => map.set(section.key, []));
+    STATUS_KEYS.forEach((key) => map.set(key, []));
     items.forEach((item) => {
       const bucket = map.get(item.status_category) ?? map.get("blocked") ?? [];
       bucket.push(item);
@@ -212,13 +223,13 @@ export default function AdminPharmaciesPage() {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Pharmacy Management</h1>
-            <p className="text-sm text-gray-600 mt-1">Manage pharmacy applications and payments</p>
+            <h1 className="text-2xl font-bold text-gray-900">{pharmT.title}</h1>
+            <p className="text-sm text-gray-600 mt-1">{pharmT.subtitle}</p>
           </div>
           <div className="flex gap-3">
             <div className="relative">
               <Input
-                placeholder="Search pharmacies..."
+                placeholder={pharmT.searchPlaceholder}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 className="pl-10 w-64 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
@@ -247,7 +258,7 @@ export default function AdminPharmaciesPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            {STATUS_SECTIONS.map((section) => {
+            {statusSections.map((section) => {
               const sectionItems = grouped.get(section.key) || [];
               if (sectionItems.length === 0) return null;
               return (
@@ -288,14 +299,14 @@ export default function AdminPharmaciesPage() {
                               </div>
                               <div className="flex flex-col gap-2">
                                 <StatusPill tone={statusTone}>{ph.status_label}</StatusPill>
-                                {ph.owner_approved && <StatusPill tone="outline">Owner approved</StatusPill>}
+                                {ph.owner_approved && <StatusPill tone="outline">{pharmT.actions.approve}d</StatusPill>}
                               </div>
                             </div>
                           </CardHeader>
                           <CardContent className="space-y-5">
                             <div className="grid gap-3">
-                              <InfoRow label="Owner" value={ph.owner_email || "-"} description={ph.owner_phone} />
-                              <InfoRow label="Created" value={formatDateTime(ph.created_at)} />
+                              <InfoRow label={pharmT.tableHeaders.owner} value={ph.owner_email || "-"} description={ph.owner_phone} />
+                              <InfoRow label={pharmT.tableHeaders.joined} value={formatDateTime(ph.created_at)} />
                               <InfoRow label="Address" value={ph.address || "-"} />
                               <InfoRow
                                 label="Subscription"
@@ -377,7 +388,7 @@ export default function AdminPharmaciesPage() {
                                     e.stopPropagation();
                                     openAction({ type: "approve", tenantId: ph.tenant_id, kycId: ph.kyc_id, name: ph.name });
                                   }}
-                                >✓ Approve</Button>
+                                >✓ {pharmT.actions.approve}</Button>
                                 <Button
                                   variant="outline"
                                   disabled={!canReject}

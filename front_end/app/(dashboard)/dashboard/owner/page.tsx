@@ -10,6 +10,7 @@ import {
   OwnerAnalyticsAPI,
   type OwnerAnalyticsResponse,
 } from "@/utils/api";
+import { useLanguage } from "@/contexts/language-context";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -67,6 +68,8 @@ function EmptyState({ title, description }: { title: string; description: string
 
 export default function OwnerDashboardPage() {
   const { show } = useToast();
+  const { t } = useLanguage();
+  const ownerT = t.ownerDashboard.main;
 
   const [me, setMe] = useState<any>(null);
   const [tenantId, setTenantId] = useState<string | null>(null);
@@ -104,7 +107,7 @@ export default function OwnerDashboardPage() {
       try {
         const profile = await AuthAPI.me();
         if (!active) return;
-        
+
         // Check flow status
         if (profile?.kyc_status !== "approved") {
           window.location.href = "/dashboard/kyc";
@@ -114,7 +117,7 @@ export default function OwnerDashboardPage() {
           window.location.href = "/dashboard/payment";
           return;
         }
-        
+
         setMe(profile);
         const tid = profile?.tenant_id || null;
         setTenantId(tid);
@@ -231,10 +234,10 @@ export default function OwnerDashboardPage() {
       <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-md lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold text-black">
-            {loadingUser ? "Loading..." : `Welcome back, ${displayName}`}
+            {loadingUser ? ownerT.loading : `${ownerT.welcomeBack}, ${displayName}`}
           </h1>
           <p className="max-w-xl text-sm text-slate-900">
-            Monitor revenue, compare branches, and coach your pharmacy team from a single command center.
+            {ownerT.subtitle}
           </p>
         </div>
 
@@ -273,15 +276,15 @@ export default function OwnerDashboardPage() {
 
           {/* Actions */}
           <Button variant="outline" size="sm" onClick={handleRefresh} disabled={analyticsLoading || !tenantId}>
-            Refresh
+            {t.ownerDashboard.common.refresh}
           </Button>
 
           <Link href="/dashboard/owner/integrations">
-            <Button variant="outline" size="sm">Connect tools</Button>
+            <Button variant="outline" size="sm">{ownerT.connectTools}</Button>
           </Link>
 
           <Link href="/dashboard/owner/staff/new">
-            <Button size="sm" className="bg-emerald-700 hover:bg-emerald-800 text-white shadow-md">Invite staff</Button>
+            <Button size="sm" className="bg-emerald-700 hover:bg-emerald-800 text-white shadow-md">{ownerT.inviteStaff}</Button>
           </Link>
         </div>
       </header>

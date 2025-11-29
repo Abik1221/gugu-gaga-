@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
-import { Package, DollarSign, ShoppingCart, AlertTriangle, TrendingUp, Users, Truck, Target, MessageSquare, Calendar, FileText } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+import { Package, DollarSign, ShoppingCart, TrendingUp, Users, Truck, Star, BarChart3 } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
+import Link from "next/link";
 
 interface SupplierDashboardData {
   total_products: number;
@@ -17,57 +18,49 @@ interface SupplierDashboardData {
   pending_shipments: number;
   customer_satisfaction: number;
   order_fulfillment_rate: number;
-  inventory_turnover: number;
-  active_customers: number;
-  overdue_invoices: number;
-  performance_score: number;
+  performance_score?: number;
 }
 
 export default function SupplierDashboard() {
   const { show } = useToast();
-  const [data, setData] = useState<SupplierDashboardData | null>(null);
+  const { t } = useLanguage();
+  const suppT = t.supplierDashboard.dashboard;
   const [loading, setLoading] = useState(true);
-
-  const loadDashboard = async () => {
-    setLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockData: SupplierDashboardData = {
-        total_products: 245,
-        total_orders: 1847,
-        monthly_revenue: 125750.50,
-        pending_shipments: 23,
-        customer_satisfaction: 94.5,
-        order_fulfillment_rate: 98.2,
-        inventory_turnover: 8.4,
-        active_customers: 156,
-        overdue_invoices: 5,
-        performance_score: 92.8
-      };
-      
-      setData(mockData);
-    } catch (err: any) {
-      show({
-        variant: "destructive",
-        title: "Failed to load dashboard",
-        description: err?.message || "Unable to fetch dashboard data",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [stats, setStats] = useState<SupplierDashboardData | null>(null);
 
   useEffect(() => {
-    loadDashboard();
-  }, []);
+    async function loadStats() {
+      try {
+        // Mock data for now
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setStats({
+          total_products: 245,
+          total_orders: 1847,
+          monthly_revenue: 125750.50,
+          pending_shipments: 23,
+          customer_satisfaction: 94.5,
+          order_fulfillment_rate: 98.2,
+          performance_score: 92,
+        });
+      } catch (error: any) {
+        show({
+          variant: 'destructive',
+          title: 'Error',
+          description: error.message || 'Failed to load dashboard statistics',
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadStats();
+  }, [show]);
 
   if (loading) {
     return (
-      <div className="p-6">
-        <Skeleton className="h-8 w-48 mb-6" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
+      <div className="space-y-6 p-6">
+        <Skeleton className="h-20 w-full" />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
             <Skeleton key={i} className="h-32" />
           ))}
         </div>
@@ -75,193 +68,172 @@ export default function SupplierDashboard() {
     );
   }
 
+  const metricCards = [
+    {
+      title: suppT.totalProducts,
+      value: stats?.total_products ?? 0,
+      icon: Package,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+    },
+    {
+      title: suppT.totalOrders,
+      value: stats?.total_orders ?? 0,
+      icon: ShoppingCart,
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+    },
+    {
+      title: suppT.monthlyRevenue,
+      value: `ETB ${stats?.monthly_revenue?.toLocaleString() ?? '0'}`,
+      icon: DollarSign,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+    },
+    {
+      title: suppT.pendingShipments,
+      value: stats?.pending_shipments ?? 0,
+      icon: Truck,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+    },
+  ];
+
+  const performanceCards = [
+    {
+      title: suppT.customerSatisfaction,
+      value: `${stats?.customer_satisfaction ?? 0}%`,
+      icon: Star,
+      color: 'text-yellow-600',
+    },
+    {
+      title: suppT.orderFulfillmentRate,
+      value: `${stats?.order_fulfillment_rate ?? 0}%`,
+      icon: TrendingUp,
+      color: 'text-green-600',
+    },
+    {
+      title: suppT.performanceScore,
+      value: `${stats?.performance_score ?? 0}%`,
+      icon: BarChart3,
+      color: 'text-blue-600',
+    },
+  ];
+
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Supplier Dashboard</h2>
-        <p className="text-gray-600">Comprehensive business overview and performance metrics</p>
+    <div className="space-y-6 p-6">
+      {/* Header */}
+      <div className="space-y-2">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{suppT.title}</h2>
+        <p className="text-gray-600">{suppT.subtitle}</p>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data?.total_products || 0}</div>
-            <p className="text-xs text-green-600">+12% from last month</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data?.total_orders || 0}</div>
-            <p className="text-xs text-green-600">+8% from last month</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${data?.monthly_revenue?.toLocaleString() || "0"}</div>
-            <p className="text-xs text-green-600">+15% from last month</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Shipments</CardTitle>
-            <Truck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{data?.pending_shipments || 0}</div>
-            <p className="text-xs text-muted-foreground">Awaiting dispatch</p>
-          </CardContent>
-        </Card>
+      {/* Metrics Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {metricCards.map((card, index) => (
+          <Card key={index} className="hover:shadow-lg transition-shadow duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+              <div className={`p-2 rounded-lg ${card.bgColor}`}>
+                <card.icon className={`h-4 w-4 ${card.color}`} />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{card.value}</div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Performance Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Customer Satisfaction</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold mb-2">{data?.customer_satisfaction || 0}%</div>
-            <Progress value={data?.customer_satisfaction || 0} className="mb-2" />
-            <p className="text-xs text-muted-foreground">Based on 1,247 reviews</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Order Fulfillment Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold mb-2">{data?.order_fulfillment_rate || 0}%</div>
-            <Progress value={data?.order_fulfillment_rate || 0} className="mb-2" />
-            <p className="text-xs text-muted-foreground">On-time delivery rate</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Performance Score</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold mb-2">{data?.performance_score || 0}%</div>
-            <Progress value={data?.performance_score || 0} className="mb-2" />
-            <p className="text-xs text-muted-foreground">Overall supplier rating</p>
-          </CardContent>
-        </Card>
+      {/* Performance Cards */}
+      <div className="grid gap-4 md:grid-cols-3">
+        {performanceCards.map((card, index) => (
+          <Card key={index} className="hover:shadow-lg transition-shadow duration-200">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+              <card.icon className={`h-4 w-4 ${card.color}`} />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{card.value}</div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button asChild className="w-full">
-              <a href="/dashboard/supplier/products">
-                <Package className="h-4 w-4 mr-2" />
-                Manage Products
-              </a>
-            </Button>
-            <Button asChild variant="outline" className="w-full">
-              <a href="/dashboard/supplier/orders">
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Process Orders
-              </a>
-            </Button>
-            <Button asChild variant="outline" className="w-full">
-              <a href="/dashboard/supplier/chat">
-                <MessageSquare className="h-4 w-4 mr-2" />
-                AI Assistant
-              </a>
-            </Button>
-            <Button asChild variant="outline" className="w-full">
-              <a href="/dashboard/supplier/analytics">
-                <TrendingUp className="h-4 w-4 mr-2" />
-                View Analytics
-              </a>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Business Insights</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Active Customers</span>
-                <span className="font-medium">{data?.active_customers || 0}</span>
+      {/* Business Insights */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{suppT.businessInsights}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium">{suppT.activeCustomers}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Inventory Turnover</span>
-                <span className="font-medium">{data?.inventory_turnover || 0}x</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Overdue Invoices</span>
-                <span className="font-medium text-red-600">{data?.overdue_invoices || 0}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Avg. Order Value</span>
-                <span className="font-medium">$2,847</span>
-              </div>
+              <p className="text-2xl font-bold">248</p>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Large order received</p>
-                  <p className="text-xs text-gray-500">MediCorp - $15,750</p>
-                </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium">{suppT.inventoryTurnover}</span>
               </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Shipment dispatched</p>
-                  <p className="text-xs text-gray-500">Order #12847 - PharmaCare</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">Payment received</p>
-                  <p className="text-xs text-gray-500">Invoice #INV-2024-0156</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">New customer onboarded</p>
-                  <p className="text-xs text-gray-500">HealthPlus Pharmacy</p>
-                </div>
-              </div>
+              <p className="text-2xl font-bold">4.2x</p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-4 w-4 text-orange-600" />
+                <span className="text-sm font-medium">{suppT.overdueInvoices}</span>
+              </div>
+              <p className="text-2xl font-bold">12</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{suppT.quickActions}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+            <Link href="/dashboard/supplier/products">
+              <Button className="w-full" variant="outline">
+                <Package className="mr-2 h-4 w-4" />
+                {suppT.manageProducts}
+              </Button>
+            </Link>
+            <Link href="/dashboard/supplier/orders">
+              <Button className="w-full" variant="outline">
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                {suppT.processOrders}
+              </Button>
+            </Link>
+            <Button className="w-full" variant="outline">
+              <BarChart3 className="mr-2 h-4 w-4" />
+              {suppT.viewAnalytics}
+            </Button>
+            <Button className="w-full" variant="outline">
+              <TrendingUp className="mr-2 h-4 w-4" />
+              {suppT.aiAssistant}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Activity */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{suppT.recentActivity}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <p className="text-sm text-gray-500">No recent activity to display</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

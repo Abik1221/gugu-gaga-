@@ -892,6 +892,155 @@ export interface Translations {
         noteMsg: string;
     };
 
+    // Admin Dashboard
+    adminDashboard: {
+        analytics: {
+            title: string;
+            subtitle: string;
+            totalRevenue: string;
+            totalPharmacies: string;
+            activePharmacies: string;
+            pendingKyc: string;
+            blockedPharmacies: string;
+            totalBranches: string;
+            pharmacyOwners: string;
+            aiUsageTrend: string;
+            aiUsageDesc: string;
+            topPharmacies: string;
+            topPharmaciesDesc: string;
+            branchFootprint: string;
+            branchFootprintDesc: string;
+            viewSegments: string;
+        };
+        pharmacies: {
+            title: string;
+            subtitle: string;
+            searchPlaceholder: string;
+            statusFilter: string;
+            allStatuses: string;
+            active: string;
+            pending: string;
+            blocked: string;
+            pendingKyc: string;
+            awaitingPayment: string;
+            awaitingVerification: string;
+            activePharmacies: string;
+            blockedRejected: string;
+            tableHeaders: {
+                pharmacy: string;
+                owner: string;
+                branches: string;
+                status: string;
+                joined: string;
+                actions: string;
+            };
+            actions: {
+                viewDetails: string;
+                approve: string;
+                block: string;
+                unblock: string;
+                reject: string;
+                verifyPayment: string;
+                rejectPayment: string;
+            };
+        };
+        users: {
+            title: string;
+            subtitle: string;
+            inviteUser: string;
+            searchPlaceholder: string;
+            tableHeaders: {
+                user: string;
+                role: string;
+                status: string;
+                lastActive: string;
+                actions: string;
+            };
+        };
+    };
+
+    // Supplier Dashboard
+    supplierDashboard: {
+        dashboard: {
+            title: string;
+            subtitle: string;
+            totalProducts: string;
+            totalOrders: string;
+            monthlyRevenue: string;
+            pendingShipments: string;
+            customerSatisfaction: string;
+            orderFulfillmentRate: string;
+            performanceScore: string;
+            quickActions: string;
+            manageProducts: string;
+            processOrders: string;
+            aiAssistant: string;
+            viewAnalytics: string;
+            businessInsights: string;
+            activeCustomers: string;
+            inventoryTurnover: string;
+            overdueInvoices: string;
+            recentActivity: string;
+        };
+        products: {
+            title: string;
+            subtitle: string;
+            addProduct: string;
+            searchPlaceholder: string;
+            tableHeaders: {
+                product: string;
+                category: string;
+                price: string;
+                stock: string;
+                status: string;
+                actions: string;
+            };
+        };
+        orders: {
+            title: string;
+            subtitle: string;
+            searchPlaceholder: string;
+            tableHeaders: {
+                orderId: string;
+                customer: string;
+                date: string;
+                total: string;
+                status: string;
+                actions: string;
+            };
+        };
+    };
+
+    // Verify Page
+    verifyPage: {
+        title: string;
+        subtitle: string;
+        secureVerification: string;
+        highlights: {
+            security: { title: string; desc: string; };
+            delivery: { title: string; desc: string; };
+            perks: { title: string; desc: string; };
+        };
+        form: {
+            title: string;
+            subtitle: string;
+            emailLabel: string;
+            codeLabel: string;
+            button: string;
+            verifying: string;
+            resend: string;
+            resendTimer: string;
+            sending: string;
+            spamNote: string;
+            expiryNote: string;
+        };
+        success: {
+            title: string;
+            desc: string;
+            button: string;
+        };
+    };
+
 }
 
 export const translations: Record<Language, Translations> = {
@@ -1619,6 +1768,186 @@ export const translations: Record<Language, Translations> = {
             note: 'Note',
             noteMsg: 'Please ensure all details are correct before submitting.',
         },
+        ownerOnboarding: {
+            loadingInfo: 'Loading your information...',
+            kycTitle: 'KYC Verification',
+            kycSubtitle: 'Complete your business verification to get started',
+            pendingReview: 'Pending Review',
+            approved: 'Approved',
+            rejected: 'Rejected',
+            notSubmitted: 'Not Submitted',
+            refreshStatus: 'Refresh Status',
+            applicationRejected: 'Application Rejected',
+            submitVerification: 'Submit Verification Documents',
+            updateInformation: 'Update Your Information',
+            provideAccurateInfo: 'Provide accurate information for quick approval',
+            businessName: 'Business Name',
+            enterBusinessName: 'Enter your registered business name',
+            phoneNumber: 'Phone Number',
+            businessAddress: 'Business Address',
+            fullBusinessAddress: 'Full business location address',
+            nationalId: 'National ID Number',
+            govIssuedId: 'Government-issued ID',
+            tinNumber: 'TIN Number',
+            taxIdNumber: 'Tax Identification Number',
+            additionalNotes: 'Additional Notes',
+            anyAdditionalInfo: 'Any additional information (optional)',
+            businessLicenseDoc: 'Business License Document',
+            currentLicenseDoc: 'Current License Document',
+            uploadNewDocOptional: 'Upload new document (optional)',
+            clickToUploadLicense: 'Click to upload license',
+            leaveEmptyToKeep: 'Leave empty to keep current document',
+            fileFormatHint: 'PDF, JPG, JPEG or PNG (max 10MB)',
+            browse: 'BROWSE',
+            processing: 'Processing...',
+            submitKycApp: 'Submit KYC Application',
+            updateKycInfo: 'Update KYC Information',
+            whatHappensNext: 'What happens next?',
+            whatHappensNextMsg: 'After submitting your KYC information, our admin team will review it within 24-48 hours. Once approved, you\'ll proceed to payment verification and unlock your dashboard.',
+        },
+        adminDashboard: {
+            analytics: {
+                title: 'Admin Analytics',
+                subtitle: 'Operational health, AI usage, and branch footprint in one view.',
+                totalRevenue: 'Total Revenue',
+                totalPharmacies: 'Total Pharmacies',
+                activePharmacies: 'Active Pharmacies',
+                pendingKyc: 'Pending KYC',
+                blockedPharmacies: 'Blocked Pharmacies',
+                totalBranches: 'Total Branches',
+                pharmacyOwners: 'Pharmacy Owners',
+                aiUsageTrend: 'AI Usage Trend',
+                aiUsageDesc: 'Daily tokens consumed across all pharmacies.',
+                topPharmacies: 'Top Pharmacies by AI Usage',
+                topPharmaciesDesc: 'Monitor which tenants are leaning on the assistant the most.',
+                branchFootprint: 'Branch Footprint',
+                branchFootprintDesc: 'Aggregate branches by tenant to spot growth and outliers.',
+                viewSegments: 'View Segments',
+            },
+            pharmacies: {
+                title: 'Pharmacy Management',
+                subtitle: 'Monitor and manage all pharmacy tenants.',
+                searchPlaceholder: 'Search pharmacies...',
+                statusFilter: 'Status',
+                allStatuses: 'All Statuses',
+                active: 'Active',
+                pending: 'Pending',
+                blocked: 'Blocked',
+                pendingKyc: 'Pending KYC',
+                awaitingPayment: 'Awaiting Payment',
+                awaitingVerification: 'Awaiting Verification',
+                activePharmacies: 'Active Pharmacies',
+                blockedRejected: 'Blocked / Rejected',
+                tableHeaders: {
+                    pharmacy: 'Pharmacy',
+                    owner: 'Owner',
+                    branches: 'Branches',
+                    status: 'Status',
+                    joined: 'Joined',
+                    actions: 'Actions',
+                },
+                actions: {
+                    viewDetails: 'View Details',
+                    approve: 'Approve',
+                    block: 'Block',
+                    unblock: 'Unblock',
+                    reject: 'Reject',
+                    verifyPayment: 'Verify Payment',
+                    rejectPayment: 'Reject Payment',
+                }
+            },
+            users: {
+                title: 'User Management',
+                subtitle: 'Manage system users and their roles.',
+                inviteUser: 'Invite User',
+                searchPlaceholder: 'Search users...',
+                tableHeaders: {
+                    user: 'User',
+                    role: 'Role',
+                    status: 'Status',
+                    lastActive: 'Last Active',
+                    actions: 'Actions',
+                }
+            }
+        },
+        supplierDashboard: {
+            dashboard: {
+                title: 'Supplier Dashboard',
+                subtitle: 'Comprehensive business overview and performance metrics',
+                totalProducts: 'Total Products',
+                totalOrders: 'Total Orders',
+                monthlyRevenue: 'Monthly Revenue',
+                pendingShipments: 'Pending Shipments',
+                customerSatisfaction: 'Customer Satisfaction',
+                orderFulfillmentRate: 'Order Fulfillment Rate',
+                performanceScore: 'Performance Score',
+                quickActions: 'Quick Actions',
+                manageProducts: 'Manage Products',
+                processOrders: 'Process Orders',
+                aiAssistant: 'AI Assistant',
+                viewAnalytics: 'View Analytics',
+                businessInsights: 'Business Insights',
+                activeCustomers: 'Active Customers',
+                inventoryTurnover: 'Inventory Turnover',
+                overdueInvoices: 'Overdue Invoices',
+                recentActivity: 'Recent Activity',
+            },
+            products: {
+                title: 'Product Management',
+                subtitle: 'Manage your product catalog and inventory',
+                addProduct: 'Add Product',
+                searchPlaceholder: 'Search products...',
+                tableHeaders: {
+                    product: 'Product',
+                    category: 'Category',
+                    price: 'Price',
+                    stock: 'Stock',
+                    status: 'Status',
+                    actions: 'Actions',
+                }
+            },
+            orders: {
+                title: 'Order Management',
+                subtitle: 'Process and track customer orders',
+                searchPlaceholder: 'Search orders...',
+                tableHeaders: {
+                    orderId: 'Order ID',
+                    customer: 'Customer',
+                    date: 'Date',
+                    total: 'Total',
+                    status: 'Status',
+                    actions: 'Actions',
+                }
+            }
+        },
+        verifyPage: {
+            title: 'Confirm your email and unlock the partner dashboard',
+            subtitle: 'Enter the one-time code sent to your inbox. Once it matches, we\'ll activate your affiliate portal and load your referral toolkit.',
+            secureVerification: 'Secure verification',
+            highlights: {
+                security: { title: 'Two-step security', desc: 'Every affiliate login is protected with verification codes for peace of mind.' },
+                delivery: { title: 'Fast email delivery', desc: 'Codes arrive within seconds. Having trouble? Resend or reach partner support.' },
+                perks: { title: 'Access partner perks', desc: 'Once verified you can generate referral links and track commissions instantly.' }
+            },
+            form: {
+                title: 'Verify your account',
+                subtitle: 'Enter the six-digit code we just emailed to finish activating your partner access.',
+                emailLabel: 'Email address',
+                codeLabel: 'Verification code',
+                button: 'Verify account',
+                verifying: 'Verifying...',
+                resend: 'resend code',
+                resendTimer: 'resend in {seconds}s',
+                sending: 'Sending...',
+                spamNote: 'Didn\'t get the code? Check your spam folder or',
+                expiryNote: 'Your verification code expires after 10 minutes for security.'
+            },
+            success: {
+                title: 'Account verified!',
+                desc: 'Your account has been activated. We\'ll send you to the affiliate dashboard in a moment.',
+                button: 'Go now'
+            }
+        },
     },
     am: {
         nav: {
@@ -2336,6 +2665,186 @@ export const translations: Record<Language, Translations> = {
             note: 'ማስታወሻ',
             noteMsg: 'እባክዎ ከማስገባትዎ በፊት ሁሉም ዝርዝሮች ትክክል መሆናቸውን ያረጋግጡ።',
         },
+        ownerOnboarding: {
+            loadingInfo: 'መረጃዎን በመጫን ላይ...',
+            kycTitle: 'KYC ማረጋገጫ',
+            kycSubtitle: 'ለመጀመር የንግድ ማረጋገጫዎን ያጠናቅቁ',
+            pendingReview: 'ግምገማ ላይ',
+            approved: 'ተቀባይነት አግኝቷል',
+            rejected: 'ውድቅ ተደርጓል',
+            notSubmitted: 'አልገባም',
+            refreshStatus: 'ሁኔታን አድስ',
+            applicationRejected: 'ማመልከቻ ውድቅ ተደርጓል',
+            submitVerification: 'የማረጋገጫ ሰነዶችን ያስገቡ',
+            updateInformation: 'መረጃዎን ያዘምኑ',
+            provideAccurateInfo: 'ለፈጣን ማረጋገጫ ትክክለኛ መረጃ ያቅርቡ',
+            businessName: 'የንግድ ስም',
+            enterBusinessName: 'የተመዘገበ የንግድ ስምዎን ያስገቡ',
+            phoneNumber: 'ስልክ ቁጥር',
+            businessAddress: 'የንግድ አድራሻ',
+            fullBusinessAddress: 'ሙሉ የንግድ ቦታ አድራሻ',
+            nationalId: 'ብሔራዊ መታወቂያ ቁጥር',
+            govIssuedId: 'በመንግስት የተሰጠ መታወቂያ',
+            tinNumber: 'የታክስ መለያ ቁጥር (TIN)',
+            taxIdNumber: 'የግብር መለያ ቁጥር',
+            additionalNotes: 'ተጨማሪ ማስታወሻዎች',
+            anyAdditionalInfo: 'ማንኛውም ተጨማሪ መረጃ (አማራጭ)',
+            businessLicenseDoc: 'የንግድ ፈቃድ ሰነድ',
+            currentLicenseDoc: 'የአሁን ፈቃድ ሰነድ',
+            uploadNewDocOptional: 'አዲስ ሰነድ ይስቀሉ (አማራጭ)',
+            clickToUploadLicense: 'ፈቃድ ለመስቀል ጠቅ ያድርጉ',
+            leaveEmptyToKeep: 'የአሁኑን ሰነድ ለማቆየት ባዶ ይተው',
+            fileFormatHint: 'PDF, JPG, JPEG ወይም PNG (ከፍተኛ 10MB)',
+            browse: 'አስስ',
+            processing: 'በማስኬድ ላይ...',
+            submitKycApp: 'የKYC ማመልከቻ ያስገቡ',
+            updateKycInfo: 'የKYC መረጃን ያዘምኑ',
+            whatHappensNext: 'ቀጥሎ ምን ይከሰታል?',
+            whatHappensNextMsg: 'የKYC መረጃዎን ካስገቡ በኋላ፣ የአስተዳዳሪ ቡድናችን በ24-48 ሰዓታት ውስጥ ይገመግመዋል። አንዴ ከፀደቀ፣ ወደ ክፍያ ማረጋገጫ ይቀጥላሉ እና ዳሽቦርድዎን ይከፍታሉ።',
+        },
+        adminDashboard: {
+            analytics: {
+                title: 'የአስተዳዳሪ ትንታኔ',
+                subtitle: 'የስራ እንቅስቃሴ ጤና፣ የኤአይ አጠቃቀም እና የቅርንጫፍ ስርጭት በአንድ እይታ።',
+                totalRevenue: 'ጠቅላላ ገቢ',
+                totalPharmacies: 'ጠቅላላ መድኃኒት ቤቶች',
+                activePharmacies: 'ንቁ መድኃኒት ቤቶች',
+                pendingKyc: 'በመጠባበቅ ላይ ያለ KYC',
+                blockedPharmacies: 'የታገዱ መድኃኒት ቤቶች',
+                totalBranches: 'ጠቅላላ ቅርንጫፎች',
+                pharmacyOwners: 'የመድኃኒት ቤት ባለቤቶች',
+                aiUsageTrend: 'የኤአይ አጠቃቀም አዝማሚያ',
+                aiUsageDesc: 'በሁሉም መድኃኒት ቤቶች የሚወሰዱ ዕለታዊ ቶከኖች።',
+                topPharmacies: 'ከፍተኛ የኤአይ ተጠቃሚ መድኃኒት ቤቶች',
+                topPharmaciesDesc: 'የትኞቹ ተከራዮች ረዳቱን በብዛት እንደሚጠቀሙ ይከታተሉ።',
+                branchFootprint: 'የቅርንጫፍ አሻራ',
+                branchFootprintDesc: 'እድገትን እና ልዩነቶችን ለመለየት ቅርንጫፎችን በተከራይ ይሰብስቡ።',
+                viewSegments: 'ክፍሎችን ይመልከቱ',
+            },
+            pharmacies: {
+                title: 'የፋርማሲ አስተዳደር',
+                subtitle: 'ሁሉንም የፋርማሲ ተከራዮች ይቆጣጠሩ እና ያስተዳድሩ።',
+                searchPlaceholder: 'መድኃኒት ቤቶችን ይፈልጉ...',
+                statusFilter: 'ሁኔታ',
+                allStatuses: 'ሁሉም ሁኔታዎች',
+                active: 'ንቁ',
+                pending: 'በመጠባበቅ ላይ',
+                blocked: 'ታግዷል',
+                pendingKyc: 'KYC በመጠባበቅ ላይ',
+                awaitingPayment: 'ክፍያ በመጠባበቅ ላይ',
+                awaitingVerification: 'ማረጋገጫ በመጠባበቅ ላይ',
+                activePharmacies: 'ንቁ መድኃኒት ቤቶች',
+                blockedRejected: 'የታገዱ / ውድቅ የተደረጉ',
+                tableHeaders: {
+                    pharmacy: 'መድኃኒት ቤት',
+                    owner: 'ባለቤት',
+                    branches: 'ቅርንጫፎች',
+                    status: 'ሁኔታ',
+                    joined: 'ተቀላቅሏል',
+                    actions: 'እርምጃዎች',
+                },
+                actions: {
+                    viewDetails: 'ዝርዝሮችን ይመልከቱ',
+                    approve: 'አጽድቅ',
+                    block: 'እገድ',
+                    unblock: 'እገዳ አንሳ',
+                    reject: 'ውድቅ አድርግ',
+                    verifyPayment: 'ክፍያ አረጋግጥ',
+                    rejectPayment: 'ክፍያ ውድቅ አድርግ',
+                }
+            },
+            users: {
+                title: 'የተጠቃሚ አስተዳደር',
+                subtitle: 'የስርዓት ተጠቃሚዎችን እና ሚናቸውን ያስተዳድሩ።',
+                inviteUser: 'ተጠቃሚ ይጋብዙ',
+                searchPlaceholder: 'ተጠቃሚዎችን ይፈልጉ...',
+                tableHeaders: {
+                    user: 'ተጠቃሚ',
+                    role: 'ሚና',
+                    status: 'ሁኔታ',
+                    lastActive: 'መጨረሻ የነቃው',
+                    actions: 'እርምጃዎች',
+                }
+            }
+        },
+        supplierDashboard: {
+            dashboard: {
+                title: 'የአቅራቢ ዳሽቦርድ',
+                subtitle: 'አጠቃላይ የንግድ አጠቃላይ እይታ እና የአፈጻጸም መለኪያዎች',
+                totalProducts: 'ጠቅላላ ምርቶች',
+                totalOrders: 'ጠቅላላ ትዕዛዞች',
+                monthlyRevenue: 'ወርሃዊ ገቢ',
+                pendingShipments: 'በመጠባበቅ ላይ ያሉ ጭነቶች',
+                customerSatisfaction: 'የደንበኛ እርካታ',
+                orderFulfillmentRate: 'የትዕዛዝ ማሟያ መጠን',
+                performanceScore: 'የአፈጻጸም ውጤት',
+                quickActions: 'ፈጣን እርምጃዎች',
+                manageProducts: 'ምርቶችን ያስተዳድሩ',
+                processOrders: 'ትዕዛዞችን ያካሂዱ',
+                aiAssistant: 'የኤአይ ረዳት',
+                viewAnalytics: 'ትንታኔ ይመልከቱ',
+                businessInsights: 'የንግድ ግንዛቤዎች',
+                activeCustomers: 'ንቁ ደንበኞች',
+                inventoryTurnover: 'የዕቃ ዝውውር',
+                overdueInvoices: 'ጊዜ ያለፈባቸው ደረሰኞች',
+                recentActivity: 'የቅርብ ጊዜ እንቅስቃሴ',
+            },
+            products: {
+                title: 'የምርት አስተዳደር',
+                subtitle: 'የምርት ካታሎግዎን እና ዝርዝርዎን ያስተዳድሩ',
+                addProduct: 'ምርት ያክሉ',
+                searchPlaceholder: 'ምርቶችን ይፈልጉ...',
+                tableHeaders: {
+                    product: 'ምርት',
+                    category: 'ምድብ',
+                    price: 'ዋጋ',
+                    stock: 'ክምችት',
+                    status: 'ሁኔታ',
+                    actions: 'እርምጃዎች',
+                }
+            },
+            orders: {
+                title: 'የትዕዛዝ አስተዳደር',
+                subtitle: 'የደንበኛ ትዕዛዞችን ያካሂዱ እና ይከታተሉ',
+                searchPlaceholder: 'ትዕዛዞችን ይፈልጉ...',
+                tableHeaders: {
+                    orderId: 'የትዕዛዝ መታወቂያ',
+                    customer: 'ደንበኛ',
+                    date: 'ቀን',
+                    total: 'ጠቅላላ',
+                    status: 'ሁኔታ',
+                    actions: 'እርምጃዎች',
+                }
+            }
+        },
+        verifyPage: {
+            title: 'ኢሜይልዎን ያረጋግጡ እና የአጋር ዳሽቦርድን ይክፈቱ',
+            subtitle: 'ወደ ገቢ ሳጥንዎ የተላከውን የአንድ ጊዜ ኮድ ያስገቡ። አንዴ ከተዛመደ፣ የአጋር መግቢያዎን እናነቃለን እና የሪፈራል መሳሪያዎችን እንጭናለን።',
+            secureVerification: 'ደህንነቱ የተጠበቀ ማረጋገጫ',
+            highlights: {
+                security: { title: 'ባለ ሁለት ደረጃ ደህንነት', desc: 'ለሰላም ሲባል እያንዳንዱ የአጋር መግቢያ በማረጋገጫ ኮዶች የተጠበቀ ነው።' },
+                delivery: { title: 'ፈጣን የኢሜይል አቅርቦት', desc: 'ኮዶች በሰከንዶች ውስጥ ይደርሳሉ። ችግር አለ? እንደገና ይላኩ ወይም የአጋር ድጋፍን ያግኙ።' },
+                perks: { title: 'የአጋር ጥቅሞችን ያግኙ', desc: 'አንዴ ከተረጋገጠ የሪፈራል አገናኞችን ማመንጨት እና ኮሚሽኖችን ወዲያውኑ መከታተል ይችላሉ።' }
+            },
+            form: {
+                title: 'መለያዎን ያረጋግጡ',
+                subtitle: 'የአጋር መዳረሻዎን ለማጠናቀቅ በኢሜይል የላክንልዎትን ባለ ስድስት አሃዝ ኮድ ያስገቡ።',
+                emailLabel: 'የኢሜይል አድራሻ',
+                codeLabel: 'የማረጋገጫ ኮድ',
+                button: 'መለያ ያረጋግጡ',
+                verifying: 'በማረጋገጥ ላይ...',
+                resend: 'ኮድ እንደገና ይላኩ',
+                resendTimer: 'በ {seconds} ሰከንዶች ውስጥ እንደገና ይላኩ',
+                sending: 'በመላክ ላይ...',
+                spamNote: 'ኮዱ አልደረሰዎትም? የ አይፈለጌ መልእክት (spam) ሳጥንዎን ይመልከቱ ወይም',
+                expiryNote: 'የማረጋገጫ ኮድዎ ለደህንነት ሲባል ከ10 ደቂቃዎች በኋላ ጊዜው ያልፍበታል።'
+            },
+            success: {
+                title: 'መለያ ተረጋግጧል!',
+                desc: 'መለያዎ ነቅቷል። በትንሽ ጊዜ ውስጥ ወደ አጋር ዳሽቦርድ እንልክዎታለን።',
+                button: 'አሁን ይሂዱ'
+            }
+        },
     },
     or: {
         nav: {
@@ -3052,6 +3561,186 @@ export const translations: Record<Language, Translations> = {
             note: 'Hubachiisa',
             noteMsg: 'Maaloo osoo hin galchin dura bal\'inni hundi sirrii ta\'uu mirkaneessi.',
         },
+        ownerOnboarding: {
+            loadingInfo: 'Odeeffannoo keessan fe\'aa jira...',
+            kycTitle: 'Mirkaneessa KYC',
+            kycSubtitle: 'Jalkabuuf mirkaneessa daldalaa keessan xumuraa',
+            pendingReview: 'Gamaaggamaa Jira',
+            approved: 'Mirkanaa\'eera',
+            rejected: 'Kufaa Ta\'eera',
+            notSubmitted: 'Hin Galfamin',
+            refreshStatus: 'Haala Haaromsaa',
+            applicationRejected: 'Iyyanni Kufaa Ta\'eera',
+            submitVerification: 'Sanadoota Mirkaneessaa Galchi',
+            updateInformation: 'Odeeffannoo Keessan Haaromsaa',
+            provideAccurateInfo: 'Mirkaneessa ariifachiisuuf odeeffannoo sirrii dhiyeessaa',
+            businessName: 'Maqaa Daldalaa',
+            enterBusinessName: 'Maqaa daldalaa galmaa\'e galchaa',
+            phoneNumber: 'Lakkoofsa Bilbilaa',
+            businessAddress: 'Teessoo Daldalaa',
+            fullBusinessAddress: 'Teessoo bakka daldalaa guutuu',
+            nationalId: 'Lakkoofsa Waraqaa Eenyummaa Biyyaalessaa',
+            govIssuedId: 'Waraqaa eenyummaa mootummaa',
+            tinNumber: 'Lakkoofsa TIN',
+            taxIdNumber: 'Lakkoofsa Eenyummaa Gibiraa',
+            additionalNotes: 'Yaada Dabalataa',
+            anyAdditionalInfo: 'Odeeffannoo dabalataa kamiyyuu (filannoo)',
+            businessLicenseDoc: 'Sanada Hayyama Daldalaa',
+            currentLicenseDoc: 'Sanada Hayyama Ammaa',
+            uploadNewDocOptional: 'Sanada haaraa ol fe\'aa (filannoo)',
+            clickToUploadLicense: 'Hayyama ol fe\'uuf cuqaasaa',
+            leaveEmptyToKeep: 'Sanada ammaa tursiisuuf duwwaa dhiisaa',
+            fileFormatHint: 'PDF, JPG, JPEG ykn PNG (olka\'iinsa 10MB)',
+            browse: 'Barbaadi',
+            processing: 'Adeemsisaa jira...',
+            submitKycApp: 'Iyyata KYC Galchi',
+            updateKycInfo: 'Odeeffannoo KYC Haaromsaa',
+            whatHappensNext: 'Itti aansuun maaltu ta\'a?',
+            whatHappensNextMsg: 'Erga odeeffannoo KYC keessan galchitanii booda, gareen bulchiinsa keenyaa sa\'aatii 24-48 keessatti ni gamaaggama. Yeroo mirkanaa\'u, gara mirkaneessa kaffaltiitti darbuun daashboordii keessan banattu.',
+        },
+        adminDashboard: {
+            analytics: {
+                title: 'Xinxaala Bulchiinsaa',
+                subtitle: 'Fayyummaa hojii, fayyadama AI, fi babal\'ina damee ilaalcha tokkoon.',
+                totalRevenue: 'Galii Waliigalaa',
+                totalPharmacies: 'Faarmasii Waliigalaa',
+                activePharmacies: 'Faarmasii Hojii Irra Jiran',
+                pendingKyc: 'KYC Eeggataa Jiru',
+                blockedPharmacies: 'Faarmasiiwwan Cufaman',
+                totalBranches: 'Dameewwan Waliigalaa',
+                pharmacyOwners: 'Abbootii Faarmasii',
+                aiUsageTrend: 'Adeemsa Fayyadama AI',
+                aiUsageDesc: 'Tookenoota guyyaa guyyaan faarmasii hunda keessatti fudhataman.',
+                topPharmacies: 'Faarmasiiwwan AI Fayyadamuun Dursan',
+                topPharmaciesDesc: 'Kireeffattoota kamtu gargaaraa kana baay\'inaan akka fayyadamu hordofi.',
+                branchFootprint: 'Faana Damee',
+                branchFootprintDesc: 'Guddina fi addaddummaa adda baasuuf dameewwan kireeffataadhaan walitti qabi.',
+                viewSegments: 'Kutaa Ilaali',
+            },
+            pharmacies: {
+                title: 'Bulchiinsa Faarmasii',
+                subtitle: 'Kireeffattoota faarmasii hunda to\'adhuu fi bulchi.',
+                searchPlaceholder: 'Faarmasii barbaadi...',
+                statusFilter: 'Haala',
+                allStatuses: 'Haala Hunda',
+                active: 'Hojii Irra',
+                pending: 'Eeggataa',
+                blocked: 'Cufame',
+                pendingKyc: 'KYC Eeggataa',
+                awaitingPayment: 'Kaffaltii Eeggataa',
+                awaitingVerification: 'Mirkaneessa Eeggataa',
+                activePharmacies: 'Faarmasiiwwan Hojii Irra Jiran',
+                blockedRejected: 'Kan Cufaman / Haqaman',
+                tableHeaders: {
+                    pharmacy: 'Faarmasii',
+                    owner: 'Abbaa',
+                    branches: 'Dameewwan',
+                    status: 'Haala',
+                    joined: 'Makamame',
+                    actions: 'Tarkaanfii',
+                },
+                actions: {
+                    viewDetails: 'Bal\'ina Ilaali',
+                    approve: 'Mirkaneessi',
+                    block: 'Cufi',
+                    unblock: 'Bani',
+                    reject: 'Haqi',
+                    verifyPayment: 'Kaffaltii Mirkaneessi',
+                    rejectPayment: 'Kaffaltii Haqi',
+                }
+            },
+            users: {
+                title: 'Bulchiinsa Fayyadamaa',
+                subtitle: 'Fayyadamtoota sirnaa fi gahee isaanii bulchi.',
+                inviteUser: 'Fayyadamaa Affeeri',
+                searchPlaceholder: 'Fayyadamtoota barbaadi...',
+                tableHeaders: {
+                    user: 'Fayyadamaa',
+                    role: 'Gahee',
+                    status: 'Haala',
+                    lastActive: 'Dhiheenya Kan Hojii Irra Oole',
+                    actions: 'Tarkaanfii',
+                }
+            }
+        },
+        supplierDashboard: {
+            dashboard: {
+                title: 'Daashboordii Dhiyeessaa',
+                subtitle: 'Waliigala daldalaa fi safartuu raawwii guutuu',
+                totalProducts: 'Oomisha Waliigalaa',
+                totalOrders: 'Ajaja Waliigalaa',
+                monthlyRevenue: 'Galii Ji\'aa',
+                pendingShipments: 'Ergaa Eeggataa Jiru',
+                customerSatisfaction: 'Qubannaa Maamilaa',
+                orderFulfillmentRate: 'Dhibbeentaa Raawwii Ajajaa',
+                performanceScore: 'Qabxii Raawwii',
+                quickActions: 'Tarkaanfii Saffisaa',
+                manageProducts: 'Oomisha Bulchi',
+                processOrders: 'Ajaja Raawwadhu',
+                aiAssistant: 'Gargaaraa AI',
+                viewAnalytics: 'Xinxaala Ilaali',
+                businessInsights: 'Hubannoo Daldalaa',
+                activeCustomers: 'Maamiltoota Hojii Irra Jiran',
+                inventoryTurnover: 'Marsaa Qabeenyaa',
+                overdueInvoices: 'Invooyisii Yeroon Darbe',
+                recentActivity: 'Sochii Dhiheenyaa',
+            },
+            products: {
+                title: 'Bulchiinsa Oomishaa',
+                subtitle: 'Kaataaloogii oomishaa fi qabeenya kee bulchi',
+                addProduct: 'Oomisha Dabali',
+                searchPlaceholder: 'Oomisha barbaadi...',
+                tableHeaders: {
+                    product: 'Oomisha',
+                    category: 'Ramaddii',
+                    price: 'Gatii',
+                    stock: 'Stock',
+                    status: 'Haala',
+                    actions: 'Tarkaanfii',
+                }
+            },
+            orders: {
+                title: 'Bulchiinsa Ajajaa',
+                subtitle: 'Ajaja maamilaa raawwadhuu fi hordofi',
+                searchPlaceholder: 'Ajaja barbaadi...',
+                tableHeaders: {
+                    orderId: 'ID Ajajaa',
+                    customer: 'Maamila',
+                    date: 'Guyyaa',
+                    total: 'Waliigala',
+                    status: 'Haala',
+                    actions: 'Tarkaanfii',
+                }
+            }
+        },
+        verifyPage: {
+            title: 'Email keessan mirkaneessaa fi daashboordii hiriyyaa banaa',
+            subtitle: 'Koodii yeroo tokkoo inbox keessanitti ergame galchaa. Yeroo walsimu, portaalii hiriyyaa keessan ni hojjechiisna fi meeshaalee rixaaraa ni feena.',
+            secureVerification: 'Mirkaneessa Nageenyaa',
+            highlights: {
+                security: { title: 'Nageenya sadarkaa lamaa', desc: 'Login hiriyyaa hundi nagaa sammuuf koodii mirkaneessaan eegamaa dha.' },
+                delivery: { title: 'Ergaa email saffisaa', desc: 'Koodonni sekondoota keessatti ga\'u. Rakkoo qabduu? Irra deebi\'aa ergaa ykn deeggarsa hiriyyaa qunnamaa.' },
+                perks: { title: 'Faayidaalee hiriyyaa argadhu', desc: 'Erga mirkanaa\'ee booda linkii rixaaraa maddisiisuu fi komishinii battalumatti hordofuu dandeessu.' }
+            },
+            form: {
+                title: 'Akkaawuntii keessan mirkaneessaa',
+                subtitle: 'Argama hiriyyaa keessan xumuruuf koodii dijii ja\'a email goone galchaa.',
+                emailLabel: 'Teessoo Email',
+                codeLabel: 'Koodii Mirkaneessa',
+                button: 'Akkaawuntii Mirkaneessi',
+                verifying: 'Mirkaneessaa jira...',
+                resend: 'koodii irra deebi\'ii ergi',
+                resendTimer: '{seconds}s keessatti irra deebi\'ii ergi',
+                sending: 'Ergaa jira...',
+                spamNote: 'Koodii hin arganne? Spam folder keessan ilaalaa ykn',
+                expiryNote: 'Koodiin mirkaneessa keessan nageenyaaf daqiiqaa 10 booda ni darba.'
+            },
+            success: {
+                title: 'Akkaawuntiin mirkanaa\'eera!',
+                desc: 'Akkaawuntiin keessan hojii jalqabeera. Yeroo gabaabaa keessatti gara daashboordii hiriyyaatti isin ergina.',
+                button: 'Amma Deemi'
+            }
+        },
     },
     ti: {
         nav: {
@@ -3767,6 +4456,186 @@ export const translations: Record<Language, Translations> = {
             step5: 'ንመረጋገጺ ኣእቱ',
             note: 'መዘኻኸሪ',
             noteMsg: 'በጃኻ ቅድሚ ምእታውካ ኩሉ ዝርዝር ትኽክል ምዃኑ ኣረጋግጽ።',
+        },
+        ownerOnboarding: {
+            loadingInfo: 'ሓበሬታኹም ይጽዕን ኣሎ...',
+            kycTitle: 'ናይ KYC መረጋገጺ',
+            kycSubtitle: 'ንምጅማር ናይ ንግዲ መረጋገጺኹም ኣማልኡ',
+            pendingReview: 'ግምገማ ይጽበ ኣሎ',
+            approved: 'ጸዲቑ',
+            rejected: 'ተነጺጉ',
+            notSubmitted: 'ኣይተላእከን',
+            refreshStatus: 'ኩነታት ኣሐድስ',
+            applicationRejected: 'ማመልከቻ ተነጺጉ',
+            submitVerification: 'ናይ መረጋገጺ ሰነዳት ኣእቱ',
+            updateInformation: 'ሓበሬታኹም ኣሐድስ',
+            provideAccurateInfo: 'ንቀልጢፍ መረጋገጺ ትኽክለኛ ሓበሬታ ሃቡ',
+            businessName: 'ስም ንግዲ',
+            enterBusinessName: 'ዝተመዝገበ ስም ንግድኹም ኣእቱ',
+            phoneNumber: 'ቁጽሪ ስልኪ',
+            businessAddress: 'ኣድራሻ ንግዲ',
+            fullBusinessAddress: 'ምሉእ ኣድራሻ ቦታ ንግዲ',
+            nationalId: 'ቁጽሪ ብሄራዊ መታወቂያ',
+            govIssuedId: 'ብመንግስቲ ዝተዋህበ መታወቂያ',
+            tinNumber: 'ቁጽሪ TIN',
+            taxIdNumber: 'ናይ ግብሪ መለለዪ ቁጽሪ',
+            additionalNotes: 'ተወሳኺ መዘኻኸሪ',
+            anyAdditionalInfo: 'ዝኾነ ተወሳኺ ሓበሬታ (ኣማራጺ)',
+            businessLicenseDoc: 'ሰነድ ፍቃድ ንግዲ',
+            currentLicenseDoc: 'ሰነድ ህሉው ፍቃድ',
+            uploadNewDocOptional: 'ሓዲሽ ሰነድ ጽዓን (ኣማራጺ)',
+            clickToUploadLicense: 'ፍቃድ ንምጽዓን ጠውቕ',
+            leaveEmptyToKeep: 'ነቲ ዘሎ ሰነድ ንምዕቃብ ባዶ ግደፎ',
+            fileFormatHint: 'PDF, JPG, JPEG ወይ PNG (ለዓለዋይ 10MB)',
+            browse: 'ዳህስስ',
+            processing: 'ይሰርሕ ኣሎ...',
+            submitKycApp: 'ናይ KYC ማመልከቻ ኣእቱ',
+            updateKycInfo: 'ናይ KYC ሓበሬታ ኣሐድስ',
+            whatHappensNext: 'ቀጺሉ እንታይ ይኸውን?',
+            whatHappensNextMsg: 'ናይ KYC ሓበሬታኹም ምስ ኣእተኹም፣ ናይ ኣመሓዳሪ ጉጅለና ኣብ ውሽጢ 24-48 ሰዓታት ክግምግሞ እዩ። ምስ ጸደቐ፣ ናብ መረጋገጺ ክፍሊት ክትሰጋገሩን ዳሽቦርድኩም ክትከፍቱን ኢኹም።',
+        },
+        adminDashboard: {
+            analytics: {
+                title: 'ናይ ኣመሓዳሪ ትንታነ',
+                subtitle: 'ናይ ስራሕ ጥዕና፣ ኣጠቓቕማ AI፣ ከምኡ’ውን ናይ ጨንፈር ስርጭት ብሓደ እይታ።',
+                totalRevenue: 'ጠቕላላ ኣታዊ',
+                totalPharmacies: 'ጠቕላላ ፋርማሲታት',
+                activePharmacies: 'ንጡፋት ፋርማሲታት',
+                pendingKyc: 'KYC ዝጽበዩ',
+                blockedPharmacies: 'ዝተኣገዳ ፋርማሲታት',
+                totalBranches: 'ጠቕላላ ጨናፍር',
+                pharmacyOwners: 'ባለቤታት ፋርማሲ',
+                aiUsageTrend: 'ናይ AI ኣጠቓቕማ ዝንባለ',
+                aiUsageDesc: 'ኣብ ኩለን ፋርማሲታት ዝውሰዱ ዕለታዊ ቶከናት።',
+                topPharmacies: 'ብ AI ኣጠቓቕማ ዝመርሓ ፋርማሲታት',
+                topPharmaciesDesc: 'ኣየኖት ተኻረይቲ ነቲ ሓጋዚ ብብዝሒ ይጥቀሙሉ ከምዘለዉ ተኸታተል።',
+                branchFootprint: 'ናይ ጨንፈር ኣሻራ',
+                branchFootprintDesc: 'ዕብየትን ፍልልያትን ንምልላይ ጨናፍር ብተኻራይ ኣክብ።',
+                viewSegments: 'ክፋላት ርኣይ',
+            },
+            pharmacies: {
+                title: 'መመሓደሪ ፋርማሲ',
+                subtitle: 'ኩሎም ተኻረይቲ ፋርማሲ ተቆጻጸርን ኣመሓድርን።',
+                searchPlaceholder: 'ፋርማሲታት ድለ...',
+                statusFilter: 'ኩነታት',
+                allStatuses: 'ኩሉ ኩነታት',
+                active: 'ንጡፍ',
+                pending: 'ዝጽበ',
+                blocked: 'ዝተኣገደ',
+                pendingKyc: 'KYC ዝጽበዩ',
+                awaitingPayment: 'ክፍሊት ዝጽበዩ',
+                awaitingVerification: 'መረጋገጺ ዝጽበዩ',
+                activePharmacies: 'ንጡፋት ፋርማሲታት',
+                blockedRejected: 'ዝተኣገዱ / ዝተነጽጉ',
+                tableHeaders: {
+                    pharmacy: 'ፋርማሲ',
+                    owner: 'ባለቤት',
+                    branches: 'ጨናፍር',
+                    status: 'ኩነታት',
+                    joined: 'ዝተቀላቀለሉ',
+                    actions: 'ስጉምትታት',
+                },
+                actions: {
+                    viewDetails: 'ዝርዝር ርኣይ',
+                    approve: 'ኣጽድቕ',
+                    block: 'ኣግድ',
+                    unblock: 'እገዳ ኣልዕል',
+                    reject: 'ንጸግ',
+                    verifyPayment: 'ክፍሊት ኣረጋግጽ',
+                    rejectPayment: 'ክፍሊት ንጸግ',
+                }
+            },
+            users: {
+                title: 'መመሓደሪ ተጠቃሚ',
+                subtitle: 'ተጠቀምቲ ሲስተምን ተራኦምን ኣመሓድር።',
+                inviteUser: 'ተጠቃሚ ዓድም',
+                searchPlaceholder: 'ተጠቀምቲ ድለ...',
+                tableHeaders: {
+                    user: 'ተጠቃሚ',
+                    role: 'ተራ',
+                    status: 'ኩነታት',
+                    lastActive: 'መወዳእታ ዝነጠፈ',
+                    actions: 'ስጉምትታት',
+                }
+            }
+        },
+        supplierDashboard: {
+            dashboard: {
+                title: 'ዳሽቦርድ ኣቕራቢ',
+                subtitle: 'ኩሉ ዝሓዘ ናይ ንግዲ ሓፈሻዊ እይታን መለኪታት ኣፈጻጽማን',
+                totalProducts: 'ጠቕላላ ፍርያት',
+                totalOrders: 'ጠቕላላ ትእዛዛት',
+                monthlyRevenue: 'ወርሓዊ ኣታዊ',
+                pendingShipments: 'ዝጽበዩ ጽዕነት',
+                customerSatisfaction: 'ዕግበት ዓማዊል',
+                orderFulfillmentRate: 'ምሉእነት ትእዛዝ',
+                performanceScore: 'ውጽኢት ኣፈጻጽማ',
+                quickActions: 'ቅልጡፍ ስጉምትታት',
+                manageProducts: 'ፍርያት ኣመሓድር',
+                processOrders: 'ትእዛዛት ኣካይድ',
+                aiAssistant: 'AI ሓጋዚ',
+                viewAnalytics: 'ትንታነ ርኣይ',
+                businessInsights: 'ንግዳዊ ርድኢት',
+                activeCustomers: 'ንጡፋት ዓማዊል',
+                inventoryTurnover: 'ምውርዋር ንብረት',
+                overdueInvoices: 'ግዜ ዝሓለፎም ደረሰኛታት',
+                recentActivity: 'ናይ ቀረባ ንጥፈታት',
+            },
+            products: {
+                title: 'ምሕደራ ፍርያት',
+                subtitle: 'ካታሎግ ፍርያትካን ንብረትካን ኣመሓድር',
+                addProduct: 'ፍርያት ወስኽ',
+                searchPlaceholder: 'ፍርያት ድለ...',
+                tableHeaders: {
+                    product: 'ፍርያት',
+                    category: 'ምድብ',
+                    price: 'ዋጋ',
+                    stock: 'ክምችት',
+                    status: 'ኩነታት',
+                    actions: 'ስጉምትታት',
+                }
+            },
+            orders: {
+                title: 'ምሕደራ ትእዛዝ',
+                subtitle: 'ትእዛዛት ዓማዊል ኣካይድን ተኸታተልን',
+                searchPlaceholder: 'ትእዛዛት ድለ...',
+                tableHeaders: {
+                    orderId: 'መለለዪ ትእዛዝ',
+                    customer: 'ዓማዊል',
+                    date: 'ዕለት',
+                    total: 'ጠቕላላ',
+                    status: 'ኩነታት',
+                    actions: 'ስጉምትታት',
+                }
+            }
+        },
+        verifyPage: {
+            title: 'ኢሜይልኩም ኣረጋግጹን ዳሽቦርድ መሻርኽቲ ክፈቱን',
+            subtitle: 'ናብ ኢንቦክስኩም ዝተላእከ ናይ ሓደ ግዜ ኮድ ኣእቱ። ምስ ተሰማምዐ፣ ፖርታል መሻርኽትኹም ከነንቀሳቕሶን መሳርሒታት ሪፈራል ክንጽዕንን ኢና።',
+            secureVerification: 'ውሑስ መረጋገጺ',
+            highlights: {
+                security: { title: 'ክልተ-ደረጃ ድሕነት', desc: 'ኩሉ መእተዊ መሻርኽቲ ንሰላም ክበሃል ብመረጋገጺ ኮድ ዝተሓለወ እዩ።' },
+                delivery: { title: 'ቅልጡፍ ኢሜይል ምብጻሕ', desc: 'ኮድ ኣብ ውሽጢ ካልኢታት ይበጽሕ። ጸገም ኣለኩም? እንደገና ስደዱ ወይ ደገፍ መሻርኽቲ ርኸቡ።' },
+                perks: { title: 'ጥቕሚታት መሻርኽቲ ርኸቡ', desc: 'ምስ ተረጋገጸ ሊንክ ሪፈራል ምፍጣርን ኮሚሽን ብቀጥታ ምክትታልን ትኽእሉ።' }
+            },
+            form: {
+                title: 'ኣካውንትኩም ኣረጋግጹ',
+                subtitle: 'መእተዊ መሻርኽትኹም ንምውዳእ እቲ ብኢሜይል ዝሰደድናዮ ሽዱሽተ ዲጂት ኮድ ኣእቱ።',
+                emailLabel: 'ኢሜይል ኣድራሻ',
+                codeLabel: 'መረጋገጺ ኮድ',
+                button: 'ኣካውንት ኣረጋግጽ',
+                verifying: 'የረጋግጽ ኣሎ...',
+                resend: 'ኮድ እንደገና ስደድ',
+                resendTimer: 'ኣብ {seconds}s እንደገና ስደድ',
+                sending: 'ይሰድድ ኣሎ...',
+                spamNote: 'ኮድ ኣይበጻሕኩምን? ስፓም ፎልደርኩም ተወከሱ ወይ',
+                expiryNote: 'መረጋገጺ ኮድኩም ንድሕነት ክበሃል ድሕሪ 10 ደቓይቕ ግዜኡ ይሓልፍ።'
+            },
+            success: {
+                title: 'ኣካውንት ተረጋጊጹ!',
+                desc: 'ኣካውንትኩም ነይቁ ኣሎ። ኣብ ሓጺር ግዜ ናብ ዳሽቦርድ መሻርኽቲ ክንሰደኩም ኢና።',
+                button: 'ሕጂ ኪድ'
+            }
         },
     },
 };

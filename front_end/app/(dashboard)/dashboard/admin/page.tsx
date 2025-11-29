@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useLanguage } from "@/contexts/language-context";
 
 type AnalyticsResponse = {
   totals: {
@@ -34,6 +35,8 @@ type AnalyticsResponse = {
 
 export default function AdminAnalyticsPage() {
   const { show } = useToast();
+  const { t } = useLanguage();
+  const adminT = t.adminDashboard.analytics;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
@@ -98,8 +101,8 @@ export default function AdminAnalyticsPage() {
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Admin Analytics</h1>
-              <p className="mt-2 text-slate-600">Operational health, AI usage, and branch footprint in one view.</p>
+              <h1 className="text-3xl font-bold text-slate-900">{adminT.title}</h1>
+              <p className="mt-2 text-slate-600">{adminT.subtitle}</p>
             </div>
             <div className="flex flex-wrap gap-3">
               {[7, 30, 60, 90].map((d) => (
@@ -117,7 +120,7 @@ export default function AdminAnalyticsPage() {
               </Button>
               <Link href="/dashboard/admin/segments">
                 <Button variant="ghost" className="text-slate-600 hover:bg-slate-100">
-                  View Segments
+                  {adminT.viewSegments}
                 </Button>
               </Link>
             </div>
@@ -125,19 +128,19 @@ export default function AdminAnalyticsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          <StatTile label="Total Revenue" value={`ETB ${totals.total_revenue.toLocaleString()}`} href="/dashboard/admin/payouts" />
-          <StatTile label="Total Pharmacies" value={totals.total_pharmacies} href="/dashboard/admin/pharmacies" />
-          <StatTile label="Active Pharmacies" value={totals.active_pharmacies} href="/dashboard/admin/pharmacies" />
-          <StatTile label="Pending KYC" value={totals.pending_kyc} href="/dashboard/admin/pharmacies" tone="warning" />
-          <StatTile label="Blocked Pharmacies" value={totals.blocked_pharmacies} href="/dashboard/admin/pharmacies" tone="danger" />
-          <StatTile label="Total Branches" value={totals.total_branches} href="/dashboard/admin/pharmacies" />
-          <StatTile label="Pharmacy Owners" value={totals.pharmacy_owners} href="/dashboard/admin/users" />
+          <StatTile label={adminT.totalRevenue} value={`ETB ${totals.total_revenue.toLocaleString()}`} href="/dashboard/admin/payouts" />
+          <StatTile label={adminT.totalPharmacies} value={totals.total_pharmacies} href="/dashboard/admin/pharmacies" />
+          <StatTile label={adminT.activePharmacies} value={totals.active_pharmacies} href="/dashboard/admin/pharmacies" />
+          <StatTile label={adminT.pendingKyc} value={totals.pending_kyc} href="/dashboard/admin/pharmacies" tone="warning" />
+          <StatTile label={adminT.blockedPharmacies} value={totals.blocked_pharmacies} href="/dashboard/admin/pharmacies" tone="danger" />
+          <StatTile label={adminT.totalBranches} value={totals.total_branches} href="/dashboard/admin/pharmacies" />
+          <StatTile label={adminT.pharmacyOwners} value={totals.pharmacy_owners} href="/dashboard/admin/users" />
         </div>
 
         <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-slate-900">AI Usage Trend</CardTitle>
-            <p className="text-slate-600">Daily tokens consumed across all pharmacies.</p>
+            <CardTitle className="text-xl font-semibold text-slate-900">{adminT.aiUsageTrend}</CardTitle>
+            <p className="text-slate-600">{adminT.aiUsageDesc}</p>
           </CardHeader>
           <CardContent>
             {usageSeries.length === 0 ? (
@@ -174,8 +177,8 @@ export default function AdminAnalyticsPage() {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardHeader className="pb-4">
-              <CardTitle className="text-xl font-semibold text-slate-900">Top Pharmacies by AI Usage</CardTitle>
-              <p className="text-slate-600">Monitor which tenants are leaning on the assistant the most.</p>
+              <CardTitle className="text-xl font-semibold text-slate-900">{adminT.topPharmacies}</CardTitle>
+              <p className="text-slate-600">{adminT.topPharmaciesDesc}</p>
             </CardHeader>
             <CardContent>
               {analytics.top_pharmacies.length === 0 ? (
@@ -205,8 +208,8 @@ export default function AdminAnalyticsPage() {
 
           <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardHeader className="pb-4">
-              <CardTitle className="text-xl font-semibold text-slate-900">Branch Footprint</CardTitle>
-              <p className="text-slate-600">Aggregate branches by tenant to spot growth and outliers.</p>
+              <CardTitle className="text-xl font-semibold text-slate-900">{adminT.branchFootprint}</CardTitle>
+              <p className="text-slate-600">{adminT.branchFootprintDesc}</p>
             </CardHeader>
             <CardContent>
               {analytics.branch_distribution.length === 0 ? (
