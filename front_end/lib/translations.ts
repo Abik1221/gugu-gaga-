@@ -809,6 +809,17 @@ export interface Translations {
 
     // Supplier Onboarding (KYC & Payment)
     supplierOnboarding: {
+        // Common
+        loadingKycData: string;
+        loadingPaymentStatus: string;
+
+        // Placeholders
+        businessNamePlaceholder: string;
+        nationalIdPlaceholder: string;
+        tinNumberPlaceholder: string;
+        phoneNumberPlaceholder: string;
+        businessAddressPlaceholder: string;
+
         // KYC Page
         kycTitle: string;
         kycSubtitle: string;
@@ -1532,6 +1543,14 @@ export const translations: Record<Language, Translations> = {
             },
         },
         supplierOnboarding: {
+            loadingKycData: 'Loading KYC data...',
+            loadingPaymentStatus: 'Loading payment status...',
+            businessNamePlaceholder: 'Enter your registered business name',
+            nationalIdPlaceholder: 'Government-issued ID number',
+            tinNumberPlaceholder: 'Tax Identification Number',
+            phoneNumberPlaceholder: '+251...',
+            businessAddressPlaceholder: 'Business location',
+
             kycTitle: 'Supplier KYC Verification',
             kycSubtitle: 'Complete your verification to start selling',
             pendingReview: 'Pending Review',
@@ -2241,6 +2260,14 @@ export const translations: Record<Language, Translations> = {
             },
         },
         supplierOnboarding: {
+            loadingKycData: 'የ KYC መረጃ እየተጫነ ነው...',
+            loadingPaymentStatus: 'የክፍያ ሁኔታ እየተጫነ ነው...',
+            businessNamePlaceholder: 'የተመዘገቡየንግድዎ ስም ያስገቡ',
+            nationalIdPlaceholder: 'በመንግስት የተሰጠ የመታወቂያ ቁጥር',
+            tinNumberPlaceholder: 'የታክስ መለያ ቁጥር',
+            phoneNumberPlaceholder: '+251...',
+            businessAddressPlaceholder: 'የንግድ ቦታ',
+
             kycTitle: 'Supplier KYC Verification',
             kycSubtitle: 'Complete your verification to start selling',
             pendingReview: 'Pending Review',
@@ -2949,6 +2976,14 @@ export const translations: Record<Language, Translations> = {
             },
         },
         supplierOnboarding: {
+            loadingKycData: 'Odeeffannoo KYC fe\'aa jira...',
+            loadingPaymentStatus: 'Haala kaffaltii fe\'aa jira...',
+            businessNamePlaceholder: 'Maqaa daldala kee galmaa\'ee galchi',
+            nationalIdPlaceholder: 'Lakkoofsa eenyummaa mootummaa',
+            tinNumberPlaceholder: 'Lakkoofsa Gibira (TIN)',
+            phoneNumberPlaceholder: '+251...',
+            businessAddressPlaceholder: 'Bakka daldala',
+
             kycTitle: 'Supplier KYC Verification',
             kycSubtitle: 'Complete your verification to start selling',
             pendingReview: 'Pending Review',
@@ -3657,6 +3692,14 @@ export const translations: Record<Language, Translations> = {
             },
         },
         supplierOnboarding: {
+            loadingKycData: 'ናይ KYC ሓበሬታ ይጽዕን ኣሎ...',
+            loadingPaymentStatus: 'ናይ ክፍሊት ኩነታት ይጽዕን ኣሎ...',
+            businessNamePlaceholder: 'ዝተመዝገበ ስም ንግድኻ ኣእቱ',
+            nationalIdPlaceholder: 'ብመንግስቲ ዝተዋህበ መንነት ቁጽሪ',
+            tinNumberPlaceholder: 'ናይ ግብሪ መለለዪ ቁጽሪ (TIN)',
+            phoneNumberPlaceholder: '+251...',
+            businessAddressPlaceholder: 'ቦታ ንግዲ',
+
             kycTitle: 'Supplier KYC Verification',
             kycSubtitle: 'Complete your verification to start selling',
             pendingReview: 'Pending Review',

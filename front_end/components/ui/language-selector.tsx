@@ -51,7 +51,7 @@ export function LanguageSelector({
                     {showLabel && <span>{currentLanguage.name}</span>}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-[150px]">
+            <DropdownMenuContent align="end" className="min-w-[150px] z-[100]">
                 {languages.map((lang) => (
                     <DropdownMenuItem
                         key={lang.code}

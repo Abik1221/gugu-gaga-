@@ -132,7 +132,7 @@ export default function SupplierKYCPage() {
             <div className="flex items-center justify-center h-screen">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-                <p className="text-gray-600 font-medium">Loading KYC data...</p>
+                <p className="text-gray-600 font-medium">{t.supplierOnboarding.loadingKycData}</p>
               </div>
             </div>
           </SidebarInset>
@@ -217,7 +217,7 @@ export default function SupplierKYCPage() {
                         <Input
                           value={formData.supplier_name}
                           onChange={(e) => setFormData(prev => ({ ...prev, supplier_name: e.target.value }))}
-                          placeholder="Enter your registered business name"
+                          placeholder={t.supplierOnboarding.businessNamePlaceholder}
                           className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                           required
                         />
@@ -236,7 +236,7 @@ export default function SupplierKYCPage() {
                         <Input
                           value={formData.national_id}
                           onChange={(e) => setFormData(prev => ({ ...prev, national_id: e.target.value }))}
-                          placeholder="Government-issued ID number"
+                          placeholder={t.supplierOnboarding.nationalIdPlaceholder}
                           className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                           required
                         />
@@ -255,7 +255,7 @@ export default function SupplierKYCPage() {
                         <Input
                           value={formData.tin_number}
                           onChange={(e) => setFormData(prev => ({ ...prev, tin_number: e.target.value }))}
-                          placeholder="Tax Identification Number"
+                          placeholder={t.supplierOnboarding.tinNumberPlaceholder}
                           className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                           required
                         />
@@ -274,7 +274,7 @@ export default function SupplierKYCPage() {
                         <Input
                           value={formData.phone}
                           onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                          placeholder="+251..."
+                          placeholder={t.supplierOnboarding.phoneNumberPlaceholder}
                           className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                         />
                       </motion.div>
@@ -293,7 +293,7 @@ export default function SupplierKYCPage() {
                       <Input
                         value={formData.address}
                         onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                        placeholder="Business location"
+                        placeholder={t.supplierOnboarding.businessAddressPlaceholder}
                         className="h-11 rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                       />
                     </motion.div>

@@ -20,10 +20,23 @@ import {
 } from "@/components/ui/sidebar";
 import { FlowSidebar } from "@/components/custom/flow-sidebar";
 
+interface KYCData {
+  status?: string;
+  pharmacy_name?: string;
+  pharmacy_address?: string;
+  owner_phone?: string;
+  id_number?: string;
+  pharmacy_license_number?: string;
+  notes?: string;
+  admin_notes?: string;
+  license_document_name?: string;
+  pharmacy_license_document_path?: string;
+}
+
 export default function OwnerKYCPage() {
   const router = useRouter();
   const { show } = useToast();
-  const [kycData, setKycData] = useState(null);
+  const [kycData, setKycData] = useState<KYCData | null>(null);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     pharmacy_name: "",
@@ -74,10 +87,10 @@ export default function OwnerKYCPage() {
           notes: data.notes || "",
         });
         setExistingLicense(data.license_document_name || data.pharmacy_license_document_path || "");
-      } catch (error) {
+      } catch (error: unknown) {
         setKycData({ status: "not_submitted" });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to load user data:", error);
       show({ title: "Error", description: "Failed to load user information", variant: "destructive" });
     } finally {
@@ -85,7 +98,7 @@ export default function OwnerKYCPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!existingLicense && !licenseFile) {
@@ -116,14 +129,15 @@ export default function OwnerKYCPage() {
         body: JSON.stringify(payload),
       });
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await response.json().catch(() => ({} as { detail?: string })) as { detail?: string };
         throw new Error(errorData.detail || 'Failed to update KYC');
       }
       show({ title: "Success", description: "KYC information updated successfully. Redirecting...", variant: "success" });
       setTimeout(() => router.push("/dashboard/owner"), 1500);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Submit error:", error);
-      show({ title: "Error", description: error?.message || "Failed to update KYC information", variant: "destructive" });
+      const errorMessage = error instanceof Error ? error.message : "Failed to update KYC information";
+      show({ title: "Error", description: errorMessage, variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
