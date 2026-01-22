@@ -27,8 +27,8 @@ export default function TestimonialsSection() {
       image:
         "https://images.unsplash.com/photo-1687422809654-579d81c29d32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwYnVzaW5lc3MlMjBvd25lcnxlbnwxfHx8fDE3NjIzMzk1NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       content: isAmharic
-        ? "በርካታ መደብሮችን በእጅ ማስተዳደር አድካሚ ነው። ሁሉንም በአንድ ዳሽቦርድ ላይ ለማግኘት እና በገበያ ቦታው በኩል ከተሻሉ አቅራቢዎች ጋር ለመገናኘት ጓጉቻለሁ።"
-        : "Managing multiple stores manually is exhausting. I'm excited to have everything in one dashboard and connect with better suppliers through the marketplace.",
+        ? "በርካታ መደብሮችን በእጅ ማስተዳደር አድካሚ ነው። ሁሉንም በአንድ ዳሽቦርድ ላይ ለማግኘት ጓጉቻለሁ።"
+        : "Managing multiple stores manually is exhausting. I'm excited to have everything in one dashboard.",
       rating: 5,
     },
     {

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Store, Users, Truck, X } from "lucide-react";
+import { Store, Users, X } from "lucide-react";
 
 interface RoleSelectionDialogProps {
   children: React.ReactNode;
@@ -36,13 +36,7 @@ export function RoleSelectionDialog({ children }: RoleSelectionDialogProps) {
       icon: Users,
       route: "/affiliate-signin",
     },
-    {
-      id: "supplier",
-      title: "Supplier",
-      description: "Manage your supply chain and inventory",
-      icon: Truck,
-      route: "/supplier-signin",
-    },
+
   ];
 
   const handleRoleSelect = (roleId: string, route: string) => {

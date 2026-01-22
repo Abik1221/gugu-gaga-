@@ -53,14 +53,10 @@ const navItems: NavItem[] = [
   { href: "/dashboard/owner/agent", label: "Agent", icon: <Users /> },
   { href: "/dashboard/owner/branches", label: "Branches", icon: <Building2 /> },
   { href: "/dashboard/owner/chat", label: "Chat", icon: <MessageSquare /> },
-  {
-    href: "/dashboard/owner/integrations",
-    label: "Integrations",
-    icon: <Plug />,
-  },
+
   { href: "/dashboard/owner/staff", label: "Staff", icon: <UserCog /> },
   { href: "/dashboard/owner/inventory", label: "Inventory", icon: <Package /> },
-  { href: "/dashboard/owner/suppliers", label: "Suppliers", icon: <Truck /> },
+
   { href: "/dashboard/owner/order-status", label: "Order Status", icon: <ClipboardList /> },
   { href: "/dashboard/owner/expenses", label: "Expenses", icon: <Receipt /> },
   { href: "/dashboard/owner/settings", label: "Settings", icon: <Settings /> },

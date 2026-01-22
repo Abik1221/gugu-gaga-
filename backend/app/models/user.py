@@ -30,4 +30,4 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     assigned_branch: Mapped[Optional[Branch]] = relationship(Branch, lazy="joined")
-    supplier_profile: Mapped[Optional["Supplier"]] = relationship("Supplier", back_populates="user", uselist=False)
+

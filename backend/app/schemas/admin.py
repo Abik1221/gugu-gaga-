@@ -131,19 +131,4 @@ class PharmacySummaryResponse(BaseModel):
     items: List[PharmacySummaryItem]
 
 
-class IntegrationUsageItem(BaseModel):
-    tenant_id: str
-    tenant_name: Optional[str] = None
-    provider_key: str
-    provider_name: str
-    display_name: str
-    status: str
-    connected_at: Optional[str] = None
-    last_sync_at: Optional[str] = None
-    last_sync_status: Optional[str] = None
-    last_sync_direction: Optional[str] = None
-    last_sync_resource: Optional[str] = None
 
-
-class IntegrationUsageResponse(BaseModel):
-    items: List[IntegrationUsageItem]

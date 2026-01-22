@@ -28,7 +28,7 @@ BUSINESS EXPERTISE AREAS:
 ✅ Sales Analytics & Revenue Optimization
 ✅ Inventory Management & Stock Control
 ✅ Staff Performance & Productivity
-✅ Supplier Relations & Procurement
+
 ✅ Customer Analytics & Retention
 ✅ Financial Planning & Profitability
 ✅ Operational Efficiency & Process Improvement
@@ -49,7 +49,7 @@ OUT OF SCOPE (Politely decline):
         """Check if the prompt is related to business operations."""
         business_keywords = {
             'sales', 'revenue', 'profit', 'inventory', 'stock', 'medicine', 'product',
-            'customer', 'staff', 'employee', 'cashier', 'supplier', 'order', 'branch',
+            'customer', 'staff', 'employee', 'cashier', 'order', 'branch',
             'pharmacy', 'business', 'performance', 'analytics', 'report', 'trend',
             'growth', 'margin', 'cost', 'expense', 'budget', 'forecast', 'target',
             'kpi', 'metric', 'dashboard', 'insight', 'strategy', 'optimization'
@@ -65,7 +65,7 @@ OUT OF SCOPE (Politely decline):
             "📊 **Sales & Revenue Analysis** - Track performance trends and identify growth opportunities\n"
             "📦 **Inventory Management** - Monitor stock levels, reorder points, and expiring products\n"
             "👥 **Staff Performance** - Analyze productivity metrics and optimize team efficiency\n"
-            "🤝 **Supplier Relations** - Manage orders, evaluate performance, and optimize procurement\n"
+
             "💰 **Financial Insights** - Understand profitability, costs, and budget planning\n\n"
             "Please ask me about your pharmacy's business operations, and I'll provide data-driven insights to help you succeed!"
         )
@@ -88,7 +88,7 @@ OUT OF SCOPE (Politely decline):
             "• Sales and revenue analysis\n"
             "• Inventory management and optimization\n"
             "• Staff performance tracking\n"
-            "• Supplier relationship management\n"
+
             "• Financial planning and profitability insights\n\n"
             "What business challenge would you like to tackle today?"
         )
@@ -180,7 +180,7 @@ Format your response with clear sections and bullet points for easy reading.
             "revenue_analysis": "📈 **Revenue Insights**: Monitor daily trends and identify peak performance periods for strategic planning.",
             "inventory_management": "📦 **Inventory Insights**: Maintain optimal stock levels and implement automated reorder systems.",
             "staff_performance": "👥 **Team Insights**: Recognize top performers and provide targeted training for improvement.",
-            "supplier_analysis": "🤝 **Supplier Insights**: Evaluate performance metrics and optimize procurement strategies."
+
         }
         
         return insights_map.get(intent, "💡 **Strategic Insights**: As your business co-founder, I recommend using this data to make informed decisions and accelerate growth.")

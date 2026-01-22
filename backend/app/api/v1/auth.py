@@ -273,86 +273,7 @@ def register_owner(payload: PharmacyRegister, request: Request, db: Session = De
     }
 
 
-@router.post("/register/supplier")
-def register_supplier(payload: dict, request: Request, db: Session = Depends(get_db)):
-    email = payload.get("email")
-    password = payload.get("password")
-    supplier_name = payload.get("supplier_name")
-    national_id = payload.get("national_id")
-    tin_number = payload.get("tin_number")
-    phone = payload.get("phone")
-    address = payload.get("address")
-    license_image = payload.get("business_license_image")
-    
-    if db.query(User).filter(User.email == email).first():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
-    
-    try:
-        password_hash = hash_password(password)
-    except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
-    
-    # Create user
-    user = User(
-        email=email,
-        phone=phone,
-        role=Role.supplier.value,
-        tenant_id=None,
-        password_hash=password_hash,
-        is_active=True,
-        is_approved=False,
-        is_verified=False,
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    
-    # Create supplier profile
-    from app.models.supplier import Supplier
-    supplier = Supplier(
-        user_id=user.id,
-        company_name=supplier_name,
-        tax_id=tin_number,
-        phone=phone,
-        address=address,
-        business_license=license_image,
-        is_verified=False,
-        is_active=True,
-    )
-    db.add(supplier)
-    db.commit()
-    db.refresh(supplier)
-    
-    # Create KYC record
-    from app.models.supplier_kyc import SupplierKYC
-    kyc = SupplierKYC(
-        supplier_id=supplier.id,
-        national_id=national_id,
-        business_license_image=license_image,
-        tax_certificate_number=tin_number,
-        status="pending",
-    )
-    db.add(kyc)
-    db.commit()
-    
-    # Send verification code for security
-    try:
-        code = issue_code(db, email=user.email, purpose="register")
-        if user.email:
-            send_verification_email(user.email, code, "register")
-    except Exception:
-        pass
-    
-    # Create session tokens for immediate login after verification
-    tokens = _issue_session_tokens(db, user, request)
-    
-    return {
-        "user": _user_with_status(db, user),
-        "access_token": tokens.access_token,
-        "refresh_token": tokens.refresh_token,
-        "session_id": tokens.session_id,
-        "message": "Registration successful. Please verify your email."
-    }
+
 
 
 @router.post("/register/affiliate", response_model=UserOut, status_code=status.HTTP_201_CREATED)
@@ -668,7 +589,7 @@ def password_reset_request(payload: PasswordResetRequest, db: Session = Depends(
         )
     
     # Allow password reset for all roles: owner, affiliate, supplier, cashier
-    if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.supplier.value, Role.cashier.value, Role.admin.value}:
+    if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.cashier.value, Role.admin.value}:
         return {"status": "sent"}
     
     # Generate reset code (30 min expiry)
@@ -700,7 +621,7 @@ def password_reset_confirm(payload: PasswordResetConfirm, db: Session = Depends(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account found with this email address")
     
     # Allow password reset for all roles
-    if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.supplier.value, Role.cashier.value, Role.admin.value}:
+    if user.role not in {Role.pharmacy_owner.value, Role.affiliate.value, Role.cashier.value, Role.admin.value}:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password reset not available for this account")
     
     # Verify reset code

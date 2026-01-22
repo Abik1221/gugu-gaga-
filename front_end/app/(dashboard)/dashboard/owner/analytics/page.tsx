@@ -32,7 +32,7 @@ export default function OwnerAnalyticsPage() {
         return;
       }
       setTenantId(tid);
-      
+
       const analytics = await OwnerAnalyticsAPI.overview(tid, { days: 30 });
       setData(analytics);
     } catch (error: any) {
@@ -69,7 +69,7 @@ export default function OwnerAnalyticsPage() {
     },
     revenue_trends: [],
     inventory_health: [],
-    supplier_performance: [],
+
     staff_performance: []
   };
 
@@ -90,7 +90,7 @@ export default function OwnerAnalyticsPage() {
         <TabsList className="grid w-full grid-cols-4 h-12 bg-gray-100">
           <TabsTrigger value="revenue" className="cursor-pointer text-sm font-medium text-gray-700 data-[state=active]:text-white data-[state=active]:bg-emerald-600">Revenue Analysis</TabsTrigger>
           <TabsTrigger value="inventory" className="cursor-pointer text-sm font-medium text-gray-700 data-[state=active]:text-white data-[state=active]:bg-emerald-600">Inventory Health</TabsTrigger>
-          <TabsTrigger value="suppliers" className="cursor-pointer text-sm font-medium text-gray-700 data-[state=active]:text-white data-[state=active]:bg-emerald-600">Supplier Performance</TabsTrigger>
+
           <TabsTrigger value="staff" className="cursor-pointer text-sm font-medium text-gray-700 data-[state=active]:text-white data-[state=active]:bg-emerald-600">Staff Productivity</TabsTrigger>
         </TabsList>
 
@@ -169,7 +169,7 @@ export default function OwnerAnalyticsPage() {
               </ResponsiveContainer>
               <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-700">
-                  <strong>Chart Insights:</strong> Area chart shows revenue trends over time. 
+                  <strong>Chart Insights:</strong> Area chart shows revenue trends over time.
                   The flowing curve reveals your business growth patterns and seasonal variations.
                 </p>
               </div>
@@ -190,13 +190,13 @@ export default function OwnerAnalyticsPage() {
                 {displayData.inventory_health.length > 0 ? (
                   <PieChart>
                     <Pie
-                      data={displayData.inventory_health.map(item => ({name: item.category, value: item.current_stock}))}
+                      data={displayData.inventory_health.map(item => ({ name: item.category, value: item.current_stock }))}
                       cx="50%"
                       cy="50%"
                       outerRadius={120}
                       fill="#8884d8"
                       dataKey="value"
-                      label={({name, value}) => `${name}: ${value}`}
+                      label={({ name, value }) => `${name}: ${value}`}
                     >
                       {displayData.inventory_health.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={['#10b981', '#06b6d4', '#8b5cf6', '#f59e0b', '#ef4444', '#6b7280'][index % 6]} />
@@ -215,7 +215,7 @@ export default function OwnerAnalyticsPage() {
               </ResponsiveContainer>
               <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-700">
-                  <strong>Inventory Distribution:</strong> Pie chart shows current stock levels across all product categories. 
+                  <strong>Inventory Distribution:</strong> Pie chart shows current stock levels across all product categories.
                   Each colorful slice represents the proportion of inventory in each category.
                 </p>
               </div>
@@ -223,49 +223,7 @@ export default function OwnerAnalyticsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="suppliers" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>My Supplier Performance</CardTitle>
-              <p className="text-sm text-gray-600">
-                Performance analysis of suppliers you've ordered from - track delivery reliability and quality for your business
-              </p>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                {displayData.supplier_performance.length > 0 ? (
-                  <BarChart data={displayData.supplier_performance}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip formatter={(value, name) => [
-                      name === 'on_time_rate' ? `${value}%` : `${value}/5 ⭐`, 
-                      name === 'on_time_rate' ? 'On-Time Rate' : 'Quality Rating'
-                    ]} />
-                    <Legend />
-                    <Bar dataKey="on_time_rate" fill="#10b981" name="On-Time Delivery %" />
-                    <Bar dataKey="avg_rating" fill="#8b5cf6" name="Quality Rating (out of 5)" />
-                  </BarChart>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                    <ShoppingCart className="h-16 w-16 mb-4 opacity-30" />
-                    <h3 className="text-lg font-medium mb-2">Start Ordering from Suppliers</h3>
-                    <p className="text-sm text-center max-w-xs">Place orders with suppliers to track their performance and build your preferred supplier network.</p>
-                  </div>
-                )}
-              </ResponsiveContainer>
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-700">
-                  <strong>Your Supplier Insights:</strong> This shows performance of suppliers you've actually ordered from. 
-                  Green bars = delivery reliability for YOUR orders. Purple bars = quality ratings from YOUR received orders.
-                </p>
-                <p className="text-sm text-gray-700 mt-2">
-                  <strong>Use This Data To:</strong> Decide which suppliers to reorder from, negotiate better terms with top performers, or find alternatives for underperforming suppliers.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+
 
         <TabsContent value="staff" className="space-y-6">
           <Card>
@@ -297,7 +255,7 @@ export default function OwnerAnalyticsPage() {
               </ResponsiveContainer>
               <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-700">
-                  <strong>Staff Performance Trends:</strong> Line chart tracks sales performance and efficiency over time. 
+                  <strong>Staff Performance Trends:</strong> Line chart tracks sales performance and efficiency over time.
                   Blue line shows sales volume, orange line shows efficiency percentage.
                 </p>
               </div>

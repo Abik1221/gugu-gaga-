@@ -11,7 +11,7 @@ export interface Translations {
         security: string;
         pricing: string;
         contact: string;
-        integrations: string;
+
         blog: string;
         signIn: string;
         startFreeTrial: string;
@@ -41,8 +41,6 @@ export interface Translations {
         title: string;
         ownerTitle: string;
         ownerDesc: string;
-        supplierTitle: string;
-        supplierDesc: string;
         affiliateTitle: string;
         affiliateDesc: string;
         cancel: string;
@@ -83,8 +81,6 @@ export interface Translations {
         feature3Desc: string;
         feature4Title: string;
         feature4Desc: string;
-        feature5Title: string;
-        feature5Desc: string;
         quickFeature1: string;
         quickFeature2: string;
         quickFeature3: string;
@@ -156,7 +152,6 @@ export interface Translations {
         feature9: string;
         footerText: string;
         ownerCta: string;
-        supplierCta: string;
         contactUs: string;
     };
 
@@ -179,24 +174,7 @@ export interface Translations {
         gotIt: string;
     };
 
-    // Integrations Section
-    integrations: {
-        badge: string;
-        title: string;
-        subtitle: string;
-        viewAll: string;
-        effortlessTitle: string;
-        effortlessDesc: string;
-        benefit1: string;
-        benefit2: string;
-        benefit3: string;
-        benefit4: string;
-        requestTitle: string;
-        requestLink: string;
-        googleSheetsDesc: string;
-        sapDesc: string;
-        odooDesc: string;
-    };
+
 
     // Affiliate Section
     affiliate: {
@@ -537,10 +515,6 @@ export interface Translations {
         ownerSignInSubtitle: string;
         ownerWelcome: string;
 
-        // Supplier Sign In
-        supplierSignInTitle: string;
-        supplierSignInSubtitle: string;
-        supplierWelcome: string;
 
         // Affiliate Sign In
         affiliateSignInTitle: string;
@@ -554,12 +528,9 @@ export interface Translations {
         address: string;
         licenseDocument: string;
         registerOwner: string;
-        registerSupplier: string;
         registerAffiliate: string;
         ownerRegisterTitle: string;
         ownerRegisterSubtitle: string;
-        supplierRegisterTitle: string;
-        supplierRegisterSubtitle: string;
         affiliateRegisterTitle: string;
         affiliateRegisterSubtitle: string;
 
@@ -578,15 +549,6 @@ export interface Translations {
     // Auth Sidebar
     authSidebar: {
         owner: {
-            feature1: string;
-            feature2: string;
-            feature3: string;
-            feature4: string;
-            testimonial: string;
-            supportText: string;
-            contactTeam: string;
-        };
-        supplier: {
             feature1: string;
             feature2: string;
             feature3: string;
@@ -633,7 +595,6 @@ export interface Translations {
         main: {
             welcomeBack: string;
             subtitle: string;
-            connectTools: string;
             inviteStaff: string;
 
             // Time horizons
@@ -807,20 +768,9 @@ export interface Translations {
         };
     };
 
-    // Supplier Onboarding (KYC & Payment)
-    supplierOnboarding: {
-        // Common
-        loadingKycData: string;
-        loadingPaymentStatus: string;
-
-        // Placeholders
-        businessNamePlaceholder: string;
-        nationalIdPlaceholder: string;
-        tinNumberPlaceholder: string;
-        phoneNumberPlaceholder: string;
-        businessAddressPlaceholder: string;
-
-        // KYC Page
+    // Owner Onboarding
+    ownerOnboarding: {
+        loadingInfo: string;
         kycTitle: string;
         kycSubtitle: string;
         pendingReview: string;
@@ -832,64 +782,29 @@ export interface Translations {
         submitVerification: string;
         updateInformation: string;
         provideAccurateInfo: string;
-        supplierName: string;
-        nationalId: string;
-        tinNumber: string;
+        businessName: string;
+        enterBusinessName: string;
         phoneNumber: string;
         businessAddress: string;
-        licenseDocument: string;
-        currentLicense: string;
-        replaceLicense: string;
-        clickToUpload: string;
-        uploadHint: string;
-        change: string;
-        browse: string;
-        submitApplication: string;
-        updateApplication: string;
-        submitting: string;
-
-        // Payment Page
-        paymentTitle: string;
-        paymentSubtitle: string;
-        paymentStatus: string;
-        pendingVerification: string;
-        verified: string;
-        paymentUnderVerification: string;
-        paymentUnderVerificationMsg: string;
-        paymentVerified: string;
-        paymentVerifiedMsg: string;
-        paymentRejected: string;
-        paymentRejectedMsg: string;
-        accountActivated: string;
-        accountActivatedMsg: string;
-        goToDashboard: string;
-        paymentSubmission: string;
-        paymentSubmissionSubtitle: string;
-        adminNotes: string;
-        submittedCode: string;
-        paymentCode: string;
-        paymentCodeHint: string;
-        amount: string;
-        paymentMethod: string;
-        selectMethod: string;
-        bankTransfer: string;
-        cash: string;
-        check: string;
-        other: string;
+        fullBusinessAddress: string;
+        nationalId: string;
+        govIssuedId: string;
+        tinNumber: string;
+        taxIdNumber: string;
         additionalNotes: string;
-        additionalNotesPlaceholder: string;
-        submitPayment: string;
-        verificationInProgress: string;
-        verificationInProgressMsg: string;
-        paymentInstructions: string;
-        howToPay: string;
-        step1: string;
-        step2: string;
-        step3: string;
-        step4: string;
-        step5: string;
-        note: string;
-        noteMsg: string;
+        anyAdditionalInfo: string;
+        businessLicenseDoc: string;
+        currentLicenseDoc: string;
+        uploadNewDocOptional: string;
+        clickToUploadLicense: string;
+        leaveEmptyToKeep: string;
+        fileFormatHint: string;
+        browse: string;
+        processing: string;
+        submitKycApp: string;
+        updateKycInfo: string;
+        whatHappensNext: string;
+        whatHappensNextMsg: string;
     };
 
     // Admin Dashboard
@@ -959,58 +874,6 @@ export interface Translations {
         };
     };
 
-    // Supplier Dashboard
-    supplierDashboard: {
-        dashboard: {
-            title: string;
-            subtitle: string;
-            totalProducts: string;
-            totalOrders: string;
-            monthlyRevenue: string;
-            pendingShipments: string;
-            customerSatisfaction: string;
-            orderFulfillmentRate: string;
-            performanceScore: string;
-            quickActions: string;
-            manageProducts: string;
-            processOrders: string;
-            aiAssistant: string;
-            viewAnalytics: string;
-            businessInsights: string;
-            activeCustomers: string;
-            inventoryTurnover: string;
-            overdueInvoices: string;
-            recentActivity: string;
-        };
-        products: {
-            title: string;
-            subtitle: string;
-            addProduct: string;
-            searchPlaceholder: string;
-            tableHeaders: {
-                product: string;
-                category: string;
-                price: string;
-                stock: string;
-                status: string;
-                actions: string;
-            };
-        };
-        orders: {
-            title: string;
-            subtitle: string;
-            searchPlaceholder: string;
-            tableHeaders: {
-                orderId: string;
-                customer: string;
-                date: string;
-                total: string;
-                status: string;
-                actions: string;
-            };
-        };
-    };
-
     // Verify Page
     verifyPage: {
         title: string;
@@ -1053,7 +916,6 @@ export const translations: Record<Language, Translations> = {
             security: 'Security',
             pricing: 'Pricing',
             contact: 'Contact',
-            integrations: 'Integrations',
             blog: 'Blog',
             signIn: 'Sign In',
             startFreeTrial: 'Start Free Trial',
@@ -1079,8 +941,6 @@ export const translations: Record<Language, Translations> = {
             title: 'Choose Your Role',
             ownerTitle: 'Business Owner',
             ownerDesc: 'Manage your business operations',
-            supplierTitle: 'Supplier',
-            supplierDesc: 'Supply products to pharmacies',
             affiliateTitle: 'Affiliate',
             affiliateDesc: 'Earn commissions by referring',
             cancel: 'Cancel',
@@ -1117,8 +977,6 @@ export const translations: Record<Language, Translations> = {
             feature3Desc: 'Seamlessly connect with Google Sheets, ERP systems, accounting software, and more. No technical knowledge required—just one click to integrate your existing tools.',
             feature4Title: 'Smart Expense \u0026 Goal Tracking',
             feature4Desc: 'Never miss a payment deadline again. Mesob automatically tracks and reminds you of tax payments, employee salaries, rent, license renewals, and all business expenses.',
-            feature5Title: 'Supplier Marketplace',
-            feature5Desc: 'Connect directly with verified suppliers who promote their products on your dashboard. Discover new products, compare prices, and order with confidence.',
             quickFeature1: 'Real-time Analytics',
             quickFeature2: 'Automated Alerts',
             quickFeature3: 'Stock Transfers',
@@ -1149,7 +1007,7 @@ export const translations: Record<Language, Translations> = {
             step1Desc: 'Get started in minutes with easy setup and seamless integration with your existing systems.',
             step2Title: 'Smart Analytics',
             step2Desc: 'AI-powered insights help you make better decisions with real-time analytics and predictions.',
-            step3Title: 'Scale & Grow',
+            step3Title: 'Scale \u0026 Grow',
             step3Desc: 'Expand confidently with multi-branch support, automated workflows, and continuous optimization.',
             imageAlt1: 'Dashboard Overview',
             imageAlt2: 'AI Assistant Interface',
@@ -1184,7 +1042,6 @@ export const translations: Record<Language, Translations> = {
             feature9: 'Custom integrations',
             footerText: '© 2024 Mesob. All rights reserved.',
             ownerCta: 'Sign in as Owner',
-            supplierCta: 'Sign in as Supplier',
             contactUs: 'Contact Us',
         },
         pwaInstall: {
@@ -1204,23 +1061,6 @@ export const translations: Record<Language, Translations> = {
             defaultMessage: 'This browser does not support app installation',
             gotIt: 'Got it',
         },
-        integrations: {
-            badge: 'Seamless Integrations',
-            title: 'Connect with Your Favorite Tools',
-            subtitle: 'Integrate with popular payment, accounting, and business tools',
-            viewAll: 'View All Integrations',
-            effortlessTitle: 'Effortless Integration',
-            effortlessDesc: 'Stop juggling multiple platforms. Mesob AI connects seamlessly with your existing tools, creating a unified ecosystem for your business operations.',
-            benefit1: 'One-click setup for all integrations',
-            benefit2: 'Real-time data synchronization',
-            benefit3: 'Secure, encrypted connections',
-            benefit4: 'No technical knowledge required',
-            requestTitle: 'Don\'t see your tool?',
-            requestLink: 'Request a custom integration',
-            googleSheetsDesc: 'Export reports and sync inventory data directly from Google Sheets for easy analysis and sharing.',
-            sapDesc: 'Seamlessly integrate with SAP ERP systems for enterprise-level financial and operational management.',
-            odooDesc: 'Connect with Odoo\'s comprehensive business suite for unified inventory, sales, and accounting workflows.',
-        },
         affiliate: {
             badge: 'Affiliate Program',
             title: 'Earn by Sharing Mesob',
@@ -1230,7 +1070,7 @@ export const translations: Record<Language, Translations> = {
             benefit2Title: 'Easy Link Sharing',
             benefit2Desc: 'Generate your unique referral link instantly and share anywhere.',
             benefit3Title: 'Dual Revenue Stream',
-            benefit3Desc: 'Earn from both supplier and business owner sign-ups.',
+            benefit3Desc: 'Earn from business owner sign-ups.',
             benefit4Title: 'Real-time Tracking',
             benefit4Desc: 'Track your referrals and earnings in a real-time dashboard.',
             cta: 'Join Affiliate Program',
@@ -1239,7 +1079,7 @@ export const translations: Record<Language, Translations> = {
             step1Desc: 'Create your affiliate account in minutes.',
             step2Title: 'Generate Link',
             step2Desc: 'Get your unique referral link from your dashboard with one click.',
-            step3Title: 'Share & Promote',
+            step3Title: 'Share \u0026 Promote',
             step3Desc: 'Share your link with your network.',
             step4Title: 'Earn Commission',
             step4Desc: 'Get paid for every successful sign-up.',
@@ -1299,7 +1139,7 @@ export const translations: Record<Language, Translations> = {
             // Commissions Page
             successfullyOnboarded: 'Pharmacies you\'ve successfully onboarded',
             projectedPayoutPeriod: 'Projected payout for this period',
-            awaitingReviewProcessing: 'Awaiting review & processing',
+            awaitingReviewProcessing: 'Awaiting review \u0026 processing',
             totalEarningsTransferred: 'Total earnings transferred to you',
 
             // Payouts Page
@@ -1472,7 +1312,7 @@ export const translations: Record<Language, Translations> = {
             demoExpectationsHeading: 'What to Expect in Your Demo',
             demoExpectation1: '• 30-minute personalized walkthrough',
             demoExpectation2: '• See features specific to your business type',
-            demoExpectation3: '• Live Q&A with our product experts',
+            demoExpectation3: '• Live Q\u0026A with our product experts',
             demoExpectation4: '• Custom pricing discussion',
             demoExpectation5: '• Implementation timeline and support',
         },
@@ -1483,7 +1323,7 @@ export const translations: Record<Language, Translations> = {
             section1Heading: 'Information We Collect',
             section1Body: 'We collect business information you provide during registration including business name, owner details, TIN (Tax Identification Number), trade license, contact information, and bank account details for payment processing. We also collect transaction data, inventory records, and usage logs to provide our services effectively.',
             section2Heading: 'How We Use Your Information',
-            section2Body: 'Your information is used to provide platform services, process payments through Ethiopian banking systems, generate tax-compliant receipts, manage inventory, facilitate supplier connections, and provide AI-powered business insights. We comply with Ethiopian commercial regulations and never sell your personal or business data to third parties.',
+            section2Body: 'Your information is used to provide platform services, process payments through Ethiopian banking systems, generate tax-compliant receipts, manage inventory, and provide AI-powered business insights. We comply with Ethiopian commercial regulations and never sell your personal or business data to third parties.',
             section3Heading: 'Data Storage and Security',
             section3Body: 'Your data is stored securely with encryption both in transit and at rest. We implement multi-factor authentication, regular security audits, and access controls. While our infrastructure may utilize international cloud services, we ensure compliance with Ethiopian data protection standards and maintain data sovereignty where required by law.',
             section4Heading: 'Compliance with Ethiopian Laws',
@@ -1491,7 +1331,7 @@ export const translations: Record<Language, Translations> = {
             section5Heading: 'Data Sharing and Disclosure',
             section5Body: 'We share data only with trusted service providers (payment processors, SMS providers, cloud hosting) under strict confidentiality agreements. We may disclose information to Ethiopian government authorities when legally required (tax audits, regulatory compliance, court orders). We do not share your business data with competitors or unauthorized third parties.',
             section6Heading: 'Payment and Financial Data',
-            section6Body: 'Payment processing is handled through licensed Ethiopian payment service providers. We store bank account information securely for subscription billing and supplier payments. All financial transactions comply with National Bank of Ethiopia regulations and anti-money laundering requirements.',
+            section6Body: 'Payment processing is handled through licensed Ethiopian payment service providers. We store bank account information securely for subscription billing. All financial transactions comply with National Bank of Ethiopia regulations and anti-money laundering requirements.',
             section7Heading: 'Your Rights',
             section7Body: 'You have the right to access, correct, or delete your personal data. You can export your business data at any time through your account settings. For data deletion requests, we will comply within 30 days while maintaining records required by Ethiopian law. You can withdraw consent for marketing communications at any time.',
             section8Heading: 'Business Data Ownership',
@@ -1539,9 +1379,6 @@ export const translations: Record<Language, Translations> = {
             ownerSignInSubtitle: 'Access your business dashboard, manage operations, and track performance.',
             ownerWelcome: 'Welcome back — enter your credentials to continue.',
 
-            supplierSignInTitle: 'Supplier Sign In',
-            supplierSignInSubtitle: 'Manage your products, orders, and connect with businesses.',
-            supplierWelcome: 'Welcome back — sign in to your supplier portal.',
 
             affiliateSignInTitle: 'Affiliate Sign In',
             affiliateSignInSubtitle: 'Track your referrals, earnings, and performance.',
@@ -1553,18 +1390,21 @@ export const translations: Record<Language, Translations> = {
             address: 'Business Address',
             licenseDocument: 'Business License Document',
             registerOwner: 'Register as Owner',
-            registerSupplier: 'Register as Supplier',
             registerAffiliate: 'Register as Affiliate',
             ownerRegisterTitle: 'Start your business management journey',
             ownerRegisterSubtitle: 'Join thousands of business owners who trust our AI-powered platform.',
-            supplierRegisterTitle: 'Expand your market reach',
-            supplierRegisterSubtitle: 'Connect with thousands of businesses and grow your sales.',
             affiliateRegisterTitle: 'Start earning with Mesob',
             affiliateRegisterSubtitle: 'Join our affiliate program and earn recurring commissions.',
 
             resetPasswordTitle: 'Reset Password',
             resetPasswordSubtitleEmail: 'Enter your email to receive a reset code',
             resetPasswordSubtitleCode: 'Enter the code and your new password',
+            sendResetCode: 'Send Reset Code',
+            resetCode: 'Reset Code',
+            newPassword: 'New Password',
+            confirmPassword: 'Confirm Password',
+            resetPasswordButton: 'Reset Password',
+            didntReceiveCode: "Didn't receive code?",
         },
 
         authSidebar: {
@@ -1576,15 +1416,6 @@ export const translations: Record<Language, Translations> = {
                 testimonial: 'Mesob has revolutionized how we manage our business. The AI insights are incredible!',
                 supportText: 'Need help?',
                 contactTeam: 'Contact our support team',
-            },
-            supplier: {
-                feature1: 'Access to verified business network',
-                feature2: 'Real-time order management system',
-                feature3: 'Advanced analytics and reporting',
-                feature4: 'Secure payment processing',
-                testimonial: 'Mesob\'s business management platform has streamlined our operations and connected us with quality business partners nationwide.',
-                supportText: 'Need help?',
-                contactTeam: 'Contact our supplier support team',
             },
             affiliate: {
                 feature1: 'Earn commission for every business you onboard',
@@ -1619,7 +1450,6 @@ export const translations: Record<Language, Translations> = {
             main: {
                 welcomeBack: 'Welcome back',
                 subtitle: 'Monitor revenue, compare branches, and coach your pharmacy team from a single command center.',
-                connectTools: 'Connect tools',
                 inviteStaff: 'Invite staff',
 
                 // Time horizons
@@ -1683,7 +1513,7 @@ export const translations: Record<Language, Translations> = {
                 unassigned: 'Unassigned',
                 avgTicket: 'avg ticket',
                 mostRecentBestSellers: 'Most recent best sellers',
-                mostRecentChanges: 'Most recent inventory & POS changes',
+                mostRecentChanges: 'Most recent inventory \u0026 POS changes',
                 revenueTransactionsUnits: 'Revenue, transactions, and units sold',
                 viewStaffList: 'View staff list',
                 analyticsRefreshed: 'Analytics refreshed',
@@ -1691,82 +1521,95 @@ export const translations: Record<Language, Translations> = {
                 unauthorizedError: 'You are not authorised to view this dashboard',
             },
         },
-        supplierOnboarding: {
-            loadingKycData: 'Loading KYC data...',
-            loadingPaymentStatus: 'Loading payment status...',
-            businessNamePlaceholder: 'Enter your registered business name',
-            nationalIdPlaceholder: 'Government-issued ID number',
-            tinNumberPlaceholder: 'Tax Identification Number',
-            phoneNumberPlaceholder: '+251...',
-            businessAddressPlaceholder: 'Business location',
-
-            kycTitle: 'Supplier KYC Verification',
-            kycSubtitle: 'Complete your verification to start selling',
-            pendingReview: 'Pending Review',
-            approved: 'Approved',
-            rejected: 'Rejected',
-            notSubmitted: 'Not Submitted',
-            refreshStatus: 'Refresh Status',
-            applicationRejected: 'Your application was rejected',
-            submitVerification: 'Submit Verification Documents',
-            updateInformation: 'Update Information',
-            provideAccurateInfo: 'Please provide accurate information for verification.',
-            supplierName: 'Supplier Name',
-            nationalId: 'National ID / Passport',
-            tinNumber: 'TIN Number',
-            phoneNumber: 'Phone Number',
-            businessAddress: 'Business Address',
-            licenseDocument: 'Business License',
-            currentLicense: 'Current License',
-            replaceLicense: 'Replace License',
-            clickToUpload: 'Click to upload',
-            uploadHint: 'SVG, PNG, JPG or GIF (max. 800x400px)',
-            change: 'Change',
-            browse: 'Browse',
-            submitApplication: 'Submit Application',
-            updateApplication: 'Update Application',
-            submitting: 'Submitting...',
-            paymentTitle: 'Payment Verification',
-            paymentSubtitle: 'Verify your payment to activate your account',
-            paymentStatus: 'Payment Status',
-            pendingVerification: 'Pending Verification',
-            verified: 'Verified',
-            paymentUnderVerification: 'Payment Under Verification',
-            paymentUnderVerificationMsg: 'Your payment is currently being reviewed. This usually takes 24-48 hours.',
-            paymentVerified: 'Payment Verified',
-            paymentVerifiedMsg: 'Your payment has been verified successfully.',
-            paymentRejected: 'Payment Rejected',
-            paymentRejectedMsg: 'Your payment was rejected. Please check the notes and try again.',
-            accountActivated: 'Account Activated',
-            accountActivatedMsg: 'Your account is now fully active. You can access your dashboard.',
-            goToDashboard: 'Go to Dashboard',
-            paymentSubmission: 'Payment Submission',
-            paymentSubmissionSubtitle: 'Submit your payment details for verification',
-            adminNotes: 'Admin Notes',
-            submittedCode: 'Submitted Code',
-            paymentCode: 'Payment Code',
-            paymentCodeHint: 'Enter the transaction code from your receipt',
-            amount: 'Amount',
-            paymentMethod: 'Payment Method',
-            selectMethod: 'Select payment method',
-            bankTransfer: 'Bank Transfer',
-            cash: 'Cash',
-            check: 'Check',
-            other: 'Other',
-            additionalNotes: 'Additional Notes',
-            additionalNotesPlaceholder: 'Any additional information...',
-            submitPayment: 'Submit Payment',
-            verificationInProgress: 'Verification in Progress',
-            verificationInProgressMsg: 'We are verifying your payment. Please check back later.',
-            paymentInstructions: 'Payment Instructions',
-            howToPay: 'How to pay',
-            step1: 'Go to your nearest bank branch',
-            step2: 'Deposit the required amount',
-            step3: 'Keep the receipt',
-            step4: 'Enter the transaction code here',
-            step5: 'Submit for verification',
-            note: 'Note',
-            noteMsg: 'Please ensure all details are correct before submitting.',
+        staffDashboard: {
+            common: {
+                loading: 'Loading...',
+                refresh: 'Refresh',
+                save: 'Save',
+                cancel: 'Cancel',
+                delete: 'Delete',
+                edit: 'Edit',
+                add: 'Add',
+                search: 'Search',
+                filter: 'Filter',
+                export: 'Export',
+                import: 'Import',
+                noData: 'No data available',
+                error: 'Error',
+                success: 'Success',
+                close: 'Close',
+                confirm: 'Confirm',
+                back: 'Back',
+                next: 'Next',
+                submit: 'Submit',
+                submitting: 'Submitting...',
+            },
+            main: {
+                welcome: 'Welcome',
+                subtitle: 'Manage your daily tasks',
+                posCardTitle: 'Point of Sale',
+                posCardDesc: 'Process sales',
+                posButton: 'Go to POS',
+                salesCardTitle: 'Sales History',
+                salesCardDesc: 'View past sales',
+                salesButton: 'View Sales',
+                inventoryCardTitle: 'Inventory',
+                inventoryCardDesc: 'Check stock',
+                inventoryButton: 'View Inventory',
+                todaysSummary: 'Today\'s Summary',
+                salesCount: 'Sales Count',
+                totalRevenue: 'Total Revenue',
+                quickActions: 'Quick Actions',
+                newSale: 'New Sale',
+                checkStock: 'Check Stock',
+            },
+            pos: {
+                title: 'Point of Sale',
+                subtitle: 'Process transactions',
+                addItems: 'Add Items',
+                searchPlaceholder: 'Search products...',
+                medicineName: 'Medicine Name',
+                quantity: 'Quantity',
+                unitPrice: 'Unit Price',
+                addToCart: 'Add to Cart',
+                cartTitle: 'Cart',
+                cartEmpty: 'Cart is empty',
+                total: 'Total',
+                processSale: 'Process Sale',
+                processing: 'Processing...',
+                saleCompleted: 'Sale Completed',
+                saleFailed: 'Sale Failed',
+                invalidInput: 'Invalid Input',
+                invalidPrice: 'Invalid Price',
+            },
+            inventory: {
+                title: 'Inventory',
+                subtitle: 'Manage stock',
+                searchPlaceholder: 'Search inventory...',
+                lowStockOnly: 'Low stock only',
+                medicineColumn: 'Medicine',
+                stockColumn: 'Stock',
+                priceColumn: 'Price',
+                expiryColumn: 'Expiry',
+                statusColumn: 'Status',
+                actionsColumn: 'Actions',
+                lowStock: 'Low Stock',
+                expiringSoon: 'Expiring Soon',
+                good: 'Good',
+                deleteConfirm: 'Are you sure?',
+                itemDeleted: 'Item deleted',
+                deleteFailed: 'Delete failed',
+            },
+            sales: {
+                title: 'Sales History',
+                subtitle: 'View transactions',
+                transactionId: 'Transaction ID',
+                date: 'Date',
+                items: 'Items',
+                amount: 'Amount',
+                status: 'Status',
+                viewDetails: 'View Details',
+            },
         },
         ownerOnboarding: {
             loadingInfo: 'Loading your information...',
@@ -1870,56 +1713,6 @@ export const translations: Record<Language, Translations> = {
                 }
             }
         },
-        supplierDashboard: {
-            dashboard: {
-                title: 'Supplier Dashboard',
-                subtitle: 'Comprehensive business overview and performance metrics',
-                totalProducts: 'Total Products',
-                totalOrders: 'Total Orders',
-                monthlyRevenue: 'Monthly Revenue',
-                pendingShipments: 'Pending Shipments',
-                customerSatisfaction: 'Customer Satisfaction',
-                orderFulfillmentRate: 'Order Fulfillment Rate',
-                performanceScore: 'Performance Score',
-                quickActions: 'Quick Actions',
-                manageProducts: 'Manage Products',
-                processOrders: 'Process Orders',
-                aiAssistant: 'AI Assistant',
-                viewAnalytics: 'View Analytics',
-                businessInsights: 'Business Insights',
-                activeCustomers: 'Active Customers',
-                inventoryTurnover: 'Inventory Turnover',
-                overdueInvoices: 'Overdue Invoices',
-                recentActivity: 'Recent Activity',
-            },
-            products: {
-                title: 'Product Management',
-                subtitle: 'Manage your product catalog and inventory',
-                addProduct: 'Add Product',
-                searchPlaceholder: 'Search products...',
-                tableHeaders: {
-                    product: 'Product',
-                    category: 'Category',
-                    price: 'Price',
-                    stock: 'Stock',
-                    status: 'Status',
-                    actions: 'Actions',
-                }
-            },
-            orders: {
-                title: 'Order Management',
-                subtitle: 'Process and track customer orders',
-                searchPlaceholder: 'Search orders...',
-                tableHeaders: {
-                    orderId: 'Order ID',
-                    customer: 'Customer',
-                    date: 'Date',
-                    total: 'Total',
-                    status: 'Status',
-                    actions: 'Actions',
-                }
-            }
-        },
         verifyPage: {
             title: 'Confirm your email and unlock the partner dashboard',
             subtitle: 'Enter the one-time code sent to your inbox. Once it matches, we\'ll activate your affiliate portal and load your referral toolkit.',
@@ -1958,7 +1751,6 @@ export const translations: Record<Language, Translations> = {
             security: 'ደህንነት',
             pricing: 'ዋጋ',
             contact: 'ያግኙን',
-            integrations: 'ግንኙነቅች',
             blog: 'ብሎግ',
             signIn: 'ግባ',
             startFreeTrial: 'ነጻ ሙከራ ጀምር',
@@ -1984,8 +1776,6 @@ export const translations: Record<Language, Translations> = {
             title: 'ሚናዎን ይምረጡ',
             ownerTitle: 'የንግድ ባለቤት',
             ownerDesc: 'የንግድ ስራዎን ያስተዳድሩ',
-            supplierTitle: 'አቅራቢ',
-            supplierDesc: 'ምርቶችን ለመድኃኒት ቤቶች ያቅርቡ',
             affiliateTitle: 'አጋር',
             affiliateDesc: 'በማጣቀስ ኮሚሽን ያግኙ',
             cancel: 'ይቅር',
@@ -2022,8 +1812,7 @@ export const translations: Record<Language, Translations> = {
             feature3Desc: 'ከ Google Sheets፣ ERP ስርዓቶች፣ የሂሳብ ሶፍትዌር እና ሌሎችም ጋር በሰላም ይገናኙ። ምንም ቴክኒካዊ እውቀት አያስፈልግም - ነባር መሳሪያዎችዎን ለማገናኘት አንድ ጠቅታ ብቻ።',
             feature4Title: 'ብልጥ ወጪ እና ግብ ክትትል',
             feature4Desc: 'የክፍያ ቀነ-ገደብ በጭራሽ አያምልጥዎ። መሶብ የግብር ክፍያዎችን፣ የሰራተኛ ደመወዝን፣ ኪራይን፣ የፍቃድ እድሳትን እና ሁሉንም የንግድ ወጪዎችን በራስ-ሰር ይከታተላል እና ያስታውስዎታል።',
-            feature5Title: 'የአቅራቢዎች ገበያ',
-            feature5Desc: 'ምርቶቻቸውን በዳሽቦርድዎ ላይ ከሚያስተዋውቁ የተረጋገጡ አቅራቢዎች ጋር በቀጥታ ይገናኙ። አዳዲስ ምርቶችን ያግኙ፣ ዋጋዎችን ያወዳድሩ እና በልበ ሙሉነት ይዘዙ።',
+
             quickFeature1: 'የእውነተኛ ጊዜ ትንታኔ',
             quickFeature2: 'ራስ-ሰር ማንቂያዎች',
             quickFeature3: 'የእቃ ዝውውሮች',
@@ -2043,7 +1832,7 @@ export const translations: Record<Language, Translations> = {
             chat1Question: '"የመድኃኒት ቤቴ ክምችት በዚህ ወር እንዴት ነው?"',
             chat1Answer: 'መድኃኒት ቤትዎ ካለፈው ወር ጋር ሲነጻጸር የ 23% የሽያጭ ጭማሪ አሳይቷል። ሆኖም፣ አንቲባዮቲክስ እያለቀብዎት እንደሆነ አስተውያለሁ። አሁን ባለው አዝማሚያ መሰረት፣ እጥረትን ለማስወገድ በሚቀጥሉት 3 ቀናት ውስጥ 150 አሞክሲሲሊን እንዲያዝዙ እመክራለሁ።',
             chat2Question: '"የትኞቹ ምርቶች ዝቅተኛ አፈጻጸም እያሳዩ ነው?"',
-            chat2Answer: 'በ 60 ቀናት ውስጥ ያልተሸጡ 45,000 ብር ዋጋ ያላቸው 12 ቀስ ብለው የሚንቀሳቀሱ እቃዎችን ለይቻለሁ። ለእነዚህ እቃዎች ማስተዋወቂያ እንዲያካሂዱ ወይም የማዘዣ ስልትዎን እንዲያስተካክሉ እመክራለሁ።',
+            chat2Answer: 'I\'ve identified 12 slow-moving items worth 45,000 Birr that haven\'t sold in 60 days. I suggest running a promotion or adjusting your ordering strategy for these items.',
             imageAlt: 'በ AI የሚሰራ የመድኃኒት ቤት አስተዳደር',
         },
         howItWorks: {
@@ -2090,7 +1879,6 @@ export const translations: Record<Language, Translations> = {
             feature9: 'ብጁ ግንኙነቶች',
             footerText: '© 2024 መሶብ. መብቱ በህግ የተጠበቀ ነው።',
             ownerCta: 'እንደ ባለቤት ይግቡ',
-            supplierCta: 'እንደ አቅራቢ ይግቡ',
             contactUs: 'ያግኙን',
         },
         pwaInstall: {
@@ -2110,23 +1898,6 @@ export const translations: Record<Language, Translations> = {
             defaultMessage: 'ይህ አሳሽ መተግበሪያውን መጫን አይደግፍም',
             gotIt: 'ገባኝ',
         },
-        integrations: {
-            badge: 'ቀላል ግንኙነቶች',
-            title: 'ከሚወዷቸው መሳሪያዎች ጋር ይገናኙ',
-            subtitle: 'ከታዋቂ ክፍያ፣ የሂሳብ አያያዝ እና የንግድ መሳሪያዎች ጋር ይቀላቀሉ',
-            viewAll: 'ሁሉንም ግንኙነቶች ይመልከቱ',
-            effortlessTitle: 'ቀላል ውህደት',
-            effortlessDesc: 'በተለያዩ መድረኮች መባከን ይቁም። መሶብ AI ከነባር መሳሪያዎችዎ ጋር በሰላም ይገናኛል፣ ለንግድ ስራዎ አንድ ወጥ የሆነ ሥርዓት ይፈጥራል።',
-            benefit1: 'ለሁሉም ውህደቶች የአንድ ጠቅታ ቅንብር',
-            benefit2: 'የእውነተኛ ጊዜ መረጃ ማመሳሰል',
-            benefit3: 'ደህንነቱ የተጠበቀ፣ የተመሰጠረ ግንኙነት',
-            benefit4: 'ምንም ቴክኒካዊ እውቀት አያስፈልግም',
-            requestTitle: 'መሳሪያዎን አላገኙትም?',
-            requestLink: 'ብጁ ውህደት ይጠይቁ',
-            googleSheetsDesc: 'ለቀላል ትንታኔ እና ማጋራት ሪፖርቶችን ይላኩ እና የዕቃ ዝርዝር መረጃን በቀጥታ ከ Google Sheets ያመሳስሉ።',
-            sapDesc: 'ለድርጅት ደረጃ የፋይናንስ እና የአሠራር አስተዳደር ከ SAP ERP ስርዓቶች ጋር በሰላም ይዋሃዱ።',
-            odooDesc: 'ለተዋሃደ የዕቃ፣ የሽያጭ እና የሂሳብ አያያዝ የሥራ ሂደቶች ከ Odoo አጠቃላይ የንግድ ስብስብ ጋር ይገናኙ።',
-        },
         affiliate: {
             badge: 'የአጋር መርሃ ግብር',
             title: 'መሶብን በማጋራት ያትርፉ',
@@ -2136,7 +1907,7 @@ export const translations: Record<Language, Translations> = {
             benefit2Title: 'ቀላል አገናኝ ማጋራት',
             benefit2Desc: 'ልዩ የሪፈራል አገናኝዎን ወዲያውኑ ያመንጩ እና በየትኛውም ቦታ ያጋሩ።',
             benefit3Title: 'ድርብ የገቢ ምንጭ',
-            benefit3Desc: 'ከአቅራቢዎች እና ከንግድ ባለቤቶች ምዝገባ ያትርፉ።',
+            benefit3Desc: 'ከንግድ ባለቤቶች ምዝገባ ያትርፉ።',
             benefit4Title: 'የእውነተኛ ጊዜ ክትትል',
             benefit4Desc: 'ሪፈራሎችዎን እና ገቢዎን በእውነተኛ ጊዜ ዳሽቦርድ ይከታተሉ።',
             cta: 'የአጋር መርሃ ግብርን ይቀላቀሉ',
@@ -2232,7 +2003,7 @@ export const translations: Record<Language, Translations> = {
             enterAccountNumber: 'የሂሳብ ቁጥር ያስገቡ',
             submitPayoutRequest: 'የክፍያ ጥያቄ ያስገቡ',
             payoutHistory: 'የክፍያ ታሪክ',
-            payoutHistoryDesc: 'የቅርብ ጊዜ የክፍያ ጥያቄዎች ከሁኔታ ዝመናዎች ጋር።',
+            payoutHistoryDesc: 'Latest payout requests with status updates.',
             noPayoutRequests: 'እስካሁን ምንም የክፍያ ጥያቄዎች የሉም። እዚህ ተዘርዝሮ ለማየት የመጀመሪያ ክፍያዎን ያስገቡ።',
             status: 'ሁኔታ',
             amount: 'መጠን',
@@ -2241,21 +2012,21 @@ export const translations: Record<Language, Translations> = {
             paid: 'ተከፍሏል',
             pending: 'በመጠባበቅ ላይ',
             rejected: 'ተቀባይነት አላገኘም',
-            noCommissionYet: 'እስካሁን ምንም ኮሚሽን አላገኙም። ክፍያ ከመጠየቅዎ በፊት ገቢ ማግኘት ለመጀመር የሪፈራል አገናኝዎን ያጋሩ።',
-            allBankDetailsRequired: 'ለክፍያ ጥያቄዎች ሁሉም የባንክ ዝርዝሮች ያስፈልጋሉ።',
+            noCommissionYet: 'You haven\'t earned any commission yet. Share your referral link to start earning before requesting a payout.',
+            allBankDetailsRequired: 'All bank details are required for payout requests.',
             activePharmaciesLabel: 'ንቁ መድኃኒት ቤቶች',
 
             // Toast Messages
             linkCreated: 'አገናኝ ተፈጥሯል',
-            linkCreatedDesc: 'አዲስ የሪፈራል አገናኝ አሁን ንቁ ነው።',
+            linkCreatedDesc: 'A new referral link is now active.',
             linkRotated: 'አገናኝ ታድሷል',
-            linkRotatedDesc: 'የሪፈራል አገናኙ ታድሷል።',
+            linkRotatedDesc: 'The referral link has been refreshed.',
             linkDeactivated: 'አገናኝ ተሰናክሏል',
-            linkDeactivatedDesc: 'የሪፈራል አገናኙ አሁን ንቁ አይደለም።',
+            linkDeactivatedDesc: 'The referral link is now inactive.',
             copied: 'ተቀድቷል',
-            copiedDesc: 'የሪፈራል አገናኝ ወደ ቅንጥብ ሰሌዳ ተቀድቷል።',
+            copiedDesc: 'Referral link copied to clipboard.',
             payoutRequested: 'ክፍያ ተጠይቋል',
-            payoutRequestedDesc: 'ፋይናንስ ጥያቄዎን በቅርቡ ይገመግማል።',
+            payoutRequestedDesc: 'Finance will review your request shortly.',
             failedToCreateLink: 'አገናኝ መፍጠር አልተቻለም',
             failedToRotate: 'ማደስ አልተቻለም',
             failedToDeactivate: 'ማሰናከል አልተቻለም',
@@ -2281,7 +2052,7 @@ export const translations: Record<Language, Translations> = {
             registerTitle: 'የአጋር ምዝገባ',
             comingSoon: 'በቅርብ ቀን...',
 
-            // Layout & Loading
+            // Layout \u0026 Loading
             generateLinkNav: 'አገናኝ ይፍጠሩ',
             signOut: 'ውጣ',
             loading: 'በመጫን ላይ...',
@@ -2289,7 +2060,7 @@ export const translations: Record<Language, Translations> = {
         dialogs: {
             // OTP Sent Dialog
             otpSentTitle: 'የእርስዎን የገቢ ሳጥን ይመልከቱ',
-            otpSentMessage: 'የማረጋገጫ ኮድ ወደ ላክንልዎታል',
+            otpSentMessage: 'We\'ve sent a verification code to',
             otpSentButton: 'ገባኝ',
 
             // Error/Success Dialog
@@ -2299,7 +2070,7 @@ export const translations: Record<Language, Translations> = {
             verifyPaymentTitle: 'ክፍያ ያረጋግጡ',
             orderIdLabel: 'የትዕዛዝ መታወቂያ',
             paymentCodeLabel: 'የክፍያ ኮድ',
-            verifyPaymentMessage: 'ከመቀጠልዎ በፊት እባክዎ ይህንን የክፍያ ኮድ ከክፍያ መዝገቦችዎ ጋር ያረጋግጡ።',
+            verifyPaymentMessage: 'Please verify this payment code with your payment records before proceeding.',
             cancelButton: 'ይቅር',
             rejectPaymentButton: 'ክፍያ ውድቅ አድርግ',
             verifyPaymentButton: 'ክፍያ አረጋግጥ',
@@ -2307,18 +2078,18 @@ export const translations: Record<Language, Translations> = {
         testimonials: {
             badge: 'ምስክርነቶች',
             title: 'በመላ አፍሪካ ባሉ ንግዶች የታመነ',
-            subtitle: 'ደንበኞቻችን የሚሉትን ይመልከቱ',
+            subtitle: 'See what our customers have to say',
         },
         cta: {
             title: 'ንግድዎን ለመቀየር ዝግጁ ነዎት?',
-            subtitle: 'መሶብን በመጠቀም ላይ ካሉ በሺዎች የሚቆጠሩ የአፍሪካ ንግዶች ጋር ይቀላቀሉ',
-            button: 'ነጻ ሙከራዎን ይጀምሩ',
+            subtitle: 'Join thousands of African businesses already using Mesob',
+            button: 'Start Your Free Trial',
             feature1Title: 'GDPR ታዛዥ',
-            feature1Desc: 'ከፍተኛ ደረጃ ያለው ደህንነት ከሙሉ የግል መረጃ ጥበቃ ጋር',
-            feature2Title: 'ፈጣን ቅንብር',
-            feature2Desc: 'በአንድ ሰዓት ውስጥ በተመራ አጀማመር ይጀምሩ',
-            feature3Title: '24/7 ድጋፍ',
-            feature3Desc: 'AI እና የሰው ድጋፍ ሁልጊዜ ለመርዳት ዝግጁ ናቸው',
+            feature1Desc: 'Enterprise-grade security with complete tenant isolation',
+            feature2Title: 'Quick Setup',
+            feature2Desc: 'Get started in under an hour with guided onboarding',
+            feature3Title: '24/7 Support',
+            feature3Desc: 'AI and human support always available to help',
         },
         footer: {
             description: 'ለአፍሪካ ንግዶች የተገነባ በ AI የሚሰራ የንግድ አስተዳደር ሶፍትዌር',
@@ -2340,47 +2111,47 @@ export const translations: Record<Language, Translations> = {
             support1: 'የእገዛ ማእከል',
             support2: 'ሰነዶች',
             support3: 'API ማጣቀሻ',
-            rightsReserved: 'መብቱ በህጋ የተጠበቀ ነው።',
-            featureOverview: 'የባህሪ አጠቃላይ እይታ',
-            aiSolutions: 'AI መፍትሄዎች',
-            pricing: 'ዋጋ',
-            contact: 'ያግኙን',
-            affiliates: 'አጋሮች',
-            privacyPolicy: 'የግላዊነት ፖሊሲ',
-            termsOfService: 'የአገልግሎት ውል',
-            privacy: 'ግላዊነት',
-            terms: 'ውሎች',
-            support: 'ድጋፍ',
+            rightsReserved: 'መብቱ በህግ የተጠበቀ ነው።',
+            featureOverview: 'Feature overview',
+            aiSolutions: 'AI solutions',
+            pricing: 'Pricing',
+            contact: 'Contact',
+            affiliates: 'Affiliates',
+            privacyPolicy: 'Privacy policy',
+            termsOfService: 'Terms of service',
+            privacy: 'Privacy',
+            terms: 'Terms',
+            support: 'Support',
         },
         contactPage: {
             title: 'ማሳያ በቀጠሮ ይቀርቡ',
-            subtitle: 'መሶብ የንግድዎን ሥራዎች እንዴት ሊቀይር እንደሚችል ለማየት ዝግጁ ነዎት? ለፍላጎትዎ የተበጀ ግላዊ ማሳያ እናቀናጅ።',
-            formHeading: 'ማሳያዎን ይጠይቁ',
+            subtitle: 'Ready to see how Mesob can transform your business operations? Let\'s schedule a personalized demo tailored to your needs.',
+            formHeading: 'Request Your Demo',
             nameLabel: 'ሙሉ ስም*',
             emailLabel: 'ኢሜይል አድራሻ*',
             companyLabel: 'ኩባንያ/የንግድ ስም',
             messageLabel: 'ፍላጎቶችዎን ያሳውቁን',
-            messagePlaceholder: 'በንግድዎ ምን ፈተናዎች እያጋጠሙዎት ነው? በየትኛው ባህሪያት ላይ በጣም ፍላጎት አለዎት?',
+            messagePlaceholder: 'What challenges are you facing with your business? What features are you most interested in?',
             submitButton: 'ማሳያዬን አቅርብ',
             submitting: 'ጥያቄ እየላከ...',
             successTitle: 'የማሳያ ጥያቄ ተልኳል!',
-            successMessage: 'ግላዊ ማሳያዎን ለማቀናጀት በ24 ሰዓቶች ውስጥ እናገናኝዎታለን።',
+            successMessage: 'We\'ll contact you within 24 hours to schedule your personalized demo.',
             contactInfoHeading: 'ያግኙን',
             emailHeading: 'ኢሜይል',
             emailText: 'nahomkeneni4@gmail.com',
-            emailResponseTime: 'በ24 ሰዓቶች ውስጥ እንመልሳለን',
+            emailResponseTime: 'We respond within 24 hours',
             phoneHeading: 'ስልክ',
             phoneText: '+251983446134',
             phoneHours: 'ሰኞ-አርብ፣ 9AM-6PM EAT',
             officeHeading: 'ቢሮ',
             officeAddress: 'ቦሌ፣ አዲስ አበባ፣ ኢትዮጵያ',
             officeHours: 'የንግድ ሰዓቶች፡ ሰኞ - አርብ፣ 8:30 ጥዋት - 5:30 ከሰዓት (የምስራቅ አፍሪካ ሰዓት)',
-            demoExpectationsHeading: 'በማሳያዎ ውስጥ ምን መጠበቅ እንደሚገባ',
+            demoExpectationsHeading: 'What to Expect in Your Demo',
             demoExpectation1: '• 30-ደቂቃ ግላዊ ዝርዝር',
-            demoExpectation2: '• ለንግድዎ አይነት የተለዩ ባህሪያትን ይመልከቱ',
-            demoExpectation3: '• ከምርት ባለሙያዎቻችን ጋር ቀጥታ ጥያቄ እና መልስ',
-            demoExpectation4: '• ብጁ የዋጋ ውይይት',
-            demoExpectation5: '• የአፈጻጸም የጊዜ መርሐግብርና ድጋፍ',
+            demoExpectation2: '• See features specific to your business type',
+            demoExpectation3: '• Live Q\u0026A with our product experts',
+            demoExpectation4: '• Custom pricing discussion',
+            demoExpectation5: '• Implementation timeline and support',
         },
         privacyPage: {
             pageTitle: 'የግላዊነት ፖሊሲ',
@@ -2389,25 +2160,25 @@ export const translations: Record<Language, Translations> = {
             section1Heading: 'የምንሰበስባቸው መረጃዎች',
             section1Body: 'በምዝገባ ወቅት የሚሰጡትን የንግድ ስም፣ የባለቤት ዝርዝሮች፣ የግብር መታወቂያ ቁጥር (TIN)፣ የንግድ ፍቃድ፣ ዕውቂያ መረጃ እና ለክፍያ ሂደት የባንክ ሂሳብ ዝርዝሮችን እንሰበስባለን። እንዲሁም አገልግሎቶቻችንን በብቃት ለመስጠት የግብይት መረጃ፣ የዕቃ መዝገቦች እና የአጠቃቀም ምዝገባዎችን እንሰበስባለን።',
             section2Heading: 'መረጃዎን እንዴት እንጠቀማለን',
-            section2Body: 'መረጃዎ የመድረክ አገልግሎቶችን ለመስጠት፣ በኢትዮጵያ የባንክ ስርዓቶች ክፍያዎችን ለማስኬድ፣ ከግብር ጋር የሚጣጣሙ ደረሰኞችን ለማመንጨት፣ ዕቃዎችን ለማስተዳደር፣ የአቅራቢ ግንኙነቶችን ለማመቻቸት እና በ AI የሚሰሩ የንግድ ግንዛቤዎችን ለመስጠት ይጠቀማል። ከኢትዮጵያ የንግድ ህጎች ጋር እንታዘዋለን እና ግላዊ ወይም የንግድ መረጃዎን ለሶስተኛ ወገኖች በጭራሽ አንሸጥም።',
-            section3Heading: 'የመረጃ ማከማቻና ደህንነት',
-            section3Body: 'መረጃዎ በሚጓዝበት ጊዜና በሚቆይበት ቦታ መረጃ በመሸፈን በደህንነት ይቀመጣል። ብዙ ደረጃ ማረጋገጫ፣ መደበኛ የደህንነት ምርመራዎችና የመዳረሻ መቆጣጠሪያዎችን እንተገብራለን። መሠረተ ልማታችን ዓለም አቀፋዊ የደመና አገልግሎቶችን ሊጠቀም ቢችልም፣ ከኢትዮጵያ የመረጃ ጥበቃ ደረጃዎች ጋር መጣጣምን እናረጋግጣለን እና በሕግ አስፈላጊ ሲሆን የመረጃ ሉዓላዊነትን እንጠብቃለን።',
-            section4Heading: 'ከኢትዮጵያ ህጎች ጋር መጣጣም',
-            section4Body: 'ከኢትዮጵያ የንግድ ሕግ፣ የግብር ደንቦችና የንግድ ፍቃድ መስፈርቶች ጋር ሙሉ በሙሉ በመጣጣም እንሰራለን። በንግድና ኢንዱስትሪ ሚኒስቴርና በኢትዮጵያ ገቢና ጉምሩክ ባለስልጣን እንደሚፈለገው መዝገቦችን እንይዛለን። የንግድ ግብይት መረጃ እንደ ኢትዮጵያ የሕግ መስፈርቶች (ለግብር አላማ ቢያንስ 5 ዓመት) ይቀመጣል።',
-            section5Heading: 'የመረጃ ማጋራትና መግለጽ',
-            section5Body: 'መረጃ የምናጋራው በጥብቅ ሚስጥራዊነት ስምምነት ከታመኑ የአገልግሎት አቅራቢዎች (የክፍያ ሂደት አቅራቢዎች፣ የኤስኤምኤስ አቅራቢዎች፣ የደመና ማስተናገድ) ጋር ብቻ ነው። በሕግ አስፈላጊ ሲሆን (የግብር ምርመራዎች፣ የቁጥጥር መጣጣም፣ የፍርድ ቤት ትዕዛዞች) መረጃን ለኢትዮጵያ የመንግስት ባለስልጣናት ማሳወቅ እንችላለን። የንግድ መረጃዎን ከተወዳዳሪዎች ወይም ከፈቃድ ሌላም ሶስተኛ ወገኖች አናጋራም።',
-            section6Heading: 'የክፍያና የፋይናንስ መረጃ',
-            section6Body: 'የክፍያ ሂደት የሚከናወነው ፍቃድ ባላቸው የኢትዮጵያ የክፍያ አገልግሎት አቅራቢዎች በኩል ነው። ለደንበኝነት ቢሊንግና ለአቅራቢ ክፍያዎች የባንክ ሂሳብ መረጃ በደህንነት እናስቀምጣለን። ሁሉም የፋይናንስ ግብይቶች ከናሽናል ባንክ ኦፍ ኢትዮጵያ ደንቦችና ከገንዘብ ማጭበርበር ተቃዋሚ መስፈርቶች ጋር የሚጣጣሙ ናቸው።',
-            section7Heading: 'መብቶችዎ',
-            section7Body: 'ግላዊ መረጃዎን የመድረስ፣ የማረም ወይም የማጥፋት መብት አለዎት። የንግድ መረጃዎን በማንኛውም ጊዜ በመለያ ቅንጅቶችዎ በኩል መላክ ይችላሉ። ለመረጃ ማጥፊያ ጥያቄዎች፣ በኢትዮጵያ ሕግ የሚፈለጉ መዝገቦችን እየጠበቅን በ30 ቀናት ውስጥ እንታዘባለን። ለማርኬቲንግ ግንኙነቶች ፈቃድ በማንኛውም ጊዜ መልቀቅ ይችላሉ።',
-            section8Heading: 'የንግድ መረጃ ባለቤትነት',
-            section8Body: 'የእቃ መዝገቦችን፣ የደንበኞች መረጃን፣ የሽያጭ መረጃንና የ ፋይናንስ መዝገቦችን ጨምሮ ሙሉ የንግድ መረጃዎን ባለቤትነት ያዙ። መለያ ሲዘጋ ሁሉንም መረጃዎን መላክ ይችላሉ። በእርስዎ ወክሎ እንደ መረጃ ሂደተኛ እንሰራለን እና የንግድ መረጃዎን ባለቤትነት አንጠይቅም።',
-            section9Heading: 'ኩኪዎችና ክትትል',
-            section9Body: 'ለማረጋገጫና ለክፍለ ጊዜ አስተዳደር አስፈላጊ ኩኪዎችን፣ እና የመድረክ አፈጻጸምን ለማሻሻል የትንታኔ ኩኪዎችን እንጠቀማለን። የሶስተኛ ወገን ማስታወቂያ ኩኪዎች አይጠቀሙም። ለመድረክ ተግባራዊነት አስፈላጊ ኩኪዎች ቢያስፈልጉም በአሳሽ ቅንብሮችዎ ውስጥ የኩኪ ምርጫዎችን ማስተዳደር ይችላሉ።',
-            section10Heading: 'ለዚህ ፖሊሲ ማሻሻያዎች',
-            section10Body: 'ይህን ፖሊሲ በኢትዮጵያ ደንቦች ወይም በአገልግሎቶቻችን ላይ ላሉ ለውጦች ለማንጸባረቅ ማሻሻል እንችላለን። አስፈላጊ ለውጦች ከመተግበራቸው ቢያንስ 14 ቀናት በፊት በኢሜይልና በመተግበሪያው ማሳሰቢያዎች ይገለጻሉ። ከተግባራዊ ቀን በኋላ መቀጠል የአዲሱን ፖሊሲ መቀበል ያመለክታል።',
+            section2Body: 'Your information is used to provide platform services, process payments through Ethiopian banking systems, generate tax-compliant receipts, manage inventory, and provide AI-powered business insights. We comply with Ethiopian commercial regulations and never sell your personal or business data to third parties.',
+            section3Heading: 'Data Storage and Security',
+            section3Body: 'Your data is stored securely with encryption both in transit and at rest. We implement multi-factor authentication, regular security audits, and access controls. While our infrastructure may utilize international cloud services, we ensure compliance with Ethiopian data protection standards and maintain data sovereignty where required by law.',
+            section4Heading: 'Compliance with Ethiopian Laws',
+            section4Body: 'We operate in full compliance with Ethiopian commercial law, tax regulations, and business licensing requirements. We maintain records as required by the Ministry of Trade and Industry and Ethiopian Revenue and Customs Authority. Business transaction data is retained according to Ethiopian legal requirements (minimum 5 years for tax purposes).',
+            section5Heading: 'Data Sharing and Disclosure',
+            section5Body: 'We share data only with trusted service providers (payment processors, SMS providers, cloud hosting) under strict confidentiality agreements. We may disclose information to Ethiopian government authorities when legally required (tax audits, regulatory compliance, court orders). We do not share your business data with competitors or unauthorized third parties.',
+            section6Heading: 'Payment and Financial Data',
+            section6Body: 'Payment processing is handled through licensed Ethiopian payment service providers. We store bank account information securely for subscription billing. All financial transactions comply with National Bank of Ethiopia regulations and anti-money laundering requirements.',
+            section7Heading: 'Your Rights',
+            section7Body: 'You have the right to access, correct, or delete your personal data. You can export your business data at any time through your account settings. For data deletion requests, we will comply within 30 days while maintaining records required by Ethiopian law. You can withdraw consent for marketing communications at any time.',
+            section8Heading: 'Business Data Ownership',
+            section8Body: 'You retain full ownership of your business data including inventory records, customer information, sales data, and financial records. Upon account termination, you can export all your data. We act as a data processor on your behalf and do not claim ownership of your business information.',
+            section9Heading: 'Cookies and Tracking',
+            section9Body: 'We use essential cookies for authentication and session management, and analytics cookies to improve platform performance. No third-party advertising cookies are used. You can manage cookie preferences in your browser settings, though essential cookies are required for platform functionality.',
+            section10Heading: 'Updates to This Policy',
+            section10Body: 'We may update this policy to reflect changes in Ethiopian regulations or our services. Material changes will be communicated via email and in-app notifications at least 14 days before taking effect. Continued use after the effective date constitutes acceptance of the updated policy.',
             contactUsHeading: 'ያግኙን',
-            contactUsIntro: 'ስለዚህ የግላዊነት ፖሊሲ ወይም መረጃዎን እንዴት እንደምናስተናግድ ጥያቄዎች ካሉዎት እባክዎ ያግኙን፡',
+            contactUsIntro: 'If you have questions about this Privacy Policy or how we handle your data, please contact us:',
             contactEmail: 'ኢሜይል',
             contactPhone: 'ስልክ፡ +251983446134',
             contactAddress: 'አድራሻ፡ ቦሌ፣ አዲስ አበባ፣ ኢትዮጵያ',
@@ -2416,7 +2187,7 @@ export const translations: Record<Language, Translations> = {
         },
         cookieConsent: {
             title: 'ኩኪዎችን እንጠቀማለን',
-            description: 'ለማረጋገጫ እና የተጠቃሚ ተሞክሮዎን ለማሻሻል አስፈላጊ ኩኪዎችን እና የትንታኔ ኩኪዎችን ን እንጠቀማለን።',
+            description: 'We use essential cookies for authentication and analytics cookies to improve your experience.',
             learnMore: 'ተጨማሪ ይወቁ',
             decline: 'አይቀበሉ',
             accept: 'ይቀበሉ',
@@ -2431,7 +2202,7 @@ export const translations: Record<Language, Translations> = {
             dontHaveAccount: 'መለያ የለዎትም?',
             createOne: 'አዲስ ይፍጠሩ',
             alreadyHaveAccount: 'መለያ አለዎት?',
-            termsAndPrivacy: 'በመግባት በሚከተሉት እንስማማለን',
+            termsAndPrivacy: 'By signing in you agree to our',
             terms: 'ውሎች',
             privacy: 'የግላዊነት ፖሊሲ',
             verificationCode: 'ማረጋገጫ ኮድ',
@@ -2442,15 +2213,12 @@ export const translations: Record<Language, Translations> = {
             backToSignIn: 'ወደ መግቢያ ተመለስ',
 
             ownerSignInTitle: 'የንግድ ባለቤት መግቢያ',
-            ownerSignInSubtitle: 'የንግድ ዳሽቦርድዎን ይድረሱ፣ ስራዎችን ያስተዳድሩ እና አፈጻጸምን ይከታተሉ።',
+            ownerSignInSubtitle: 'Access your business dashboard, manage operations, and track performance.',
             ownerWelcome: 'እንኳን ደህና መጡ — ለመቀጠል መረጃዎን ያስገቡ።',
 
-            supplierSignInTitle: 'አቅራቢ መግቢያ',
-            supplierSignInSubtitle: 'ምርቶችዎን፣ ትዕዛዞችዎን ያስተዳድሩ እና ከንግዶች ጋር ይገናኙ።',
-            supplierWelcome: 'እንኳን ደህና መጡ — sign in to your supplier portal.',
 
             affiliateSignInTitle: 'አጋር መግቢያ',
-            affiliateSignInSubtitle: 'ሪፈራሎችዎን፣ ገቢዎን እና አፈጻጸምዎን ይከታተሉ።',
+            affiliateSignInSubtitle: 'Track your referrals, earnings, and performance.',
             affiliateWelcome: 'እንኳን ደህና መጡ — sign in to your affiliate dashboard.',
 
             businessName: 'የንግድ ስም',
@@ -2459,14 +2227,11 @@ export const translations: Record<Language, Translations> = {
             address: 'የንግድ አድራሻ',
             licenseDocument: 'የንግድ ፈቃድ ሰነድ',
             registerOwner: 'እንደ ባለቤት ይመዝገቡ',
-            registerSupplier: 'እንደ አቅራቢ ይመዝገቡ',
             registerAffiliate: 'እንደ አጋር ይመዝገቡ',
             ownerRegisterTitle: 'የንግድ አስተዳደር ጉዞዎን ይጀምሩ',
-            ownerRegisterSubtitle: 'በ AI የተጎላበተውን መድረካችንን የሚያምኑ በሺዎች የሚቆጠሩ የንግድ ባለቤቶችን ይቀላቀሉ።',
-            supplierRegisterTitle: 'የገበያ ተደራሽነትዎን ያስፋፉ',
-            supplierRegisterSubtitle: 'ከሺዎች ከሚቆጠሩ ንግዶች ጋር ይገናኙ እና ሽያጭዎን ያሳድጉ።',
+            ownerRegisterSubtitle: 'Join thousands of business owners who trust our AI-powered platform.',
             affiliateRegisterTitle: 'በመሶብ ማትረፍ ይጀምሩ',
-            affiliateRegisterSubtitle: 'የአጋር ፕሮግራማችንን ይቀላቀሉ እና ተደጋጋሚ ኮሚሽኖችን ያግኙ።',
+            affiliateRegisterSubtitle: 'Join our affiliate program and earn recurring commissions.',
 
             resetPasswordTitle: 'የይለፍ ቃል ዳግም ያስጀምሩ',
             resetPasswordSubtitleEmail: 'የዳግም ማስጀመሪያ ኮድ ለማግኘት ኢሜይልዎን ያስገቡ',
@@ -2487,15 +2252,6 @@ export const translations: Record<Language, Translations> = {
                 testimonial: 'መሶብ ንግዶቻችንን የምናስተዳድርበትን መንገድ ቀይሮታል። የ AI ግንዛቤዎች አስደናቂ ናቸው!',
                 supportText: 'እርዳታ ይፈልጋሉ?',
                 contactTeam: 'የድጋፍ ቡድናችንን ያግኙ',
-            },
-            supplier: {
-                feature1: 'የተረጋገጠ የንግድ አውታረ መረብ መዳረሻ',
-                feature2: 'የእውነተኛ ጊዜ ትዕዛዝ አስተዳደር ስርዓት',
-                feature3: 'የላቀ ትንታኔ እና ሪፖርት ማድረግ',
-                feature4: 'ደህንነቱ የተጠበቀ የክፍያ ሂደት',
-                testimonial: 'የመሶብ የንግድ አስተዳደር መድረክ ስራዎቻችንን አቀላጥፏል እና በአገር አቀፍ ደረጃ ጥራት ካላቸው የንግድ አጋሮች ጋር አገናኝቶናል።',
-                supportText: 'እርዳታ ይፈልጋሉ?',
-                contactTeam: 'የአቅራቢ ድጋፍ ቡድናችንን ያግኙ',
             },
             affiliate: {
                 feature1: 'ለሚያመጡት እያንዳንዱ ንግድ ኮሚሽን ያግኙ',
@@ -2530,7 +2286,6 @@ export const translations: Record<Language, Translations> = {
             main: {
                 welcomeBack: 'Welcome back',
                 subtitle: 'Monitor revenue, compare branches, and coach your pharmacy team from a single command center.',
-                connectTools: 'Connect tools',
                 inviteStaff: 'Invite staff',
                 horizon24h: '24h',
                 horizon7d: '7d',
@@ -2580,7 +2335,7 @@ export const translations: Record<Language, Translations> = {
                 unassigned: 'Unassigned',
                 avgTicket: 'avg ticket',
                 mostRecentBestSellers: 'Most recent best sellers',
-                mostRecentChanges: 'Most recent inventory & POS changes',
+                mostRecentChanges: 'Most recent inventory \u0026 POS changes',
                 revenueTransactionsUnits: 'Revenue, transactions, and units sold',
                 viewStaffList: 'View staff list',
                 analyticsRefreshed: 'Analytics refreshed',
@@ -2588,82 +2343,95 @@ export const translations: Record<Language, Translations> = {
                 unauthorizedError: 'You are not authorised to view this dashboard',
             },
         },
-        supplierOnboarding: {
-            loadingKycData: 'የ KYC መረጃ እየተጫነ ነው...',
-            loadingPaymentStatus: 'የክፍያ ሁኔታ እየተጫነ ነው...',
-            businessNamePlaceholder: 'የተመዘገቡየንግድዎ ስም ያስገቡ',
-            nationalIdPlaceholder: 'በመንግስት የተሰጠ የመታወቂያ ቁጥር',
-            tinNumberPlaceholder: 'የታክስ መለያ ቁጥር',
-            phoneNumberPlaceholder: '+251...',
-            businessAddressPlaceholder: 'የንግድ ቦታ',
-
-            kycTitle: 'የአቅራቢ KYC ማረጋገጫ',
-            kycSubtitle: 'መሸጥ ለመጀመር ማረጋገጫዎን ያጠናቅቁ',
-            pendingReview: 'ግምገማ ላይ',
-            approved: 'ተቀባይነት አግኝቷል',
-            rejected: 'ውድቅ ተደርጓል',
-            notSubmitted: 'አልገባም',
-            refreshStatus: 'ሁኔታን አድስ',
-            applicationRejected: 'ማመልከቻዎ ውድቅ ተደርጓል',
-            submitVerification: 'የማረጋገጫ ሰነዶችን ያስገቡ',
-            updateInformation: 'መረጃን ያዘምኑ',
-            provideAccurateInfo: 'እባክዎ ለማረጋገጫ ትክክለኛ መረጃ ያቅርቡ።',
-            supplierName: 'የአቅራቢ ስም',
-            nationalId: 'ብሔራዊ መታወቂያ / ፓስፖርት',
-            tinNumber: 'የግብር መለያ ቁጥር (TIN)',
-            phoneNumber: 'ስልክ ቁጥር',
-            businessAddress: 'የንግድ አድራሻ',
-            licenseDocument: 'የንግድ ፈቃድ',
-            currentLicense: 'የአሁን ፈቃድ',
-            replaceLicense: 'ፈቃድ ይተኩ',
-            clickToUpload: 'ለመጫን ጠቅ ያድርጉ',
-            uploadHint: 'SVG, PNG, JPG ወይም GIF (ከፍተኛ 800x400px)',
-            change: 'ቀይር',
-            browse: 'አስስ',
-            submitApplication: 'ማመልከቻ ያስገቡ',
-            updateApplication: 'ማመልከቻን ያዘምኑ',
-            submitting: 'በማስገባት ላይ...',
-            paymentTitle: 'የክፍያ ማረጋገጫ',
-            paymentSubtitle: 'መለያዎን ለማግበር ክፍያዎን ያረጋግጡ',
-            paymentStatus: 'የክፍያ ሁኔታ',
-            pendingVerification: 'ማረጋገጫ በመጠባበቅ ላይ',
-            verified: 'ተረጋግጧል',
-            paymentUnderVerification: 'ክፍያ በማረጋገጥ ላይ',
-            paymentUnderVerificationMsg: 'ክፍያዎ በአሁኑ ጊዜ እየተገመገመ ነው። ይህ ብዙውን ጊዜ 24-48 ሰዓታት ይወስዳል።',
-            paymentVerified: 'ክፍያ ተረጋግጧል',
-            paymentVerifiedMsg: 'ክፍያዎ በተሳካ ሁኔታ ተረጋግጧል።',
-            paymentRejected: 'ክፍያ ውድቅ ተደርጓል',
-            paymentRejectedMsg: 'ክፍያዎ ውድቅ ተደርጓል። እባክዎ ማስታወሻዎቹን ይመልከቱ እና እንደገና ይሞክሩ።',
-            accountActivated: 'መለያ ተገብሯል',
-            accountActivatedMsg: 'መለያዎ አሁን ሙሉ በሙሉ ንቁ ነው። ዳሽቦርድዎን መድረስ ይችላሉ።',
-            goToDashboard: 'ወደ ዳሽቦርድ ይሂዱ',
-            paymentSubmission: 'ክፍያ ማስገባት',
-            paymentSubmissionSubtitle: 'ለማረጋገጫ የክፍያ ዝርዝሮችዎን ያስገቡ',
-            adminNotes: 'የአስተዳዳሪ ማስታወሻዎች',
-            submittedCode: 'የተላከ ኮድ',
-            paymentCode: 'የክፍያ ኮድ',
-            paymentCodeHint: 'ከደረሰኝዎ ላይ የግብይት ኮዱን ያስገቡ',
-            amount: 'መጠን',
-            paymentMethod: 'የክፍያ ዘዴ',
-            selectMethod: 'የክፍያ ዘዴ ይምረጡ',
-            bankTransfer: 'የባንክ ዝውውር',
-            cash: 'ጥሬ ገንዘብ',
-            check: 'ቼክ',
-            other: 'ሌላ',
-            additionalNotes: 'ተጨማሪ ማስታወሻዎች',
-            additionalNotesPlaceholder: 'ማንኛውም ተጨማሪ መረጃ...',
-            submitPayment: 'ክፍያ ያስገቡ',
-            verificationInProgress: 'ማረጋገጫ በሂደት ላይ',
-            verificationInProgressMsg: 'ክፍያዎን እያረጋገጥን ነው። እባክዎ ቆይተው ያረጋግጡ።',
-            paymentInstructions: 'የክፍያ መመሪያዎች',
-            howToPay: 'እንዴት እንደሚከፍሉ',
-            step1: 'ወደ ቅርብዎ የባንክ ቅርንጫፍ ይሂዱ',
-            step2: 'የሚፈለገውን መጠን ያስቀምጡ',
-            step3: 'ደረሰኙን ያስቀምጡ',
-            step4: 'የግብይት ኮዱን እዚህ ያስገቡ',
-            step5: 'ለማረጋገጫ ያስገቡ',
-            note: 'ማስታወሻ',
-            noteMsg: 'እባክዎ ከማስገባትዎ በፊት ሁሉም ዝርዝሮች ትክክል መሆናቸውን ያረጋግጡ።',
+        staffDashboard: {
+            common: {
+                loading: 'Loading...',
+                refresh: 'Refresh',
+                save: 'Save',
+                cancel: 'Cancel',
+                delete: 'Delete',
+                edit: 'Edit',
+                add: 'Add',
+                search: 'Search',
+                filter: 'Filter',
+                export: 'Export',
+                import: 'Import',
+                noData: 'No data available',
+                error: 'Error',
+                success: 'Success',
+                close: 'Close',
+                confirm: 'Confirm',
+                back: 'Back',
+                next: 'Next',
+                submit: 'Submit',
+                submitting: 'Submitting...',
+            },
+            main: {
+                welcome: 'Welcome',
+                subtitle: 'Manage your daily tasks',
+                posCardTitle: 'Point of Sale',
+                posCardDesc: 'Process sales',
+                posButton: 'Go to POS',
+                salesCardTitle: 'Sales History',
+                salesCardDesc: 'View past sales',
+                salesButton: 'View Sales',
+                inventoryCardTitle: 'Inventory',
+                inventoryCardDesc: 'Check stock',
+                inventoryButton: 'View Inventory',
+                todaysSummary: 'Today\'s Summary',
+                salesCount: 'Sales Count',
+                totalRevenue: 'Total Revenue',
+                quickActions: 'Quick Actions',
+                newSale: 'New Sale',
+                checkStock: 'Check Stock',
+            },
+            pos: {
+                title: 'Point of Sale',
+                subtitle: 'Process transactions',
+                addItems: 'Add Items',
+                searchPlaceholder: 'Search products...',
+                medicineName: 'Medicine Name',
+                quantity: 'Quantity',
+                unitPrice: 'Unit Price',
+                addToCart: 'Add to Cart',
+                cartTitle: 'Cart',
+                cartEmpty: 'Cart is empty',
+                total: 'Total',
+                processSale: 'Process Sale',
+                processing: 'Processing...',
+                saleCompleted: 'Sale Completed',
+                saleFailed: 'Sale Failed',
+                invalidInput: 'Invalid Input',
+                invalidPrice: 'Invalid Price',
+            },
+            inventory: {
+                title: 'Inventory',
+                subtitle: 'Manage stock',
+                searchPlaceholder: 'Search inventory...',
+                lowStockOnly: 'Low stock only',
+                medicineColumn: 'Medicine',
+                stockColumn: 'Stock',
+                priceColumn: 'Price',
+                expiryColumn: 'Expiry',
+                statusColumn: 'Status',
+                actionsColumn: 'Actions',
+                lowStock: 'Low Stock',
+                expiringSoon: 'Expiring Soon',
+                good: 'Good',
+                deleteConfirm: 'Are you sure?',
+                itemDeleted: 'Item deleted',
+                deleteFailed: 'Delete failed',
+            },
+            sales: {
+                title: 'Sales History',
+                subtitle: 'View transactions',
+                transactionId: 'Transaction ID',
+                date: 'Date',
+                items: 'Items',
+                amount: 'Amount',
+                status: 'Status',
+                viewDetails: 'View Details',
+            },
         },
         ownerOnboarding: {
             loadingInfo: 'መረጃዎን በመጫን ላይ...',
@@ -2700,12 +2468,12 @@ export const translations: Record<Language, Translations> = {
             submitKycApp: 'የKYC ማመልከቻ ያስገቡ',
             updateKycInfo: 'የKYC መረጃን ያዘምኑ',
             whatHappensNext: 'ቀጥሎ ምን ይከሰታል?',
-            whatHappensNextMsg: 'የKYC መረጃዎን ካስገቡ በኋላ፣ የአስተዳዳሪ ቡድናችን በ24-48 ሰዓታት ውስጥ ይገመግመዋል። አንዴ ከፀደቀ፣ ወደ ክፍያ ማረጋገጫ ይቀጥላሉ እና ዳሽቦርድዎን ይከፍታሉ።',
+            whatHappensNextMsg: 'After submitting your KYC information, our admin team will review it within 24-48 hours. Once approved, you\'ll proceed to payment verification and unlock your dashboard.',
         },
         adminDashboard: {
             analytics: {
                 title: 'የአስተዳዳሪ ትንታኔ',
-                subtitle: 'የስራ እንቅስቃሴ ጤና፣ የኤአይ አጠቃቀም እና የቅርንጫፍ ስርጭት በአንድ እይታ።',
+                subtitle: 'Operational health, AI usage, and branch footprint in one view.',
                 totalRevenue: 'ጠቅላላ ገቢ',
                 totalPharmacies: 'ጠቅላላ መድኃኒት ቤቶች',
                 activePharmacies: 'ንቁ መድኃኒት ቤቶች',
@@ -2714,16 +2482,16 @@ export const translations: Record<Language, Translations> = {
                 totalBranches: 'ጠቅላላ ቅርንጫፎች',
                 pharmacyOwners: 'የመድኃኒት ቤት ባለቤቶች',
                 aiUsageTrend: 'የኤአይ አጠቃቀም አዝማሚያ',
-                aiUsageDesc: 'በሁሉም መድኃኒት ቤቶች የሚወሰዱ ዕለታዊ ቶከኖች።',
+                aiUsageDesc: 'Daily tokens consumed across all pharmacies.',
                 topPharmacies: 'ከፍተኛ የኤአይ ተጠቃሚ መድኃኒት ቤቶች',
-                topPharmaciesDesc: 'የትኞቹ ተከራዮች ረዳቱን በብዛት እንደሚጠቀሙ ይከታተሉ።',
+                topPharmaciesDesc: 'Monitor which tenants are leaning on the assistant the most.',
                 branchFootprint: 'የቅርንጫፍ አሻራ',
-                branchFootprintDesc: 'እድገትን እና ልዩነቶችን ለመለየት ቅርንጫፎችን በተከራይ ይሰብስቡ።',
+                branchFootprintDesc: 'Aggregate branches by tenant to spot growth and outliers.',
                 viewSegments: 'ክፍሎችን ይመልከቱ',
             },
             pharmacies: {
                 title: 'የፋርማሲ አስተዳደር',
-                subtitle: 'ሁሉንም የፋርማሲ ተከራዮች ይቆጣጠሩ እና ያስተዳድሩ።',
+                subtitle: 'Monitor and manage all pharmacy tenants.',
                 searchPlaceholder: 'መድኃኒት ቤቶችን ይፈልጉ...',
                 statusFilter: 'ሁኔታ',
                 allStatuses: 'ሁሉም ሁኔታዎች',
@@ -2755,7 +2523,7 @@ export const translations: Record<Language, Translations> = {
             },
             users: {
                 title: 'የተጠቃሚ አስተዳደር',
-                subtitle: 'የስርዓት ተጠቃሚዎችን እና ሚናቸውን ያስተዳድሩ።',
+                subtitle: 'Manage system users and their roles.',
                 inviteUser: 'ተጠቃሚ ይጋብዙ',
                 searchPlaceholder: 'ተጠቃሚዎችን ይፈልጉ...',
                 tableHeaders: {
@@ -2767,64 +2535,14 @@ export const translations: Record<Language, Translations> = {
                 }
             }
         },
-        supplierDashboard: {
-            dashboard: {
-                title: 'የአቅራቢ ዳሽቦርድ',
-                subtitle: 'አጠቃላይ የንግድ አጠቃላይ እይታ እና የአፈጻጸም መለኪያዎች',
-                totalProducts: 'ጠቅላላ ምርቶች',
-                totalOrders: 'ጠቅላላ ትዕዛዞች',
-                monthlyRevenue: 'ወርሃዊ ገቢ',
-                pendingShipments: 'በመጠባበቅ ላይ ያሉ ጭነቶች',
-                customerSatisfaction: 'የደንበኛ እርካታ',
-                orderFulfillmentRate: 'የትዕዛዝ ማሟያ መጠን',
-                performanceScore: 'የአፈጻጸም ውጤት',
-                quickActions: 'ፈጣን እርምጃዎች',
-                manageProducts: 'ምርቶችን ያስተዳድሩ',
-                processOrders: 'ትዕዛዞችን ያካሂዱ',
-                aiAssistant: 'የኤአይ ረዳት',
-                viewAnalytics: 'ትንታኔ ይመልከቱ',
-                businessInsights: 'የንግድ ግንዛቤዎች',
-                activeCustomers: 'ንቁ ደንበኞች',
-                inventoryTurnover: 'የዕቃ ዝውውር',
-                overdueInvoices: 'ጊዜ ያለፈባቸው ደረሰኞች',
-                recentActivity: 'የቅርብ ጊዜ እንቅስቃሴ',
-            },
-            products: {
-                title: 'የምርት አስተዳደር',
-                subtitle: 'የምርት ካታሎግዎን እና ዝርዝርዎን ያስተዳድሩ',
-                addProduct: 'ምርት ያክሉ',
-                searchPlaceholder: 'ምርቶችን ይፈልጉ...',
-                tableHeaders: {
-                    product: 'ምርት',
-                    category: 'ምድብ',
-                    price: 'ዋጋ',
-                    stock: 'ክምችት',
-                    status: 'ሁኔታ',
-                    actions: 'እርምጃዎች',
-                }
-            },
-            orders: {
-                title: 'የትዕዛዝ አስተዳደር',
-                subtitle: 'የደንበኛ ትዕዛዞችን ያካሂዱ እና ይከታተሉ',
-                searchPlaceholder: 'ትዕዛዞችን ይፈልጉ...',
-                tableHeaders: {
-                    orderId: 'የትዕዛዝ መታወቂያ',
-                    customer: 'ደንበኛ',
-                    date: 'ቀን',
-                    total: 'ጠቅላላ',
-                    status: 'ሁኔታ',
-                    actions: 'እርምጃዎች',
-                }
-            }
-        },
         verifyPage: {
             title: 'ኢሜይልዎን ያረጋግጡ እና የአጋር ዳሽቦርድን ይክፈቱ',
             subtitle: 'ወደ ገቢ ሳጥንዎ የተላከውን የአንድ ጊዜ ኮድ ያስገቡ። አንዴ ከተዛመደ፣ የአጋር መግቢያዎን እናነቃለን እና የሪፈራል መሳሪያዎችን እንጭናለን።',
             secureVerification: 'ደህንነቱ የተጠበቀ ማረጋገጫ',
             highlights: {
                 security: { title: 'ባለ ሁለት ደረጃ ደህንነት', desc: 'ለሰላም ሲባል እያንዳንዱ የአጋር መግቢያ በማረጋገጫ ኮዶች የተጠበቀ ነው።' },
-                delivery: { title: 'ፈጣን የኢሜይል አቅርቦት', desc: 'ኮዶች በሰከንዶች ውስጥ ይደርሳሉ። ችግር አለ? እንደገና ይላኩ ወይም የአጋር ድጋፍን ያግኙ።' },
-                perks: { title: 'የአጋር ጥቅሞችን ያግኙ', desc: 'አንዴ ከተረጋገጠ የሪፈራል አገናኞችን ማመንጨት እና ኮሚሽኖችን ወዲያውኑ መከታተል ይችላሉ።' }
+                delivery: { title: 'ፈጣን የኢሜይል አቅርቦት', desc: 'ኮዶች በሰከንዶች ውስጥ ይደርሳሉ። Having trouble? Resend or reach partner support.' },
+                perks: { title: 'Access partner perks', desc: 'Once verified you can generate referral links and track commissions instantly.' }
             },
             form: {
                 title: 'መለያዎን ያረጋግጡ',
@@ -2841,7 +2559,7 @@ export const translations: Record<Language, Translations> = {
             },
             success: {
                 title: 'መለያ ተረጋግጧል!',
-                desc: 'መለያዎ ነቅቷል። በትንሽ ጊዜ ውስጥ ወደ አጋር ዳሽቦርድ እንልክዎታለን።',
+                desc: 'Your account has been activated. We\'ll send you to the affiliate dashboard in a moment.',
                 button: 'አሁን ይሂዱ'
             }
         },
@@ -2855,7 +2573,6 @@ export const translations: Record<Language, Translations> = {
             security: 'Nageenya',
             pricing: 'Gatii',
             contact: 'Qunnamtii',
-            integrations: 'Walitti Makamuu',
             blog: 'Blog',
             signIn: 'Seeni',
             startFreeTrial: 'Yaalii Bilisaa Jalqabi',
@@ -2881,8 +2598,6 @@ export const translations: Record<Language, Translations> = {
             title: 'Gahee Keessan Filadhaa',
             ownerTitle: 'Abbaa Daldalaa',
             ownerDesc: 'Hojii daldala keessanii bulchaa',
-            supplierTitle: 'Dhiyeessaa',
-            supplierDesc: 'Oomishaalee qoricha manneeniif dhiyeessaa',
             affiliateTitle: 'Hiriyyaa',
             affiliateDesc: 'Namoota affeeruun komishinii argadhaa',
             cancel: 'Dhiisi',
@@ -2913,14 +2628,12 @@ export const translations: Record<Language, Translations> = {
             subtitle: 'Meeshaalee guutuu kan daldaltoonni Afrikaa dhuunfaaf qophaa\'an',
             feature1Title: 'Bulchiinsa Damee Hedduu',
             feature1Desc: 'Bakka kuusaa kee hunda dashboard tokko walitti qabame irraa bulchi. Sadarkaa qabeenya, gurgurtaa, fi raawwii damee hundaa yeroo dhugaa mul\'isaa argadhu.',
-            feature2Title: 'Bulchiinsa Hojjetaa & Garee',
+            feature2Title: 'Bulchiinsa Hojjetaa \u0026 Garee',
             feature2Desc: 'Akkaawuntii hojjetaa hayyama dhuunfaa wajjin uumi, hojii hordofi, fi itti gaafatamummaa dhaabbata kee hayyama gahee irratti hundaa\'e wajjin mirkaneessi.',
             feature3Title: 'Walitti Makuu Cuqaasuu-Tokko',
             feature3Desc: 'Google Sheets, sirna ERP, sooftiweerii herrega, fi dabalataan wajjin salphaan qunnamsiisi. Beekumsa teeknikaa hin barbaachisu—meeshaalee jiran walitti makuuf cuqaasuu tokko qofa.',
-            feature4Title: 'Hordoffii Baasii & Galma Sammuu',
+            feature4Title: 'Hordoffii Baasii \u0026 Galma Sammuu',
             feature4Desc: 'Yeroo xumuraa kaffaltii gonkumaa hin dagatin. Mesob ofumaan kaffaltii gibira, mindaa hojjetaa, kiraa, haaromfamuu laayisinii, fi baasii daldala hunda hordofee si yaadachiisa.',
-            feature5Title: 'Gabaa Dhiyeessitootaa',
-            feature5Desc: 'Dhiyeessitoonni mirkaneeffaman kanneen oomisha isaanii dashboard kee irratti beeksisan kallattiin wal qunnamsiisi. Oomisha haaraa argadhu, gatii wal bira qabi, fi amanamummaan ajaji.',
             quickFeature1: 'Xiinxala Yeroo Dhugaa',
             quickFeature2: 'Akeekkachisaa Ofumaa',
             quickFeature3: 'Jijjiirraa Qarshii',
@@ -2940,7 +2653,7 @@ export const translations: Record<Language, Translations> = {
             chat1Question: '"Qabeeyan mana qorichi kiyya ji\'a kana akkamitti raawwataa jira?"',
             chat1Answer: 'Manni qorichi kee ji\'a darbe wajjin wal bira qabamee %23\'n dabala gurgurtaa argateera. Garuu, antibayootiksoota xiqqoo ta\'uu kee hubadheen. Adeemsa ammaa irratti hundaa\'uun, guyyaa 3 gadi keessatti yuniitii 150 Amoxicillin ajajuu yaada kennaa qarshii dhabuuf.',
             chat2Question: '"Oomishoonni bu\'aa gad aanaa qaban isa kam?"',
-            chat2Answer: 'Meeshaalee saffisaan hin socho\'ne 12 gatii Qarshii 45,000 kanneen guyyaa 60 keessatti hin gurguramne adda baaseera. Meeshaalee kanaaf beeksiisa hojjechuu ykn tarsiimoo ajaja kee sirreessuu yaada kenna.',
+            chat2Answer: 'I\'ve identified 12 slow-moving items worth 45,000 Birr that haven\'t sold in 60 days. I suggest running a promotion or adjusting your ordering strategy for these items.',
             imageAlt: 'Bulchiinsa Mana Qorichaa AI',
         },
         howItWorks: {
@@ -2951,7 +2664,7 @@ export const translations: Record<Language, Translations> = {
             step1Desc: 'Sirna jiru kee wajjin qophii salphaa fi walitti makuu salphaan daqiiqoota keessatti jalqabi.',
             step2Title: 'Xiinxala Sammuu',
             step2Desc: 'Hubannoo AI murtii gaarii xiinxala yeroo dhugaa fi tilmaamaa wajjin akka gootu si gargaara.',
-            step3Title: 'Guddisuu & Guddinaa',
+            step3Title: 'Guddisuu \u0026 Guddinaa',
             step3Desc: 'Deeggarsa damee hedduu, adeemsa ofumaa, fi fooyyessuu itti fufiinsa qabuun amanamummaan guddiisi.',
             imageAlt1: 'Ilaalcha Dashboard',
             imageAlt2: 'Walqunnamtii Gargaarsa AI',
@@ -2986,7 +2699,6 @@ export const translations: Record<Language, Translations> = {
             feature9: 'Walitti makuu dhuunfaa',
             footerText: '© 2024 Mesob. Mirgi hundaa eegamee dha.',
             ownerCta: 'Akka Abbaa Daldalaatti Seeni',
-            supplierCta: 'Akka Dhiyeessaatti Seeni',
             contactUs: 'Nu Quunnamaa',
         },
         pwaInstall: {
@@ -3006,23 +2718,6 @@ export const translations: Record<Language, Translations> = {
             defaultMessage: 'Browser kun appicha fe\'uu hin deeggaru',
             gotIt: 'Na Galeera',
         },
-        integrations: {
-            badge: 'Walitti Makuu Salphaa',
-            title: 'Meeshaalee Jaallattu Wajjin Wal qunnamsiisi',
-            subtitle: 'Kaffaltii, herrega, fi meeshaalee daldala jaallataman wajjin walitti makuu',
-            viewAll: 'Walitti Makuu Hunda Ilaali',
-            effortlessTitle: 'Walitti Makuu Salphaa',
-            effortlessDesc: 'Waltajjii hedduu fayyadamuu dhiisi. Mesob AI meeshaalee jiran wajjin salphaan qunnamsiisee, sirna walitti qabame daldalcha keetiif uuma.',
-            benefit1: 'Qophii cuqaasuu-tokko walitti makuu hundaaf',
-            benefit2: 'Makuu odeeffannoo yeroo dhugaa',
-            benefit3: 'Qunnamtii nageenya, iccitiin eegame',
-            benefit4: 'Beekumsa teeknikaa hin barbaachisu',
-            requestTitle: 'Meeshaa kee hin argine?',
-            requestLink: 'Walitti makuu dhuunfaa gaafadhu',
-            googleSheetsDesc: 'Gabaasa alergii fi odeeffannoo qabeenya kallattiin Google Sheets irraa xiinxalaa fi qooduuf salphaan makuu.',
-            sapDesc: 'Sirna SAP ERP sadarkaa dhaabbataa maallaqaa fi bulchiinsa daldalaa wajjin salphaan makuu.',
-            odooDesc: 'Tuuta daldala guutuu Odoo wajjin qabeenya, gurgurtaa, fi adeemsa herrega walitti makuu wajjin wal qunnamsiisi.',
-        },
         affiliate: {
             badge: 'Sagantaa Hiriyyaa',
             title: 'Mesob Qooduun Argadhu',
@@ -3041,7 +2736,7 @@ export const translations: Record<Language, Translations> = {
             step1Desc: 'Akkaawuntii hiriyyaa kee daqiiqoota keessatti uumi.',
             step2Title: 'Linkii Maddisiisi',
             step2Desc: 'Linkii qooda kee addaa dashboard kee irraa cuqaasuu tokkoon argadhu.',
-            step3Title: 'Qoodi & Beeksisi',
+            step3Title: 'Qoodi \u0026 Beeksisi',
             step3Desc: 'Linkii kee networkii keetiif qoodi.',
             step4Title: 'Komishinii Argadhu',
             step4Desc: 'Galmee milkaa\'aa hundaaf kaffaltii argadhu.',
@@ -3101,7 +2796,7 @@ export const translations: Record<Language, Translations> = {
             // Commissions Page
             successfullyOnboarded: 'Manneen qorichaa ati milkaa\'inaan galmeessiste',
             projectedPayoutPeriod: 'Kaffaltii tilmaamame yeroo kanaaf',
-            awaitingReviewProcessing: 'Gamaaggama & adeemsa eegaa jira',
+            awaitingReviewProcessing: 'Gamaaggama \u0026 adeemsa eegaa jira',
             totalEarningsTransferred: 'Waliigala galii siif daddarbee',
 
             // Payouts Page
@@ -3133,7 +2828,7 @@ export const translations: Record<Language, Translations> = {
             status: 'Haala',
             amount: 'Hanga',
 
-            // Status & Messages
+            // Status \u0026 Messages
             paid: 'Kaffalame',
             pending: 'Eegaa Jira',
             rejected: 'Kufaa Ta\'e',
@@ -3177,7 +2872,7 @@ export const translations: Record<Language, Translations> = {
             registerTitle: 'Galmee Hiriyyaa',
             comingSoon: 'Dhiyeenyatti...',
 
-            // Layout & Loading
+            // Layout \u0026 Loading
             generateLinkNav: 'Linkii Uumi',
             signOut: 'Ba\'i',
             loading: 'Fe\'aa jira...',
@@ -3287,7 +2982,7 @@ export const translations: Record<Language, Translations> = {
             section2Heading: 'Odeeffannoo Keessan Akkamitti Itti Fayyadamna',
             section2Body: 'Odeeffannoon keessan tajaajilaalee waltajjii kennuuf, karaa sirna baankii Itoophiyaa kaffaltii adeemsiisuuf, ragaa gibira wajjin walsimu maddisiisuu, qabeenya bulchuu, walqunnamtii dhiyeessitaa haala mijeessuuf akkasumas hubannoo daldala AI\'n hojjatu kennuuf kan itti fayyadamudha. Dambii daldala Itoophiyaa waliin walsimuun hojjenna akkasumas odeeffannoo dhuunfaa ykn daldala keessanii qaamolee sadaffaaf gonkumaa hin gurgurru.',
             section3Heading: 'Kuusaa fi Nageenya Daataa',
-            section3Body: 'Daataan keessan yeroo sochii fi boqonnaa eegumsa wajjin nagaan kuufama. Mirkaneessa sadarkaa hedduu, sakatta\'iinsa nageenya idilee fi to\'annoo qaqqabummaa hojiirra oolchina. Infrastructure keenna tajaajila duumessa addunyaa itti fayyadamuun ni danda\'ama, garuu walsimsiisaa sadarkaa eegumsa daataa Itoophiyaa ni mirkaneessina akkasumas yeroo seerri barbaadu abbaa ta\'ummaa daataa ni eegna.',
+            section3Body: 'Daataan keessan yeroo sochii fi boqonnaa eegumsa wajjin nagaan kuufama. Mirkaneessa sadarkaa hedduu, sakatta\'iinsa nageenya idilee fi to\'annoo qaqqabummaa hojiirra oolchina. Mሠረተ ልማታችን ዓለም አቀፋዊ የደመና አገልግሎቶችን ሊጠቀም ቢችልም፣ ከኢትዮጵያ የመረጃ ጥበቃ ደረጃዎች ጋር መጣጣምን እናረጋግጣለን እና በሕግ አስፈላጊ ሲሆን የመረጃ ሉዓላዊነትን እንጠብቃለን።',
             section4Heading: 'Seera Itoophiyaa Waliin Walsimsiisuu',
             section4Body: 'Seera daldala Itoophiyaa, dambii gibira fi barbaachisummaa hayyama daldala guutuun walsimsiifnee hojjenna. Ministiraa Daldala fi Indastriitii fi Taayitaa Galii fi Kaastamii Itoophiyaan akka barbaadaman galmee ni qabanna. Daataan daldalaa seera Itoophiyaa waliin (waggaa 5 xiqqaate kaayyoo gibiraf) ni kuufama.',
             section5Heading: 'Daataa Qooduun fi Ibsuu',
@@ -3295,15 +2990,15 @@ export const translations: Record<Language, Translations> = {
             section6Heading: 'Daataa Kaffaltii fi Faayinaansii',
             section6Body: 'Adeemsi kaffaltii karaa dhiyeessitaa tajaajila kaffaltii Itoophiyaa hayyama qabaniin kan adeemsifamudha. Odeeffannoo baankii kaffaltii maamilummaa fi kaffaltii dhiyeessitaaf nagaan ni kuusna. Daldalaa faayinaansii hunduu dambii Baankii Federaalaa Itoophiyaa fi barbaachisummaa yakka maallaqaa irratti loluun walsima.',
             section7Heading: 'Mirga Keessan',
-            section7Body: 'Odeeffannoo dhuunfaa keessan qaqqabuu, sirreessuu ykn haquu ni dandeessu. Daataa daldala keessanii yeroo kamiyyuu karaa qindaa\'ina akkaawuntii keessaniin erguu dandeessu. Gaafata haqaaf, galmeewwan seera Itoophiyaan barbaadaman kan qabannee guyyaa 30 keessatti ni eegna. Hayyama quunnamtii gabaa yeroo kamiyyuu dhiisuu ni dandeessu.',
+            section7Body: 'Glaawi meera keessan qaqqabuu, sirreessuu ykn haquu ni dandeessu. Daataa daldala keessanii yeroo kamiyyuu karaa qindaa\'ina akkaawuntii keessaniin erguu dandeessu. Gaafata haqaaf, galmeewwan seera Itoophiyaan barbaadaman kan qabannee guyyaa 30 keessatti ni eegna. Hayyama quunnamtii gabaa yeroo kamiyyuu dhiisuu ni dandeessu.',
             section8Heading: 'Abbaa Ta\'ummaa Daataa Daldala',
-            section8Body: 'Daataa daldala keessanii kanneen akka: galmeewwan qabeenya, odeeffannoo maamilaa, daataa gurgurtaa fi galmeewwan faayinaansii of qabaachuun ni jiraattu. Akkaawuntiin yeroo cufamu daataa keessan hunduu erguu ni dandeessu. Si bakkeessinee akka adeemsitaa daataatti hojjenna akkasumas odeeffannoo daldala keessanii abbaa ta\'ummaa hin gaafannu.',
+            section8Body: 'You retain full ownership of your business data including inventory records, customer information, sales data, and financial records. Upon account termination, you can export all your data. We act as a data processor on your behalf and do not claim ownership of your business information.',
             section9Heading: 'Kuukii fi Hordoffii',
-            section9Body: 'Kuukii barbaachisaa mirkaneesuuf fi bulchiinsa seeshinii, akkasumas kuukii xiinxalalaa raawwii waltajjii fooyyessuuf itti fayyadamna. Kuukii beeksisa qaama sadaffaa hin fayyadamnu. Kuukiin barbaachisaa hojii waltajjii barbaachisu ta\'us, qindaa\'ina browser keessanii keessatti filannoo kuukii bulchuu dandeessu.',
+            section9Body: 'We use essential cookies for authentication and session management, and analytics cookies to improve platform performance. No third-party advertising cookies are used. You can manage cookie preferences in your browser settings, though essential cookies are required for platform functionality.',
             section10Heading: 'Imaammata Kanaaf Haaromsaa',
-            section10Body: 'Imaammata kana jijjiirama dambii Itoophiyaa ykn tajaajiloota keenyaa irratti mul\'ataniif haaromsuuf ni dandenya. Jijjiiramni barbaachisaa emaila fi beeksisa app keessaa karaa ta\'ee yoo xiqqaate guyyaa 14 dura kan beeksifamudha. Guyyaa hojiirra ooluu booda itti fufuun imaammata haaromfame fudhachuu agarsiisa.',
+            section10Body: 'We may update this policy to reflect changes in Ethiopian regulations or our services. Material changes will be communicated via email and in-app notifications at least 14 days before taking effect. Continued use after the effective date constitutes acceptance of the updated policy.',
             contactUsHeading: 'Nu Quunnamaa',
-            contactUsIntro: 'Waa\'ee Imaammata Dhuunfummaa kanaa ykn akkamitti daataa keessan akka bulchinu gaaffii yoo qabaattan mee nu quunnamaa:',
+            contactUsIntro: 'If you have questions about this Privacy Policy or how we handle your data, please contact us:',
             contactEmail: 'Emaila',
             contactPhone: 'Bilbila: +251983446134',
             contactAddress: 'Teessoo: Boolee, Finfinnee, Itoophiyaa',
@@ -3341,9 +3036,6 @@ export const translations: Record<Language, Translations> = {
             ownerSignInSubtitle: 'Dashboard daldala kee seeni, hojiiwwan bulchi, fi raawwii hordofi.',
             ownerWelcome: 'Baga nagaan dhufte — itti fufuuf odeeffannoo kee galchi.',
 
-            supplierSignInTitle: 'Seensa Dhiyeessaa',
-            supplierSignInSubtitle: 'Oomishaalee, ajaja, fi daldala wajjin walqunnamtii bulchi.',
-            supplierWelcome: 'Baga nagaan dhufte — gara portal dhiyeessaa keetti seeni.',
 
             affiliateSignInTitle: 'Seensa Hiriyyaa',
             affiliateSignInSubtitle: 'Referrals, galii, fi raawwii kee hordofi.',
@@ -3355,12 +3047,9 @@ export const translations: Record<Language, Translations> = {
             address: 'Teessoo Daldalaa',
             licenseDocument: 'Sanada Hayyama Daldalaa',
             registerOwner: 'Akka Abbaa Daldalaatti Galmaa\'i',
-            registerSupplier: 'Akka Dhiyeessaatti Galmaa\'i',
             registerAffiliate: 'Akka Hiriyyaatti Galmaa\'i',
             ownerRegisterTitle: 'Imala bulchiinsa daldala kee jalqabi',
             ownerRegisterSubtitle: 'Abbootii daldalaa kumaatama platform AI keenya amananii wajjin makami.',
-            supplierRegisterTitle: 'Gabaa kee babal\'isi',
-            supplierRegisterSubtitle: 'Daldala kumaatama wajjin walqunnamii fi gurgurtaa kee guddisi.',
             affiliateRegisterTitle: 'Mesob wajjin argachuu jalqabi',
             affiliateRegisterSubtitle: 'Sagantaa hiriyyaa keenyatti makamiitii komishinii irra deebi\'ii argadhu.',
 
@@ -3383,15 +3072,6 @@ export const translations: Record<Language, Translations> = {
                 testimonial: 'Mesob akkaataa nuti daldala keenya itti bulchinu jijjiireera. Hubannoon AI ajaa\'iba!',
                 supportText: 'Gargaarsa barbaadduu?',
                 contactTeam: 'Garee deeggarsa keenya qunnamaa',
-            },
-            supplier: {
-                feature1: 'Argama neetworkii daldala mirkanaa\'e',
-                feature2: 'Sirna bulchiinsa ajaja yeroo dhugaa',
-                feature3: 'Xiinxala fi gabaasa sadarkaa olaanaa',
-                feature4: 'Adeemsa kaffaltii nageenyummaan isaa eegame',
-                testimonial: 'Platformiin bulchiinsa daldalaa Mesob hojii keenya saffisiiseera fi daldaltoota qulqullina qaban waliin biyya guutuutti walitti nu hidheera.',
-                supportText: 'Gargaarsa barbaadduu?',
-                contactTeam: 'Garee deeggarsa dhiyeessitootaa qunnamaa',
             },
             affiliate: {
                 feature1: 'Daldala galmeessitaniif komishinii argadhaa',
@@ -3426,7 +3106,6 @@ export const translations: Record<Language, Translations> = {
             main: {
                 welcomeBack: 'Welcome back',
                 subtitle: 'Monitor revenue, compare branches, and coach your pharmacy team from a single command center.',
-                connectTools: 'Connect tools',
                 inviteStaff: 'Invite staff',
                 horizon24h: '24h',
                 horizon7d: '7d',
@@ -3476,7 +3155,7 @@ export const translations: Record<Language, Translations> = {
                 unassigned: 'Unassigned',
                 avgTicket: 'avg ticket',
                 mostRecentBestSellers: 'Most recent best sellers',
-                mostRecentChanges: 'Most recent inventory & POS changes',
+                mostRecentChanges: 'Most recent inventory \u0026 POS changes',
                 revenueTransactionsUnits: 'Revenue, transactions, and units sold',
                 viewStaffList: 'View staff list',
                 analyticsRefreshed: 'Analytics refreshed',
@@ -3484,82 +3163,95 @@ export const translations: Record<Language, Translations> = {
                 unauthorizedError: 'You are not authorised to view this dashboard',
             },
         },
-        supplierOnboarding: {
-            loadingKycData: 'Odeeffannoo KYC fe\'aa jira...',
-            loadingPaymentStatus: 'Haala kaffaltii fe\'aa jira...',
-            businessNamePlaceholder: 'Maqaa daldala kee galmaa\'ee galchi',
-            nationalIdPlaceholder: 'Lakkoofsa eenyummaa mootummaa',
-            tinNumberPlaceholder: 'Lakkoofsa Gibira (TIN)',
-            phoneNumberPlaceholder: '+251...',
-            businessAddressPlaceholder: 'Bakka daldala',
-
-            kycTitle: 'Mirkaneessa KYC Dhiyeessaa',
-            kycSubtitle: 'Gurgurtaa eegaluuf mirkaneessa kee xumuri',
-            pendingReview: 'Gamaaggamaa Jira',
-            approved: 'Mirkanaa\'eera',
-            rejected: 'Kufaa Ta\'eera',
-            notSubmitted: 'Hin Galfamin',
-            refreshStatus: 'Haala Haaromsaa',
-            applicationRejected: 'Iyyanni kee kufaa ta\'eera',
-            submitVerification: 'Sanadoota Mirkaneessaa Galchi',
-            updateInformation: 'Odeeffannoo Haaromsaa',
-            provideAccurateInfo: 'Maaloo mirkaneessaaf odeeffannoo sirrii dhiyeessaa.',
-            supplierName: 'Maqaa Dhiyeessaa',
-            nationalId: 'Waraqaa Eenyummaa Biyyaalessaa / Paaspoortii',
-            tinNumber: 'Lakkoofsa Gibiraa (TIN)',
-            phoneNumber: 'Lakkoofsa Bilbilaa',
-            businessAddress: 'Teessoo Daldalaa',
-            licenseDocument: 'Hayyama Daldalaa',
-            currentLicense: 'Hayyama Ammaa',
-            replaceLicense: 'Hayyama Bakka Buusuu',
-            clickToUpload: 'Ol fe\'uuf cuqaasaa',
-            uploadHint: 'SVG, PNG, JPG ykn GIF (olka\'iinsa 800x400px)',
-            change: 'Jijjiiri',
-            browse: 'Barbaadi',
-            submitApplication: 'Iyyata Galchi',
-            updateApplication: 'Iyyata Haaromsaa',
-            submitting: 'Galchaa jira...',
-            paymentTitle: 'Mirkaneessa Kaffaltii',
-            paymentSubtitle: 'Akkaunti kee hojii eegalsiisuuf kaffaltii kee mirkaneessi',
-            paymentStatus: 'Haala Kaffaltii',
-            pendingVerification: 'Mirkaneessa Eegaa Jira',
-            verified: 'Mirkanaa\'eera',
-            paymentUnderVerification: 'Kaffaltiin Mirkaneeffamaa Jira',
-            paymentUnderVerificationMsg: 'Kaffaltiin kee yeroo ammaa gamaaggamamaa jira. Kun yeroo baay\'ee sa\'aatii 24-48 fudhata.',
-            paymentVerified: 'Kaffaltiin Mirkanaa\'eera',
-            paymentVerifiedMsg: 'Kaffaltiin kee milkaa\'inaan mirkanaa\'eera.',
-            paymentRejected: 'Kaffaltiin Kufaa Ta\'eera',
-            paymentRejectedMsg: 'Kaffaltiin kee kufaa ta\'eera. Maaloo yaadaalee ilaalaa fi irra deebi\'aa yaalaa.',
-            accountActivated: 'Akkauntiin Hojii Eegaleera',
-            accountActivatedMsg: 'Akkauntiin kee amma guutummaatti hojii eegaleera. Daashboordii kee seenuu dandeessa.',
-            goToDashboard: 'Gara Daashboordii Deemi',
-            paymentSubmission: 'Kaffaltii Galchuu',
-            paymentSubmissionSubtitle: 'Mirkaneessaaf bal\'ina kaffaltii kee galchi',
-            adminNotes: 'Yaada Bulchaa',
-            submittedCode: 'Koodii Galfame',
-            paymentCode: 'Koodii Kaffaltii',
-            paymentCodeHint: 'Koodii daddabarsa nagahee kee irraa galchi',
-            amount: 'Hamma',
-            paymentMethod: 'Mala Kaffaltii',
-            selectMethod: 'Mala kaffaltii filadhu',
-            bankTransfer: 'Daddabarsa Baankii',
-            cash: 'Maallaqa Callaa',
-            check: 'Cheekii',
-            other: 'Kan Biroo',
-            additionalNotes: 'Yaada Dabalataa',
-            additionalNotesPlaceholder: 'Odeeffannoo dabalataa kamiyyuu...',
-            submitPayment: 'Kaffaltii Galchi',
-            verificationInProgress: 'Mirkaneessi Adeemsa Irra Jira',
-            verificationInProgressMsg: 'Kaffaltii kee mirkaneessaa jirra. Maaloo booda deebi\'ii ilaali.',
-            paymentInstructions: 'Qajeelfama Kaffaltii',
-            howToPay: 'Akkaataa kaffaltii',
-            step1: 'Gara damee baankii sitti dhihoo deemi',
-            step2: 'Hamma barbaachisu kuufadhu',
-            step3: 'Nagahee qabadhu',
-            step4: 'Koodii daddabarsa asitti galchi',
-            step5: 'Mirkaneessaaf galchi',
-            note: 'Hubachiisa',
-            noteMsg: 'Maaloo osoo hin galchin dura bal\'inni hundi sirrii ta\'uu mirkaneessi.',
+        staffDashboard: {
+            common: {
+                loading: 'Loading...',
+                refresh: 'Refresh',
+                save: 'Save',
+                cancel: 'Cancel',
+                delete: 'Delete',
+                edit: 'Edit',
+                add: 'Add',
+                search: 'Search',
+                filter: 'Filter',
+                export: 'Export',
+                import: 'Import',
+                noData: 'No data available',
+                error: 'Error',
+                success: 'Success',
+                close: 'Close',
+                confirm: 'Confirm',
+                back: 'Back',
+                next: 'Next',
+                submit: 'Submit',
+                submitting: 'Submitting...',
+            },
+            main: {
+                welcome: 'Welcome',
+                subtitle: 'Manage your daily tasks',
+                posCardTitle: 'Point of Sale',
+                posCardDesc: 'Process sales',
+                posButton: 'Go to POS',
+                salesCardTitle: 'Sales History',
+                salesCardDesc: 'View past sales',
+                salesButton: 'View Sales',
+                inventoryCardTitle: 'Inventory',
+                inventoryCardDesc: 'Check stock',
+                inventoryButton: 'View Inventory',
+                todaysSummary: 'Today\'s Summary',
+                salesCount: 'Sales Count',
+                totalRevenue: 'Total Revenue',
+                quickActions: 'Quick Actions',
+                newSale: 'New Sale',
+                checkStock: 'Check Stock',
+            },
+            pos: {
+                title: 'Point of Sale',
+                subtitle: 'Process transactions',
+                addItems: 'Add Items',
+                searchPlaceholder: 'Search products...',
+                medicineName: 'Medicine Name',
+                quantity: 'Quantity',
+                unitPrice: 'Unit Price',
+                addToCart: 'Add to Cart',
+                cartTitle: 'Cart',
+                cartEmpty: 'Cart is empty',
+                total: 'Total',
+                processSale: 'Process Sale',
+                processing: 'Processing...',
+                saleCompleted: 'Sale Completed',
+                saleFailed: 'Sale Failed',
+                invalidInput: 'Invalid Input',
+                invalidPrice: 'Invalid Price',
+            },
+            inventory: {
+                title: 'Inventory',
+                subtitle: 'Manage stock',
+                searchPlaceholder: 'Search inventory...',
+                lowStockOnly: 'Low stock only',
+                medicineColumn: 'Medicine',
+                stockColumn: 'Stock',
+                priceColumn: 'Price',
+                expiryColumn: 'Expiry',
+                statusColumn: 'Status',
+                actionsColumn: 'Actions',
+                lowStock: 'Low Stock',
+                expiringSoon: 'Expiring Soon',
+                good: 'Good',
+                deleteConfirm: 'Are you sure?',
+                itemDeleted: 'Item deleted',
+                deleteFailed: 'Delete failed',
+            },
+            sales: {
+                title: 'Sales History',
+                subtitle: 'View transactions',
+                transactionId: 'Transaction ID',
+                date: 'Date',
+                items: 'Items',
+                amount: 'Amount',
+                status: 'Status',
+                viewDetails: 'View Details',
+            },
         },
         ownerOnboarding: {
             loadingInfo: 'Odeeffannoo keessan fe\'aa jira...',
@@ -3663,56 +3355,6 @@ export const translations: Record<Language, Translations> = {
                 }
             }
         },
-        supplierDashboard: {
-            dashboard: {
-                title: 'Daashboordii Dhiyeessaa',
-                subtitle: 'Waliigala daldalaa fi safartuu raawwii guutuu',
-                totalProducts: 'Oomisha Waliigalaa',
-                totalOrders: 'Ajaja Waliigalaa',
-                monthlyRevenue: 'Galii Ji\'aa',
-                pendingShipments: 'Ergaa Eeggataa Jiru',
-                customerSatisfaction: 'Qubannaa Maamilaa',
-                orderFulfillmentRate: 'Dhibbeentaa Raawwii Ajajaa',
-                performanceScore: 'Qabxii Raawwii',
-                quickActions: 'Tarkaanfii Saffisaa',
-                manageProducts: 'Oomisha Bulchi',
-                processOrders: 'Ajaja Raawwadhu',
-                aiAssistant: 'Gargaaraa AI',
-                viewAnalytics: 'Xinxaala Ilaali',
-                businessInsights: 'Hubannoo Daldalaa',
-                activeCustomers: 'Maamiltoota Hojii Irra Jiran',
-                inventoryTurnover: 'Marsaa Qabeenyaa',
-                overdueInvoices: 'Invooyisii Yeroon Darbe',
-                recentActivity: 'Sochii Dhiheenyaa',
-            },
-            products: {
-                title: 'Bulchiinsa Oomishaa',
-                subtitle: 'Kaataaloogii oomishaa fi qabeenya kee bulchi',
-                addProduct: 'Oomisha Dabali',
-                searchPlaceholder: 'Oomisha barbaadi...',
-                tableHeaders: {
-                    product: 'Oomisha',
-                    category: 'Ramaddii',
-                    price: 'Gatii',
-                    stock: 'Stock',
-                    status: 'Haala',
-                    actions: 'Tarkaanfii',
-                }
-            },
-            orders: {
-                title: 'Bulchiinsa Ajajaa',
-                subtitle: 'Ajaja maamilaa raawwadhuu fi hordofi',
-                searchPlaceholder: 'Ajaja barbaadi...',
-                tableHeaders: {
-                    orderId: 'ID Ajajaa',
-                    customer: 'Maamila',
-                    date: 'Guyyaa',
-                    total: 'Waliigala',
-                    status: 'Haala',
-                    actions: 'Tarkaanfii',
-                }
-            }
-        },
         verifyPage: {
             title: 'Email keessan mirkaneessaa fi daashboordii hiriyyaa banaa',
             subtitle: 'Koodii yeroo tokkoo inbox keessanitti ergame galchaa. Yeroo walsimu, portaalii hiriyyaa keessan ni hojjechiisna fi meeshaalee rixaaraa ni feena.',
@@ -3751,7 +3393,6 @@ export const translations: Record<Language, Translations> = {
             security: 'ድሕነት',
             pricing: 'ዋጋ',
             contact: 'ርኸቡና',
-            integrations: 'ምስ ካልኦት ምትእስሳር',
             blog: 'ብሎግ',
             signIn: 'እተው',
             startFreeTrial: 'ነጻ ፈተነ ጀምር',
@@ -3777,8 +3418,6 @@ export const translations: Record<Language, Translations> = {
             title: 'ተራኹም ምረጹ',
             ownerTitle: 'ዋና ንግዲ',
             ownerDesc: 'ንግድኹም ኣመሓድሩ',
-            supplierTitle: 'ኣቕራቢ',
-            supplierDesc: 'መድሃኒታት ንፋርማሲታት ኣቕርቡ',
             affiliateTitle: 'መሻርኽቲ',
             affiliateDesc: 'ሰባት ብምዕዳም ኮሚሽን ረክቡ',
             cancel: 'ሰርዝ',
@@ -3815,8 +3454,7 @@ export const translations: Record<Language, Translations> = {
             feature3Desc: 'ከ Google Sheets፣ ERP ስርዓቶች፣ የሂሳብ ሶፍትዌር እና ሌሎችም ጋር በሰላም ይገናኙ። ምንም ቴክኒካዊ እውቀት አያስፈልግም - ነባር መሳሪያዎችዎን ለማገናኘት አንድ ጠቅታ ብቻ።',
             feature4Title: 'ብልጥ ወጪ እና ግብ ክትትል',
             feature4Desc: 'የክፍያ ቀነ-ገደብ በጭራሽ አያምልጥዎ። መሶብ የግብር ክፍያዎችን፣ የሰራተኛ ደመወዝን፣ ኪራይን፣ የፍቃድ እድሳትን እና ሁሉንም የንግድ ወጪዎችን በራስ-ሰር ይከታተላል እና ያስታውስዎታል።',
-            feature5Title: 'የአቅራቢዎች ገበያ',
-            feature5Desc: 'ምርቶቻቸውን በዳሽቦርድዎ ላይ ከሚያስተዋውቁ የተረጋገጡ አቅራቢዎች ጋር በቀጥታ ይገናኙ። አዳዲስ ምርቶችን ያግኙ፣ ዋጋዎችን ያወዳድሩ እና በልበ ሙሉነት ይዘዙ።',
+
             quickFeature1: 'ናይ ቀጥታ ትንተና',
             quickFeature2: 'ኣውቶማቲክ መጠንቀቕታ',
             quickFeature3: 'ምውርዋር ንብረት',
@@ -3836,7 +3474,7 @@ export const translations: Record<Language, Translations> = {
             chat1Question: '"ናይ ፋርማሲይ ንብረት ኣብዚ ወርሒ ከመይ ኣሎ?"',
             chat1Answer: 'ፋርማሲኻ ምስ ዝሓለፈ ወርሒ ክነጻጸር ከሎ ናይ 23% ወሰኽ መሸጣ ኣርእዩ። ይኹን እምበር፣ ኣንቲባዮቲክስ ይወድኣካ ከምዘሎ ኣስተውዒለ። ኣብ ዘሎ ዝንባለ ብምምርኳስ፣ ሕጽረት ንምውጋድ ኣብ ዝመጹ 3 መዓልታት 150 ኣሞክሲሲሊን ክትእዝዝ እምክረካ።',
             chat2Question: '"ኣየኖት ምርትታት ትሑት ኣፈጻጽማ የርእዩ ኣለዉ?"',
-            chat2Answer: 'ኣብ 60 መዓልታት ዘይተሸጡ 45,000 ብር ዋጋ ዘለዎም 12 ብዝሓሓ ዝንቀሳቐሱ ኣቕሑት ፈለየ ኣለኹ። ነዞም ኣቕሑት ፕሮሞሽን ክትገብር ወይ ናይ ምእዛዝ ስትራተጂኻ ከተዐሪ እምክረካ።',
+            chat2Answer: 'I\'ve identified 12 slow-moving items worth 45,000 Birr that haven\'t sold in 60 days. I suggest running a promotion or adjusting your ordering strategy for these items.',
             imageAlt: 'ብ AI ዝሰርሕ ምሕደራ ፋርማሲ',
         },
         howItWorks: {
@@ -3882,7 +3520,6 @@ export const translations: Record<Language, Translations> = {
             feature9: 'ብጁ ግንኙነቶች',
             footerText: '© 2024 መሶብ. ኩሉ መሰል ዝተሓለወ እዩ።',
             ownerCta: 'ከም ዋና እተው',
-            supplierCta: 'ከም ኣቕራቢ እተው',
             contactUs: 'ርኸቡና',
         },
         pwaInstall: {
@@ -3901,23 +3538,6 @@ export const translations: Record<Language, Translations> = {
             firefoxMessage: 'ነቲ ኣፕ ንምጽዓን በጃኻ Chrome ወይ Edge ተጠቐም',
             defaultMessage: 'እዚ ብራውዘር ኣፕ ምጽዓን ኣይድግፍን እዩ',
             gotIt: 'ተረዲኡኒ',
-        },
-        integrations: {
-            badge: 'ቀሊል ምትእስሳር',
-            title: 'ምስ እትፈትዎም መሳርሒታት ተራኽብ',
-            subtitle: 'ምስ ፍሉጣት ናይ ክፍሊት፣ ሒሳብን ንግዳዊ መሳርሒታትን ተኣሳሰር',
-            viewAll: 'ኩሉ ምትእስሳራት ርኣይ',
-            effortlessTitle: 'ቀሊል ውህደት',
-            effortlessDesc: 'ብብዙሓት መድረኻት ምጭነቕ ይኣክል፣ መሶብ AI ምስ ዘለዉኻ መሳርሒታት ብዘይ ጸገም ይራኸብ፣ ንንግዳዊ ስራሕካ ሓደ ዝተወሃሃደ ስርዓት ይፈጥር።',
-            benefit1: 'ንኩሉ ውህደታት ናይ ሓደ ጠውቃ ምድላው',
-            benefit2: 'ናይ ቀጥታ ዳታ ምትእስሳር',
-            benefit3: 'ውሑስ፣ ዝተመሰጠረ ምትእስሳር',
-            benefit4: 'ዝኾነ ቴክኒካዊ ፍልጠት ኣየድልን',
-            requestTitle: 'መሳርሒኻ ኣይረኸብካዮን?',
-            requestLink: 'ፍሉይ ውህደት ሕተት',
-            googleSheetsDesc: 'ንቀሊል ትንተናን ምክፋልን ሪፖርትታት ስደድን ናይ ንብረት ዳታ ብቀጥታ ካብ Google Sheets ኣሰማምዕ።',
-            sapDesc: 'ንናይ ትካል ደረጃ ፋይናንስን ስራሕን ምሕደራ ምስ SAP ERP ስርዓታት ብዘይ ጸገም ተዋሃሃድ።',
-            odooDesc: 'ንዝተወሃሃደ ንብረት፣ መሸጣን ሒሳብን መስርሓት ምስ Odoo ንግዳዊ ስብስብ ተራኽብ።',
         },
         affiliate: {
             badge: 'ናይ መሻርኽቲ መደብ',
@@ -3947,7 +3567,7 @@ export const translations: Record<Language, Translations> = {
             // Header
             badge: 'ናይ መሻርኽቲ ዳሽቦርድ',
             heading: 'ልክዕ ከምቲ ናይ መእተዊ ገጽካ፣ ናይ መሻርኽቲ ኣታዊኻ ኣዕቢ።',
-            description: 'ንናይ ንግዲ መሻርኽትኻ ብህዱእን ንኡስን ናይ ምቁጽጻር ማእከል ኣሳትፎም። ኣታዊታት ገምግም፣ ሊንክታት ኣዳሉ፣ ከምኡውን ካብ መሻርኽቲ API ብቀጥታ ብዝተወስዱ ናይ ቀጥታ ቁጽርታት ናይ ክፍሊት ሕቶታት ኣቕርብ።',
+            description: 'ንናይ ንግዲ መሻርኽትኻ ብህዱእን ንኡስን ናይ ምቁጽጽር ማእከል ኣሳትፎም። ኣታዊታት ገምግም፣ ሊንክታት ኣዳሉ፣ ከምኡውን ካብ መሻርኽቲ API ብቀጥታ ብዝተወስዱ ናይ ቀጥታ ቁጽርታት ናይ ክፍሊት ሕቶታት ኣቕርብ።',
 
             // Actions
             createReferralLink: 'ናይ ሪፈራል ሊንክ ፍጠር',
@@ -4073,7 +3693,7 @@ export const translations: Record<Language, Translations> = {
             registerTitle: 'ምዝገባ መሻርኽቲ',
             comingSoon: 'ኣብ ቀረባ ግዜ...',
 
-            // Layout & Loading
+            // Layout \u0026 Loading
             generateLinkNav: 'ሊንክ ፍጠር',
             signOut: 'ውጻእ',
             loading: 'ይጽዕን ኣሎ...',
@@ -4185,7 +3805,7 @@ export const translations: Record<Language, Translations> = {
             section3Heading: 'ምኽዛንን ድሕነትን ዳታ',
             section3Body: 'ዳታኻ ኣብ ግዜ ምንቅስቃስን ምቕማጥን ብምሽፋን ብድሕነት ይኽዘን። ብዙሕ ደረጃ ምርግጋጽ፣ ስሩዕ ካብ ምርመራ ድሕነትን መቆጻጸሪ ኣእታውን ንግበር። መሰረት ልምዓትና ዓለማዊ አገልግሎት ደበና ክጥቀም ይኽእል እዩ፣ ግን ምስ ናይ ኢትዮጵያ ደረጃ ምክልኻል ዳታ ምስምማዕ እናረጋገጽና እሞ ሕጊ ከሎ ሉዓላዊነት ዳታ ንሕልዎ።',
             section4Heading: 'ምስ ሕጊ ኢትዮጵያ ምስምማዕ',
-            section4Body: 'ምስ ናይ ኢትዮጵያ ንግዳዊ ሕጊ፣ ደንቢ ግብሪን መስፈርታት ፈቓድ ንግድን ብምሉእ ብምስምማዕ ንሰርሕ። ከም ወተሃደር ንግድን ኢንዳስትሪን መሪሕነት ጉምሩክ ኢትዮጵያን ዝሓቱ መዝገባት ንሕዝ። ናይ ንግዲ ንግዲ ዳታ ከም ሕጋዊ መስፈርቲ ኢትዮጵያ (ቢያንስ 5 ዓመት ንዓላማ ግብሪ) ይኽዘን።',
+            section4Body: 'ምስ ናይ ኢትዮጵያ ንግዳዊ ሕጊ፣ ደንቢ ግብሪን መስፈርታት ፈቓድ ንግድን ብምሉእ ብምስምማዕ ንሰርሕ። ከም ወተሃደር ንግድን ኢንዳስትሪን መሪሕነት ጉምሩክ ኢትዮጵያንን ዝሓቱ መዝገባት ንሕዝ። ናይ ንግዲ ንግዲ ዳታ ከም ሕጋዊ መስፈርቲ ኢትዮጵያ (ቢያንስ 5 ዓመት ንዓላማ ግብሪ) ይኽዘን።',
             section5Heading: 'ዳታ ምክፋልን ምግላጽን',
             section5Body: 'ዳታ እነካፍለሉ ካብ እትሓታታ አገልግሎት ኣቕረብቲ (ኣመራርሓ ክፍሊት፣ ኣቕረብቲ SMS፣ ምእንጋድ ደበና) ጥራይ እዩ ብጥብቅ ስምምዕ ምስጢራዊነት ውሽጢ። ኣብ ግዜ ሕጊ እንተ ሓቲቱ (ምርመራ ግብሪ፣ ምስምማዕ ቁጽጽር፣ ትእዛዛት ቤት ፍርዲ) ሓበሬታ ንባለስልጣናት መንግስቲ ኢትዮጵያ ከነብርሕ ንኽእል። ንግዳዊ ዳታኻ ንተወዳደርቲ ወይ ሳልሳይ ወገናት ፈጺምና ኣንካፍልን።',
             section6Heading: 'ናይ ክፍሊትን ፋይናንስን ዳታ',
@@ -4193,7 +3813,7 @@ export const translations: Record<Language, Translations> = {
             section7Heading: 'መሰላትካ',
             section7Body: 'ናይ ውልቃዊ ዳታኻ ምእታው፣ ምእራምን ምድምሳስን መሰል ኣለካ። ናይ ንግዲ ዳታኻ ብዝኾነ ግዜ ብመንገዲ ምቕማጥካ ሒሳብ ከተልእ ትኽእል። ንሕቶታት ምድምሳስ ዳታ፣ መዝገባት ብሕጊ ኢትዮጵያ ዝሓትት ከሎና ኣብ ውሽጢ 30 መዓልቲ ኬነሽሩ። ንምልክታት ገበና ፈቓድ ብዝኾነ ግዜ ምልቃቕ ትኽእል።',
             section8Heading: 'ባለንብረት ዳታ ንግዲ',
-            section8Body: 'ናይ ንግዲ ዳታኻ ከም: ዝርዝር ንብረት፣ ሓበሬታ ኣሚሎች፣ ዳታ መሸጣን ዝርዝር ፋይናንስን ምሉእ ባለን برብረትነት ኣንጻሕካዮ። ኣካውንት ከሎ ምዕጻው ኩሉ ዳታኻ ክተልእዎ ትኽእሉ። ብወኪልካ እንተ ኣመራርሕ ዳታ ንሰርሕ እሞ ባለንብረትነት ናይ ዳታ ንግድኻ ኣይንጠይቅን።',
+            section8Body: 'You retain full ownership of your business data including inventory records, customer information, sales data, and financial records. Upon account termination, you can export all your data. We act as a data processor on your behalf and do not claim ownership of your business information.',
             section9Heading: 'ኩኪታትን ምክትታልን',
             section9Body: 'ኩኪታት ኣገደስቲ ንምርግጋጽን ምሕደራ ክፍለ ጊዜን፣ ከም ኡውን ኩኪታት ትንተና ኣፈጻጽማ መድረኽ ንምምሕያሽ ንጥቀም። ናይ ሳልሳይ ወገን ማስታወቂ ኩኪታት ኣይንጥቀምን። ምንክር ኩኪታት ኣገደስቲ ንምሰራሕነት መድረኽ ይሓትት እኳ ኣብ ምቕማጥ ብራውዘርካ ምርጫታት ኩክ ኪሕድሩ ትኽእሉ።',
             section10Heading: 'ንዚህ ፖሊሲ ምሕዳሳት',
@@ -4237,9 +3857,6 @@ export const translations: Record<Language, Translations> = {
             ownerSignInSubtitle: 'ናይ ንግዲ ዳሽቦርድካ ርከብ፣ ስራሓት ኣመሓድር፣ ከምኡውን ኣፈጻጽማ ተኸታተል።',
             ownerWelcome: 'እንቋዕ ብደሓን መጻእካ — ንምቕጻል ሓበሬታኻ ኣእቱ።',
 
-            supplierSignInTitle: 'ኣቕራቢ መእተዊ',
-            supplierSignInSubtitle: 'ምርታትካ፣ ትእዛዛትካ ኣመሓድር፣ ከምኡውን ምስ ንግድታት ተራኽብ።',
-            supplierWelcome: 'እንቋዕ ብደሓን መጻእካ — ናብ ኣቕራቢ መእተዊኻ እተው።',
 
             affiliateSignInTitle: 'መሻርኽቲ መእተዊ',
             affiliateSignInSubtitle: 'ሪፈራልካ፣ ኣታዊኻን ኣፈጻጽማኻን ተኸታተል።',
@@ -4251,12 +3868,9 @@ export const translations: Record<Language, Translations> = {
             address: 'ኣድራሻ ንግዲ',
             licenseDocument: 'ሰነድ ፈቓድ ንግዲ',
             registerOwner: 'ከም ዋና ተመዝገብ',
-            registerSupplier: 'ከም ኣቕራቢ ተመዝገብ',
             registerAffiliate: 'ከም መሻርኽቲ ተመዝገብ',
             ownerRegisterTitle: 'ናይ ንግዲ ምሕደራ ጉዕዞኻ ጀምር',
             ownerRegisterSubtitle: 'ነቲ ብ AI ዝሰርሕ መድረኽና ዝኣምኑ ኣሽሓት ዋናታት ንግዲ ተሓወስ።',
-            supplierRegisterTitle: 'ናይ ዕዳጋ ተበጻሕነትካ ኣስፊሕ',
-            supplierRegisterSubtitle: 'ምስ ኣሽሓት ንግድታት ተራኽብ እሞ መሸጣኻ ኣዕቢ።',
             affiliateRegisterTitle: 'ብመሶብ ምትራፍ ጀምር',
             affiliateRegisterSubtitle: 'ናይ መሻርኽቲ መደብና ተሓወስ እሞ ቀጻሊ ኮሚሽን ረብሕ።',
 
@@ -4279,15 +3893,6 @@ export const translations: Record<Language, Translations> = {
                 testimonial: 'መሶብ ንግድና እንመርሓሉ መንገዲ ቀይርዎ እዩ። እቲ ናይ AI ግንዛቤታት ዘገርም እዩ!',
                 supportText: 'ሓገዝ ይደልዩ?',
                 contactTeam: 'ናይ ደገፍ ጉጅለና ተወከሱ',
-            },
-            supplier: {
-                feature1: 'ምስ ዝተረጋገጸ ናይ ንግዲ መርበብ ምራኽብ',
-                feature2: 'ናይ ሎሚ ትእዛዝ ምምሕዳር ስርዓት',
-                feature3: 'ዝምዕበለ ትንታነን ጸብጻብን',
-                feature4: 'ውሑስ መስርሕ ክፍሊት',
-                testimonial: 'ናይ መሶብ ንግዲ ምምሕዳር መድረኽ ስራሕና ኣቀላጢፍዎ ምስ ብሉጻት ናይ ንግዲ መሻርኽቲ ኣብ መላእ ሃገር ኣራኺቡና።',
-                supportText: 'ሓገዝ ይደልዩ?',
-                contactTeam: 'ናይ ኣቕራቢ ደገፍ ጉጅለና ተወከሱ',
             },
             affiliate: {
                 feature1: 'ንዝምዝገብዎ ነፍሲ ወከፍ ንግዲ ኮሚሽን ይረኽቡ',
@@ -4322,7 +3927,6 @@ export const translations: Record<Language, Translations> = {
             main: {
                 welcomeBack: 'Welcome back',
                 subtitle: 'Monitor revenue, compare branches, and coach your pharmacy team from a single command center.',
-                connectTools: 'Connect tools',
                 inviteStaff: 'Invite staff',
                 horizon24h: '24h',
                 horizon7d: '7d',
@@ -4380,82 +3984,95 @@ export const translations: Record<Language, Translations> = {
                 unauthorizedError: 'You are not authorised to view this dashboard',
             },
         },
-        supplierOnboarding: {
-            loadingKycData: 'ናይ KYC ሓበሬታ ይጽዕን ኣሎ...',
-            loadingPaymentStatus: 'ናይ ክፍሊት ኩነታት ይጽዕን ኣሎ...',
-            businessNamePlaceholder: 'ዝተመዝገበ ስም ንግድኻ ኣእቱ',
-            nationalIdPlaceholder: 'ብመንግስቲ ዝተዋህበ መንነት ቁጽሪ',
-            tinNumberPlaceholder: 'ናይ ግብሪ መለለዪ ቁጽሪ (TIN)',
-            phoneNumberPlaceholder: '+251...',
-            businessAddressPlaceholder: 'ቦታ ንግዲ',
-
-            kycTitle: 'ናይ ኣቕራቢ KYC መረጋገጺ',
-            kycSubtitle: 'ምሻጥ ንምጅማር መረጋገጺኻ ኣማልእ',
-            pendingReview: 'ግምገማ ይጽበ ኣሎ',
-            approved: 'ጸዲቑ',
-            rejected: 'ተነጺጉ',
-            notSubmitted: 'ኣይተላእከን',
-            refreshStatus: 'ኩነታት ኣሐድስ',
-            applicationRejected: 'ማመልከቻኻ ተነጺጉ',
-            submitVerification: 'ናይ መረጋገጺ ሰነዳት ኣእቱ',
-            updateInformation: 'ሓበሬታ ኣሐድስ',
-            provideAccurateInfo: 'በጃኻ ንመረጋገጺ ትኽክለኛ ሓበሬታ ሃብ።',
-            supplierName: 'ስም ኣቕራቢ',
-            nationalId: 'ብሄራዊ መታወቂያ / ፓስፖርት',
-            tinNumber: 'ናይ ግብሪ መለለዪ ቁጽሪ (TIN)',
-            phoneNumber: 'ቁጽሪ ስልኪ',
-            businessAddress: 'ኣድራሻ ንግዲ',
-            licenseDocument: 'ናይ ንግዲ ፍቃድ',
-            currentLicense: 'ህሉው ፍቃድ',
-            replaceLicense: 'ፍቃድ ተክእ',
-            clickToUpload: 'ንምጽዓን ጠውቕ',
-            uploadHint: 'SVG, PNG, JPG ወይ GIF (ለዓለዋይ 800x400px)',
-            change: 'ቀይር',
-            browse: 'ዳህስስ',
-            submitApplication: 'ማመልከቻ ኣእቱ',
-            updateApplication: 'ማመልከቻ ኣሐድስ',
-            submitting: 'የኣቱ ኣሎ...',
-            paymentTitle: 'ናይ ክፍሊት መረጋገጺ',
-            paymentSubtitle: 'ኣካውንትካ ንምጅማር ክፍሊትካ ኣረጋግጽ',
-            paymentStatus: 'ኩነታት ክፍሊት',
-            pendingVerification: 'መረጋገጺ ይጽበ ኣሎ',
-            verified: 'ተረጋጊጹ',
-            paymentUnderVerification: 'ክፍሊት ኣብ መረጋገጺ ይርከብ',
-            paymentUnderVerificationMsg: 'ክፍሊትካ ኣብዚ እዋን ይግምገም ኣሎ። እዚ መብዛሕትኡ ግዜ 24-48 ሰዓታት ይወስድ።',
-            paymentVerified: 'ክፍሊት ተረጋጊጹ',
-            paymentVerifiedMsg: 'ክፍሊትካ ብዓወት ተረጋጊጹ።',
-            paymentRejected: 'ክፍሊት ተነጺጉ',
-            paymentRejectedMsg: 'ክፍሊትካ ተነጺጉ። በጃኻ ነቲ መዘኻኸሪ ርኢኻ እንደገና ፈትን።',
-            accountActivated: 'ኣካውንት ተጀሚሩ',
-            accountActivatedMsg: 'ኣካውንትካ ሕጂ ብምሉእ ንጡፍ እዩ። ናብ ዳሽቦርድካ ክትኣቱ ትኽእል።',
-            goToDashboard: 'ናብ ዳሽቦርድ ኪድ',
-            paymentSubmission: 'ክፍሊት ምእታው',
-            paymentSubmissionSubtitle: 'ንመረጋገጺ ዝርዝር ክፍሊትካ ኣእቱ',
-            adminNotes: 'ናይ ኣመሓዳሪ መዘኻኸሪ',
-            submittedCode: 'ዝተላእከ ኮድ',
-            paymentCode: 'ናይ ክፍሊት ኮድ',
-            paymentCodeHint: 'ካብ ደረሰኝካ ናይቲ ግብይት ኮድ ኣእቱ',
-            amount: 'መጠን',
-            paymentMethod: 'ሜላ ክፍሊት',
-            selectMethod: 'ሜላ ክፍሊት ምረጽ',
-            bankTransfer: 'ናይ ባንኪ ምስግጋር',
-            cash: 'ጥሬ ገንዘብ',
-            check: 'ቼክ',
-            other: 'ካልእ',
-            additionalNotes: 'ተወሳኺ መዘኻኸሪ',
-            additionalNotesPlaceholder: 'ዝኾነ ተወሳኺ ሓበሬታ...',
-            submitPayment: 'ክፍሊት ኣእቱ',
-            verificationInProgress: 'መረጋገጺ ኣብ መስርሕ ኣሎ',
-            verificationInProgressMsg: 'ክፍሊትካ ነረጋግጽ ኣለና። በጃኻ ደሓር ተመለስ።',
-            paymentInstructions: 'መምርሒ ክፍሊት',
-            howToPay: 'ከመይ ከም እትከፍል',
-            step1: 'ናብ ዝቀረበካ ጨንፈር ባንኪ ኪድ',
-            step2: 'ዝድለ መጠን ኣቐምጥ',
-            step3: 'ደረሰኝ ሓዝ',
-            step4: 'ናይ ግብይት ኮድ ኣብዚ ኣእቱ',
-            step5: 'ንመረጋገጺ ኣእቱ',
-            note: 'መዘኻኸሪ',
-            noteMsg: 'በጃኻ ቅድሚ ምእታውካ ኩሉ ዝርዝር ትኽክል ምዃኑ ኣረጋግጽ።',
+        staffDashboard: {
+            common: {
+                loading: 'Loading...',
+                refresh: 'Refresh',
+                save: 'Save',
+                cancel: 'Cancel',
+                delete: 'Delete',
+                edit: 'Edit',
+                add: 'Add',
+                search: 'Search',
+                filter: 'Filter',
+                export: 'Export',
+                import: 'Import',
+                noData: 'No data available',
+                error: 'Error',
+                success: 'Success',
+                close: 'Close',
+                confirm: 'Confirm',
+                back: 'Back',
+                next: 'Next',
+                submit: 'Submit',
+                submitting: 'Submitting...',
+            },
+            main: {
+                welcome: 'Welcome',
+                subtitle: 'Manage your daily tasks',
+                posCardTitle: 'Point of Sale',
+                posCardDesc: 'Process sales',
+                posButton: 'Go to POS',
+                salesCardTitle: 'Sales History',
+                salesCardDesc: 'View past sales',
+                salesButton: 'View Sales',
+                inventoryCardTitle: 'Inventory',
+                inventoryCardDesc: 'Check stock',
+                inventoryButton: 'View Inventory',
+                todaysSummary: 'Today\'s Summary',
+                salesCount: 'Sales Count',
+                totalRevenue: 'Total Revenue',
+                quickActions: 'Quick Actions',
+                newSale: 'New Sale',
+                checkStock: 'Check Stock',
+            },
+            pos: {
+                title: 'Point of Sale',
+                subtitle: 'Process transactions',
+                addItems: 'Add Items',
+                searchPlaceholder: 'Search products...',
+                medicineName: 'Medicine Name',
+                quantity: 'Quantity',
+                unitPrice: 'Unit Price',
+                addToCart: 'Add to Cart',
+                cartTitle: 'Cart',
+                cartEmpty: 'Cart is empty',
+                total: 'Total',
+                processSale: 'Process Sale',
+                processing: 'Processing...',
+                saleCompleted: 'Sale Completed',
+                saleFailed: 'Sale Failed',
+                invalidInput: 'Invalid Input',
+                invalidPrice: 'Invalid Price',
+            },
+            inventory: {
+                title: 'Inventory',
+                subtitle: 'Manage stock',
+                searchPlaceholder: 'Search inventory...',
+                lowStockOnly: 'Low stock only',
+                medicineColumn: 'Medicine',
+                stockColumn: 'Stock',
+                priceColumn: 'Price',
+                expiryColumn: 'Expiry',
+                statusColumn: 'Status',
+                actionsColumn: 'Actions',
+                lowStock: 'Low Stock',
+                expiringSoon: 'Expiring Soon',
+                good: 'Good',
+                deleteConfirm: 'Are you sure?',
+                itemDeleted: 'Item deleted',
+                deleteFailed: 'Delete failed',
+            },
+            sales: {
+                title: 'Sales History',
+                subtitle: 'View transactions',
+                transactionId: 'Transaction ID',
+                date: 'Date',
+                items: 'Items',
+                amount: 'Amount',
+                status: 'Status',
+                viewDetails: 'View Details',
+            },
         },
         ownerOnboarding: {
             loadingInfo: 'ሓበሬታኹም ይጽዕን ኣሎ...',
@@ -4555,56 +4172,6 @@ export const translations: Record<Language, Translations> = {
                     role: 'ተራ',
                     status: 'ኩነታት',
                     lastActive: 'መወዳእታ ዝነጠፈ',
-                    actions: 'ስጉምትታት',
-                }
-            }
-        },
-        supplierDashboard: {
-            dashboard: {
-                title: 'ዳሽቦርድ ኣቕራቢ',
-                subtitle: 'ኩሉ ዝሓዘ ናይ ንግዲ ሓፈሻዊ እይታን መለኪታት ኣፈጻጽማን',
-                totalProducts: 'ጠቕላላ ፍርያት',
-                totalOrders: 'ጠቕላላ ትእዛዛት',
-                monthlyRevenue: 'ወርሓዊ ኣታዊ',
-                pendingShipments: 'ዝጽበዩ ጽዕነት',
-                customerSatisfaction: 'ዕግበት ዓማዊል',
-                orderFulfillmentRate: 'ምሉእነት ትእዛዝ',
-                performanceScore: 'ውጽኢት ኣፈጻጽማ',
-                quickActions: 'ቅልጡፍ ስጉምትታት',
-                manageProducts: 'ፍርያት ኣመሓድር',
-                processOrders: 'ትእዛዛት ኣካይድ',
-                aiAssistant: 'AI ሓጋዚ',
-                viewAnalytics: 'ትንታነ ርኣይ',
-                businessInsights: 'ንግዳዊ ርድኢት',
-                activeCustomers: 'ንጡፋት ዓማዊል',
-                inventoryTurnover: 'ምውርዋር ንብረት',
-                overdueInvoices: 'ግዜ ዝሓለፎም ደረሰኛታት',
-                recentActivity: 'ናይ ቀረባ ንጥፈታት',
-            },
-            products: {
-                title: 'ምሕደራ ፍርያት',
-                subtitle: 'ካታሎግ ፍርያትካን ንብረትካን ኣመሓድር',
-                addProduct: 'ፍርያት ወስኽ',
-                searchPlaceholder: 'ፍርያት ድለ...',
-                tableHeaders: {
-                    product: 'ፍርያት',
-                    category: 'ምድብ',
-                    price: 'ዋጋ',
-                    stock: 'ክምችት',
-                    status: 'ኩነታት',
-                    actions: 'ስጉምትታት',
-                }
-            },
-            orders: {
-                title: 'ምሕደራ ትእዛዝ',
-                subtitle: 'ትእዛዛት ዓማዊል ኣካይድን ተኸታተልን',
-                searchPlaceholder: 'ትእዛዛት ድለ...',
-                tableHeaders: {
-                    orderId: 'መለለዪ ትእዛዝ',
-                    customer: 'ዓማዊል',
-                    date: 'ዕለት',
-                    total: 'ጠቕላላ',
-                    status: 'ኩነታት',
                     actions: 'ስጉምትታት',
                 }
             }

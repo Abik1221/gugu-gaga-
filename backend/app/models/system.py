@@ -22,7 +22,7 @@ class Announcement(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    target_audience: Mapped[str] = mapped_column(String(32), default="all")  # all, owner, supplier, affiliate
+    target_audience: Mapped[str] = mapped_column(String(32), default="all")  # all, owner, affiliate
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)

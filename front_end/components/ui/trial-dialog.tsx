@@ -32,13 +32,7 @@ export function TrialDialog({ children }: TrialDialogProps) {
       icon: Store,
       route: "/register/owner",
     },
-    {
-      id: "supplier",
-      title: t.trial.supplierTitle,
-      description: t.trial.supplierDesc,
-      icon: Package,
-      route: "/register/supplier",
-    },
+
     {
       id: "affiliate",
       title: t.trial.affiliateTitle,

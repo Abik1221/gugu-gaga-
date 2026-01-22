@@ -13,7 +13,7 @@ export default function DashboardPage() {
     (async () => {
       try {
         const user = await AuthAPI.me();
-        
+
         // Redirect based on user role
         switch (user?.role) {
           case "admin":
@@ -29,9 +29,7 @@ export default function DashboardPage() {
           case "affiliate":
             router.replace("/dashboard/affiliate");
             break;
-          case "supplier":
-            router.replace("/dashboard/supplier");
-            break;
+
           default:
             router.replace("/dashboard/owner");
         }

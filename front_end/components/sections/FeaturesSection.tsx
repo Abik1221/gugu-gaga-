@@ -4,7 +4,7 @@ import branch1 from "@/public/branch1.jpeg";
 import branch2 from "@/public/branch2.jpeg";
 import branch3 from "@/public/branch3.jpeg";
 import memory from "@/public/memory.png";
-import supplierregistration from "@/public/supplierregistration.jpeg";
+
 
 import {
   Building2,
@@ -52,12 +52,7 @@ export default function FeaturesSection() {
       description: t.features.feature4Desc,
       image: memory,
     },
-    {
-      icon: ShoppingBag,
-      title: t.features.feature5Title, // "የደንበኛ ግንዛቤ" / "Customer Insights"
-      description: t.features.feature5Desc,
-      image: supplierregistration,
-    },
+
   ];
 
   // Quick features with Amharic translations

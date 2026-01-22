@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server'
 const protectedRoutes = [
     '/dashboard/affiliate',
     '/dashboard/owner',
-    '/dashboard/supplier',
+
     '/dashboard/admin',
     '/dashboard/staff',
 ]
@@ -14,7 +14,7 @@ const protectedRoutes = [
 const publicRoutes = [
     '/affiliate-signin',
     '/owner-signin',
-    '/supplier-signin',
+
     '/auth',
     '/',
 ]
@@ -65,8 +65,7 @@ export function middleware(request: NextRequest) {
             loginPath = '/affiliate-signin'
         } else if (pathname.startsWith('/dashboard/owner')) {
             loginPath = '/owner-signin'
-        } else if (pathname.startsWith('/dashboard/supplier')) {
-            loginPath = '/supplier-signin'
+
         }
 
         const url = new URL(loginPath, request.url)

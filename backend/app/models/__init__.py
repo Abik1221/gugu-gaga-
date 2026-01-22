@@ -16,13 +16,8 @@ from app.models.audit import AuditLog  # noqa: F401
 from app.models.session import AuthSession  # noqa: F401
 from app.models.kyc import KYCApplication  # noqa: F401
 from app.models.notification import Notification  # noqa: F401
-from app.models.integration import (  # noqa: F401
-    IntegrationConnection,
-    IntegrationProvider,
-    IntegrationSyncJob,
-)
-from app.models.supplier import Supplier, SupplierProduct, Order, OrderItem, OrderReview  # noqa: F401
-from app.models.supplier_kyc import SupplierKYC, SupplierPaymentSubmission  # noqa: F401
+
+
 from app.models.verification import VerificationCode  # noqa: F401
 from app.models.user_tenant import UserTenant  # noqa: F401
 from app.models.subscription import Subscription, PaymentSubmission  # noqa: F401

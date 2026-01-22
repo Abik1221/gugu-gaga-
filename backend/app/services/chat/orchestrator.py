@@ -60,7 +60,7 @@ OUT_OF_SCOPE_MESSAGE = (
     "• 📈 **Revenue Analysis** - 'Show me this month's sales trends' or 'Which products drive the most profit?'\n"
     "• 📦 **Inventory Optimization** - 'What items are running low?' or 'Show me expiring products'\n"
     "• 👥 **Staff Performance** - 'How are my cashiers performing?' or 'Who are my top sales performers?'\n"
-    "• 🤝 **Supplier Management** - 'Which suppliers are most reliable?' or 'Show pending orders'\n"
+
     "• 💰 **Financial Insights** - 'What's my profit margin trend?' or 'Show cost analysis'\n\n"
     "Ask me anything about your pharmacy's business performance, and I'll provide actionable insights to help you grow!"
 )
@@ -252,16 +252,7 @@ def _heuristic_sql_from_prompt(prompt: str) -> Tuple[str | None, str]:
             "ORDER BY ii.expiry_date ASC"
         )
         return sql, "expiring_lots"
-    if "supplier" in p or "restock" in p or "purchase" in p:
-        sql = (
-            "SELECT mi.name, ii.quantity, ii.reorder_level, "
-            "CASE WHEN ii.reorder_level > 0 THEN MAX(ii.reorder_level - ii.quantity, 0) ELSE 0 END AS suggested_order "
-            "FROM inventory_items ii JOIN medicines mi ON mi.id = ii.medicine_id "
-            "WHERE ii.tenant_id = :tenant_id AND ii.quantity <= ii.reorder_level "
-            "GROUP BY mi.name, ii.quantity, ii.reorder_level "
-            "ORDER BY suggested_order DESC"
-        )
-        return sql, "supplier_restock"
+
     if "stock" in p or "inventory" in p:
         sql = (
             "SELECT mi.name, COALESCE(SUM(ii.quantity),0) AS quantity, "
@@ -359,17 +350,7 @@ def _generate_business_advice(intent: str, rows: List[Dict[str, Any]], user_role
             "• Set up automated expiry alerts at 60, 30, and 7 days",
             "• Review ordering patterns to reduce over-purchasing"
         ],
-        "supplier_performance": [
-            "🏆 **Supplier Optimization:**",
-            "• Reward top-performing suppliers with larger orders",
-            "• Negotiate better terms with reliable suppliers",
-            "• Set performance benchmarks for all suppliers",
-            "",
-            "⚠️ **Risk Management:**",
-            "• Diversify suppliers for critical products",
-            "• Establish backup suppliers for poor performers",
-            "• Implement supplier scorecards for regular evaluation"
-        ],
+
         "monthly_revenue": [
             "💰 **Revenue Growth Strategies:**",
             "• Focus marketing on high-revenue months",
@@ -381,17 +362,7 @@ def _generate_business_advice(intent: str, rows: List[Dict[str, Any]], user_role
             "• Identify and replicate successful month strategies",
             "• Set realistic growth targets based on trends"
         ],
-        "supplier_orders": [
-            "📦 **Order Management:**",
-            "• Prioritize orders by delivery urgency and customer impact",
-            "• Communicate proactively with customers about delays",
-            "• Optimize order batching to reduce processing costs",
-            "",
-            "🤝 **Customer Relations:**",
-            "• Offer alternatives for delayed items",
-            "• Provide accurate delivery estimates",
-            "• Consider expedited shipping for VIP customers"
-        ],
+
         "staff_performance": [
             "👥 **Team Development:**",
             "• Recognize and reward top performers",
@@ -528,19 +499,7 @@ def _generate_fallback_summary(intent: str, rows: List[Dict[str, Any]]) -> str:
         return (
             "Expiring lots to act on: " + "; ".join(parts) + ". Flag them for clearance or supplier returns this week."
         )
-    if intent == "supplier_restock":
-        suggestions = rows[:3]
-        parts = [
-            f"Order {max(int(row.get('suggested_order', 0) or 0), 0)} of {row.get('name')}"
-            for row in suggestions
-        ]
-        if not parts:
-            return (
-                "All tracked items are above reorder thresholds. Keep monitoring daily so you can stage orders before levels dip."
-            )
-        return (
-            "Restock suggestions — " + "; ".join(parts) + ". Confirm supplier lead times so these orders arrive before stockouts."
-        )
+
     if intent == "top_selling":
         top_items = ", ".join(
             f"{row.get('name', 'Unknown')} ({row.get('qty', 0)} units, revenue {float(row.get('revenue', 0.0) or 0.0):,.2f})"
@@ -636,65 +595,7 @@ def _generate_fallback_summary(intent: str, rows: List[Dict[str, Any]]) -> str:
         )
     
     # Supplier-specific summaries
-    if intent == "supplier_overview":
-        supplier_count = len(rows)
-        if supplier_count == 0:
-            return "No suppliers found. Add supplier relationships to track procurement performance."
-        top_supplier = rows[0]
-        return (
-            f"🤝 **Supplier Network:** {supplier_count} active suppliers\n"
-            f"🏆 **Top Rated:** {top_supplier.get('business_name', 'Unknown')} (Score: {top_supplier.get('reliability_score', 0)})\n\n"
-            "📊 **Procurement Insights:**\n"
-            "• Monitor supplier performance regularly for optimal partnerships\n"
-            "• Diversify supplier base to reduce procurement risks\n"
-            "• Negotiate better terms with high-performing suppliers\n"
-            "• Implement supplier scorecards for continuous evaluation"
-        )
-    
-    if intent == "supplier_orders_analysis":
-        total_orders = len(rows)
-        if total_orders == 0:
-            return "No supplier orders found. Start placing orders to track procurement performance."
-        recent_order = rows[0]
-        return (
-            f"📦 **Order Management:** {total_orders} recent orders tracked\n"
-            f"🕰️ **Latest Order:** {recent_order.get('business_name', 'Unknown')} - ${float(recent_order.get('total_amount', 0)):,.2f}\n\n"
-            "🎯 **Procurement Strategy:**\n"
-            "• Monitor order fulfillment times and delivery performance\n"
-            "• Optimize order quantities based on demand patterns\n"
-            "• Establish clear communication channels with suppliers\n"
-            "• Track order accuracy and quality metrics"
-        )
-    
-    if intent == "supplier_pending_orders":
-        pending_count = len(rows)
-        if pending_count == 0:
-            return "✅ **All Orders Delivered** - No pending orders currently. Great supply chain management!"
-        urgent_orders = [row for row in rows if float(row.get('days_until_delivery', 999)) <= 2]
-        return (
-            f"⏳ **Pending Orders:** {pending_count} orders awaiting delivery\n"
-            f"🚨 **Urgent:** {len(urgent_orders)} orders due within 2 days\n\n"
-            "📞 **Action Items:**\n"
-            "• Follow up on overdue deliveries immediately\n"
-            "• Confirm delivery schedules with suppliers\n"
-            "• Prepare contingency plans for critical items\n"
-            "• Update customers on any potential delays"
-        )
-    
-    if intent == "supplier_performance_metrics":
-        if not rows:
-            return "No supplier performance data available. Complete some orders to generate performance metrics."
-        top_performer = rows[0]
-        avg_score = sum(float(row.get('reliability_score', 0)) for row in rows) / len(rows)
-        return (
-            f"🏆 **Top Performer:** {top_performer.get('business_name', 'Unknown')} (Score: {top_performer.get('reliability_score', 0)})\n"
-            f"📊 **Network Average:** {avg_score:.1f} reliability score\n\n"
-            "🚀 **Performance Optimization:**\n"
-            "• Reward top performers with preferred partner status\n"
-            "• Provide feedback to underperforming suppliers\n"
-            "• Implement performance-based contract terms\n"
-            "• Regular supplier review meetings for continuous improvement"
-        )
+
 
     return "📊 **Business Intelligence Ready** - Your data provides valuable insights for strategic decision-making. Use these metrics to optimize operations and drive growth."
 

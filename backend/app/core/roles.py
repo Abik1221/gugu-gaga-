@@ -7,4 +7,4 @@ class Role(str, Enum):
     cashier = "cashier"
     affiliate = "affiliate"
     customer = "customer"
-    supplier = "supplier"
+

@@ -10,12 +10,13 @@ import { useLanguage } from "@/contexts/language-context";
 
 export default function PricingSection() {
   const { t, language } = useLanguage();
-  const [selectedType, setSelectedType] = useState<"owner" | "supplier">("owner");
   const router = useRouter();
+
+
 
   const handlePlanClick = (plan: any) => {
     // Redirect to the appropriate registration page based on selected type
-    router.push(selectedType === "owner" ? "/register/owner" : "/register/supplier");
+    router.push("/register/owner");
   };
 
   // Helper to get translated text
@@ -50,7 +51,7 @@ export default function PricingSection() {
         { en: "All Premium features included", am: "ሁሉም የፕሪሚየም ባህሪያት ተካተዋል", or: "Amaloonni Premium hundi hammatamaniiru", ti: "ኩሉ ናይ ፕሪሚየም ባህርያት ሓዊሱ" },
         { en: "Multi-branch management", am: "ባለብዙ-ቅርንጫፍ አስተዳደር", or: "Bulchiinsa damee hedduu", ti: "ብዙሕ ጨንፈር ምሕደራ" },
         { en: "AI Stock Sentinel access", am: "AI የእቃ ጠባቂ መዳረሻ", or: "Argannoo AI Stock Sentinel", ti: "AI ናይ ንብረት ሓላዊ መእተዊ" },
-        { en: "All integrations unlocked", am: "ሁሉም ግንኙነቶች ተከፍተዋል", or: "Walitti makuun hundi banameera", ti: "ኩሉ ምትእስሳራት ተከፊቱ" },
+
         { en: "Supplier marketplace", am: "የአቅራቢዎች ገበያ", or: "Gabaa dhiyeessitootaa", ti: "ናይ ኣቕረብቲ ዕዳጋ" },
         { en: "Full analytics dashboard", am: "ሙሉ የትንታኔ ዳሽቦርድ", or: "Dashboard xiinxala guutuu", ti: "ምሉእ ናይ ትንተና ዳሽቦርድ" },
         { en: "Priority support", am: "ቅድሚያ ያለው ድጋፍ", or: "Deeggarsa dursa", ti: "ቀዳምነት ዘለዎ ደገፍ" },
@@ -82,7 +83,7 @@ export default function PricingSection() {
       features: [
         { en: "Single branch management", am: "የአንድ ቅርንጫፍ አስተዳደር", or: "Bulchiinsa damee tokkoo", ti: "ናይ ሓደ ጨንፈር ምሕደራ" },
         { en: "AI Stock Sentinel chat", am: "AI የእቃ ጠባቂ ውይይት", or: "Haasaa AI Stock Sentinel", ti: "AI ናይ ንብረት ሓላዊ ዕላል" },
-        { en: "Basic integrations", am: "መሰረታዊ ግንኙነቶች", or: "Walitti makuu bu'uuraa", ti: "መሰረታዊ ምትእስሳራት" },
+
         { en: "Stock tracking & alerts", am: "የእቃ ክትትል እና ማንቂያዎች", or: "Hordoffii stokii & akeekkachiisa", ti: "ናይ ንብረት ምክትታልን መጠንቀቕታን" },
         { en: "Sales analytics", am: "የሽያጭ ትንታኔ", or: "Xiinxala gurgurtaa", ti: "ናይ መሸጣ ትንተና" },
         { en: "Staff management (up to 5 users)", am: "የሰራተኞች አስተዳደር (እስከ 5 ተጠቃሚዎች)", or: "Bulchiinsa hojjetaa (hanga fayyadamtoota 5)", ti: "ናይ ሰራሕተኛ ምሕደራ (ክሳብ 5 ተጠቀምቲ)" },
@@ -116,13 +117,13 @@ export default function PricingSection() {
       features: [
         { en: "Unlimited branches", am: "ያልተገደቡ ቅርንጫፎች", or: "Dameewwan daangaa hin qabne", ti: "ደረት ዘይብሎም ጨናፍር" },
         { en: "Advanced AI insights & forecasting", am: "የላቁ AI ግንዛቤዎች እና ትንበያ", or: "Hubannoo AI olaanaa & tilmaama", ti: "ዝተራቀቐ AI ርድኢትን ትንበያን" },
-        { en: "All integrations (Google Sheets, ERP, etc.)", am: "ሁሉም ግንኙነቶች (Google Sheets፣ ERP፣ ወዘተ)", or: "Walitti makuu hunda (Google Sheets, ERP, kkf.)", ti: "ኩሉ ምትእስሳራት (Google Sheets, ERP, ወዘተ)" },
+
         { en: "Supplier marketplace access", am: "የአቅራቢዎች ገበያ መዳረሻ", or: "Argannoo gabaa dhiyeessitootaa", ti: "ናይ ኣቕረብቲ ዕዳጋ መእተዊ" },
         { en: "Affiliate program participation", am: "የአጋር መርሃ ግብር ተሳትፎ", or: "Hirmaannaa sagantaa hiriyyaa", ti: "ናይ መሻርኽቲ መደብ ተሳትፎ" },
         { en: "Priority AI support 24/7", am: "ቅድሚያ ያለው AI ድጋፍ 24/7", or: "Deeggarsa AI dursa 24/7", ti: "ቀዳምነት ዘለዎ AI ደገፍ 24/7" },
         { en: "Unlimited staff accounts", am: "ያልተገደቡ የሰራተኛ መለያዎች", or: "Akkaawuntii hojjetaa daangaa hin qabne", ti: "ደረት ዘይብሎም ናይ ሰራሕተኛ ኣካውንታት" },
         { en: "Advanced analytics & reports", am: "የላቁ ትንታኔዎች እና ሪፖርቶች", or: "Xiinxala olaanaa & gabaasa", ti: "ዝተራቀቐ ትንተናን ሪፖርታትን" },
-        { en: "Custom integrations", am: "ብጁ ግንኙነቶች", or: "Walitti makuu dhuunfaa", ti: "ፍሉይ ምትእስሳራት" },
+
         { en: "Dedicated account manager", am: "ልዩ መለያ አስተዳዳሪ", or: "Hojii gaggeessaa akkaawuntii addaa", ti: "ፍሉይ ናይ ኣካውንት ኣመሓዳሪ" },
       ],
       cta: "Go Professional",
@@ -133,141 +134,10 @@ export default function PricingSection() {
     },
   ] : [];
 
-  const supplierPlans = [
-    {
-      name: "Free Trial",
-      nameAm: "ነጻ ሙከራ",
-      nameOr: "Yaalii Bilisaa",
-      nameTi: "ነጻ ፈተነ",
-      price: "0",
-      priceAm: "0",
-      priceOr: "0",
-      priceTi: "0",
-      period: "30 Days",
-      periodAm: "30 ቀናት",
-      periodOr: "Guyyaa 30",
-      periodTi: "30 መዓልቲ",
-      description: "Test all supplier features",
-      descriptionAm: "ሁሉንም የአቅራቢ ባህሪያት ይሞክሩ",
-      descriptionOr: "Amaloota dhiyeessitootaa hunda yaali",
-      descriptionTi: "ኩሉ ናይ ኣቕረብቲ ባህርያት ፈትን",
-      popular: false,
-      features: [
-        { en: "All Growth features included", am: "ሁሉም የእድገት ባህሪያት ተካተዋል", or: "Amaloonni Guddinaa hundi hammatamaniiru", ti: "ኩሉ ናይ ዕብየት ባህርያት ሓዊሱ" },
-        { en: "Product catalog management", am: "የምርት ካታሎግ አስተዳደር", or: "Bulchiinsa kaataaloogii oomishaa", ti: "ናይ ፍርያት ካታሎግ ምሕደራ" },
-        { en: "Order processing", am: "የትዕዛዝ ሂደት", or: "Adeemsa ajaja", ti: "ናይ ትእዛዝ መስርሕ" },
-        { en: "Customer communication", am: "የደንበኛ ግንኙነት", or: "Qunnamtii maamilaa", ti: "ናይ ዓማዊል ርክብ" },
-        { en: "Advanced analytics", am: "የላቁ ትንታኔዎች", or: "Xiinxala olaanaa", ti: "ዝተራቀቐ ትንተና" },
-        { en: "Priority marketplace listing", am: "ቅድሚያ ያለው የገበያ ዝርዝር", or: "Tarree gabaa dursa", ti: "ቀዳምነት ዘለዎ ናይ ዕዳጋ ዝርዝር" },
-        { en: "24/7 support", am: "24/7 ድጋፍ", or: "Deeggarsa 24/7", ti: "24/7 ደገፍ" },
-      ],
-      cta: "Start Free Trial",
-      ctaAm: "ነጻ ሙከራ ጀምር",
-      ctaOr: "Yaalii Bilisaa Jalqabi",
-      ctaTi: "ነጻ ፈተነ ጀምር",
-      highlight: false,
-    },
-    {
-      name: "Starter",
-      nameAm: "መጀመሪያ",
-      nameOr: "Jalqabaa",
-      nameTi: "ጀማሪ",
-      price: "799",
-      priceAm: "799",
-      priceOr: "799",
-      priceTi: "799",
-      period: "Birr/month",
-      periodAm: "ብር/ወር",
-      periodOr: "Birr/ji'a",
-      periodTi: "ብር/ወርሒ",
-      description: "Perfect for small suppliers",
-      descriptionAm: "ለትናንሽ አቅራቢዎች ፍጹም",
-      descriptionOr: "Dhiyeessitoota xixiqqoof mijataa",
-      descriptionTi: "ንኣሽቱ ኣቕረብቲ ዝምችእ",
-      popular: false,
-      features: [
-        { en: "Product catalog management", am: "የምርት ካታሎግ አስተዳደር", or: "Bulchiinsa kaataaloogii oomishaa", ti: "ናይ ፍርያት ካታሎግ ምሕደራ" },
-        { en: "Basic order processing", am: "መሰረታዊ የትዕዛዝ ሂደት", or: "Adeemsa ajaja bu'uuraa", ti: "መሰረታዊ ናይ ትእዛዝ መስርሕ" },
-        { en: "Customer communication", am: "የደንበኛ ግንኙነት", or: "Qunnamtii maamilaa", ti: "ናይ ዓማዊል ርክብ" },
-        { en: "Payment tracking", am: "የክፍያ ክትትል", or: "Hordoffii kaffaltii", ti: "ናይ ክፍሊት ምክትታል" },
-        { en: "Monthly reports", am: "ወርሃዊ ሪፖርቶች", or: "Gabaasa ji'aa", ti: "ወርሓዊ ሪፖርታት" },
-        { en: "Email support", am: "የኢሜይል ድጋፍ", or: "Deeggarsa imeelii", ti: "ናይ ኢሜይል ደገፍ" },
-      ],
-      cta: "Start Supplying",
-      ctaAm: "አቅርቦት ጀምር",
-      ctaOr: "Dhiyeessuu Jalqabi",
-      ctaTi: "ምቕራብ ጀምር",
-      highlight: false,
-    },
-    {
-      name: "Growth",
-      nameAm: "እድገት",
-      nameOr: "Guddina",
-      nameTi: "ዕብየት",
-      price: "1,299",
-      priceAm: "1,299",
-      priceOr: "1,299",
-      priceTi: "1,299",
-      period: "Birr/month",
-      periodAm: "ብር/ወር",
-      periodOr: "Birr/ji'a",
-      periodTi: "ብር/ወርሒ",
-      description: "For expanding supplier businesses",
-      descriptionAm: "ለማደግ ላሉ የአቅራቢ ንግዶች",
-      descriptionOr: "Daldala dhiyeessitootaa babal'achaa jiraniif",
-      descriptionTi: "ንዝሰፍሑ ዘለዉ ናይ ኣቕረብቲ ንግድታት",
-      popular: true,
-      features: [
-        { en: "Everything in Starter", am: "በመጀመሪያ ውስጥ ያለው ሁሉ", or: "Wanti hundi Jalqabaa keessa jiru", ti: "ኩሉ ኣብ ጀማሪ ዘሎ" },
-        { en: "Advanced analytics", am: "የላቁ ትንታኔዎች", or: "Xiinxala olaanaa", ti: "ዝተራቀቐ ትንተና" },
-        { en: "Bulk order management", am: "የጅምላ ትዕዛዝ አስተዳደር", or: "Bulchiinsa ajaja jumlaa", ti: "ናይ ጅምላ ትእዛዝ ምሕደራ" },
-        { en: "Inventory forecasting", am: "የእቃ ትንበያ", or: "Tilmaama inventarii", ti: "ናይ ንብረት ትንበያ" },
-        { en: "Priority marketplace listing", am: "ቅድሚያ ያለው የገበያ ዝርዝር", or: "Tarree gabaa dursa", ti: "ቀዳምነት ዘለዎ ናይ ዕዳጋ ዝርዝር" },
-        { en: "24/7 phone support", am: "24/7 የስልክ ድጋፍ", or: "Deeggarsa bilbilaa 24/7", ti: "24/7 ናይ ስልኪ ደገፍ" },
-        { en: "Custom branding", am: "ብጁ የምርት ስም", or: "Asta dhuunfaa", ti: "ፍሉይ ናይ ብራንድ ስም" },
-      ],
-      cta: "Scale Your Business",
-      ctaAm: "ንግድዎን ያሳድጉ",
-      ctaOr: "Daldala Kee Guddisi",
-      ctaTi: "ንግድኻ ኣዕቢ",
-      highlight: true,
-    },
-    {
-      name: "Enterprise",
-      nameAm: "ድርጅታዊ",
-      nameOr: "Dhaabbata",
-      nameTi: "ትካል",
-      price: "Custom",
-      priceAm: "ብጁ",
-      priceOr: "Kan Waliigalte",
-      priceTi: "ፍሉይ",
-      period: "Contact us",
-      periodAm: "ያነጋግሩን",
-      periodOr: "Nu Qunnamaa",
-      periodTi: "ርኸቡና",
-      description: "For large-scale suppliers",
-      descriptionAm: "ለትላልቅ አቅራቢዎች",
-      descriptionOr: "Dhiyeessitoota gurguddaaf",
-      descriptionTi: "ንዓበይቲ ኣቕረብቲ",
-      popular: false,
-      features: [
-        { en: "Everything in Growth", am: "በእድገት ውስጥ ያለው ሁሉ", or: "Wanti hundi Guddina keessa jiru", ti: "ኩሉ ኣብ ዕብየት ዘሎ" },
-        { en: "API access", am: "API መዳረሻ", or: "Argannoo API", ti: "API መእተዊ" },
-        { en: "Custom integrations", am: "ብጁ ግንኙነቶች", or: "Walitti makuu dhuunfaa", ti: "ፍሉይ ምትእስሳራት" },
-        { en: "Dedicated account manager", am: "ልዩ መለያ አስተዳዳሪ", or: "Hojii gaggeessaa akkaawuntii addaa", ti: "ፍሉይ ናይ ኣካውንት ኣመሓዳሪ" },
-        { en: "White-label solutions", am: "ነጭ-መለያ መፍትሄዎች", or: "Furmaata White-label", ti: "ናይ ዋይት-ሌብል መፍትሒታት" },
-        { en: "SLA guarantees", am: "SLA ዋስትናዎች", or: "Wabii SLA", ti: "SLA ውሕስነት" },
-        { en: "On-site training", am: "በቦታ ላይ ስልጠና", or: "Leenjii bakka hojii", ti: "ኣብ ቦታ ስልጠና" },
-      ],
-      cta: "Contact Sales",
-      ctaAm: "ሽያጮችን ያነጋግሩ",
-      ctaOr: "Gurgurtaa Qunnamaa",
-      ctaTi: "መሸጣ ርኸብ",
-      highlight: false,
-    },
-  ];
 
-  const currentPlans = selectedType === "owner" ? ownerPlans : supplierPlans;
+
+  const currentPlans = ownerPlans;
+
 
   return (
     <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50" >
@@ -286,35 +156,11 @@ export default function PricingSection() {
             {t.pricing.subtitle}
           </p>
 
-          <div className="flex justify-center mb-8">
-            <div className="bg-white rounded-lg p-1 shadow-md border">
-              <Button
-                variant={selectedType === "owner" ? "default" : "ghost"}
-                className={`px-6 py-2 rounded-md transition-all ${selectedType === "owner"
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-                  }`}
-                onClick={() => setSelectedType("owner")}
-              >
-                Business Owner
-              </Button>
-              <Button
-                variant={selectedType === "supplier" ? "default" : "ghost"}
-                className={`px-6 py-2 rounded-md transition-all ${selectedType === "supplier"
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-                  }`}
-                onClick={() => setSelectedType("supplier")}
-              >
-                Supplier
-              </Button>
-            </div>
-          </div>
+
         </motion.div>
 
         <div
-          className={`grid gap-14 max-w-6xl mx-auto ${selectedType === "supplier" ? "md:grid-cols-4" : "md:grid-cols-3"
-            }`}
+          className={`grid gap-14 max-w-6xl mx-auto md:grid-cols-3`}
         >
           {currentPlans.map((plan, index) => (
             <motion.div
@@ -377,7 +223,8 @@ export default function PricingSection() {
                       : "bg-gray-900 hover:bg-gray-800"
                       }`}
                     size="default"
-                    onClick={() => router.push(selectedType === "owner" ? "/register/owner" : "/register/supplier")}
+                    onClick={() => router.push("/register/owner")}
+
                   >
                     {getTranslatedText(plan, 'cta')}
                   </Button>
@@ -403,9 +250,8 @@ export default function PricingSection() {
             All plans include secure data encryption, regular backups, and
             Ethiopian Birr support.
             <br />
-            {selectedType === "owner"
-              ? "Need a custom enterprise solution?"
-              : "Ready to join our supplier network?"}{" "}
+            Need a custom enterprise solution?{" "}
+
             <a href="/contact" className="text-emerald-600 underline">
               Contact us
             </a>

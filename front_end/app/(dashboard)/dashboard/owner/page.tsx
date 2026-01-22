@@ -234,7 +234,7 @@ export default function OwnerDashboardPage() {
       <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-md lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold text-black">
-            {loadingUser ? ownerT.loading : `${ownerT.welcomeBack}, ${displayName}`}
+            {loadingUser ? t.ownerDashboard.common.loading : `${ownerT.welcomeBack}, ${displayName}`}
           </h1>
           <p className="max-w-xl text-sm text-slate-900">
             {ownerT.subtitle}
@@ -279,9 +279,7 @@ export default function OwnerDashboardPage() {
             {t.ownerDashboard.common.refresh}
           </Button>
 
-          <Link href="/dashboard/owner/integrations">
-            <Button variant="outline" size="sm">{ownerT.connectTools}</Button>
-          </Link>
+
 
           <Link href="/dashboard/owner/staff/new">
             <Button size="sm" className="bg-emerald-700 hover:bg-emerald-800 text-white shadow-md">{ownerT.inviteStaff}</Button>
